@@ -1,0 +1,72 @@
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0"> 
+
+<!--Link my stylesheet-->
+<link rel="stylesheet" type="text/css" href="./css/style.css">
+<link rel="stylesheet" type="text/css" media="(min-width:768px) and (max-width:1280px)" href="./css/tablet.css">
+<link rel="stylesheet" type="text/css" media="(max-width:767px)" href="./css/mobile.css">
+
+<title>Repeat words</title>
+
+<style>
+    :root{
+        --main-color:#5681bf;
+        --second-color:#687c9a;
+        --third-color:#859fc4;
+        --fourth-color:#e8e8e8;
+    }    
+</style>
+<% if (DATA.usersett.color === 'blue') { %>
+    <style>
+        :root{
+            --main-color:#5681bf;
+            --second-color:#687c9a;
+            --third-color:#859fc4;
+            --fourth-color:#e8e8e8;
+        }    
+    </style>
+<% } %> 
+<% if (DATA.usersett.color === 'green') { %>
+    <style>
+        :root{
+            --main-color:#108023;
+            --second-color:#356a3e;
+            --third-color:#77b983;
+            --fourth-color:#e8e8e8;
+        }    
+    </style>
+<% } %> 
+<% if (DATA.usersett.color === 'red') { %>
+    <style>
+        :root{
+            --main-color:#984b55;
+            --second-color:#82353f;
+            --third-color:#ba7b84;
+            --fourth-color:#e8e8e8;
+        }    
+    </style>
+<% } %> 
+<% if (DATA.usersett.color === 'yellow') { %>
+    <style>
+        :root{
+            --main-color:#c1b942;
+            --second-color:#9d9743;
+            --third-color:#bab67f;
+            --fourth-color:#e8e8e8;
+        }    
+    </style>
+<% } %> 
+<% if (DATA.usersett.color === 'grey') { %>
+    <style>
+        :root{
+            --main-color:#444444;
+            --second-color:#545454;
+            --third-color:#868686;
+            --fourth-color:#e8e8e8;
+        }    
+    </style>
+<% } %> 
+<script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.24.0/moment.min.js"></script>
+<script src="./js/data.js"></script>
+
+

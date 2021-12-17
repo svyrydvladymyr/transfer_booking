@@ -1,0 +1,142 @@
+input[type=range] { 
+    max-width: 73%; 
+    width: 73%; 
+    border-radius: 12px;
+    height: 38px;
+}
+input[name="gender"] {
+    height: 24px;
+    width: 60px;
+}
+#gender > span i { font-size: 22px }
+
+.selectLanguage,
+button[title='main btn'] { 
+    width: 94%; 
+}
+
+.logo_wrap, .user_wrap { width: 100%; justify-content: center }
+.user_wrap { flex-direction: column }
+.user_wrap > p { text-align: center }
+.settings_box { padding: 25px 0px }
+.settings_box > h5 {     
+    width: 100%;
+    font-size: 16px;
+    background: #e8e8e8;
+    margin: 4px 0px 10px 0px; 
+}
+.settings_wrap { max-width: 100% }
+.settings_wrap > p { 
+    width: 24%;
+    border-radius: 12px;
+    height: 38px;
+    padding: 10px 2px;
+}
+.settings_wrap > select { 
+    max-width: 100%;
+    border-radius: 12px;
+    height: 38px;
+}
+.settings-my-lang-box { 
+    max-width: 100%; 
+    padding: 5px 0px 0px 0px; 
+    margin: 0px 
+}
+.settings-my-lang-box img { 
+    width: 20%;
+    margin: 5px; 
+    padding: 5px;
+}
+.settings_box_default p { 
+    display: flex;
+    width: 100%;
+    border: 1px solid #e8e8e8;
+    flex-direction: column;
+    margin: 4px 0px;
+    padding-bottom: 7px;
+    border-radius: 9px;
+    justify-content: center;
+ }
+.settings_box_default span { height: 28px; }
+.settings_box_default b{ margin: 12px 6px 6px 6px; text-align: center;}
+.settings_box_default b > i { font-size: 18px }
+.lang_title_wrap { width: 100% }
+.lang_title_wrap > img { 
+    width: 42px;
+    top: -12px;
+    left: 50%;
+    transform: translateX(-50%);
+    margin: 0px auto;
+    border-radius: 10px;
+}
+.lang_title_wrap > h5 {
+    width: 100%;
+    font-size: 16px;
+    background: #e8e8e8;
+    border-radius: 12px;
+    padding: 10px 4px;
+    margin: 4px 0px 4px 0px;
+}
+.settings-interface-box,
+.settings-color-box { 
+    align-items: normal;
+    max-width: 100%; 
+    padding: 0px; 
+    margin: 5px 0px 0px 0px; 
+}
+.settings-color-box p {
+    min-height: 40px;
+    border-radius: 12px;
+}
+.settings-interface-box > div { 
+    padding: 80px 5px 8px 5px!important;
+    border-radius: 12px;
+    background: var(--fourth-color);
+}
+.interface-check {
+    width: 60%!important;
+    left: 0px!important;
+    right: 0px!important;
+    top: 5px!important;
+    border: 9px solid!important;
+    border-radius: 25px!important;
+    height:65px!important;
+    margin: auto;
+}
+.user_settings_list_wrap {
+    width: 36px;
+    height: 36px;
+    margin-top: -24px;
+    margin-left: 36px;
+    font-size: 16px;
+    padding: 2px;
+}
+
+.user_settings_list { 
+    position: relative;
+    border: 0;
+    background-color: transparent;
+    top: 10px;
+    right: 0px;
+}
+.user_settings_list > li {
+    padding: 12px 5px;
+}
+.user_settings_list::before { 
+    display: none;
+}
+
+.modal_place{
+    width: 97%;
+    min-width: 200px;
+    height: 97%;
+    padding: 30px 10px 10px 10px;
+}
+.modal_close{
+    color: var(--second-color);
+    right: 2%;
+    top: 2%;
+}
+.add_lists > label{
+    width: 75%;
+}

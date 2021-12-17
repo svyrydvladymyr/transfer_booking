@@ -1,0 +1,43 @@
+<!DOCTYPE HTML>
+<html lang="en">
+<head>
+    <%- include("./parts/head.ejs") %>
+</head>
+<body>
+    <%- include("./parts/header.ejs") %>  
+    <div class="main_body">
+        <div class="part_wrap">
+            <% if (DATA.permission.permAuthorised === 1) { %>        
+                <% if (DATA.usersett.lang !== 'none') { %>
+                    <button id='btnSpeak' title="main btn" onclick="redirect('/repeat-words')">Повторення слів &nbsp;<i class='fas fa-graduation-cap'></i></button>
+                    <button id='btnSpeak' title="main btn" onclick="redirect('/search-words')">Додати / Редагувати слова &nbsp;<i class='fas fa-plus'></i></button>
+                    <button id='btnSpeak' title="main btn" onclick="redirect('/word-lists')">Списки слів &nbsp;<i class='fa fa-th-list'></i></button>
+
+
+
+
+
+
+                    
+                <% } %> 
+            <% } %> 
+            <% if (DATA.permission.permAuthorised === 0) { %>
+                <button id='btnSpeak' title="main btn" onclick="redirect('/repeat-words')">Повторення слів &nbsp;<i class='fas fa-graduation-cap'></i></button>
+                <button id='btnSpeak' title="main btn" onclick="redirect('/settings')">Інформація про налаштування &nbsp;<i class='fas fa-cogs'></i></button>
+            <% } %>             
+        </div>
+        <%- include("./parts/error.ejs") %>
+    </div>
+    <%- include("./parts/footer.ejs") %>
+    <script src="./js/js.js"></script>
+    <script src='./js/icon.js'></script>
+    <% if (DATA.usersett.lang === 'none' && DATA.permission.permAuthorised === 1) { %>
+        <script>
+            const selectLanguageBox = $_('.main_body > .part_wrap')[0];
+            showLangList('<%=DATA.langList %>', '<%=DATA.langName %>', selectLanguageBox);
+            changeSettingsLists(selectLanguageBox.children, "my_lang", (result, i) => {
+                if (result.res) { location.reload() };
+            });
+        </script>
+    <% } %> 
+</body>

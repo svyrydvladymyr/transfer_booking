@@ -1,0 +1,39 @@
+<div class="part_wrap header">
+    <div class="logo_wrap">
+        <span><a href="/">rW</a></span>
+        <p><a href="/">repeatWords</a></p>
+    </div>
+    <div class="user_wrap">
+        <% if (DATA.permission.permAuthorised === 1) { %>
+            <p id="user_name"><%=DATA.user.surname %> <%=DATA.user.name %></p>
+            <div class="user_foto">
+                <img src="<%=DATA.user.foto %>" alt="foto" id="user_foto" onerror="this.onerror=null; this.src='img/no_user.png';" />                
+                <div class="user_settings_list_wrap">
+                    <i class='fas fa-cogs' onclick="showSettingsList()"></i> 
+
+                </div>
+            </div>
+            <div class="modal_wrap"></div>
+            <script>
+                localStorage.setItem("SpeakVoice", '<%=DATA.usersett.voice %>');
+                localStorage.setItem("SpeakSpeed", '<%=DATA.usersett.spead %>');
+                localStorage.setItem("SpeakPitch", '<%=DATA.usersett.pitch %>');
+                localStorage.setItem("myLang", '<%=DATA.usersett.lang %>');
+                localStorage.setItem("myColor", '<%=DATA.usersett.color %>');
+            </script>
+        <% } %>
+        <% if (DATA.permission.permAuthorised === 0) { %>
+            <div class="user_login">
+                <a href="/google"><img src="img/google.png" alt="google"></a>
+                <a href="/facebook"><img src="img/facebook.png" alt="facebook"></a>
+                <a href="/linkedin"><img src="img/linkedin.png" alt="facebook"></a>
+            </div>
+        <% } %>
+        <ul class="user_settings_list">
+            <li><a href="/profile" id="profile-title"><%=DATA.langPack.profile %></a></li>
+            <li><a href="/settings" id="settings-title"><%=DATA.langPack.settings %></a></li>
+            <li><a href="/friends" id="friends-title"><%=DATA.langPack.friends %></a></li>
+            <li><a onclick="exit()" id="exit-title"><%=DATA.langPack.exit %></a></li>
+        </ul>
+    </div>
+</div>
