@@ -10,11 +10,5 @@ module.exports = {
         clientSecret: '15aa89e9733c0d21c3fd0ed675225c8c',
         callbackURL: "https://127.0.0.1:4000/facebookcallback",
         profileFields: ['id', 'displayName', 'name', 'gender', 'profileUrl', 'emails', 'picture.type(large)']
-    },
-    linkedin: {
-        clientID: '77hth4uk65ijf5',
-        clientSecret: 'ENs2YGvVz0WJf846',
-        callbackURL: "http://127.0.0.1:4000/linkedincallback",
-        profileFields: ['id', 'displayName', 'name', 'gender', 'profileUrl', 'emails', 'picture.type(large)']
     }
 }

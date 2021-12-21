@@ -7,13 +7,12 @@ module.exports = (app) => {
     const StrategyConfig = require('../config/config-oauth');
     const Strategy = {
         google: require('passport-google-oauth20').Strategy,
-        facebook: require('passport-facebook').Strategy,
-        linkedin: require('passport-linkedin-oauth2').Strategy
+        facebook: require('passport-facebook').Strategy
     };
     passport.serializeUser(function(user, done) {done(null, user)});  
     passport.deserializeUser(function(obj, done) {done(null, obj)});
     app.use(passport.initialize());
-    ['google', 'facebook', 'linkedin'].forEach(url => {
+    ['google', 'facebook'].forEach(url => {
         passport.use(
             new Strategy[url](StrategyConfig[url], 
             (accessToken, refreshToken, profile, done) => {process.nextTick( async () => {

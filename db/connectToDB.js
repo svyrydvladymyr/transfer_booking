@@ -3,13 +3,13 @@ const db_config = {
     host: "localhost",
     user: "root",
     password: "root",
-    charset: 'utf8',
-    collation: 'utf8_unicode_ci',
-    prefix: '',
+    charset: "utf8",
+    collation: "utf8_unicode_ci",
+    prefix: "",
     strict: false,
     database: "transfer_booking"
 };
-const mysql = require('mysql');
+const mysql = require("mysql");
 const con = mysql.createConnection(db_config);
 con.connect((err) => {
     if (err) {
@@ -17,5 +17,5 @@ con.connect((err) => {
     // res.send(err);       
     }});  
 
-setInterval(function () { con.query('SELECT 1') }, 10000);
+setInterval(function () { con.query("SELECT 1") }, 10000);
 module.exports = { con }; 

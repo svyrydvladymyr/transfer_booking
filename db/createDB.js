@@ -7,71 +7,54 @@ const users = () => {
         ava VARCHAR(255), 
         name VARCHAR(80) NOT NULL, 
         surname VARCHAR(80) NOT NULL,
-        email VARCHAR(60) DEFAULT '',
-        emailverified VARCHAR(60) DEFAULT '',
-        birthday DATE,
-        gender VARCHAR(11) DEFAULT '',
-        provider VARCHAR(40),
-        interface VARCHAR(20) DEFAULT 'en-US',    
-        my_lang VARCHAR(20) DEFAULT 'none',    
-        voice VARCHAR(60) DEFAULT 'Google UK English Female',                   
-        speed VARCHAR(40) DEFAULT '1', 
-        pitch VARCHAR(40) DEFAULT '1',            
-        color VARCHAR(20) DEFAULT 'blue',                    
+        email VARCHAR(80) DEFAULT '',
+        permission INT DEFAULT '0',                  
         date_registered DATETIME
         )`; 
     con.query(sql, function (err, result) {if (err) throw err; console.log("Table users created")});
 };
 
-const userssettings = () => {
-    const sql = `CREATE TABLE userssettings (id INT AUTO_INCREMENT PRIMARY KEY,
-        userid VARCHAR(100) NOT NULL UNIQUE,
-        interface VARCHAR(20) DEFAULT 'en-US',    
-        my_lang VARCHAR(20) DEFAULT 'none',    
-        voice VARCHAR(60) DEFAULT 'Google UK English Female',                   
-        speed VARCHAR(40) DEFAULT '1', 
-        pitch VARCHAR(40) DEFAULT '1',            
-        color VARCHAR(20) DEFAULT 'blue'            
+const points = () => {
+    const sql = `CREATE TABLE points (id INT AUTO_INCREMENT PRIMARY KEY,
+        id INT NOT NULL,
+        name_ua VARCHAR(50) NOT NULL,    
+        name_en VARCHAR(50) NOT NULL,    
+        name_ru VARCHAR(50) NOT NULL         
         )`; 
-    con.query(sql, function (err, result) {if (err) throw err; console.log("Table userssettings created")});
+    con.query(sql, function (err, result) {if (err) throw err; console.log("Table points created")});
 };
 
-const wordlists = () => {
-    const sql = `CREATE TABLE wordlists (id INT AUTO_INCREMENT PRIMARY KEY,
-        list_name VARCHAR(100),
-        userid VARCHAR(100),
-        list_permission VARCHAR(10),
-        date_create DATETIME,
-        date_updeta DATETIME
+const tripslist = () => {
+    const sql = `CREATE TABLE tripslist (id INT AUTO_INCREMENT PRIMARY KEY,
+        from INT NOT NULL,
+        to INT NOT NULL,    
+        price_private INT NOT NULL,  
+        price_group INT NOT NULL          
         )`; 
-    con.query(sql, function (err, result) {if (err) throw err; console.log("Table wordlists created")});
+    con.query(sql, function (err, result) {if (err) throw err; console.log("Table tripslist created")});
 };
 
-const listssettings = () => {
-    const sql = `CREATE TABLE listssettings (id INT AUTO_INCREMENT PRIMARY KEY,
-        list_name VARCHAR(100),
-        userid VARCHAR(100),
-        list_type VARCHAR(10)
+const user_trips = () => {
+    const sql = `CREATE TABLE user_trips (id INT AUTO_INCREMENT PRIMARY KEY,
+        userid VARCHAR(100) NOT NULL,
+        from INT NOT NULL,
+        to INT NOT NULL, 
+        trip_date DATE NOT NULL, 
+        trip_time TIME NOT NULL, 
+        transfer_options VARCHAR(30) NOT NULL, 
+        adults INT,
+        children INT,
+        children INT,
+        sky_equipment VARCHAR(10), 
+        date_registered DATETIME
         )`; 
-    con.query(sql, function (err, result) {if (err) throw err; console.log("Table listssettings created")});
+    con.query(sql, function (err, result) {if (err) throw err; console.log("Table user_trips created")});
 };
 
-
-const words = () => {
-    const sql = `CREATE TABLE words (id INT AUTO_INCREMENT PRIMARY KEY,
-        word VARCHAR(100) NOT NULL UNIQUE,
-        word_translation VARCHAR(100) NOT NULL,
-        word_lang VARCHAR(10),
-        created_by VARCHAR(100),
-        date_create DATETIME
-        )`; 
-    con.query(sql, function (err, result) {if (err) throw err; console.log("Table words created")});
-};
 
 module.exports = {
     users,
-    userssettings,
-    wordlists,
-    listssettings,
-    words
+    tripslist,
+    points,
+    user_trips
 };

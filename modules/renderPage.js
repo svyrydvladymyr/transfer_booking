@@ -1,4 +1,4 @@
-module.exports = (req, res, pageName, err = '') => {
+module.exports = (req, res, pageName, lang = 'ua', err = '') => {
     const DATA = require('./user').DATA;
     require('./user').clearDATA();
     if (err !== '') {        
@@ -6,7 +6,7 @@ module.exports = (req, res, pageName, err = '') => {
         console.log('SERVER ERROR:', err);
         res.status(500).render('main', { DATA });
     } else {
-        require('./user').getUser(req, res, pageName)
+        require('./user').getUser(req, res, lang, pageName)
         // .then(() => { console.log("DATA", DATA) })
         .then(() => { res.render(pageName, { DATA }) });
     };

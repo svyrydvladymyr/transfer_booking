@@ -2,13 +2,16 @@ const express = require('express');
 const app = express();
 const bodyParser = require('body-parser');
 
-const {users, words} = require('./db/createDB');
+const DB = require('./db/createDB');
+// DB.users();
+// DB.tripslist();
+// DB.user_trips();
+// DB.points();
+
 const {log, accessLog, logOut} = require('./modules/service');
-
-const {setSettings} = require('./modules/settings');
-
 const renderPage = require('./modules/renderPage');
-const searchWord = require('./modules/search');
+
+
 
 //oaugh
 require('./modules/oaugh.js')(app);
@@ -28,15 +31,11 @@ app.use((req, res, next) => {log(`URL-REQUEST:-(${req.method})-`, req.url); next
 app.use((req, res, next) => {accessLog(req, res, next)});
 
 //requests
-app.use('/setsettings', (req, res) => {setSettings(req, res)});
-app.use('/search-word', (req, res) => {searchWord(req, res)});
+// app.use('/setsettings', (req, res) => {setSettings(req, res)});
+// app.use('/search-word', (req, res) => {searchWord(req, res)});
 
 //pages
-app.get('/repeat-words', (req, res) => {renderPage(req, res, 'repeat-words')});
-app.get('/search-words', (req, res) => {renderPage(req, res, 'search-words')});
-app.get('/profile', (req, res) => {renderPage(req, res, 'profile')});
-app.get('/settings', (req, res) => {renderPage(req, res, 'settings')});
-app.get('/friends', (req, res) => {renderPage(req, res, 'friends')});
+app.get('/about', (req, res) => {renderPage(req, res, 'about')});
 
 //logout
 app.post('/exit', (req, res) => {logOut(req, res)});
