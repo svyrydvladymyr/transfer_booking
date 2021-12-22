@@ -16,6 +16,7 @@ module.exports = (app) => {
         passport.use(
             new Strategy[url](StrategyConfig[url], 
             (accessToken, refreshToken, profile, done) => {process.nextTick( async () => {
+                console.log("profile", profile);                    
                 con.query(`SELECT * FROM users WHERE userid = '${profile.id}'`, (error, result) => {
                     if (error) { 
                         done(`Problem with created user: ${error}`, null); 
@@ -37,6 +38,7 @@ module.exports = (app) => {
         app.get(`/${url}callback`, (req, res, next) => {    
             passport.authenticate(`${url}`, 
                 (err, user, info) => { 
+                    console.log(err);
                     if (err) renderPage(req, res, 'main', err);
                     if (!err) {
                         const tokenId = require('./service').token(20);

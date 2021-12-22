@@ -35,7 +35,11 @@ app.use((req, res, next) => {accessLog(req, res, next)});
 // app.use('/search-word', (req, res) => {searchWord(req, res)});
 
 //pages
+app.get('/main', (req, res) => {renderPage(req, res, 'main')});
 app.get('/about', (req, res) => {renderPage(req, res, 'about')});
+app.get('/blog', (req, res) => {renderPage(req, res, 'blog')});
+app.get('/contact', (req, res) => {renderPage(req, res, 'contact')});
+app.get('/person', (req, res) => {renderPage(req, res, 'person')});
 
 //logout
 app.post('/exit', (req, res) => {logOut(req, res)});

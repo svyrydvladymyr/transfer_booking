@@ -1,25 +1,124 @@
-*{ box-sizing: border-box }
+* {
+  box-sizing: border-box;
+}
 
 body {
   min-height: 100vh;
   display: grid;
   grid-template-columns: 100%;
   grid-template-rows: max-content auto max-content;
-  grid-template-areas: 'header' 'main_body' 'footer';
-  grid-gap: 1px; 
-  min-width: 250px; 
+  grid-template-areas: "header" "main_body" "footer";
+  grid-gap: 1px;
+  min-width: 250px;
   margin: 0;
-  padding: 10px;
-  font-size: 14px;  
+  padding: 0px;
+  font-size: 14px;
+  font-family: "Lato", Helvetica, Arial, sans-serif;
 }
+
 .header {
   grid-area: header;
 }
+
 .main_body {
   grid-area: main_body;
 }
+
 .footer {
   grid-area: footer;
 }
 
+/*___________________info_social_______________________*/
+.header,
+.social_wrap,
+.info,
+.social,
+.media,
+.lang {
+  display: flex;
+  flex-wrap: wrap;
+}
 
+.header {
+  width: 100%;
+  min-height: 600px;
+  flex-direction: column;
+  background: #cdcdcd;
+}
+.header > .social_wrap {
+  width: 96%;
+  justify-content: space-between;
+  align-items: stretch;
+  margin: 0px auto;
+  padding: 10px;
+}
+.header > .social_wrap > .info {
+  width: 80%;
+  font-size: 16px;
+}
+.header > .social_wrap > .info > p {
+  padding: 5px 10px;
+  margin: 0;
+  color: #fff;
+}
+.header > .social_wrap > .info > p > i {
+  margin: 0px 7px;
+}
+.header > .social_wrap > .info > p > a {
+  color: #fff;
+  text-decoration-line: none;
+}
+.header > .social_wrap > .info > p > a:hover {
+  text-decoration-line: underline;
+}
+.header > .social_wrap > .social {
+  width: 20%;
+  justify-content: space-between;
+}
+.header > .social_wrap > .social > .media {
+  width: 60%;
+  justify-content: center;
+  align-items: center;
+}
+.header > .social_wrap > .social > .media > a {
+  font-size: 20px;
+  margin: 2px 7px;
+  color: #fff;
+}
+.header > .social_wrap > .social > .media > a:hover {
+  color: #95cb55;
+}
+.header > .social_wrap > .social > .lang {
+  width: 40%;
+  justify-content: center;
+  align-items: center;
+}
+.header > .social_wrap > .social > .lang > img {
+  cursor: pointer;
+  width: 25px;
+  height: 18px;
+  margin: 2px 4px;
+  padding: 2px;
+  border-radius: 3px;
+  border: 1px solid #fff;
+}
+.header > .social_wrap > .social > .lang > img:hover {
+  padding: 1px;
+}
+
+/*______________________login_________________________*/
+.user_login {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: center;
+}
+.user_login .user_login > a {
+  width: 100px;
+  margin: 10px;
+}
+.user_login .user_login > a > img {
+  width: 100%;
+}
