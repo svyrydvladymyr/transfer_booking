@@ -29,10 +29,13 @@ body {
 
 .header, 
 .social_wrap,
+.menu_wrap,
 .info,
 .social,
 .media,
-.lang
+.lang,
+.logo,
+.menu
 {
   display: flex;
   flex-wrap: wrap;
@@ -40,18 +43,20 @@ body {
 .header{
   // outline: 1px solid green;
   width: 100%;
-  min-height: 600px;
+  min-height: 1000px;
   flex-direction: column;
-
-
-  background: #cdcdcd;
-    > .social_wrap {
-      // outline: 1px solid red;
-      width: 96%;
+  background: center/cover no-repeat url("../img/header_bg.jpg");
+    a, i { 
+      color: #fff 
+    }
+    > .social_wrap, .menu_wrap {
+      outline: 1px solid red;
+      width: 100%;
+      max-width: 1800px;
       justify-content: space-between;
       align-items: stretch;
       margin: 0px auto;
-      padding: 10px;
+      padding: 16px;
         > .info {
           // outline: 1px solid yellow;
           width: 80%;
@@ -59,12 +64,13 @@ body {
             > p {
               padding: 5px 10px;
               margin: 0;
-              color: #fff;
+              &:first-child {
+                padding: 5px 10px 5px 0px;
+              }
                 > i {
                   margin: 0px 7px;
                 }
                 > a {
-                  color: #fff;
                   text-decoration-line: none;
                   &:hover {
                     text-decoration-line: underline;
@@ -79,12 +85,11 @@ body {
             > .media {
               // outline: 1px solid blue;
               width: 60%;
-              justify-content: center;
+              justify-content: right;
               align-items: center;
                 > a {
                   font-size: 20px;
                   margin: 2px 7px;
-                  color: #fff;
                   &:hover {
                     color: #95cb55;
                   }
@@ -93,7 +98,7 @@ body {
             > .lang {
               // outline: 1px solid blue;
               width: 40%;
-              justify-content: center;
+              justify-content: right;
               align-items: center;
                 > img {
                   cursor: pointer;
@@ -108,6 +113,35 @@ body {
                   }
                 }
             }
+        }
+    }
+    > .menu_wrap {
+      background: #fff;
+      padding: 0px 16px;
+      min-height: 110px;
+        > .logo {
+          outline: 1px solid green;
+          width: 100%;
+          max-width: 280px;
+          align-items: center;
+          > img {
+            width: 100%;
+          }
+
+        }
+        > .menu {
+          outline: 1px solid green;
+          flex-grow: 1;
+          justify-content: right;
+          a { 
+            color: #3e3f40; 
+            text-decoration-line: none;
+          }
+          ul {
+            list-style-type: none;
+            padding: 0;
+            display: inline-flex;
+          }
         }
     }
 }

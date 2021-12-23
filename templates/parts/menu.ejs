@@ -1,14 +1,13 @@
 <div class="menu_wrap">
     <div class="logo">
-        <p>Transfer Booking</p>
+        <img src="./img/logo.png" alt="Transfer Booking">
     </div>
     <div class="menu">
         <ul class="user_settings_list">
-            <li><a href="/profile" id="profile-title"><%=DATA.langPack.profile %></a></li>
-            <li><a href="/settings" id="settings-title"><%=DATA.langPack.settings %></a></li>
-            <li><a href="/friends" id="friends-title"><%=DATA.langPack.friends %></a></li>
-            <li><a onclick="exit()" id="exit-title"><%=DATA.langPack.exit %></a></li>
+            <li><a href="/home" class="<%=DATA.menu.home %>"><%=DATA.langPack.home %></a></li>
+            <li><a href="/about" class="<%=DATA.menu.about %>"></a><%=DATA.langPack.about %></a></li>
+            <li><a href="/blog" class="<%=DATA.menu.blog %>"><%=DATA.langPack.blog %></a></li>
+            <li><a href="/contacts" class="<%=DATA.menu.contacts %>"><%=DATA.langPack.contacts %></a></li>
         </ul>
     </div>
-
 </div>

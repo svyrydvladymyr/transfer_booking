@@ -12,6 +12,12 @@ const DATA = {
         permissionAuthorization : '0',
         permissionRules : '0'
     },
+    menu : {
+        home : '',
+        about : '',
+        blog : '',
+        contacts : '',
+    },
     user : {
         id : '',
         name : '',
@@ -32,7 +38,12 @@ const clearDATA = () => {
     DATA.user.email = '';
     DATA.user.lang = 'uk-UA';
     DATA.user.date_registered = '';
-    DATA.permission.permAuthorised = 0; 
+    DATA.menu.home = '',
+    DATA.menu.about = '',
+    DATA.menu.blog = '',
+    DATA.menu.contacts = '',
+    DATA.permission.permissionAuthorization = 0; 
+    DATA.permission.permissionRules = 0; 
     DATA.errors.errMessage = '';
     DATA.errors.SERVER_ERROR = '';
     DATA.langPack = require('./lang/uk-UA');
@@ -81,10 +92,12 @@ const getUser = async (req, res, lang, pageName) => {
             DATA.user.name = name;
             DATA.user.surname = surname;
             DATA.user.lang = lang;
+            pageName !== 'person' ? DATA.menu[pageName] = 'active_menu' : null;            
             if (pageName === 'person') {
                 DATA.user.foto = ava;
                 DATA.user.email = email;
                 DATA.user.date_registered = readyFullDate(date_registered, 'reverse');
+                DATA.menu.home = 'active_menu'
             };
             return DATA.user.lang;       
         })   

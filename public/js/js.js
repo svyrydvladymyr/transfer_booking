@@ -150,3 +150,16 @@ const showLangList = (langStringList, langStringName, place) => {
 };
 
 
+
+
+
+
+
+
+
+
+//to change the language
+const setLang = (lang) => {
+    document.cookie = `lang = ${lang}`;
+    document.location.reload();
+};
