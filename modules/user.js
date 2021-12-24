@@ -76,9 +76,11 @@ const isUser = ({id, name: {familyName = '', givenName = ''}, photos: [{value: p
     });
 };
 
-const getUser = async (req, res, lang, pageName) => {
+const getUser = async (req, res, lang = 'uk-UA', pageName) => {
     await autorisationCheck(req, res)
     .then(async (userid) => {
+        // console.log('userid', userid);
+
         if (userid === false) { throw new Error('error-autorisation') };
         await getTableRecord(`SELECT * FROM users WHERE userid = '${userid.userid}'`)
         .then((user) => {
@@ -92,6 +94,7 @@ const getUser = async (req, res, lang, pageName) => {
             DATA.user.name = name;
             DATA.user.surname = surname;
             DATA.user.lang = lang;
+            DATA.langPack = require(`./lang/${lang}`);
             pageName !== 'person' ? DATA.menu[pageName] = 'active_menu' : null;            
             if (pageName === 'person') {
                 DATA.user.foto = ava;
@@ -99,20 +102,14 @@ const getUser = async (req, res, lang, pageName) => {
                 DATA.user.date_registered = readyFullDate(date_registered, 'reverse');
                 DATA.menu.home = 'active_menu'
             };
-            return DATA.user.lang;       
         })   
-        .then((lang) => {
-            let langPack;
-            try {
-                langPack = require(`./lang/${lang}`);
-            } catch(e) {
-                langPack = require(`./lang/uk-UA`);
-            }
-            DATA.langPack = langPack;
-        });
+
     })
     .catch((err) => {
         log('error-user-info', err); 
+
+        pageName !== 'person' ? DATA.menu[pageName] = 'active_menu' : DATA.menu.home = 'active_menu';
+        DATA.langPack = require(`./lang/${lang}`);
         DATA.permission.permissionAuthorization = '0';   
     }); 
 };

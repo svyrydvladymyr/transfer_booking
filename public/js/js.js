@@ -160,6 +160,28 @@ const showLangList = (langStringList, langStringName, place) => {
 
 //to change the language
 const setLang = (lang) => {
-    document.cookie = `lang = ${lang}`;
+    document.cookie = `lang=${lang}`;
     document.location.reload();
+};
+
+
+
+//for changing menu in skroling process
+const body = $_('body')[0];
+const menu = $_('.blok_menu_wrap')[0];
+const social = $_('.social_wrap')[0];
+// console.log('body', body);
+// console.log('menu', menu);
+// console.log('social', social);
+
+window.onscroll = function() {
+    // console.log('body', body.offsetWidth);
+    // console.log('menu', menu.offsetTop);
+    // console.log('social', social.clientHeight);
+
+    if (body.offsetWidth > 991) {
+        menu.offsetTop > social.clientHeight 
+            ? menu.classList.add('menu_scroll') 
+            : menu.classList.remove('menu_scroll');
+    }; 
 };

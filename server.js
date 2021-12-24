@@ -1,6 +1,8 @@
 const express = require('express');
 const app = express();
 const bodyParser = require('body-parser');
+const cookieParser = require('cookie-parser');
+app.use(cookieParser());
 
 const DB = require('./db/createDB');
 // DB.users();
@@ -34,17 +36,20 @@ app.use((req, res, next) => {accessLog(req, res, next)});
 // app.use('/setsettings', (req, res) => {setSettings(req, res)});
 // app.use('/search-word', (req, res) => {searchWord(req, res)});
 
+
+
+
 //pages
-app.get('/main', (req, res) => {renderPage(req, res, 'main')});
+app.get('/home', (req, res) => {renderPage(req, res, 'home')});
 app.get('/about', (req, res) => {renderPage(req, res, 'about')});
 app.get('/blog', (req, res) => {renderPage(req, res, 'blog')});
-app.get('/contact', (req, res) => {renderPage(req, res, 'contact')});
+app.get('/contacts', (req, res) => {renderPage(req, res, 'contacts')});
 app.get('/person', (req, res) => {renderPage(req, res, 'person')});
 
 //logout
 app.post('/exit', (req, res) => {logOut(req, res)});
 
-app.get('/', (req, res) => {renderPage(req, res, 'main')});
+app.get('/', (req, res) => {renderPage(req, res, 'home')});
 app.get('*', (req, res) => {res.status(404).send(require('./config/404'));});
 
 //server listen

@@ -39,7 +39,7 @@ module.exports = (app) => {
             passport.authenticate(`${url}`, 
                 (err, user, info) => { 
                     console.log(err);
-                    if (err) renderPage(req, res, 'main', err);
+                    if (err) renderPage(req, res, 'home', err);
                     if (!err) {
                         const tokenId = require('./service').token(20);
                         con.query(`UPDATE users SET token = '${tokenId}' WHERE userid = '${user.id}'`, (error, result) => {
