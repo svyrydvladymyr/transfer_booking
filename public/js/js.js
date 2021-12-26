@@ -164,24 +164,33 @@ const setLang = (lang) => {
     document.location.reload();
 };
 
-
-
 //for changing menu in skroling process
 const body = $_('body')[0];
-const menu = $_('.blok_menu_wrap')[0];
+const menu = $_('.menu_container')[0];
 const social = $_('.social_wrap')[0];
 // console.log('body', body);
 // console.log('menu', menu);
 // console.log('social', social);
-
 window.onscroll = function() {
+    const socialValue = social !== undefined ? social.clientHeight : 0;
+
     // console.log('body', body.offsetWidth);
     // console.log('menu', menu.offsetTop);
-    // console.log('social', social.clientHeight);
+    // console.log('social', socialValue);
 
     if (body.offsetWidth > 991) {
-        menu.offsetTop > social.clientHeight 
+        (document.body.scrollTop > socialValue || document.documentElement.scrollTop > socialValue)
             ? menu.classList.add('menu_scroll') 
             : menu.classList.remove('menu_scroll');
     }; 
 };
+
+//to change the tab
+const tabs = (tab) => {
+    const tabs = $_('.tabs > p');
+    const bodys = $_('.tab_bodys > .body');
+    tabs.forEach(element => { element.classList.remove('tab_active') });
+    bodys.forEach(element => { element.classList.remove('body_active') });
+    tabs[tab].classList.add('tab_active');
+    bodys[tab].classList.add('body_active');
+}

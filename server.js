@@ -45,6 +45,7 @@ app.get('/about', (req, res) => {renderPage(req, res, 'about')});
 app.get('/blog', (req, res) => {renderPage(req, res, 'blog')});
 app.get('/contacts', (req, res) => {renderPage(req, res, 'contacts')});
 app.get('/person', (req, res) => {renderPage(req, res, 'person')});
+app.get('/advantages', (req, res) => {renderPage(req, res, 'advantages')});
 
 //logout
 app.post('/exit', (req, res) => {logOut(req, res)});

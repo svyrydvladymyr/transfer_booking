@@ -1,0 +1,24 @@
+.content_container > div {
+    width: 50%;
+}
+.content_container > div > div:last-child {
+    width: 100%;
+    text-align: center;
+    padding: 0;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+}
+
+.header > .header_pages_title2 {
+    font-size: 46px;
+}
+.advantages > .advantages_title2 {
+    font-size: 40px;
+}
+
+@media screen and (max-width: 767px) {
+    .content_container > div {
+        width: 100%;
+    }
+}

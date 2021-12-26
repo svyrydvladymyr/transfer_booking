@@ -1,4 +1,13 @@
-<div class="header">
-    <%- include("social.ejs") %>
+<div class="header headerAdd<%=DATA.permission.pageName %>">
+    <% if (DATA.permission.pageName === 'home') { %>        
+        <%- include("social.ejs") %>
+    <% } %> 
     <%- include("menu.ejs") %>
+    <% if (DATA.permission.pageName === 'advantages') { %>        
+        <p class="header_pages_title1"><%=DATA.langPack.header_pages_title1 %></p>
+        <p class="header_pages_title2"><%=DATA.langPack.header_pages_title2 %></p>
+    <% } %> 
+    <% if (DATA.permission.pageName === 'home') { %>        
+        <%- include("header-form-wrap.ejs") %>
+    <% } %> 
 </div>
