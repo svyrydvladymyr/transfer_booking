@@ -48,7 +48,7 @@ module.exports = (app) => {
                                 renderPage(req, res, 'main', `Token update error: ${error}`); 
                             } else {        
                                 require('./service').addCookies(req, res, tokenId, '');    
-                                res.redirect('/'); 
+                                res.redirect('/person'); 
                             };          
                         });  
                     };

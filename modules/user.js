@@ -90,7 +90,7 @@ const getUser = async (req, res, lang = 'uk-UA', pageName) => {
             if (user.err) { throw new Error(user.err) };
             const {userid, name, surname, ava, email, permission, date_registered} = user[0];
             //permission
-            DATA.permission.permissionRules = permission;
+            DATA.permission.permissionRules = `${permission}`;
             DATA.permission.permissionAuthorization = '1';
             //user
             DATA.user.id = userid;

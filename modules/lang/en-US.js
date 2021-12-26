@@ -12,6 +12,10 @@ module.exports = {
 
     "header_pages_title1" : "Pick the Best Services",
     "header_pages_title2" : "SERVICES",
+    "header_pages_title3" : "View all your bookings",
+    "header_pages_title4" : "PERSONAL OFFICE",
+
+    "autoriz_info" : "You need to log in to enter the office!",
 
     "content_title1" : "Reliable, Low Cost Airport and Railway Station Transfers",
     "content_body1" : "Book a private door-to-door taxi, minivan or a shared shuttle to Bukovel resort from Ivano-Frankivsk, Lviv and other cities",

@@ -6,11 +6,35 @@
 <body>
     <%- include("./parts/header.ejs") %>    
     <div class="main_body">
-       <p>person</p>
-       <div class="user_login">
-            <a href="/google"><img src="img/google.png" alt="google"></a>
-            <a href="/facebook"><img src="img/facebook.png" alt="facebook"></a>
-        </div>
+        <% if (DATA.permission.permissionAuthorization === '0') { %>        
+            <div class="no_user">
+                <p><%=DATA.langPack.autoriz_info %></p>
+                <div>
+                    <a href="/google"><img src="img/google.png" alt="google" title="GOOGLE"></a>
+                    <a href="/facebook"><img src="img/facebook.png" alt="facebook" title="FACEBOOK"></a>
+                </div>
+            </div>
+        <% } %>        
+        <% if (DATA.permission.permissionAuthorization === '1') { %>
+
+
+            <p>autorised </p>
+
+
+            <% if (DATA.permission.permissionRules === '0') { %>        
+
+                <p>autorised USER</p>
+
+            
+            <% } %>           
+            <% if (DATA.permission.permissionRules === '1') { %> 
+
+                <p>autorised ADMIN</p>
+            
+            <% } %>             
+        <% } %> 
+
+
     </div>
     <%- include("./parts/footer.ejs") %>
     <script src="./js/js.js"></script>

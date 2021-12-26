@@ -12,6 +12,10 @@ module.exports = {
 
     "header_pages_title1" : "Виберіть найкращі послуги",
     "header_pages_title2" : "ПОСЛУГИ",
+    "header_pages_title3" : "Переглядайте всі свої бронювання",
+    "header_pages_title4" : "ПЕРСОНАЛЬНИЙ КАБІНЕТ",
+
+    "autoriz_info" : "Для входу в кабінет Вам потрібно авторизуватися!",
 
     "content_title1" : "Надійні та доступні трансфери",
     "content_body1" : "Book a private door-to-door taxi, minivan or a shared shuttle to Bukovel resort from Ivano-Frankivsk, Lviv and other cities",
