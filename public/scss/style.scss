@@ -18,7 +18,7 @@ body {
 }
 .main_body {
   grid-area: main_body;
-  outline: 1px solid red;
+  // outline: 1px solid red;
   width: 100%;
   max-width: 1800px;
   min-height: 100px;
@@ -44,6 +44,32 @@ body {
     }
   }
 }
+
+/*___________________to top_______________________*/
+
+#toTop {
+  display: none;
+  position: fixed;
+  bottom: 20px;
+  right: 25px;
+  z-index: 99;
+  font-size: 18px;
+  border: none;
+  outline: none;
+  background-color: #8bc34a;
+  color: white;
+  cursor: pointer;
+  padding: 8px 15px;
+  font-size: 30px;
+  border-radius: 1px;
+}
+
+#toTop:hover {
+  background-color: #8bc34ac9;
+}
+
+
+
 
 /*___________________header_______________________*/
 
@@ -496,3 +522,146 @@ body {
       font-size: 18px;
     }
 }
+
+.user_wrap {
+  // outline: 1px solid red;
+  margin: 10px;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  flex-direction: column;
+    img {
+      width: 60px; 
+      border-radius: 50%;
+      margin: 10px auto;
+    }
+    p {
+      text-align: center;
+      margin: 10px;
+      font-size: 16px;
+      font-weight: bold;
+    }
+    .exit, .btn, .form_send {
+      cursor: pointer;
+      border-bottom: 2px solid #ee9e07;
+      font-weight: bold;
+      width: max-content;
+      margin: 5px auto;
+      padding: 0px 0px 5px 0px;
+      font-weight: normal;
+      font-size: 14px;
+      &:hover {
+        border-color: red;
+        font-weight: bold;
+      }      
+    }
+    .form_send {
+      margin: 20px 0px;
+    }
+    .slider {
+      // outline: 1px solid red;
+      margin-top: 30px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+        > p {
+          cursor: pointer;
+          width: 100%;
+          max-width: 300px;
+          text-align: center;
+          font-size: 14px;
+          padding: 16px;
+          margin: 0;
+          border-bottom: 2px solid #ee9e07;       
+          transition: 1s;   
+        }
+        .active_sl {
+          max-width: 96%;
+        }
+        .active_sl + div{
+          height: max-content;
+          opacity: 1;
+        }
+        > div {
+          // outline: 1px solid green;
+          width: 100%;
+          height: 0px;
+          opacity: 0;
+          font-size: 12px;
+          display: flex;
+          flex-wrap: wrap;
+          flex-direction: column;
+          align-items: center;
+            i {
+              cursor: pointer;
+              font-size: 26px;
+              margin: 15px 0px 12px 0px;
+            }
+        }
+
+    }
+    .modal_wrap {
+      position: absolute;
+      top: 0;
+      right: 0;
+        .modal_close{
+          cursor: pointer;
+          width: 30px;
+          height: 30px;
+          position: absolute;
+          font-size: 30px;
+          color: var(--fourth-color);
+          right: 10px;
+          top: 10px;
+        }
+        .modal_body{
+          position: fixed;
+          top: 0;
+          left: 0;
+          width: 100%;
+          height: 100%;
+          background: #3b3b3bf0;
+          display: flex;
+          flex-wrap: wrap;
+          justify-content: center;
+          align-items: center;
+          z-index: 999;
+        }
+        .modal_place{
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          border-radius: 3px;
+          background: #fff;
+          width: 97%;
+          max-width: 500px;
+          min-width: 200px;
+          max-height: 97%;
+          min-height: 300px;
+          padding: 30px 10px 10px 10px;
+            #id_town {
+              word-break: break-all;
+            }
+            .form_info {
+              font-size: 11px;
+              color: #9b9b9b;          
+            }
+            input[type=text] {
+              outline: 0;
+              border: 0;
+              border-bottom: 2px solid grey;
+              width: 90%;
+              max-width: 300px;
+              margin: 10px 0px;
+              text-align: center;
+            }
+            input[type=text]::placeholder {
+              color: #a7a7a7;
+            }
+        }
+    }
+      
+}
+
+
+

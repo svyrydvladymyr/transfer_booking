@@ -16,27 +16,44 @@
             </div>
         <% } %>        
         <% if (DATA.permission.permissionAuthorization === '1') { %>
-
-
-            <p>autorised </p>
-
-
-            <% if (DATA.permission.permissionRules === '0') { %>        
-
-                <p>autorised USER</p>
-
+            <div class="user_wrap">
+                <img src="<%=DATA.user.ava %>">
+                <p><%=DATA.user.surname %> <%=DATA.user.name %></p>
+                <p onclick="exit()" class="exit"><%=DATA.langPack.exit %></p>
+                <% if (DATA.permission.permissionRules === '1') { %> 
+                    <div class="modal_wrap"></div>                
+                <% } %>                 
             
-            <% } %>           
-            <% if (DATA.permission.permissionRules === '1') { %> 
+                <% if (DATA.permission.permissionRules === '0') { %>        
 
-                <p>autorised ADMIN</p>
-            
-            <% } %>             
+                    <p>autorised USER</p>
+                
+                <% } %>           
+                <% if (DATA.permission.permissionRules === '1') { %> 
+                    <div class="slider">
+                        <p onclick="slider(this)">МІСТА</p>
+                        <div>
+                            <i class='far fa-plus-square' onclick="showModal('town')"></i>
+                            <div class="tawns_list">
+
+                            </div>
+                        </div>
+                        <p onclick="slider(this)">МАРШРУТИ</p>
+                        <div>
+                            <i class='far fa-plus-square' onclick="showModal('trip')"></i>
+                            <p>gggggg</p>
+                            <p>gggggg</p>
+                            <p>gggggg</p>
+                        </div>
+                    </div>                
+                <% } %>   
+            </div> 
         <% } %> 
 
 
     </div>
     <%- include("./parts/footer.ejs") %>
+    <script src="./js/data.js"></script>
     <script src="./js/js.js"></script>
     <script src='./js/icon.js'></script>
 </body>

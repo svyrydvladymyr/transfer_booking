@@ -94,6 +94,7 @@ const getUser = async (req, res, lang = 'uk-UA', pageName) => {
             DATA.permission.permissionAuthorization = '1';
             //user
             DATA.user.id = userid;
+            DATA.user.ava = ava;
             DATA.user.name = name;
             DATA.user.surname = surname;
             DATA.user.lang = lang;
