@@ -28,6 +28,10 @@ const DATA = {
         lang : 'uk-UA',
         date_registered : ''
     },
+    person : {
+        townArr : '',
+        routeArr : ''
+    },
     langPack : require('./lang/uk-UA')
 };
 
@@ -46,6 +50,8 @@ const clearDATA = () => {
     DATA.permission.permissionAuthorization = 0; 
     DATA.permission.permissionRules = 0; 
     DATA.permission.pageName = ''; 
+    DATA.person.townArr = '';
+    DATA.person.routeArr = '';
     DATA.errors.errMessage = '';
     DATA.errors.SERVER_ERROR = '';
     DATA.langPack = require('./lang/uk-UA');
@@ -105,6 +111,10 @@ const getUser = async (req, res, lang = 'uk-UA', pageName) => {
                 DATA.user.email = email;
                 DATA.user.date_registered = readyFullDate(date_registered, 'reverse');
                 DATA.menu.home = 'active_menu'
+                if (permission === 1) {
+                    DATA.person.townArr = ``;
+                    DATA.person.routeArr = ``;
+                };                
             };
         })   
 

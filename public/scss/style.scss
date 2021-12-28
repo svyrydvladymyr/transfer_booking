@@ -560,7 +560,8 @@ body {
     }
     .slider {
       // outline: 1px solid red;
-      margin-top: 30px;
+      margin-top: 80px;
+      margin-bottom: 50px;
       display: flex;
       flex-direction: column;
       align-items: center;
@@ -645,6 +646,12 @@ body {
             .form_info {
               font-size: 11px;
               color: #9b9b9b;          
+            }
+            .town_empty_ua, .town_empty_en, .town_empty_ru {
+              display: none;
+              color: red;
+              font-size: 11px;
+              margin: 0px 0px 10px 0px;
             }
             input[type=text] {
               outline: 0;

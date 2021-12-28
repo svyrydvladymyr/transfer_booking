@@ -4,9 +4,11 @@ module.exports = {
     "blog" : "Новини",
     "contacts" : "Контакти",
     "adress" : "76006, Івано-Франківськ, Україна",
+    
     "header_info_title" : "Трансфер для тих, хто цінує свій час і  комфорт!",
     "header_info_body" : "Transfer Booking – сервіс для бронювання трансферів з Івано-Франківська (Львова, Тернополя) до гірськолижних та інших курортів Карпат і всього Західного регіону України. Ми пропонуємо найбільш доступний, зручний і безпечний спосіб дістатися до курорту Буковель та у зворотньому напрямку. У нас Ви можете замовити персональний мінівен з водієм, груповий трансфер мікроавтобусом чи пасажирський автобус для великої компанії. За 15 років на ринку перевезень ми здійснили тисячі поїздок в межах України та за кордон. Вибираючи наш сервіс будьте впевнені в тому, що ви співпрацюєте з професіоналами своєї справи, у нас лише досвідчені водії, комфортні транспортні засоби, приємне та якісне обслуговування.",
     "header_info_readmore" : "Читати більше",
+
     "header_tab_booking" : "Бронювання",
     "header_tab_person" : "Персональний кабінет",
 
@@ -18,7 +20,6 @@ module.exports = {
     "autoriz_info" : "Для входу в кабінет Вам потрібно авторизуватися!",
     "exit" : "Вийти з акаунта",
 
-
     "content_title1" : "Надійні та доступні трансфери",
     "content_body1" : "Book a private door-to-door taxi, minivan or a shared shuttle to Bukovel resort from Ivano-Frankivsk, Lviv and other cities",
     "content_title2" : "Безкоштовний час очікування",
@@ -27,6 +28,7 @@ module.exports = {
     "content_body3" : "Have place of mind knowing that all our drivers are experienced, licensed and insured",
     "content_title4" : "Фіксована ціна за системою 'Все включено'",
     "content_body4" : "There are no hidden surprises with us. Your affordable all inclusive rate includes all taxes, tolls and fees",
+
     "advantages_title1" : "Wide Range of Quality Safe & Licensed Vehicles",
     "advantages_body1" : "We have a wide fleet of reliable and licensed vehicles that provide safe airport/railway transfer",
     "advantages_title2" : "10+ years of experience in passenger transportation",
