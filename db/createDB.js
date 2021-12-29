@@ -16,10 +16,10 @@ const users = () => {
 
 const points = () => {
     const sql = `CREATE TABLE points (id INT AUTO_INCREMENT PRIMARY KEY,
-        town_id INT NOT NULL,
-        name_ua VARCHAR(50) NOT NULL,    
-        name_en VARCHAR(50) NOT NULL,    
-        name_ru VARCHAR(50) NOT NULL         
+        town_id VARCHAR(75) NOT NULL UNIQUE,
+        name_ua VARCHAR(55) NOT NULL UNIQUE,    
+        name_en VARCHAR(55) NOT NULL UNIQUE,    
+        name_ru VARCHAR(55) NOT NULL UNIQUE        
         )`; 
     con.query(sql, function (err, result) {if (err) throw err; console.log("Table points created")});
 };

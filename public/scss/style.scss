@@ -653,6 +653,12 @@ body {
               font-size: 11px;
               margin: 0px 0px 10px 0px;
             }
+            .town_dup_ua, .town_dup_en, .town_dup_ru {
+              display: none;
+              color: red;
+              font-size: 11px;
+              margin: 0px 0px 10px 0px;
+            }
             input[type=text] {
               outline: 0;
               border: 0;

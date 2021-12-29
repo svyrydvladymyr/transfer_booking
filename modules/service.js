@@ -82,7 +82,7 @@ const accessLog = (req, res, next) => {
 const checOnTrueVal = (el) => el.replace(new RegExp("[^a-zA-Zа-яА-Я0-9-()_+=.'\":/\,іІїЇєЄ /\n]", "gi"), '');
 
 //get table record
-const getTableRecord = (sql) => {
+const tableRecord = (sql) => {
     return new Promise((resolve) => { 
         con.query(sql, function (err, result) { 
             err ? resolve({'err': err}) : resolve(result) 
@@ -92,7 +92,7 @@ const getTableRecord = (sql) => {
 
 //check the authenticity of the authorization
 const autorisationCheck = async (req, res) => {
-    return await getTableRecord(`SELECT userid FROM users WHERE token = '${clienttoken(req, res)}'`)
+    return await tableRecord(`SELECT userid FROM users WHERE token = '${clienttoken(req, res)}'`)
     .then((user) => { 
         return (user.err || user == '') ? false : user[0]; 
     });
@@ -113,7 +113,7 @@ module.exports = {
     readyFullDate,
     checOnTrueVal,
     accessLog,
-    getTableRecord,
+    tableRecord,
     validEmail,
     autorisationCheck,
     logOut

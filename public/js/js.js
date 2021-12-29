@@ -207,12 +207,13 @@ const validationInput = (el) => {
     const val = `${el.value.replace(RegExpInput , "")}`;
     el.value = val;
     $_(`.town_empty_${el.id}`)[0].style.display = 'none'
+    $_(`.town_dup_${el.id}`)[0].style.display = 'none'
 
 };
 
 //add to DB
 const formSend = (formID) => {
-    let obj = {}, trueSend = true;
+    let obj = {}, trueSend = true, townNames = {};
     if (formID === 'townAdd') {
         const id_town = $_('#townAdd > #id_town')[0].innerHTML;
         const ua_town = $_('#townAdd > #ua')[0].value.replace(RegExpInput , "");
@@ -226,13 +227,26 @@ const formSend = (formID) => {
             };
         });
     };
-    // console.log('obj', obj);
-    // console.log('trueSend', trueSend);
     if (trueSend) {
         send(obj , `/${formID.toLowerCase()}`, (result) => {
+            const resultat = JSON.parse(result);
+            console.log(resultat);    
+            if (resultat.res) {
+                console.log('res');
 
-            console.log('res', JSON.parse(result));    
-    
+
+            }
+            if (resultat.DUP) {
+                // console.log('DUP');
+                // console.log(resultat.DUP);      
+                for (const key in obj) {
+                    if (Object.hasOwnProperty.call(obj, key)) {
+                        if (obj[key] === resultat.DUP) {
+                            $_(`.town_dup_${key}`)[0].style.display = 'block'; 
+                        };                       
+                    };
+                };
+            };    
         });
     };
 };

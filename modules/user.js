@@ -1,5 +1,5 @@
 const con = require('../db/connectToDB').con;
-const {log, getTableRecord, autorisationCheck, readyFullDate} = require('./service');
+const {log, tableRecord, autorisationCheck, readyFullDate} = require('./service');
 const {langList} = require('../config/config_variables');
 const moment = require('moment');
 
@@ -91,7 +91,7 @@ const getUser = async (req, res, lang = 'uk-UA', pageName) => {
         // console.log('userid', userid);
 
         if (userid === false) { throw new Error('error-autorisation') };
-        await getTableRecord(`SELECT * FROM users WHERE userid = '${userid.userid}'`)
+        await tableRecord(`SELECT * FROM users WHERE userid = '${userid.userid}'`)
         .then((user) => {
             if (user.err) { throw new Error(user.err) };
             const {userid, name, surname, ava, email, permission, date_registered} = user[0];

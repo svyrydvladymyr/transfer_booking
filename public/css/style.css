@@ -632,6 +632,12 @@ body {
   font-size: 11px;
   margin: 0px 0px 10px 0px;
 }
+.user_wrap .modal_wrap .modal_place .town_dup_ua, .user_wrap .modal_wrap .modal_place .town_dup_en, .user_wrap .modal_wrap .modal_place .town_dup_ru {
+  display: none;
+  color: red;
+  font-size: 11px;
+  margin: 0px 0px 10px 0px;
+}
 .user_wrap .modal_wrap .modal_place input[type=text] {
   outline: 0;
   border: 0;
