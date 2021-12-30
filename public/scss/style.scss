@@ -548,7 +548,7 @@ body {
       width: max-content;
       margin: 5px auto;
       padding: 0px 0px 5px 0px;
-      font-weight: normal;
+      font-weight: bold;
       font-size: 14px;
       &:hover {
         border-color: red;
@@ -558,46 +558,86 @@ body {
     .form_send {
       margin: 20px 0px;
     }
-    .slider {
+    .tab_person {
       // outline: 1px solid red;
       margin-top: 80px;
       margin-bottom: 50px;
       display: flex;
       flex-direction: column;
       align-items: center;
-        > p {
-          cursor: pointer;
+        .tab_active {
+          background: rgb(231, 231, 231)!important;
+        }
+        .body_active {
+          display: flex!important;
+        }
+        .tabs {
           width: 100%;
-          max-width: 300px;
-          text-align: center;
-          font-size: 14px;
-          padding: 16px;
-          margin: 0;
-          border-bottom: 2px solid #ee9e07;       
-          transition: 1s;   
+          display: flex;
+          flex-wrap: wrap;
+          justify-content: center;
+            .tab {
+              cursor: pointer;
+              width: 22%;
+              padding: 8px 15px;
+              margin: 0px 10px;
+              border-bottom: 2px solid #ee9e07;
+              &:hover {
+                background: rgb(250, 250, 250);
+              }
+            }
         }
-        .active_sl {
-          max-width: 96%;
-        }
-        .active_sl + div{
-          height: max-content;
-          opacity: 1;
-        }
-        > div {
-          // outline: 1px solid green;
+        .tab_bodys {
           width: 100%;
-          height: 0px;
-          opacity: 0;
-          font-size: 12px;
           display: flex;
           flex-wrap: wrap;
           flex-direction: column;
           align-items: center;
+            .body {
+              // outline: 1px solid red;
+              width: 100%;
+              display: none;
+              flex-wrap: wrap;
+              flex-direction: column;
+              align-items: center;
+            }
             i {
               cursor: pointer;
               font-size: 26px;
-              margin: 15px 0px 12px 0px;
+              margin: 35px 0px 15px 0px;
             }
+        }
+        .tawns_list {
+          // outline: 1px solid red;
+          width: max-content;
+          display: flex;
+          flex-wrap: wrap;
+          flex-direction: column;
+          align-items: center;
+          padding: 15px 5px;
+            .town {
+              // outline: 1px solid green;
+              width: 100%;
+              padding: 10px 30px;
+              border-bottom: 1px solid #d9d9d9;
+                p {
+                  font-size: 14px;
+                  margin: 0px;
+                  display: flex;
+                  justify-content: right;
+                    span {
+                      // outline: 1px solid yellow;
+                      margin-left: 20px;
+                        i {
+                          cursor: pointer;
+                          font-size: 12px;
+                          margin: 0px 3px;
+                          color: #5a5a5a;
+                        }
+                    }
+                }
+            }
+
         }
 
     }
@@ -634,12 +674,16 @@ body {
           align-items: center;
           border-radius: 3px;
           background: #fff;
-          width: 97%;
+          width: 99%;
           max-width: 500px;
           min-width: 200px;
-          max-height: 97%;
-          min-height: 300px;
+          max-height: 99%;
+          overflow-y: auto;
           padding: 30px 10px 10px 10px;
+            .del_info {
+              margin: 5px 20px;
+              font-size: 14px;
+            }
             #id_town {
               word-break: break-all;
             }
@@ -658,6 +702,10 @@ body {
               color: red;
               font-size: 11px;
               margin: 0px 0px 10px 0px;
+            }
+            .res_mess {
+              font-size: 14px;
+              color: rgb(104, 143, 25);
             }
             input[type=text] {
               outline: 0;

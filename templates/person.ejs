@@ -30,18 +30,30 @@
                 
                 <% } %>           
                 <% if (DATA.permission.permissionRules === '1') { %> 
-                    <div class="slider">
-                        <p onclick="slider(this)">МІСТА</p>
-                        <div>
-                            <i class='far fa-plus-square' onclick="showModal('townAdd')"></i>
-                            <div class="tawns_list"></div>
+                    <div class="tab_person">
+                        <div class="tabs">
+                            <p class="tab tab_active" onclick="tabs(0)">Бронювання</p>
+                            <p class="tab" onclick="tabs(1)">Повідомлення</p>
+                            <p class="tab" onclick="tabs(2)">Міста</p>
+                            <p class="tab" onclick="tabs(3)">Маршрути</p>
                         </div>
-                        <p onclick="slider(this)">МАРШРУТИ</p>
-                        <div>
-                            <i class='far fa-plus-square' onclick="showModal('trip')"></i>
-                            <p>gggggg</p>
-                            <p>gggggg</p>
-                            <p>gggggg</p>
+                        <div class="tab_bodys">
+                            <div class="body body_active">
+
+                            </div>
+                            <div class="body">
+
+                            </div>
+                            <div class="body">
+                                <i class='far fa-plus-square' onclick="showModal('townAdd')"></i>
+                                <div class="tawns_list"></div>
+                            </div>
+                            <div class="body">
+                                <i class='far fa-plus-square' onclick="showModal('trip')"></i>
+                                <p>gggggg</p>
+                                <p>gggggg</p>
+                                <p>gggggg</p>
+                            </div>
                         </div>
                     </div>                
                 <% } %>   
@@ -54,4 +66,11 @@
     <script src="./js/data.js"></script>
     <script src="./js/js.js"></script>
     <script src='./js/icon.js'></script>
+    <% if (DATA.permission.permissionAuthorization === '1') { %>
+        <% if (DATA.permission.permissionRules === '1') { %> 
+            <script>
+                loadTownsList();  
+            </script>                      
+        <% } %>   
+    <% } %> 
 </body>

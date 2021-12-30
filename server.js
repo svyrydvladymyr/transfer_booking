@@ -12,7 +12,7 @@ const DB = require('./db/createDB');
 
 const {log, accessLog, logOut} = require('./modules/service');
 const renderPage = require('./modules/renderPage');
-const {townadd} = require('./modules/requestsDB');
+const {townadd, townlist} = require('./modules/requestsDB');
 
 
 
@@ -35,6 +35,9 @@ app.use((req, res, next) => {accessLog(req, res, next)});
 
 //requests
 app.use('/townadd', (req, res) => {townadd(req, res)});
+app.use('/townedit', (req, res) => {townadd(req, res)});
+app.use('/towndel', (req, res) => {townadd(req, res)});
+app.use('/townlist', (req, res) => {townlist(req, res)});
 // app.use('/search-word', (req, res) => {searchWord(req, res)});
 
 

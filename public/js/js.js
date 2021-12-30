@@ -177,24 +177,23 @@ const closeModal = (el) => {
     });
     if (valClose) { modal.innerHTML = '' }; 
 }; 
-const showModal = function(type){
+const showModal = function(type, obj){
     modal.innerHTML = template[type];    
-
+    console.log('obj', obj);
 
     if (type === 'townAdd') {
         idTownPlace = $_('#id_town')[0];
         tokenTown = generate_token(6);
-    }
+    };
     if (type === 'townEdit') {
-        idTownPlace = $_('#id_town')[0];
-       
-    }
+        $_(`#${type} > #id_town`)[0].innerHTML = obj.id;
+        $_(`#${type} > #ua`)[0].value = obj.ua;
+        $_(`#${type} > #en`)[0].value = obj.en;
+        $_(`#${type} > #ru`)[0].value = obj.ru; 
+    };
     if (type === 'townDel') {
-        idTownPlace = $_('#id_town')[0];
-       
-    }
-
-    
+        $_(`#${type} > #id_town`)[0].innerHTML = obj.id;       
+    };    
 };
 
 //creating town id
@@ -206,35 +205,67 @@ const creatingIdTown = (el) => {
 const validationInput = (el) => {
     const val = `${el.value.replace(RegExpInput , "")}`;
     el.value = val;
-    $_(`.town_empty_${el.id}`)[0].style.display = 'none'
-    $_(`.town_dup_${el.id}`)[0].style.display = 'none'
+    $_(`.town_empty_${el.id}`)[0].style.display = 'none';
+    $_(`.town_dup_${el.id}`)[0].style.display = 'none';
+};
 
+
+
+
+//load towns list
+const loadTownsList = () => {
+    send({} , `/townlist`, (result) => {
+        const resultat = JSON.parse(result);
+        // console.log(resultat);    
+        if (resultat.res) {
+            // console.log('res', resultat.res);
+            const tawns_list = $_('.tawns_list')[0];
+            // console.log('tawns_list', tawns_list);
+            tawns_list.innerHTML = '';
+            resultat.res.forEach(element => {        
+                // console.log('element', element);        
+                tawns_list.innerHTML += `
+                <div class="town"><p>${element.name_ua}
+                    <span>
+                        <i class='fas fa-edit' onclick="showModal('townEdit', {'id' : '${element.town_id}', 'ua' : '${element.name_ua}', 'en' : '${element.name_en}', 'ru' : '${element.name_ru}'})"></i>
+                        <i class='fas fa-trash-alt' onclick="showModal('townDel', {'id' : '${element.town_id}'})"></i>
+                    </span>
+                </p></div>`
+            });
+        };
+    });
 };
 
 //add to DB
 const formSend = (formID) => {
-    let obj = {}, trueSend = true, townNames = {};
-    if (formID === 'townAdd') {
-        const id_town = $_('#townAdd > #id_town')[0].innerHTML;
-        const ua_town = $_('#townAdd > #ua')[0].value.replace(RegExpInput , "");
-        const en_town = $_('#townAdd > #en')[0].value.replace(RegExpInput , "");
-        const ru_town = $_('#townAdd > #ru')[0].value.replace(RegExpInput , "");
-        obj = {"id" : id_town, "ua" : ua_town, "en" : en_town, "ru" : ru_town };
+    let obj = {}, trueSend = true;
+    if ((formID === 'townAdd') || (formID === 'townEdit')) {
+        const id_town = $_(`#${formID} > #id_town`)[0].innerHTML;
+        const ua_town = $_(`#${formID} > #ua`)[0].value.replace(RegExpInput , "");
+        const en_town = $_(`#${formID} > #en`)[0].value.replace(RegExpInput , "");
+        const ru_town = $_(`#${formID} > #ru`)[0].value.replace(RegExpInput , "");
+        obj = {"id" : id_town, "ua" : ua_town, "en" : en_town, "ru" : ru_town, "param" : formID};
         ["ua", "en", "ru"].forEach(element => {  
-            if ($_(`#townAdd > #${element}`)[0].value === '') {
+            if ($_(`#${formID} > #${element}`)[0].value === '') {
                 $_(`.town_empty_${element}`)[0].style.display = 'block'; 
                 trueSend = false;
             };
         });
     };
+    if (formID === 'townDel') {
+        const id_town = $_(`#${formID} > #id_town`)[0].innerHTML;
+        obj = {"id" : id_town, "param" : formID};
+    }
     if (trueSend) {
         send(obj , `/${formID.toLowerCase()}`, (result) => {
             const resultat = JSON.parse(result);
-            console.log(resultat);    
+            // console.log(resultat);    
             if (resultat.res) {
-                console.log('res');
-
-
+                // console.log('res', resultat.res);
+                showModal(`${formID}Res`);
+                $_('#id_town')[0].innerHTML = obj.id;
+                setTimeout(() => { modal.innerHTML = '' }, 3000);
+                loadTownsList();
             }
             if (resultat.DUP) {
                 // console.log('DUP');
