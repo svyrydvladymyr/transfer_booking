@@ -32,6 +32,19 @@
     margin: 0px 0px 0px 12px;
 }
 
+.options_container .options_wrap .blok div:first-child {
+    width: 100%;
+    max-width: 400px;
+    border-radius: 5px 5px 0px 0px;
+    border-right: 0px solid #d9d9d9;
+}
+
+.options_container .options_wrap .blok div:last-child {
+    width: 100%;
+    max-width: 400px;
+    border-radius: 0px 9px 5px 5px;
+}
+
 @media screen and (max-width: 767px) {
     .content_container > div {
         width: 100%;

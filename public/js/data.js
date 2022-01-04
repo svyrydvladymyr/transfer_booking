@@ -84,6 +84,43 @@ template = {
             <p class="form_info">Унікальний номер міста</p>            
             <p class="res_mess">Місто видалено із списку!</p>
         </div>        
-    </div>`
+    </div>`,
+    transferAdd:
+    `<div class="modal_body" onclick="closeModal(event)">
+        <div class="modal_close">
+            <i class='fa fa-times'></i>
+        </div>
+        <div class="modal_place" id="transferAdd">
+            <input type="text" id="ua" name="ua" maxlength="50" placeholder="Назва українською" oninput="validationInput(this)">
+            <p class="town_dup_ua">Така назва вже є в базі!</p>
+            <p class="town_empty_ua">Не може бути пустим!</p>
+            <input type="text" id="en" name="en" maxlength="50" placeholder="Name in English" oninput="validationInput(this)">
+            <p class="town_dup_en">Така назва вже є в базі!</p>
+            <p class="town_empty_en">Не може бути пустим!</p>
+
+            <div> 
+                <p>Груповий</p>
+                <input type="number" id="gr" name="gr" maxlength="10" placeholder="Ціна за груповий" oninput="validationInput(this)">
+            </div>
+            <div> 
+                <p>Приватний</p>
+                <input type="number" id="pr" name="pr" maxlength="10" placeholder="Ціна за приватний" oninput="validationInput(this)">
+            </div>
+            
+            <p class="town_dup_ru">Така назва вже є в базі!</p>
+            <p class="town_empty_ru">Не може бути пустим!</p>
+            <p class="form_send" onclick="formSendTransfer('transferAdd')">Добавити в базу</p>
+        </div>        
+    </div>`,
+    transferAddRes:
+    ``,
+    transferEdit:
+    ``,
+    transferEditRes:
+    ``,
+    transferDel:
+    ``,
+    transferDelRes:
+    ``
 };   
 

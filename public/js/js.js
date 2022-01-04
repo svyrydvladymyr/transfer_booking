@@ -152,6 +152,43 @@ window.onscroll = function() {
     }; 
 };
 
+
+if ($_('.options_container')[0]) { 
+    const options = () => {
+        let item = 3
+        if (body.offsetWidth > 768 && body.offsetWidth < 1100) { item = 2 }; 
+        if (body.offsetWidth <= 768) { item = 1 }; 
+        const wrapSize = $_('.options_container')[0].offsetWidth;
+        $_('.options_wrap > .blok').forEach(element => { element.style.width = `${wrapSize / item}px` });
+    }
+    options();
+    window.addEventListener('resize', options, true);
+    const options_left = () => {
+        const wrap = $_('.options_wrap')[0];
+        const boxW = wrap.children[0].offsetWidth;
+        const firstChild = wrap.children[0];        
+        wrap.insertBefore(firstChild, wrap.firstChild);
+        wrap.style.cssText  = `transition:.2s;transform:translateX(${-boxW}px)`;
+        setTimeout(() => {
+            wrap.style.cssText  = `transition:0s;transform:translateX(0px)`;
+            wrap.appendChild(firstChild);
+        }, 100);
+    };
+    const options_right = () => {
+        const wrap = $_('.options_wrap')[0];
+        const boxW = wrap.children[0].offsetWidth;
+        const lastChild = wrap.children[wrap.children.length - 1];  
+        wrap.appendChild(lastChild);
+        wrap.style.cssText  = `transition:.2s;transform:translateX(${+boxW}px)`;
+        setTimeout(() => {
+            wrap.style.cssText  = `transition:0s;transform:translateX(0px)`;
+            wrap.insertBefore(lastChild, wrap.firstChild);            
+        }, 100);
+    };
+    $_('.arrow_left')[0].addEventListener('click', options_left, true);
+    $_('.arrow_right')[0].addEventListener('click', options_right, true);
+}
+
 //to change the tab
 const tabs = (tab) => {
     const tabs = $_('.tabs > p');
@@ -185,15 +222,24 @@ const showModal = function(type, obj){
         idTownPlace = $_('#id_town')[0];
         tokenTown = generate_token(6);
     };
+    if (type === 'transferAdd') {
+
+    };
     if (type === 'townEdit') {
         $_(`#${type} > #id_town`)[0].innerHTML = obj.id;
         $_(`#${type} > #ua`)[0].value = obj.ua;
         $_(`#${type} > #en`)[0].value = obj.en;
         $_(`#${type} > #ru`)[0].value = obj.ru; 
     };
+    if (type === 'transferEdit') {
+
+    };
     if (type === 'townDel') {
         $_(`#${type} > #id_town`)[0].innerHTML = obj.id;       
-    };    
+    };   
+    if (type === 'transferDel') {
+
+    }; 
 };
 
 //creating town id
@@ -236,7 +282,37 @@ const loadTownsList = () => {
     });
 };
 
-//add to DB
+//load transferі list
+const loadTransfersList = () => {
+    send({} , `/transferlist`, (result) => {
+        const resultat = JSON.parse(result);
+        // console.log(resultat);    
+        if (resultat.res) {
+            // console.log('res', resultat.res);
+            const transfers_list = $_('.transfers_list')[0];
+            // console.log('tawns_list', tawns_list);
+            transfers_list.innerHTML = '';
+            resultat.res.forEach(element => {        
+                // console.log('element', element);        
+                transfers_list.innerHTML += `
+                <div class="transfer"><p>${element.from} - ${element.to}
+                    <span>
+                        <i class='fas fa-edit' onclick="showModal('transferEdit', 
+                            {'id' : '${element.transfer_id}', 
+                            'from' : '${element.from}', 
+                            'to' : '${element.to}', 
+                            'pricepr' : '${element.price_pr}', 
+                            'pricegr' : '${element.price_gr}'})">
+                        </i>
+                        <i class='fas fa-trash-alt' onclick="showModal('transferDel', {'id' : '${element.transfer_id}'})"></i>
+                    </span>
+                </p></div>`
+            });
+        };
+    });
+};
+
+//add to DB Towns
 const formSend = (formID) => {
     let obj = {}, trueSend = true;
     if ((formID === 'townAdd') || (formID === 'townEdit')) {
@@ -278,6 +354,41 @@ const formSend = (formID) => {
                     };
                 };
             };    
+        });
+    };
+};
+
+//add to DB Towns
+const formSendTransfer = (formID) => {
+    let obj = {}, trueSend = true;
+    if ((formID === 'townAdd') || (formID === 'townEdit')) {
+        const id_town = $_(`#${formID} > #id_town`)[0].innerHTML;
+        const ua_town = $_(`#${formID} > #ua`)[0].value.replace(RegExpInput , "");
+        const en_town = $_(`#${formID} > #en`)[0].value.replace(RegExpInput , "");
+        const ru_town = $_(`#${formID} > #ru`)[0].value.replace(RegExpInput , "");
+        obj = {"id" : id_town, "ua" : ua_town, "en" : en_town, "ru" : ru_town, "param" : formID};
+        ["ua", "en", "ru"].forEach(element => {  
+            if ($_(`#${formID} > #${element}`)[0].value === '') {
+                $_(`.town_empty_${element}`)[0].style.display = 'block'; 
+                trueSend = false;
+            };
+        });
+    };
+    if (formID === 'townDel') {
+        const id_town = $_(`#${formID} > #id_town`)[0].innerHTML;
+        obj = {"id" : id_town, "param" : formID};
+    }
+    if (trueSend) {
+        send(obj , `/${formID.toLowerCase()}`, (result) => {
+            const resultat = JSON.parse(result);
+            // console.log(resultat);    
+            if (resultat.res) {
+                // console.log('res', resultat.res);
+                showModal(`${formID}Res`);
+                $_('#id_town')[0].innerHTML = obj.id;
+                setTimeout(() => { modal.innerHTML = '' }, 3000);
+                loadTownsList();
+            };   
         });
     };
 };

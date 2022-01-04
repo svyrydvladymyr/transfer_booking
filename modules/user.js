@@ -16,7 +16,7 @@ const DATA = {
     menu : {
         home : '',
         about : '',
-        blog : '',
+        transfer : '',
         contacts : '',
     },
     user : {
@@ -45,7 +45,7 @@ const clearDATA = () => {
     DATA.user.date_registered = '';
     DATA.menu.home = '',
     DATA.menu.about = '',
-    DATA.menu.blog = '',
+    DATA.menu.transfer = '',
     DATA.menu.contacts = '',
     DATA.permission.permissionAuthorization = 0; 
     DATA.permission.permissionRules = 0; 

@@ -49,10 +49,8 @@
                                 <div class="tawns_list"></div>
                             </div>
                             <div class="body">
-                                <i class='far fa-plus-square' onclick="showModal('trip')"></i>
-                                <p>gggggg</p>
-                                <p>gggggg</p>
-                                <p>gggggg</p>
+                                <i class='far fa-plus-square' onclick="showModal('transferAdd')"></i>
+                                <div class="transfers_list"></div>
                             </div>
                         </div>
                     </div>                
@@ -70,6 +68,7 @@
         <% if (DATA.permission.permissionRules === '1') { %> 
             <script>
                 loadTownsList();  
+                loadTransfersList();  
             </script>                      
         <% } %>   
     <% } %> 

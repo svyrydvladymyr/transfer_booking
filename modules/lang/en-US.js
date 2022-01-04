@@ -1,7 +1,7 @@
 module.exports = {
     "home" : "Home",
     "about" : "About",
-    "blog" : "Blog",
+    "transfer" : "Transfers",
     "contacts" : "Contacts",
     "adress" : "76006, Ivano-Frankivsk, Ukraine",
 
@@ -38,5 +38,21 @@ module.exports = {
     "advantages_title4" : "24/7 Customer Support Helpline",
     "advantages_body4" : "We are always ready to help you with any questions concerning our shuttle services",
     "advantages_main_title1" : "Why Book Your Transfer with Us",
-    "advantages_main_title2" : "Our Advantages"
+    "advantages_main_title2" : "Our Advantages",
+
+    "option_main_title" : "Your Transfer Options",
+    "option_title1" : "Private Transfers",
+    "option_title2" : "Professional Drivers",
+    "option_title3" : "Minibus Transfers",
+    "option_title4" : "Affordable Price",
+    "option_title5" : "Bus Transfers",
+    "option_title6" : "Universal Service",
+    "option_from" : "from",
+    "option_grn" : "UAN",
+
+    "option_pr1" : "Ivano-Frankivsk – Bukovel",
+    "option_pr2" : "Lviv – Bukovel",
+    "option_pr3" : "Ivano-Frankivsk – Yasinya (Dragobrat)",
+    "option_bus" : "Special prices for large groups"
+
 }

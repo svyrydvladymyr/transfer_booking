@@ -92,7 +92,8 @@ body {
 .tabs_wrap,
 .tabs,
 .bodys,
-.content_container
+.content_container,
+.options_container
 {
   display: flex;
   flex-wrap: wrap;
@@ -399,7 +400,7 @@ body {
   justify-content: space-between;
   align-items: stretch;
   margin: 0px auto;
-  padding: 60px 0px 90px 0px;
+  padding: 60px 0px 70px 0px;
    > div {
     // outline: 1px solid red;
     display: flex;
@@ -440,6 +441,122 @@ body {
    }
 }
 
+/*_____________________options________________________*/
+.options_container_wrap {
+  display: flex;
+  justify-content: center;
+  background: #efede8;
+}
+.options_container {
+  // outline: 1px solid red;
+  width: 100%;
+  max-width: 1800px;
+  height: max-content;
+  padding: 90px 0px;
+  justify-content: flex-start;
+  overflow: hidden;
+  .options_wrap {
+    display: flex;
+    flex-wrap: nowrap;
+    justify-content: space-between;
+    // outline: 1px solid green;
+    height: max-content;    
+    .blok {
+      // outline: 1px solid red;
+      min-height: 200px;
+      padding: 0px 20px;
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      div:first-child {
+        // outline: 1px solid yellow;
+        width: 50%;
+        max-width: 300px;
+        background: #fff;
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        padding: 5px;
+        border-radius: 5px 0px 0px 5px;
+        border-right: 1px solid #d9d9d9;
+        img {
+          width: 100%;
+        }
+      }
+      div:last-child {
+        width: 50%;
+        max-width: 300px;
+        background: #fff;
+        color: #3e3f40;
+        padding: 20px;
+        border-radius: 0px 5px 5px 0px;
+        h5 {
+          width: 100%;
+          font-size: 24px;
+          margin: 8px 0px;
+        }
+        h6 {
+          width: 100%;
+          font-size: 15px;
+          font-weight: normal;
+          font-style: italic;
+          color: #808080;
+          margin: 8px 0px 40px 0px;
+        }
+        p {
+          margin: 15px 0px 4px 0px;
+          color: #6ba917;
+          font-size: 16px;
+          i {
+            font-size: 13px;
+            margin: 0px 10px 0px 0px;
+            color: #ee9e07
+          }
+        }
+        .price {
+          margin: 0px;
+          color: #3e3f40;
+          font-size: 15px;
+          padding: 0px 0px 6px 0px;
+          border-bottom: 1px solid #e1e1e1;
+          span:first-child {
+            font-size: 11px;
+            margin: 0px 4px 0px 0px;
+          }
+          span:last-child {
+            margin: 0px 0px 0px 4px;            
+          }
+        }
+      }
+    }
+  }
+  .arrow_wrap {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    // outline: 1px solid green;
+    width: 100%;
+    margin-top: 80px;
+    p {
+      cursor: pointer;
+      width: 40px;
+      height: 40px;
+      border: 1px solid #6ba917;
+      text-align: center;
+      font-size: 18px;
+      color: #6ba917;
+      margin: 0px 5px;
+      padding: 9px;
+      transition: .3s;
+      &:hover {
+        background : #6ba917;
+        color: #fff;
+      }
+    }
+  }
+}
+
+/*_____________________advantages________________________*/
 .advantages {
   .line {
     width: 100%;
@@ -615,7 +732,7 @@ body {
           flex-direction: column;
           align-items: center;
           padding: 15px 5px;
-            .town {
+            .town, .transfer {
               // outline: 1px solid green;
               width: 100%;
               padding: 10px 30px;
@@ -667,7 +784,7 @@ body {
           justify-content: center;
           align-items: center;
           z-index: 999;
-        }
+        }        
         .modal_place{
           display: flex;
           flex-direction: column;
@@ -715,6 +832,31 @@ body {
               max-width: 300px;
               margin: 10px 0px;
               text-align: center;
+            }
+            div {
+              width: 90%;
+              max-width: 300px;
+              margin: 10px 0px;
+              display: flex;
+              flex-wrap: wrap;
+              justify-content: space-between;
+              align-items: center;
+              input {
+                width: 40%;
+                flex-grow: 1;
+                border: 0;
+                text-align: center;
+                outline: 0;
+                border-bottom: 2px solid grey;
+              }
+              p {
+                width: 80px;
+                height: 2px;
+                margin: 0;
+                padding: 0px;
+                font-size: 12px;
+                color: grey;
+              }
             }
             input[type=text]::placeholder {
               color: #a7a7a7;
