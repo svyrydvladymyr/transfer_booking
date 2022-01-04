@@ -207,17 +207,32 @@ const slider = (el) => {
 };
 
 //modal window
+const closeSubModal = () => { $_('.wrap_sub_modal')[0].innerHTML = '' };
 const closeModal = (el) => { 
     let valClose = true;
     el.path.forEach(element => {
         if (element.classList && element.classList.contains('modal_place')) { valClose = false };
     });
     if (valClose) { modal.innerHTML = '' }; 
-}; 
+};  
 const showModal = function(type, obj){
-    modal.innerHTML = template[type];    
-    console.log('obj', obj);
-
+    if (type === 'transferTowns') {
+        $_('.wrap_sub_modal')[0].innerHTML = template[type];
+        const setParam =  obj.param;
+        send({} , `/townlist`, (result) => {
+            const resultat = JSON.parse(result);
+            if (resultat.res) {
+                const tawns_list = $_('.towns_select_list')[0];
+                tawns_list.innerHTML = '';
+                resultat.res.forEach(element => {        
+                    tawns_list.innerHTML += `<p id="${element.town_id}" onclick="selectTown(this, '${setParam}')">${element.name_ua}</p>`
+                });
+            };
+        });
+    } else {
+        modal.innerHTML = template[type];    
+        console.log('obj', obj);
+    }
     if (type === 'townAdd') {
         idTownPlace = $_('#id_town')[0];
         tokenTown = generate_token(6);
@@ -242,6 +257,20 @@ const showModal = function(type, obj){
     }; 
 };
 
+//for select town and add to input
+const selectTown = (el, param) => {
+    $_(`.transfer_dup_to`)[0].style.display = 'none';
+    $_('.wrap_sub_modal')[0].innerHTML = '';
+    const inputPlace = $_(`#${param}`)[0];
+    const inputPlaceTO = $_(`#to`)[0];
+    const inputPlaceFROM = $_(`#from`)[0];
+    inputPlace.value = el.innerHTML;
+    inputPlace.inputparam = el.id;
+    if (inputPlaceFROM.inputparam === inputPlaceTO.inputparam) {
+        $_(`.transfer_dup_to`)[0].style.display = 'block';
+    };
+};
+
 //creating town id
 const creatingIdTown = (el) => {
     idTownPlace.innerHTML = `${transliterate(el.value).replace( /[^a-zA-ZiIіІ]/g, "" )}_${tokenTown}`;
@@ -254,8 +283,55 @@ const validationInput = (el) => {
     $_(`.town_empty_${el.id}`)[0].style.display = 'none';
     $_(`.town_dup_${el.id}`)[0].style.display = 'none';
 };
+const validationPrice = (el) => {
+    const priceVal = el.value;
+    if (priceVal < 1 || priceVal > 50000) {
+        $_(`.transfer_price_${el.id}`)[0].style.display = 'block';
+    } else {
+        $_(`.transfer_price_${el.id}`)[0].style.display = 'none';
+    };    
+};
 
+//for add time
+const plusTranslate = (element, type) => {
+    const translateBody = $_('.add_time')[0];
+    const translateBodyChild = translateBody.children;
+    const childPlaceholder = translateBodyChild[0].children[0].placeholder;
+    const plusTransBody = document.createElement("div");
+    plusTransBody.setAttribute('class', 'add');
+    plusTransBody.innerHTML = `<p class="time_label">Відправлення</p> 
+                               <input type="text" name="translate" placeholder="Час групового перевезення...">
+                               <i class='fas fa-plus' onclick="plusTranslate(this, 'plus')"></i>`;
+    class classLists { constructor(){}
+        style(element, first, second){
+            element.classList.replace(`fa-${first}`, `fa-${second}`);
+            element.setAttribute('onclick', `plusTranslate(this, '${second}')`);
+        };
+    };
+    const classStyle = new classLists();    
+    if (type === 'plus') {
+        classStyle.style(element, 'plus', 'minus');
+        if (translateBodyChild.length < 10) { translateBody.appendChild(plusTransBody) };
+        if (translateBodyChild.length === 10) { classStyle.style(translateBodyChild[translateBodyChild.length - 1].children[1], 'plus', 'minus') };
+    };
+    if (type === 'minus') {
+        element.parentNode.remove();
+        if (translateBodyChild.length < 10) { classStyle.style(translateBodyChild[translateBodyChild.length - 1].children[1], 'minus', 'plus') };
+    };
+    const timeLabels = $_('.time_label');
+    console.log('timeLabels', timeLabels);
 
+    // timeLabels.forEach(element, index => {
+        
+    // });
+
+    for (const [iterator, index] of timeLabels.entries()) {
+
+        console.log(iterator);
+        console.log(index);
+        timeLabels[iterator].innerHTML = `Відправлення ${iterator}`;
+    }
+};
 
 
 //load towns list
