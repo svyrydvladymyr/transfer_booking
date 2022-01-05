@@ -97,19 +97,19 @@ template = {
             <p class="transfer_empty_to">Поля "Перевезення з" і "Перевезення до" не можуть бути пустим!</p>
             <div> 
                 <p>Груповий</p>
-                <input type="number" id="gr" name="gr" min="1" max="50000" placeholder="Ціна за груповий" oninput="validationPrice(this), showTimeList(this)">
+                <input type="number" id="gr" name="gr" min="1" max="50000" placeholder="Ціна за груповий..." oninput="validationPrice(this), showTimeList(this)">
             </div>
             <p class="transfer_price_gr">Перевищує допустимі значення! (доступно з 1грн до 50000грн)</p>
             <div> 
                 <p>Приватний</p>
-                <input type="number" id="pr" name="pr" min="1" max="50000" placeholder="Ціна за приватний" oninput="validationPrice(this)">
+                <input type="number" id="pr" name="pr" min="1" max="50000" placeholder="Ціна за приватний..." oninput="validationPrice(this)">
             </div>
             <p class="transfer_price_pr">Перевищує допустимі значення! (доступно з 1грн до 50000грн)</p>
             <p class="transfer_price_empt">Хоча б одна ціна має бути вказана!</p>
             <div class="add_time" style="display: none">
                 <div class="add">    
                     <p class="time_label">Відправлення 1</p>            
-                    <input type="text" name="time" class="time" placeholder="Час перевезення..." onfocus="showModal('transferTimes')">
+                    <input type="text" name="time" class="time" placeholder="Час перевезення..." onfocus="showModal('transferTimes', {}, this)">
                     <i class='fas fa-plus' onclick="plusTime(this, 'plus')"></i>
                 </div>  
             </div>
@@ -139,18 +139,24 @@ template = {
     transferTimes:
     `<div class="modal_body">
         <div class="modal_close">
-            <i class='fa fa-times' onclick="closeModal(event)"></i>
+            <i class='fa fa-times' onclick="closeSubModal()"></i>
         </div>
-        <div class="modal_place" id="townDel">     
+        <div class="modal_place" id="transferTimes">     
+            <p>Вкажіть час</p>
             <div class="time_modal_wrap">
                 <div>           
-                
+                    <i class='fas fa-angle-up' onclick="selectTime('hour', 'up')"></i>
+                    <p class="hours">00</p>
+                    <i class='fas fa-angle-down' onclick="selectTime('hour', 'down')"></i>
                 </div>
+                <p class="dvokrapka">:</p>
                 <div>           
-                
+                    <i class='fas fa-angle-up' onclick="selectTime('minute', 'up')"></i>
+                    <p class="minutes">05</p>
+                    <i class='fas fa-angle-down' onclick="selectTime('minute', 'down')"></i>
                 </div>
             </div>
-            <p class="form_send" onclick="closeSubModal()">Підтвердити</p>
+            <p class="form_send admTime">Підтвердити</p>
         </div>        
     </div>`,
     transferEdit:

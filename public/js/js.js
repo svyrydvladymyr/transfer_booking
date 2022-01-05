@@ -16,6 +16,9 @@ const RegExpInput = new RegExp(/[^a-zA-Zа-яА-Я0-9-()_+=.'\":/\,іІїЇєЄ 
 
 let idTownPlace, tokenTown;
 
+let hours, minutes, hArr = [], mArr = [];
+let hStart = 0, mStart = 0;
+
 // dropdown menu
 // const dropdowns = $_('.user_settings_list');
 // const makeCounter = function() {
@@ -105,7 +108,7 @@ const setLang = (lang) => {
 const toTopFn = () => {
     document.body.scrollTop = 0;
     document.documentElement.scrollTop = 0;
-}
+};
 
 //token
 const generate_token = (length) => {
@@ -152,7 +155,7 @@ window.onscroll = function() {
     }; 
 };
 
-
+//to resize the traffic settings block
 if ($_('.options_container')[0]) { 
     const options = () => {
         let item = 3
@@ -216,9 +219,35 @@ const closeModal = (el) => {
     if (valClose) { modal.innerHTML = '' }; 
 };  
 const showModal = function(type, obj, el){
-    if (type === 'transferTimes') { 
+    console.log('type', type);
+    console.log('obj', obj);
+    // console.log('el', el);
 
-    } else if (type === 'transferTowns') {
+    (type === 'transferTimes' || type === 'transferTowns') 
+        ? $_('.wrap_sub_modal')[0].innerHTML = template[type]
+        : modal.innerHTML = template[type];
+
+    //sub modal
+    if (type === 'transferTimes') {
+        $_('.wrap_sub_modal')[0].innerHTML = template[type];
+        
+        console.log('el', el);
+
+        hours = $_('.hours')[0];
+        minutes = $_('.minutes')[0];
+        hArr = ['00', '01', '02', '03', '04', '05', '06', '07', '08', '09', '10', '11', '12', '13', '14', '15', '16', '17', '18', '19', '20', '21', '22', '23'];
+        mArr = ['00', '05', '10', '15', '20', '25', '30', '35', '40', '45', '50', '55', '60'];
+        hStart = 0, mStart = 0;    
+
+        $_('.admTime')[0].addEventListener('click', function(){
+            console.log('hours', hours.innerHTML);
+            console.log('minutes', minutes.innerHTML);
+
+            el.value = `${hours.innerHTML}:${minutes.innerHTML}`;
+            closeSubModal();
+        });   
+    };
+    if (type === 'transferTowns') {
         $_('.wrap_sub_modal')[0].innerHTML = template[type];
         const setParam =  obj.param;
         send({} , `/townlist`, (result) => {
@@ -231,10 +260,9 @@ const showModal = function(type, obj, el){
                 });
             };
         });
-    } else {
-        modal.innerHTML = template[type];    
-        console.log('obj', obj);
-    }
+    };
+
+    //main modal
     if (type === 'townAdd') {
         idTownPlace = $_('#id_town')[0];
         tokenTown = generate_token(6);
@@ -251,9 +279,7 @@ const showModal = function(type, obj, el){
     if (type === 'transferEdit') {
 
     };
-    if (type === 'townDel') {
-        $_(`#${type} > #id_town`)[0].innerHTML = obj.id;       
-    };   
+    if (type === 'townDel') { $_(`#${type} > #id_town`)[0].innerHTML = obj.id };   
     if (type === 'transferDel') {
 
     }; 
@@ -293,14 +319,14 @@ const validationPrice = (el) => {
     if (priceVal === '') { errMess.style.display = 'none' };
 };
 
-//for add time
+//for add time field
 const plusTime = (element, type) => {
     const translateBody = $_('.add_time')[0];
     const translateBodyChild = translateBody.children;
     const plusTransBody = document.createElement("div");
     plusTransBody.setAttribute('class', 'add');
     plusTransBody.innerHTML = `<p class="time_label">Відправлення</p> 
-                               <input type="text" name="translate" class="time" placeholder="Час групового перевезення...">
+                               <input type="text" name="translate" class="time" placeholder="Час перевезення..." onfocus="showModal('transferTimes', {}, this)">
                                <i class='fas fa-plus' onclick="plusTime(this, 'plus')"></i>`;
     class classLists { constructor(){}
         style(element, first, second){
@@ -327,6 +353,41 @@ const plusTime = (element, type) => {
 //for show times form 
 const showTimeList = (el) => {
     $_('.add_time')[0].style.display = el.value === '' ? 'none' : 'table';
+};
+
+//for selecting time
+const selectTime = (type, arrow) => {
+    console.log('hours', hours);
+    console.log('minutes', minutes);
+    console.log('type', type);
+    console.log('arrow', arrow);
+
+
+
+    if (type === 'hour') {
+        if (arrow === 'up') {            
+            hStart++
+            if (hStart === 24) {hStart = 0}
+            hours.innerHTML = hArr[hStart];
+        };
+        if (arrow === 'down') {            
+            hStart--
+            if (hStart === -1) {hStart = 23}
+            hours.innerHTML = hArr[hStart];
+        };       
+    };
+    if (type === 'minute') {
+        if (arrow === 'up') {
+            mStart++
+            if (mStart === 13) {mStart = 0}
+            minutes.innerHTML = mArr[mStart];
+        };
+        if (arrow === 'down') {
+            mStart--
+            if (mStart === -1) {mStart = 12}
+            minutes.innerHTML = mArr[mStart];
+        };  
+    };
 };
 
 //load towns list
@@ -462,7 +523,7 @@ const formSendTransfer = (formID) => {
         // console.log('transfer_select', transfer_select);
         console.log('transfer_times', transfer_times);
         obj = {"from" : transfer_from, "to" : transfer_to, "gr" : transfer_gr, "pr" : transfer_pr, "select" : transfer_select, "times" : transfer_times, "param" : formID};
-        console.log('objjjjjjjjjjjjjjjjjjjjjj', obj);
+        console.log('obg false', obj);
         
         if (transfer_from !== '' && transfer_from !== undefined && transfer_to !== '' && transfer_to !== undefined) {
             if (transfer_from === transfer_to) {
