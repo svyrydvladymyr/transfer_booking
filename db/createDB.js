@@ -40,7 +40,8 @@ const transfers = () => {
         time7 TIME,        
         time8 TIME,        
         time9 TIME,        
-        time10 TIME
+        time10 TIME,
+        selection VARCHAR(10)   
         )`; 
     con.query(sql, function (err, result) {if (err) throw err; console.log("Table tripslist created")});
 };
