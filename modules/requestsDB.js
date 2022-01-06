@@ -1,6 +1,6 @@
 const con = require('../db/connectToDB').con;
 const {checOnTrueVal, autorisationCheck, tableRecord, token, log} = require('../modules/service');
-var url  = require('url');
+// const lang = ['uk-UA', 'en-US', 'ru-RU'].includes(req.cookies['lang']) ? req.cookies['lang'] : 'uk-UA';
 
 const townadd = async (req, res) => {
     await autorisationCheck(req, res)
@@ -46,33 +46,58 @@ const townadd = async (req, res) => {
 };
 
 const transferadd = async (req, res) => {
+    const timeArr = {'time1' : '', 'time2' : '', 'time3' : '', 'time4' : '', 'time5' : '', 'time6' : '', 'time7' : '', 'time8' : '', 'time9' : '', 'time10' : ''};
+    if (req.body.param !== 'transferDel') { req.body.times.forEach((element, index) => { timeArr[`time${index + 1}`] = element })};
     await autorisationCheck(req, res)
     .then(async (userid) => {
         if (userid === false) { throw new Error('error-autorisation') };
         let resMess, sql;
         if (req.body.param === 'transferAdd') {
             resMess = 'Transfer added!';
-            sql = `INSERT INTO transfers (transfer_id, transfer_from, transfer_to, price_pr, price_gr) 
-            VALUES ('${token(15)}'
-                    '${checOnTrueVal(req.body.id)}', 
-                    '${checOnTrueVal(req.body.ua)}', 
-                    '${checOnTrueVal(req.body.en)}', 
-                    '${checOnTrueVal(req.body.ru)}')`; 
+            sql = `INSERT INTO transfers (transfer_id, transfer_from, transfer_to, price_pr, price_gr, time1, time2, time3, time4, time5, time6, time7, time8, time9, time10, selection) 
+            VALUES ('${token(10)}',
+                    '${checOnTrueVal(req.body.from)}', 
+                    '${checOnTrueVal(req.body.to)}', 
+                    '${req.body.pr.replace(new RegExp("[^0-9]", "gi"), '')}', 
+                    '${req.body.gr.replace(new RegExp("[^0-9]", "gi"), '')}',
+                    '${timeArr.time1}',
+                    '${timeArr.time2}',
+                    '${timeArr.time3}',
+                    '${timeArr.time4}',
+                    '${timeArr.time5}',
+                    '${timeArr.time6}',
+                    '${timeArr.time7}',
+                    '${timeArr.time8}',
+                    '${timeArr.time9}',
+                    '${timeArr.time10}',
+                    '${req.body.select === true || req.body.select === false ? req.body.select : false}')`; 
         };
         if (req.body.param === 'transferEdit') {
             resMess = 'Transfer edited!';
-            sql = `UPDATE transfers SET name_ua='${checOnTrueVal(req.body.ua)}', name_en='${checOnTrueVal(req.body.en)}', name_ru='${checOnTrueVal(req.body.ru)}' 
-            WHERE town_id='${checOnTrueVal(req.body.id)}'`; 
+            sql = `UPDATE transfers 
+            SET transfer_from='${checOnTrueVal(req.body.from)}', 
+                transfer_to='${checOnTrueVal(req.body.to)}',  
+                price_pr='${req.body.pr.replace(new RegExp("[^0-9]", "gi"), '')}',  
+                price_gr='${req.body.gr.replace(new RegExp("[^0-9]", "gi"), '')}',  
+                time1='${timeArr.time1}',  
+                time2='${timeArr.time2}',  
+                time3='${timeArr.time3}',  
+                time4='${timeArr.time4}',  
+                time5='${timeArr.time5}',  
+                time6='${timeArr.time6}',  
+                time7='${timeArr.time7}',  
+                time8='${timeArr.time8}',  
+                time9='${timeArr.time9}',  
+                time10='${timeArr.time10}',  
+                selection='${req.body.select === true || req.body.select === false ? req.body.select : false}'
+            WHERE transfer_id='${checOnTrueVal(req.body.id)}'`; 
         };
         if (req.body.param === 'transferDel') {
             resMess = 'Transfer deleted!';
-            sql = `DELETE FROM transfers WHERE town_id='${checOnTrueVal(req.body.id)}'`; 
+            sql = `DELETE FROM transfers WHERE transfer_id='${checOnTrueVal(req.body.id)}'`; 
         };
         await tableRecord(sql)
         .then((result) => {
-
-            console.log('result', result);
-
             if (result.err) { throw new Error('error-DB') };
             if (!result.err) { res.send({"res": resMess}) };               
         });
@@ -100,13 +125,45 @@ const townlist = async (req, res) => {
 };
 
 const transferlist = async (req, res) => {
+    const townsArr = {};
     await autorisationCheck(req, res)
     .then(async (userid) => {
         if (userid === false) { throw new Error('error-autorisation') };
+        await tableRecord(`SELECT town_id, name_ua FROM points`)
+        .then((result) => {
+            if (result.err) { throw new Error('error-DB') };
+            if (!result.err) { result.forEach(element => { townsArr[`${element.town_id}`] = element.name_ua })};
+        })
         await tableRecord(`SELECT * FROM transfers`)
         .then((result) => {
             if (result.err) { throw new Error('error-DB') };
-            res.send({"res": result});
+            if (!result.err) { 
+                const resArr = []; 
+                result.forEach(element => {
+                    const resEl = {
+                        'transfer_id': element.transfer_id,
+                        'transfer_from': townsArr[element.transfer_from],
+                        'transfer_from_id': element.transfer_from,
+                        'transfer_to': townsArr[element.transfer_to],                
+                        'transfer_to_id': element.transfer_to,                
+                        'price_pr': element.price_pr,                
+                        'price_gr': element.price_gr,                
+                        'time1': element.time1,                
+                        'time2': element.time2,                
+                        'time3': element.time3,                
+                        'time4': element.time4,                
+                        'time5': element.time5,                
+                        'time6': element.time6,                
+                        'time7': element.time7,                
+                        'time8': element.time8,                
+                        'time9': element.time9,                
+                        'time10': element.time10,                
+                        'selection': element.selection,                
+                    };
+                    resArr.push(resEl);
+                });
+                res.send({"res": resArr});
+            };
         }); 
     })
     .catch((err) => {

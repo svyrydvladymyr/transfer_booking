@@ -13,9 +13,7 @@ const exit = () => { send({}, '/exit', (res) => { location.reload() }) };
 const modal = $_('.modal_wrap')[0];
 const RegExpInput = new RegExp(/[^a-zA-Zа-яА-Я0-9-()_+=.'\":/\,іІїЇєЄ /\n]/g); 
 
-
 let idTownPlace, tokenTown;
-
 let hours, minutes, hArr = [], mArr = [];
 let hStart = 0, mStart = 0;
 
@@ -112,7 +110,6 @@ const toTopFn = () => {
 
 //token
 const generate_token = (length) => {
-    console.log('dsfgdfg');
     const a = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890".split("");
     const b = [];  
     for (let i = 0; i < length; i++) {
@@ -141,13 +138,10 @@ const toTop = $_('#toTop')[0];
 // console.log('toTop', toTop);
 window.onscroll = function() {
     const socialValue = social !== undefined ? social.clientHeight : 0;
-
     // console.log('body', body.offsetWidth);
     // console.log('menu', menu.offsetTop);
     // console.log('social', socialValue);
-
     toTop.style.display = (document.body.scrollTop > 200 || document.documentElement.scrollTop > 200) ? "block" : "none";
-
     if (body.offsetWidth > 991) {
         (document.body.scrollTop > socialValue || document.documentElement.scrollTop > socialValue)
             ? menu.classList.add('menu_scroll') 
@@ -163,7 +157,7 @@ if ($_('.options_container')[0]) {
         if (body.offsetWidth <= 768) { item = 1 }; 
         const wrapSize = $_('.options_container')[0].offsetWidth;
         $_('.options_wrap > .blok').forEach(element => { element.style.width = `${wrapSize / item}px` });
-    }
+    };
     options();
     window.addEventListener('resize', options, true);
     const options_left = () => {
@@ -190,9 +184,9 @@ if ($_('.options_container')[0]) {
     };
     $_('.arrow_left')[0].addEventListener('click', options_left, true);
     $_('.arrow_right')[0].addEventListener('click', options_right, true);
-}
+};
 
-//to change the tab
+//tabs
 const tabs = (tab) => {
     const tabs = $_('.tabs > p');
     const bodys = $_('.tab_bodys > .body');
@@ -209,7 +203,7 @@ const slider = (el) => {
     active ? null : el.classList.toggle('active_sl');
 };
 
-//modal window
+//close modal window
 const closeSubModal = () => { $_('.wrap_sub_modal')[0].innerHTML = '' };
 const closeModal = (el) => { 
     let valClose = true;
@@ -218,9 +212,10 @@ const closeModal = (el) => {
     });
     if (valClose) { modal.innerHTML = '' }; 
 };  
+//show modal window
 const showModal = function(type, obj, el){
-    console.log('type', type);
-    console.log('obj', obj);
+    // console.log('type', type);
+    // console.log('obj', obj);
     // console.log('el', el);
 
     (type === 'transferTimes' || type === 'transferTowns') 
@@ -230,19 +225,12 @@ const showModal = function(type, obj, el){
     //sub modal
     if (type === 'transferTimes') {
         $_('.wrap_sub_modal')[0].innerHTML = template[type];
-        
-        console.log('el', el);
-
         hours = $_('.hours')[0];
         minutes = $_('.minutes')[0];
         hArr = ['00', '01', '02', '03', '04', '05', '06', '07', '08', '09', '10', '11', '12', '13', '14', '15', '16', '17', '18', '19', '20', '21', '22', '23'];
         mArr = ['00', '05', '10', '15', '20', '25', '30', '35', '40', '45', '50', '55', '60'];
-        hStart = 0, mStart = 0;    
-
+        hStart = 0, mStart = 0;
         $_('.admTime')[0].addEventListener('click', function(){
-            console.log('hours', hours.innerHTML);
-            console.log('minutes', minutes.innerHTML);
-
             el.value = `${hours.innerHTML}:${minutes.innerHTML}`;
             closeSubModal();
         });   
@@ -267,21 +255,43 @@ const showModal = function(type, obj, el){
         idTownPlace = $_('#id_town')[0];
         tokenTown = generate_token(6);
     };
-    if (type === 'transferAdd') {
-
-    };
     if (type === 'townEdit') {
         $_(`#${type} > #id_town`)[0].innerHTML = obj.id;
         $_(`#${type} > #ua`)[0].value = obj.ua;
         $_(`#${type} > #en`)[0].value = obj.en;
         $_(`#${type} > #ru`)[0].value = obj.ru; 
     };
+    if (type === 'townDel') { $_(`#${type} > #id_town`)[0].innerHTML = obj.id };
     if (type === 'transferEdit') {
-
+        const timeList = [];
+        for (let i = 0; i < 10; i++) { if (obj[`time${i + 1}`] !== '') { timeList.push(obj[`time${i + 1}`])}};
+        $_(`#${type}`)[0].paramid = obj.id;
+        $_(`#${type} > #from`)[0].inputparam = obj.from_id;
+        $_(`#${type} > #from`)[0].value = obj.from;
+        $_(`#${type} > #to`)[0].inputparam = obj.to_id;
+        $_(`#${type} > #to`)[0].value = obj.to;
+        $_(`#${type} #gr`)[0].value = obj.pricegr;
+        $_(`#${type} #pr`)[0].value = obj.pricepr;
+        $_(`#${type} > #selection`)[0].checked = obj.select;        
+        if (timeList.length > 0) {
+            const translateBody = $_('.add_time')[0];
+            translateBody.style.display = 'block';
+            translateBody.innerHTML = '';            
+            for (let i = 0; i < timeList.length; i++) {
+                let timeAction = 'minus';
+                if (i === timeList.length - 1) { timeAction = 'plus' };
+                const plusTransBody = document.createElement("div");
+                plusTransBody.setAttribute('class', 'add');
+                plusTransBody.innerHTML = `<p class="time_label">Відправлення</p> 
+                                           <input type="text" name="translate" class="time" value="${timeList[i]}" autocomplete="off" placeholder="Час перевезення..." onfocus="showModal('transferTimes', {}, this)">
+                                           <i class='fas fa-${timeAction}' onclick="plusTime(this, '${timeAction}')"></i>`;
+                translateBody.appendChild(plusTransBody); 
+            };
+        };
     };
-    if (type === 'townDel') { $_(`#${type} > #id_town`)[0].innerHTML = obj.id };   
     if (type === 'transferDel') {
-
+        $_(`#${type} > #id_transfer`)[0].paramid = `${obj.id}`;
+        $_(`#${type} > #id_transfer`)[0].innerHTML = `${obj.from} - ${obj.to}`;
     }; 
 };
 
@@ -316,6 +326,8 @@ const validationPrice = (el) => {
     $_(`.transfer_price_empt`)[0].style.display = 'none'; 
     const priceVal = el.value, errMess = $_(`.transfer_price_${el.id}`)[0];
     errMess.style.display = (priceVal < 1 || priceVal > 50000) ? 'block' : 'none';
+    (priceVal < 1) ? el.value = 1 : null;
+    (priceVal > 50000) ? el.value = 50000 : null;
     if (priceVal === '') { errMess.style.display = 'none' };
 };
 
@@ -326,7 +338,7 @@ const plusTime = (element, type) => {
     const plusTransBody = document.createElement("div");
     plusTransBody.setAttribute('class', 'add');
     plusTransBody.innerHTML = `<p class="time_label">Відправлення</p> 
-                               <input type="text" name="translate" class="time" placeholder="Час перевезення..." onfocus="showModal('transferTimes', {}, this)">
+                               <input type="text" name="translate" class="time" autocomplete="off" placeholder="Час перевезення..." onfocus="showModal('transferTimes', {}, this)">
                                <i class='fas fa-plus' onclick="plusTime(this, 'plus')"></i>`;
     class classLists { constructor(){}
         style(element, first, second){
@@ -357,13 +369,6 @@ const showTimeList = (el) => {
 
 //for selecting time
 const selectTime = (type, arrow) => {
-    console.log('hours', hours);
-    console.log('minutes', minutes);
-    console.log('type', type);
-    console.log('arrow', arrow);
-
-
-
     if (type === 'hour') {
         if (arrow === 'up') {            
             hStart++
@@ -394,14 +399,10 @@ const selectTime = (type, arrow) => {
 const loadTownsList = () => {
     send({} , `/townlist`, (result) => {
         const resultat = JSON.parse(result);
-        // console.log(resultat);    
         if (resultat.res) {
-            // console.log('res', resultat.res);
             const tawns_list = $_('.tawns_list')[0];
-            // console.log('tawns_list', tawns_list);
             tawns_list.innerHTML = '';
             resultat.res.forEach(element => {        
-                // console.log('element', element);        
                 tawns_list.innerHTML += `
                 <div class="town"><p>${element.name_ua}
                     <span>
@@ -418,25 +419,39 @@ const loadTownsList = () => {
 const loadTransfersList = () => {
     send({} , `/transferlist`, (result) => {
         const resultat = JSON.parse(result);
-        // console.log(resultat);    
         if (resultat.res) {
-            // console.log('res', resultat.res);
+            console.log('res', resultat.res);
             const transfers_list = $_('.transfers_list')[0];
-            // console.log('tawns_list', tawns_list);
             transfers_list.innerHTML = '';
             resultat.res.forEach(element => {        
-                // console.log('element', element);        
                 transfers_list.innerHTML += `
-                <div class="transfer"><p>${element.from} - ${element.to}
+                <div class="transfer"><p>${element.transfer_from} - ${element.transfer_to}
                     <span>
                         <i class='fas fa-edit' onclick="showModal('transferEdit', 
                             {'id' : '${element.transfer_id}', 
-                            'from' : '${element.from}', 
-                            'to' : '${element.to}', 
+                            'from' : '${element.transfer_from}', 
+                            'from_id' : '${element.transfer_from_id}', 
+                            'to' : '${element.transfer_to}', 
+                            'to_id' : '${element.transfer_to_id}', 
                             'pricepr' : '${element.price_pr}', 
-                            'pricegr' : '${element.price_gr}'})">
+                            'pricegr' : '${element.price_gr}',
+                            'time1' : '${element.time1}',
+                            'time2' : '${element.time2}',
+                            'time3' : '${element.time3}',
+                            'time4' : '${element.time4}',
+                            'time5' : '${element.time5}',
+                            'time6' : '${element.time6}',
+                            'time7' : '${element.time7}',
+                            'time8' : '${element.time8}',
+                            'time9' : '${element.time9}',
+                            'time10' : '${element.time10}',
+                            'select' : '${element.selection}'})">
                         </i>
-                        <i class='fas fa-trash-alt' onclick="showModal('transferDel', {'id' : '${element.transfer_id}'})"></i>
+                        <i class='fas fa-trash-alt' onclick="showModal('transferDel', 
+                            {'id' : '${element.transfer_id}', 
+                            'from' : '${element.transfer_from}', 
+                            'to' : '${element.transfer_to}'})">
+                        </i>
                     </span>
                 </p></div>`
             });
@@ -467,17 +482,13 @@ const formSend = (formID) => {
     if (trueSend) {
         send(obj , `/${formID.toLowerCase()}`, (result) => {
             const resultat = JSON.parse(result);
-            // console.log(resultat);    
             if (resultat.res) {
-                // console.log('res', resultat.res);
                 showModal(`${formID}Res`);
                 $_('#id_town')[0].innerHTML = obj.id;
                 setTimeout(() => { modal.innerHTML = '' }, 3000);
                 loadTownsList();
             }
             if (resultat.DUP) {
-                // console.log('DUP');
-                // console.log(resultat.DUP);      
                 for (const key in obj) {
                     if (Object.hasOwnProperty.call(obj, key)) {
                         if (obj[key] === resultat.DUP) {
@@ -490,41 +501,19 @@ const formSend = (formID) => {
     };
 };
 
-//add to DB Towns
+//add to DB Transfers
 const formSendTransfer = (formID) => {
     let obj = {}, trueSend;
     if ((formID === 'transferAdd') || (formID === 'transferEdit')) {
-
-        // const transfer_from_noda = $_(`#${formID} > #from`)[0].inputparam;
-        // const transfer_to_noda = $_(`#${formID} > #to`)[0].inputparam;
-        // console.log('transfer_from_noda', transfer_from_noda);
-        // console.log('transfer_to_noda', transfer_to_noda);
+        const transfer_id = $_(`#${formID}`)[0].paramid;
         const transfer_from = $_(`#${formID} > #from`)[0].inputparam;
         const transfer_to = $_(`#${formID} > #to`)[0].inputparam;
         const transfer_gr = $_(`#${formID} #gr`)[0].value;
         const transfer_pr = $_(`#${formID} #pr`)[0].value;
         const transfer_select = $_(`#${formID} > #selection`)[0].checked;
         const transfer_times = [];
-
-        console.log('dfgdfg', $_('.time'));
-
-        $_('.time').forEach(element => {
-            console.log('element', element);
-            console.log('element', element.value);
-            if (element.value !== '') {
-                transfer_times.push(element.value)
-            }
-        });
-
-        // console.log('transfer_from', transfer_from);
-        // console.log('transfer_to', transfer_to);
-        // console.log('transfer_gr', transfer_gr);
-        // console.log('transfer_pr', transfer_pr);
-        // console.log('transfer_select', transfer_select);
-        console.log('transfer_times', transfer_times);
-        obj = {"from" : transfer_from, "to" : transfer_to, "gr" : transfer_gr, "pr" : transfer_pr, "select" : transfer_select, "times" : transfer_times, "param" : formID};
-        console.log('obg false', obj);
-        
+        $_('.time').forEach(element => { if (element.value !== '') { transfer_times.push(element.value)}});
+        obj = {"id" : transfer_id, "from" : transfer_from, "to" : transfer_to, "gr" : transfer_gr, "pr" : transfer_pr, "select" : transfer_select, "times" : transfer_times, "param" : formID};
         if (transfer_from !== '' && transfer_from !== undefined && transfer_to !== '' && transfer_to !== undefined) {
             if (transfer_from === transfer_to) {
                 $_(`.transfer_dup_to`)[0].style.display = 'block'; 
@@ -542,27 +531,25 @@ const formSendTransfer = (formID) => {
             trueSend = false;
         };
     };
-    if (formID === 'townDel') {
-        const id_town = $_(`#${formID} > #id_town`)[0].innerHTML;
-        obj = {"id" : id_town, "param" : formID};
+    if (formID === 'transferDel') {
+        const id_transfer = $_(`#${formID} > #id_transfer`)[0].paramid;
+        obj = {"id" : id_transfer, "param" : formID};
+        trueSend = true
     };
-
     if (trueSend) {
-        console.log('objjjjjjjjjjjjjjjjjjjjjj', obj);
-    }
-    // if (trueSend) {
-    //     send(obj , `/${formID.toLowerCase()}`, (result) => {
-    //         const resultat = JSON.parse(result);
-    //         // console.log(resultat);    
-    //         if (resultat.res) {
-    //             // console.log('res', resultat.res);
-    //             showModal(`${formID}Res`);
-    //             $_('#id_town')[0].innerHTML = obj.id;
-    //             setTimeout(() => { modal.innerHTML = '' }, 3000);
-    //             loadTownsList();
-    //         };   
-    //     });
-    // };
+        send(obj , `/${formID.toLowerCase()}`, (result) => {
+            const resultat = JSON.parse(result);
+            if (resultat.res) {
+
+                console.log('res', resultat.res);
+
+                showModal(`${formID}Res`);
+                // $_('#id_town')[0].innerHTML = obj.id;
+                setTimeout(() => { modal.innerHTML = '' }, 3000);
+                loadTransfersList();
+            };   
+        });
+    };
 };
 
 

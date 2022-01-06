@@ -27,8 +27,45 @@
 .user_wrap .tab_person .tawns_list .town {
     padding: 10px;
 }
+.user_wrap .tab_person .tawns_list .town p {
+    align-items: center;
+    text-align: right;
+}
+.user_wrap .tab_person .tawns_list .town p span {
+    margin-left: 10px;
+    width: 26px;
+    height: 56px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-between;
+}
 .user_wrap .tab_person .tawns_list .town p span i {
-    font-size: 16px;
+    font-size: 20px;
+    margin: 0px 0px 0px 12px;
+}
+
+.user_wrap .tab_person .transfers_list {
+    width: 100%;
+}
+.user_wrap .tab_person .transfers_list .transfer {
+    padding: 10px;
+}
+.user_wrap .tab_person .transfers_list .transfer p {
+    align-items: center;
+    text-align: right;
+}
+.user_wrap .tab_person .transfers_list .transfer p span {
+    margin-left: 10px;
+    width: 26px;
+    height: 56px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-between;
+}
+.user_wrap .tab_person .transfers_list .transfer p span i {
+    font-size: 20px;
     margin: 0px 0px 0px 12px;
 }
 

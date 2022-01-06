@@ -724,7 +724,7 @@ body {
               margin: 35px 0px 15px 0px;
             }
         }
-        .tawns_list {
+        .tawns_list, .transfers_list {
           // outline: 1px solid red;
           width: max-content;
           display: flex;
@@ -761,7 +761,7 @@ body {
     .modal_wrap {
       position: absolute;
       top: 0;
-      right: 0;
+      right: 0;      
         .modal_close{
           cursor: pointer;
           width: 30px;
@@ -823,6 +823,7 @@ body {
           max-height: 99%;
           overflow-y: auto;
           padding: 30px 10px 25px 10px;
+          z-index: 999;
             div.time_modal_wrap {
               // outline: 1px solid red;
               width: 90%;
