@@ -1,17 +1,23 @@
-<div class="menu_container  menuAdd<%=DATA.permission.pageName %>">
-    <div class="menu_wrap">
-        <div class="logo">
-            <img src="./img/logo.png" alt="Transfer Booking" onclick="window.location.href = '/'">
+<div class="menu_container_wrap">
+    <div class="menu_container  menuAdd<%=DATA.permission.pageName %>">
+        <div class="menu_wrap">
+            <div class="logo">
+                <img src="./img/logo.png" alt="Transfer Booking" onclick="window.location.href = '/'">
+            </div>
+            <div class="menu">
+                <ul class="user_settings_list">
+                    <li><a href="/home" class="<%=DATA.menu.home %>"><%=DATA.langPack.home %></a></li>
+                    <li><a href="/about" class="<%=DATA.menu.about %>"><%=DATA.langPack.about %></a></li>
+                    <li><a href="/transfer" class="<%=DATA.menu.transfer %>"><%=DATA.langPack.transfer %></a></li>
+                    <li><a href="/contacts" class="<%=DATA.menu.contacts %>"><%=DATA.langPack.contacts %></a></li>
+                </ul>
+            </div>
         </div>
-        <div class="menu">
-            <ul class="user_settings_list">
-                <li><a href="/home" class="<%=DATA.menu.home %>"><%=DATA.langPack.home %></a></li>
-                <li><a href="/about" class="<%=DATA.menu.about %>"><%=DATA.langPack.about %></a></li>
-                <li><a href="/transfer" class="<%=DATA.menu.transfer %>"><%=DATA.langPack.transfer %></a></li>
-                <li><a href="/contacts" class="<%=DATA.menu.contacts %>"><%=DATA.langPack.contacts %></a></li>
-            </ul>
-        </div>
-    </div>
+    </div>    
+</div>
+<div class="menu_container_wrap_mobile">
+    <div class="menu_btn"></div>
+    <img src="./img/logo_footer.png" alt="Transfer Booking" onclick="window.location.href = '/'">
 </div>
 
 

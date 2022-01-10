@@ -53,6 +53,32 @@ module.exports = {
     "option_pr1" : "Ivano-Frankivsk – Bukovel",
     "option_pr2" : "Lviv – Bukovel",
     "option_pr3" : "Ivano-Frankivsk – Yasinya (Dragobrat)",
-    "option_bus" : "Special prices for large groups"
+    "option_bus" : "Special prices for large groups",
 
+    "call_header" : "24/7 Customer Support Helpline",
+    "call_tel" : "Tel.",
+    "call_mess" : "Our Support Service is available 24 hours a day, 7 days a week to help you book your transfer",
+    "call_btn" : "Get in touch",
+
+    "footer_info_text" : "Bukovel Transfer Booking provides transfer services from the airport and railway station to ski and other resorts in the Carpathian region. We offer the most economical, convenient and safe way to get to and from the Bukovel resort. Our transfer services offer shared transfer, private minibus services and group bus charters. Our main priority is to provide our customers with safe and reliable services at the best price in the Carpathian region.",
+    "footer_info_header_blog" : "Latest Blog Posts",
+    "footer_info_header_people" : "What People Say",
+    "footer_info_header_contact" : "Contact Us",
+
+    "feedback1" : "Наш потяг спізнився майже на годину, але водій чекав нас як і домовлялись, був терплячим і ввічливим. Дуже хороша ціна і комфортний мікроавтобус. Розрахунок був безготівковим, що також дуже зручно. Рекомендую цю компанію для співпраці",
+    "feedback_name1" : "Олеся",
+    "feedback2" : "Ідеальне обслуговування. Водій був привітний, чекав нас з табличкою, допоміг з багажем. Машина була комфортна і чиста. Замовляли також і зворотній трансфер. Авто приїхало вчасно, доїхали швидко і безпечно. Обов'язково скористаюся вашими послугами наступного разу",
+    "feedback_name2" : "Яна",
+    "feedback3" : "Замовляли трансфер в обидві  сторони - з вокзалу в готель і  назад в аеропорт. Все було чудово, просторий автомобіль з великим багажником, пунктуальний водій. Наш готель знаходився на самій горі, водій завіз нас під  двері рецепції. Велике вам спасибі",
+    "feedback_name3" : "Олег",
+    "feedback4" : "100% рекомендую! Адекватні ціни, мікроавтобуси з ремнями безпеки для всіх пасажирів, зупинки на вимогу в дорозі. Я задоволений",
+    "feedback_name4" : "Олександр",
+    "feedback5" : "Замовляв трансфер заздалегідь. За день до поїздки мені зателефонували щоб уточнити актуальність мого замовлення. Надіслали контакти водія та номер машини. Все зручно, вчасно, як і домовлялись. Безпечне і професійне водіння. Хороша ціна. Дуже рекомендую",
+    "feedback_name5" : "В'ячеслав",
+    "feedback6" : "Бронювали транспорт на 25 осіб для поїздки на корпоратив в Карпати. Туди було 2 мікроавтобуси, назад 1 автобус. Було зручно, багато місця для речей. Наша компанія була трохи шумною, але водій не проявляв роздратування. Доїхали чудово і з комфортом. Спасибі",
+    "feedback_name6" : "Денис",
+    "feedback7" : "Все було вчасно і професійно. Подорожували з двома маленькими дітьми (2 і 4 роки), тому шукали компанію, яка може запропонувати трансфер мікроавтобусом із двома дитячими кріслами і великим багажником для валіз, дитячої коляски та лижного спорядження. Я навіть двічі перепитував чи справді буде 2 автокрісла і був приємно вражений. Всі наші побажання були враховані. Це найкраще обслуговування, яке мені доводилося зустрічати під час поїздок в Карпати.",
+    "feedback_name7" : "Сергій",
+    "feedback8" : "Чудовий сервіс за ціною, нижчою, ніж таксі. Їхали удвох з дівчиною, нас зустріли і забрали вчасно. Поїздка була швидкою, безпечною і комфортною. Водій – професіонал своєї  справи, завіз нас туди, куди я мабуть не ризикнув би їхати власним автомобілем за таких погодних умов. Замовляли також зворотній трансфер, все було ОК. Рекомендуватиму друзям вашу компанію",
+    "feedback_name8" : "Едуард"
 }

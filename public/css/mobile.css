@@ -82,6 +82,69 @@
     border-radius: 0px 9px 5px 5px;
 }
 
+.call_container .call_wrap .call_foto {
+    display: none;
+}
+
+.call_container .call_wrap .call_info {
+    width: 100%;
+    display: flex;
+    flex-wrap: wrap;
+    flex-direction: column;
+    align-items: center;
+    padding: 70px 20px 70px 20px;
+}
+
+.call_container .call_wrap {
+    min-height: 100px;
+    padding: 0px;
+    text-align: center;
+}
+
+.call_container .call_wrap .call_info .call_tel {
+    font-size: 26px;
+    margin: 15px 0px;
+}
+
+.call_container .call_wrap .call_info .call_tel span:first-child {
+    width: 60px;
+}
+
+.footer_container .footer_wrap .footer_box {
+    width: 100%;
+}
+
+.header .form_wrap .info_container, .header .form_wrap .tabs_container {
+    width: 100%;
+}
+
+.header .form_wrap .info_container .info_wrap {
+    align-items: center;
+}
+
+.header .form_wrap .info_container .info_wrap p {
+    font-size: 14px;
+    line-height: 26px;
+    text-align: center;
+    font-weight: bold;
+}
+
+.header .form_wrap .info_container .info_wrap h1 {
+    font-size: 30px;
+    text-align: center;
+}
+
+.menu_container_wrap {
+    display: none;
+}
+
+.social_wrap {
+    display: none;
+}
+.header .form_wrap {
+    padding: 100px 15px 70px 15px;
+}
+
 @media screen and (max-width: 767px) {
     .content_container > div {
         width: 100%;

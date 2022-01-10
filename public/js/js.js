@@ -142,10 +142,20 @@ window.onscroll = function() {
     // console.log('menu', menu.offsetTop);
     // console.log('social', socialValue);
     toTop.style.display = (document.body.scrollTop > 200 || document.documentElement.scrollTop > 200) ? "block" : "none";
-    if (body.offsetWidth > 991) {
-        (document.body.scrollTop > socialValue || document.documentElement.scrollTop > socialValue)
-            ? menu.classList.add('menu_scroll') 
-            : menu.classList.remove('menu_scroll');
+    if (body.offsetWidth > 1200) {
+        // (document.body.scrollTop > socialValue || document.documentElement.scrollTop > socialValue)
+        //     ? menu.classList.add('menu_scroll') 
+        //     : menu.classList.remove('menu_scroll');
+        if (document.body.scrollTop > socialValue || document.documentElement.scrollTop > socialValue) {
+            menu.classList.add('menu_scroll') 
+            // $_('.header ')[0].style.trasition = '.3s';
+            // $_('.header ')[0].style.paddingTop = '110px';
+        } else {            
+            menu.classList.remove('menu_scroll');
+            // $_('.header ')[0].style.trasition = '0s';
+            // $_('.header ')[0].style.paddingTop = '0px';
+        }
+           
     }; 
 };
 
@@ -184,6 +194,37 @@ if ($_('.options_container')[0]) {
     };
     $_('.arrow_left')[0].addEventListener('click', options_left, true);
     $_('.arrow_right')[0].addEventListener('click', options_right, true);
+};
+
+//to resize the traffic settings block
+if ($_('.feedback_container')[0]) { 
+    console.log('feedback');
+    const feedback = () => {
+        const wrapSize = $_('.feedback_container')[0].offsetWidth;
+        console.log('wrapSize', wrapSize);
+        
+
+        $_('.feedback_wrap > .feedback_block').forEach(element => { element.style.minWidth = `${wrapSize}px` });
+    };
+    feedback();
+    window.addEventListener('resize', feedback, true);
+    function feedbackPosition(el, i){
+        console.log('feedbackPosition');
+        $_('.feedback_wrap')[0].style.transform = `translateX(-${i}00%)`;        
+        $_('.feedback_points > p').forEach(element => {
+            element.style.backgroundColor = 'rgb(141, 141, 141)';
+        });
+        el.style.backgroundColor = '#ee9e07';
+    };
+    const feedbackCount = () => {
+        const feedbackCount = $_('.feedback_wrap > .feedback_block');
+        $_('.feedback_points')[0].innerHTML = '';
+        for (let i = 0; i < feedbackCount.length; i++) {
+            $_('.feedback_points')[0].innerHTML += `<p onclick="feedbackPosition(this, ${i})"></p>`;
+        };
+        $_('.feedback_points > p')[0].style.backgroundColor = '#ee9e07';
+    };
+    feedbackCount();
 };
 
 //tabs
@@ -326,8 +367,9 @@ const validationPrice = (el) => {
     $_(`.transfer_price_empt`)[0].style.display = 'none'; 
     const priceVal = el.value, errMess = $_(`.transfer_price_${el.id}`)[0];
     errMess.style.display = (priceVal < 1 || priceVal > 50000) ? 'block' : 'none';
-    (priceVal < 1) ? el.value = 1 : null;
+    (priceVal < 0) ? el.value = '' : null;
     (priceVal > 50000) ? el.value = 50000 : null;
+    (priceVal === '') ? el.value = '' : null;
     if (priceVal === '') { errMess.style.display = 'none' };
 };
 
@@ -519,8 +561,27 @@ const formSendTransfer = (formID) => {
                 $_(`.transfer_dup_to`)[0].style.display = 'block'; 
                 trueSend = false;
             } else {
-                if ((transfer_gr !== '' && (transfer_gr >= 1 && transfer_gr <= 50000)) || (transfer_pr !== '' &&  (transfer_pr >= 1 && transfer_pr <= 50000))) {
-                    trueSend = true;
+                // if ((transfer_gr !== '' && (transfer_gr >= 1 && transfer_gr <= 50000)) || (transfer_pr !== '' &&  (transfer_pr >= 1 && transfer_pr <= 50000))) {
+                //     trueSend = true;
+                // } else {
+                //     $_(`.transfer_price_empt`)[0].style.display = 'block'; 
+                //     trueSend = false;
+                // };
+                if ((transfer_gr !== '' || transfer_pr !== '')) {
+                    if (transfer_gr !== '' && (transfer_gr >= 1 && transfer_gr <= 50000) && transfer_pr === '') {
+                        trueSend = true;
+                    } else {
+                        if (transfer_pr !== '' &&  (transfer_pr >= 1 && transfer_pr <= 50000) && transfer_gr === '') {
+                            trueSend = true;
+                        } else {
+                            if ((transfer_pr !== '' &&  (transfer_pr >= 1 && transfer_pr <= 50000)) && (transfer_gr !== '' && (transfer_gr >= 1 && transfer_gr <= 50000))) {
+                                trueSend = true;
+                            } else {
+                                $_(`.transfer_price_empt`)[0].style.display = 'block'; 
+                                trueSend = false;
+                            };
+                        };
+                    };
                 } else {
                     $_(`.transfer_price_empt`)[0].style.display = 'block'; 
                     trueSend = false;

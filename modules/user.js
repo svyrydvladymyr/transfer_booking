@@ -85,10 +85,11 @@ const isUser = ({id, name: {familyName = '', givenName = ''}, photos: [{value: p
 };
 
 const getUser = async (req, res, lang = 'uk-UA', pageName) => {
-    ['home', 'about', 'blog', 'contacts'].includes(pageName) ? DATA.menu[pageName] = 'active_menu' : DATA.menu.home = 'active_menu';
+    ['home', 'about', 'transfer', 'contacts'].includes(pageName) ? DATA.menu[pageName] = 'active_menu' : DATA.menu.home = 'active_menu';
     await autorisationCheck(req, res)
     .then(async (userid) => {
         // console.log('userid', userid);
+        console.log('pageName', pageName);
 
         if (userid === false) { throw new Error('error-autorisation') };
         await tableRecord(`SELECT * FROM users WHERE userid = '${userid.userid}'`)
@@ -116,8 +117,7 @@ const getUser = async (req, res, lang = 'uk-UA', pageName) => {
                     DATA.person.routeArr = ``;
                 };                
             };
-        })   
-
+        });   
     })
     .catch((err) => {
         log('error-user-info', err); 

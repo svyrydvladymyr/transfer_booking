@@ -97,12 +97,12 @@ template = {
             <p class="transfer_empty_to">Поля "Перевезення з" і "Перевезення до" не можуть бути пустим!</p>
             <div> 
                 <p>Груповий</p>
-                <input type="number" id="gr" name="gr" min="1" max="50000" autocomplete="off" placeholder="Ціна за груповий..." oninput="validationPrice(this), showTimeList(this)">
+                <input type="number" id="gr" name="gr" min="0" max="50000" autocomplete="off" placeholder="Ціна за груповий..." oninput="validationPrice(this), showTimeList(this)">
             </div>
             <p class="transfer_price_gr">Перевищує допустимі значення! (доступно з 1грн до 50000грн)</p>
             <div> 
                 <p>Приватний</p>
-                <input type="number" id="pr" name="pr" min="1" max="50000" autocomplete="off" placeholder="Ціна за приватний..." oninput="validationPrice(this)">
+                <input type="number" id="pr" name="pr" min="0" max="50000" autocomplete="off" placeholder="Ціна за приватний..." oninput="validationPrice(this)">
             </div>
             <p class="transfer_price_pr">Перевищує допустимі значення! (доступно з 1грн до 50000грн)</p>
             <p class="transfer_price_empt">Хоча б одна ціна має бути вказана!</p>
@@ -113,7 +113,7 @@ template = {
                     <i class='fas fa-plus' onclick="plusTime(this, 'plus')"></i>
                 </div>  
             </div>
-            <p class="title">Поставте галочку що добавити в список обраних перевезень</p>
+            <p class="title">Поставте галочку щоб добавити в список обраних перевезень</p>
             <input type="checkbox" id="selection" name="selection">
             <p class="form_send" onclick="formSendTransfer('transferAdd')">Добавити в базу</p>
         </div>  
