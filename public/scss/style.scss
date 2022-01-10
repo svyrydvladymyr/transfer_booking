@@ -715,7 +715,7 @@ body {
             .tab {
               cursor: pointer;
               width: 22%;
-              padding: 8px 15px;
+              padding: 20px 15px;
               margin: 0px 10px;
               border-bottom: 2px solid #ee9e07;
               &:hover {
@@ -754,8 +754,17 @@ body {
             .town, .transfer {
               // outline: 1px solid green;
               width: 100%;
-              padding: 10px 30px;
+              padding: 14px 30px;
               border-bottom: 1px solid #d9d9d9;
+              &::before {
+                content: "";
+                position: absolute;
+                left: 8%;
+                margin-top: 31px;
+                width: 84%;
+                height: 1px;
+                background: #d9d9d9;
+              }
                 p {
                   font-size: 14px;
                   margin: 0px;
@@ -766,7 +775,7 @@ body {
                       margin-left: 20px;
                         i {
                           cursor: pointer;
-                          font-size: 12px;
+                          font-size: 16px;
                           margin: 0px 3px;
                           color: #5a5a5a;
                         }

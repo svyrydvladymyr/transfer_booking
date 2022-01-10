@@ -17,60 +17,22 @@ let idTownPlace, tokenTown;
 let hours, minutes, hArr = [], mArr = [];
 let hStart = 0, mStart = 0;
 
-// dropdown menu
-// const dropdowns = $_('.user_settings_list');
-// const makeCounter = function() {
-//     let privateCounter = 0;
-//     const changeBy = val => privateCounter += val;
-//     return {
-//         increment: () => changeBy(1), 
-//         decrement: () => changeBy(-1), 
-//         value: () => privateCounter
-//     };
-// };
-
-// const counter = makeCounter();    
-// const menuAnimation = (change) => {
-//     var windowWidth = window.innerWidth;
-//     let animation = setInterval(() => { 
-//         let border = change === 'decrement' ? 0 : 10;           
-//         if (change === 'decrement') { counter.decrement() };
-//         if (change === 'increment') { counter.increment() };          
-//         let count = counter.value();
-//         if (windowWidth < 767) {dropdowns[0].style.width = `${count*10}%`};
-//         dropdowns[0].style.maxWidth = windowWidth < 767 ? `${count*10}%` : `${20 + count*20}px`;        
-//         dropdowns[0].style.opacity = `${0 + count/10}`;
-//         dropdowns[0].style.fontSize = `${count + 3}px`;
-//         if (count === border) { clearInterval(animation) };
-//     }, 20); 
-// };
-// const showSettingsList = () => {
-//     dropdowns[0].classList.toggle('user_settings_list_show');
-//     dropdowns[0].classList.contains('user_settings_list_show') ? menuAnimation('increment') : menuAnimation('decrement');
-// };    
-
-//for close context menu
-// window.onclick = function(event) {        
-//     if (!event.target.matches('.user_settings_list_wrap > i')) {
-//         for (let i = 0; i < dropdowns.length; i++) {
-//             if (dropdowns[i].classList.contains('user_settings_list_show')) {
-//                 setTimeout(() => { dropdowns[i].classList.remove('user_settings_list_show') }, 200);
-//                 menuAnimation('decrement');
-//             };
-//         };
-//     };
-
-//     ['gender', 'birthday', 'emailverified'].forEach(element => {
-//         if (!event.target.matches(`#${element}>b>.fa-edit`) &&
-//             !event.target.matches(`.forRemote${element}`)) {
-//             for (let i = 0; i < forRemote.length; i++) {
-//                 if (forRemote[i].classList.contains(`forRemote${element}`)) {
-//                     plase.innerHTML = oldVersion;                            
-//                 };
-//             };
-//         };
-//     }); 
-// };
+//for close mobile menu
+const mobileMenu = $_('.menu_container_wrap_mobile')[0];
+const mobileMenuContact = $_('.mobile_menu_contacts')[0];
+window.onclick = function(event) {        
+    if (!event.target.matches(['.container_menu', '.bar1', '.bar2', '.bar3', '.logo_mobile', '.menu_container_wrap_mobile'])) {
+        if (mobileMenu.classList.contains('menu_container_wrap_mobile_active')) {
+            mobileMenu.classList.remove("menu_container_wrap_mobile_active");
+            $_('.container_menu')[0].classList.remove("change");
+        };
+    };
+    if (!event.target.matches('.fa-ellipsis-v')) {
+        if ($_('.mobile_menu_contacts')[0].classList.contains('mobile_menu_contacts_active')) {
+            mobileMenuContact.classList.remove("mobile_menu_contacts_active");
+        };
+    };
+};
 
 //date format day
 const readyDay = function(fullDate){
@@ -142,21 +104,20 @@ window.onscroll = function() {
     // console.log('menu', menu.offsetTop);
     // console.log('social', socialValue);
     toTop.style.display = (document.body.scrollTop > 200 || document.documentElement.scrollTop > 200) ? "block" : "none";
-    if (body.offsetWidth > 1200) {
-        // (document.body.scrollTop > socialValue || document.documentElement.scrollTop > socialValue)
-        //     ? menu.classList.add('menu_scroll') 
-        //     : menu.classList.remove('menu_scroll');
-        if (document.body.scrollTop > socialValue || document.documentElement.scrollTop > socialValue) {
-            menu.classList.add('menu_scroll') 
-            // $_('.header ')[0].style.trasition = '.3s';
-            // $_('.header ')[0].style.paddingTop = '110px';
-        } else {            
-            menu.classList.remove('menu_scroll');
-            // $_('.header ')[0].style.trasition = '0s';
-            // $_('.header ')[0].style.paddingTop = '0px';
-        }
-           
+    if (body.offsetWidth > 1280) {
+        (document.body.scrollTop > socialValue || document.documentElement.scrollTop > socialValue) 
+            ? menu.classList.add('menu_scroll') 
+            : menu.classList.remove('menu_scroll');
     }; 
+    if (body.offsetWidth <= 1280) {
+        if (mobileMenu.classList.contains('menu_container_wrap_mobile_active')) {
+            mobileMenu.classList.remove("menu_container_wrap_mobile_active");
+            $_('.container_menu')[0].classList.remove("change");
+        };
+        if ($_('.mobile_menu_contacts')[0].classList.contains('mobile_menu_contacts_active')) {
+            mobileMenuContact.classList.remove("mobile_menu_contacts_active");
+        };
+    };
 };
 
 //to resize the traffic settings block
@@ -196,20 +157,14 @@ if ($_('.options_container')[0]) {
     $_('.arrow_right')[0].addEventListener('click', options_right, true);
 };
 
-//to resize the traffic settings block
+//to resize the feedback block
 if ($_('.feedback_container')[0]) { 
-    console.log('feedback');
     const feedback = () => {
-        const wrapSize = $_('.feedback_container')[0].offsetWidth;
-        console.log('wrapSize', wrapSize);
-        
-
-        $_('.feedback_wrap > .feedback_block').forEach(element => { element.style.minWidth = `${wrapSize}px` });
+        $_('.feedback_wrap > .feedback_block').forEach(element => { element.style.minWidth = `${$_('.feedback_container')[0].offsetWidth}px` });
     };
     feedback();
     window.addEventListener('resize', feedback, true);
     function feedbackPosition(el, i){
-        console.log('feedbackPosition');
         $_('.feedback_wrap')[0].style.transform = `translateX(-${i}00%)`;        
         $_('.feedback_points > p').forEach(element => {
             element.style.backgroundColor = 'rgb(141, 141, 141)';
@@ -217,15 +172,23 @@ if ($_('.feedback_container')[0]) {
         el.style.backgroundColor = '#ee9e07';
     };
     const feedbackCount = () => {
-        const feedbackCount = $_('.feedback_wrap > .feedback_block');
         $_('.feedback_points')[0].innerHTML = '';
-        for (let i = 0; i < feedbackCount.length; i++) {
+        for (let i = 0; i < $_('.feedback_wrap > .feedback_block').length; i++) {
             $_('.feedback_points')[0].innerHTML += `<p onclick="feedbackPosition(this, ${i})"></p>`;
         };
         $_('.feedback_points > p')[0].style.backgroundColor = '#ee9e07';
     };
     feedbackCount();
 };
+
+//for change status of mobile menu
+const shoeMobilMenu = (el) => {
+    el.classList.toggle("change");
+    $_('.menu_container_wrap_mobile')[0].classList.toggle("menu_container_wrap_mobile_active");
+}
+const shoeMobilInfo = () => {
+    $_('.mobile_menu_contacts')[0].classList.toggle("mobile_menu_contacts_active");
+}
 
 //tabs
 const tabs = (tab) => {
@@ -328,7 +291,8 @@ const showModal = function(type, obj, el){
                                            <i class='fas fa-${timeAction}' onclick="plusTime(this, '${timeAction}')"></i>`;
                 translateBody.appendChild(plusTransBody); 
             };
-        };
+        };        
+        $_('.add_time')[0].style.display = $_(`#${type} #gr`)[0].value !== '' ? 'table' : 'none'
     };
     if (type === 'transferDel') {
         $_(`#${type} > #id_transfer`)[0].paramid = `${obj.id}`;
