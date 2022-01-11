@@ -104,12 +104,12 @@ const getUser = async (req, res, lang = 'uk-UA', pageName) => {
             DATA.user.ava = ava;
             DATA.user.name = name;
             DATA.user.surname = surname;
+            DATA.user.email = email;
             DATA.user.lang = lang;
             DATA.permission.pageName = pageName;
             DATA.langPack = require(`./lang/${lang}`);
             if (pageName === 'person') {
-                DATA.user.foto = ava;
-                DATA.user.email = email;
+                DATA.user.foto = ava;                
                 DATA.user.date_registered = readyFullDate(date_registered, 'reverse');
                 DATA.menu.home = 'active_menu'
                 if (permission === 1) {

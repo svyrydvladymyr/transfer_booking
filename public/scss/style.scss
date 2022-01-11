@@ -1222,6 +1222,198 @@ body {
 }
 
 
+.contacts_container {
+  width: 100%;
+  display: flex;
+  flex-wrap: wrap;  
+  justify-content: center;
+  max-width: 1800px;
+  padding: 60px 20px;
+  .contacts {
+    width: 50%;
+    padding: 0px 40px;
+    display: flex;
+    flex-wrap: wrap;
+    flex-direction: column;
+    .contact {
+      width: 100%;
+      display: flex;
+      flex-wrap: wrap;
+      padding: 10px;
+      .block {
+        width: 100%;
+        padding: 10px 10px 40px 10px;
+        > p {
+          width: 100%;
+          color: #3e3f40;
+          font-size: 20px;
+          font-weight: bold;
+          line-height: 20px;
+          border-bottom: 1px solid grey;
+          padding: 0px 0px 13px 0px;
+          margin: 0px 0px 20px 0px;
+        }
+        > div {
+          width: 100%;
+          display: flex;
+          flex-wrap: wrap;
+          justify-content: stretch;
+          > i {
+            width: 34px;
+            margin: 10px 0px;
+            font-size: 18px;
+            color: #ee9e07;
+          }
+          span {
+            width: 20%;
+            flex-grow: 1;
+            p {
+              width: 100%;
+              font-size: 16px;
+              margin: 10px 0px;
+              a {
+                color: #3e3f40;
+                text-decoration-line: none;
+                font-size: 16px;
+              }
+              i.fa-whatsapp {
+                color: #47c155;
+                margin-left: 10px;
+                font-size: 18px;
+              }
+              i.fa-viber {
+                color: #764d98;
+                margin-left: 10px;
+                font-size: 18px;
+              }
+            }
+          }
+        }
+      }
+    }
+    .social {
+      width: 100%;
+      padding: 10px 20px;
+      p {
+        width: 100%;
+        color: #3e3f40;
+        font-size: 20px;
+        font-weight: bold;
+        line-height: 20px;
+        border-bottom: 1px solid grey;
+        padding: 0px 0px 13px 0px;
+        margin: 0px 0px 20px 0px;
+      }
+      .media {
+        width: 100%;
+        i {
+          color: #808080;
+          font-size: 24px;
+          margin-right: 15px;
+          &:hover {
+            color: #686868;
+          }
+        }
+      }
+    }
+  }
+}
+
+
+.feedback_form {
+  width: 50%;
+  padding: 0px 40px;
+  .feedback_form_title {
+    font-size: 50px;
+    font-weight: bold;
+    text-align: left;
+    margin: 20px 0px;
+    color: #3e3f40;
+  }
+  .line {
+    width: 80px;
+    height: 0px;
+    border: 1px solid #ee9e07;
+    margin: 30px 0px 40px 0px;
+  }
+  .feedback_form_text {
+    font-size: 16px;
+    text-align: left;
+    color: #3e3f40;
+  }
+  .feedback_form_wrap {
+    margin: 35px 0px;
+    input {
+      outline: 0;
+      width: 100%;
+      height: 40px;
+      padding: 0px 20px;
+      border: 1px solid #cacaca;
+      color: #3e3f40;
+    }
+    input.inp_readonly {
+      outline: 0;
+      width: 100%;
+      height: 40px;
+      padding: 0px 20px;
+      border: 0;
+      border-bottom: 1px solid #cacaca;
+      color: #3e3f40;
+      background: #f3f3f3;
+    }
+    textarea {
+      width: 100%;
+      max-height: 200px;
+      min-height: 100px;
+      padding: 20px;
+      border: 1px solid #cacaca;
+      color: #3e3f40;
+      resize: vertical;
+      outline: 0;
+    }
+    p.send {
+      width: 150px;
+      cursor: pointer;
+      line-height: 40px;
+      text-align: center;
+      color: #fff;
+      font-size: 24px;
+      background: #6ba917;
+      &:hover {
+        background: #54850f;
+      }
+    }
+  }
+}
+
+.feedback_form { 
+  .feedbak_inp_info {
+    > input {
+      height: 30px;
+    }
+    input.inp_readonly {
+      outline: 0;
+      width: 100%;
+      height: 30px;
+      border: 0;
+      color: #fff;
+      background: #4c4445;
+    }
+    > input, textarea {
+      background-color: #292424;
+      color: #cacaca;
+      border: none;
+      margin: 2px 0px;
+    }
+  }
+}
+iframe {
+  width: 100%;
+  max-width: 1650px;
+  height: 500px;
+  margin: 0px auto 50px auto;
+}
+
 // select::-webkit-scrollbar {
 //   width: 0px;
 // }

@@ -16,6 +16,12 @@ module.exports = {
     "header_pages_title2" : "ПОСЛУГИ",
     "header_pages_title3" : "Переглядайте всі свої бронювання",
     "header_pages_title4" : "ПЕРСОНАЛЬНИЙ КАБІНЕТ",
+    "header_pages_title5" : "Зв'яжіться з нами",
+    "header_pages_title6" : "КОНТАКТИ",
+    "header_pages_title7" : "Кілька слів про нас",
+    "header_pages_title8" : "ПРО НАС",
+    "header_pages_title9" : "Бронювання трансферу",
+    "header_pages_title10" : "ПЕРЕВЕЗЕННЯ",
 
     "autoriz_info" : "Для входу в кабінет Вам потрібно авторизуватися!",
     "exit" : "Вийти з акаунта",
@@ -80,5 +86,18 @@ module.exports = {
     "feedback7" : "Все було вчасно і професійно. Подорожували з двома маленькими дітьми (2 і 4 роки), тому шукали компанію, яка може запропонувати трансфер мікроавтобусом із двома дитячими кріслами і великим багажником для валіз, дитячої коляски та лижного спорядження. Я навіть двічі перепитував чи справді буде 2 автокрісла і був приємно вражений. Всі наші побажання були враховані. Це найкраще обслуговування, яке мені доводилося зустрічати під час поїздок в Карпати.",
     "feedback_name7" : "Сергій",
     "feedback8" : "Чудовий сервіс за ціною, нижчою, ніж таксі. Їхали удвох з дівчиною, нас зустріли і забрали вчасно. Поїздка була швидкою, безпечною і комфортною. Водій – професіонал своєї  справи, завіз нас туди, куди я мабуть не ризикнув би їхати власним автомобілем за таких погодних умов. Замовляли також зворотній трансфер, все було ОК. Рекомендуватиму друзям вашу компанію",
-    "feedback_name8" : "Едуард"
+    "feedback_name8" : "Едуард",
+
+    "feedback_text" : "You can contact us any way that is convenient for you. We are available 24/7 via telephone or e-mail. You can also use a quick contact form below. We would be happy to answer your questions",
+    "contacts_title1" : "Телефон",
+    "contacts_title2" : "Е-мейл",
+    "contacts_title3" : "Місцезнаходження",
+    "contacts_title4" : "Години роботи",
+    "contacts_title5" : "Соціальні мережі",
+
+    "feedback_form_name" : "Ім'я",
+    "feedback_form_surname" : "Прізвище",
+    "feedback_form_email" : "Е-мейл",
+    "feedback_form_tel" : "Телефон",
+    "feedback_form_message" : "Повідомлення"
 }
