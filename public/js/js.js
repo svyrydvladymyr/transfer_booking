@@ -222,11 +222,10 @@ const showModal = function(type, obj, el){
     // console.log('obj', obj);
     // console.log('el', el);
 
-    (type === 'transferTimes' || type === 'transferTowns') 
-        ? $_('.wrap_sub_modal')[0].innerHTML = template[type]
-        : modal.innerHTML = template[type];
+    // (type === 'transferTimes' || type === 'transferTowns') 
+    //     ? $_('.wrap_sub_modal')[0].innerHTML = template[type]
+    //     : modal.innerHTML = template[type];
 
-    //sub modal
     if (type === 'transferTimes') {
         $_('.wrap_sub_modal')[0].innerHTML = template[type];
         hours = $_('.hours')[0];
@@ -238,6 +237,26 @@ const showModal = function(type, obj, el){
             el.value = `${hours.innerHTML}:${minutes.innerHTML}`;
             closeSubModal();
         });   
+    };
+    if (type === 'mainformTimes') {
+        if (el.getAttribute("setparam") === 'limit') {
+            modal.innerHTML = template[`${type}limit`];
+
+
+
+            
+        } else {
+            modal.innerHTML = template[type];
+            hours = $_('.hours')[0];
+            minutes = $_('.minutes')[0];
+            hArr = ['00', '01', '02', '03', '04', '05', '06', '07', '08', '09', '10', '11', '12', '13', '14', '15', '16', '17', '18', '19', '20', '21', '22', '23'];
+            mArr = ['00', '05', '10', '15', '20', '25', '30', '35', '40', '45', '50', '55', '60'];
+            hStart = 0, mStart = 0;
+            $_('.admTime')[0].addEventListener('click', function(){
+                el.value = `${hours.innerHTML}:${minutes.innerHTML}`;
+                modal.innerHTML = ''
+            }); 
+        }; 
     };
     if (type === 'transferTowns') {
         $_('.wrap_sub_modal')[0].innerHTML = template[type];
@@ -253,20 +272,27 @@ const showModal = function(type, obj, el){
             };
         });
     };
-
-    //main modal
     if (type === 'townAdd') {
+        modal.innerHTML = template[type];
         idTownPlace = $_('#id_town')[0];
         tokenTown = generate_token(6);
     };
     if (type === 'townEdit') {
+        modal.innerHTML = template[type];
         $_(`#${type} > #id_town`)[0].innerHTML = obj.id;
         $_(`#${type} > #ua`)[0].value = obj.ua;
         $_(`#${type} > #en`)[0].value = obj.en;
         $_(`#${type} > #ru`)[0].value = obj.ru; 
     };
-    if (type === 'townDel') { $_(`#${type} > #id_town`)[0].innerHTML = obj.id };
+    if (type === 'townDel') { 
+        modal.innerHTML = template[type];
+        $_(`#${type} > #id_town`)[0].innerHTML = obj.id 
+    };
+    if (type === 'transferAdd') {
+        modal.innerHTML = template[type];
+    }
     if (type === 'transferEdit') {
+        modal.innerHTML = template[type];
         const timeList = [];
         for (let i = 0; i < 10; i++) { if (obj[`time${i + 1}`] !== '') { timeList.push(obj[`time${i + 1}`])}};
         $_(`#${type}`)[0].paramid = obj.id;
@@ -295,6 +321,7 @@ const showModal = function(type, obj, el){
         $_('.add_time')[0].style.display = $_(`#${type} #gr`)[0].value !== '' ? 'table' : 'none'
     };
     if (type === 'transferDel') {
+        modal.innerHTML = template[type];
         $_(`#${type} > #id_transfer`)[0].paramid = `${obj.id}`;
         $_(`#${type} > #id_transfer`)[0].innerHTML = `${obj.from} - ${obj.to}`;
     }; 

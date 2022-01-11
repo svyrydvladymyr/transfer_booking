@@ -56,24 +56,29 @@
             <div class="feedback_form" style="width: 100%; padding: 0;">
                 <div class="feedback_form_wrap feedbak_inp_info" style="margin: 0;">
                     <% if (DATA.permission.permissionAuthorization === '0') { %>
-                        <input type="text" name="name" id="name" autocomplete="nope" placeholder="<%=DATA.langPack.feedback_form_name %>">
+                        <input type="text" name="name" id="name" autocomplete="nope" placeholder="<%=DATA.langPack.feedback_form_name %>" />
                     <% } %> 
                     <% if (DATA.permission.permissionAuthorization === '1') { %>
-                        <input type="text" class="inp_readonly" value="<%=DATA.user.name %>" name="name" id="name" autocomplete="nope" placeholder="<%=DATA.langPack.feedback_form_name %>" readonly>
+                        <input type="text" class="inp_readonly" value="<%=DATA.user.name %>" name="name" id="name" autocomplete="nope" placeholder="<%=DATA.langPack.feedback_form_name %>" readonly />
                     <% } %> 
                     <% if (DATA.permission.permissionAuthorization === '0') { %>
-                        <input type="text" name="surname" id="surname" autocomplete="nope" placeholder="<%=DATA.langPack.feedback_form_surname %>">
+                        <input type="text" name="surname" id="surname" autocomplete="nope" placeholder="<%=DATA.langPack.feedback_form_surname %>"/>
                     <% } %> 
                     <% if (DATA.permission.permissionAuthorization === '1') { %>
-                        <input type="text" class="inp_readonly" value="<%=DATA.user.surname %>" name="surname" id="surname" autocomplete="nope" placeholder="<%=DATA.langPack.feedback_form_surname %>" readonly>
+                        <input type="text" class="inp_readonly" value="<%=DATA.user.surname %>" name="surname" id="surname" autocomplete="nope" placeholder="<%=DATA.langPack.feedback_form_surname %>" readonly />
                     <% } %> 
                     <% if (DATA.permission.permissionAuthorization === '0') { %>
-                        <input type="email" name="email" id="email" autocomplete="nope" placeholder="<%=DATA.langPack.feedback_form_email %>">
+                        <input type="email" name="email" id="email" autocomplete="nope" placeholder="<%=DATA.langPack.feedback_form_email %>" />
                     <% } %> 
                     <% if (DATA.permission.permissionAuthorization === '1') { %>
-                        <input type="email" class="inp_readonly" value="<%=DATA.user.email %>" name="email" id="email" autocomplete="nope" placeholder="<%=DATA.langPack.feedback_form_email %>" readonly>
+                        <% if ((DATA.user.email === '') || (DATA.user.email === null) || (DATA.user.email === undefined)) { %>
+                            <input type="email" name="email" id="email" autocomplete="nope" placeholder="<%=DATA.langPack.feedback_form_email %>" />
+                        <% } %> 
+                        <% if ((DATA.user.email !== '') && (DATA.user.email !== null) && (DATA.user.email !== undefined)) { %>
+                            <input type="email" class="inp_readonly" value="<%=DATA.user.email %>" name="email" id="email" autocomplete="nope" placeholder="<%=DATA.langPack.feedback_form_email %>" readonly />
+                        <% } %>  
                     <% } %>                   
-                    <input type="tel" name="tel" id="tel" autocomplete="nope" placeholder="<%=DATA.langPack.feedback_form_tel %>">
+                    <input type="tel" name="tel" id="tel" autocomplete="nope" placeholder="<%=DATA.langPack.feedback_form_tel %>" />
                     <textarea name="comment" id="comment" autocomplete="nope" maxlength="300" placeholder="<%=DATA.langPack.feedback_form_message %>"></textarea>
                     <p class="send"><i class='far fa-paper-plane'></i></p>
                 </div>

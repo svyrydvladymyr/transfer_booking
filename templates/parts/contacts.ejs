@@ -23,10 +23,16 @@
             <% if (DATA.permission.permissionAuthorization === '0') { %>
                 <p><%=DATA.langPack.feedback_form_email %></p>
                 <input type="email" name="email" id="email" autocomplete="nope">
-            <% } %> 
+            <% } %>         
             <% if (DATA.permission.permissionAuthorization === '1') { %>
-                <p><%=DATA.langPack.feedback_form_email %></p>
-                <input type="email" class="inp_readonly" value="<%=DATA.user.email %>" name="email" id="email" autocomplete="off" readonly>
+                <% if ((DATA.user.email === '') || (DATA.user.email === null) || (DATA.user.email === undefined)) { %>
+                    <p><%=DATA.langPack.feedback_form_email %></p>
+                    <input type="email" name="email" id="email" autocomplete="nope">
+                <% } %> 
+                <% if ((DATA.user.email !== '') && (DATA.user.email !== null) && (DATA.user.email !== undefined)) { %>
+                    <p><%=DATA.langPack.feedback_form_email %></p>
+                    <input type="email" class="inp_readonly" value="<%=DATA.user.email %>" name="email" id="email" autocomplete="off" readonly>
+                <% } %>                 
             <% } %> 
             <p><%=DATA.langPack.feedback_form_tel %></p>
             <input type="tel" name="tel" id="tel" autocomplete="nope">

@@ -211,8 +211,6 @@
     margin: 26px auto 0px auto;
 }
 
-
-
 /*-------------------small menu--------------------*/
 .container_menu {
     display: inline-block;
@@ -237,7 +235,6 @@
     -webkit-transform: rotate(45deg) translate(-8px, -8px);
     transform: rotate(45deg) translate(-8px, -8px);
 }
-
 .active_menu {
     color: #fff;
     background: #6ba917;

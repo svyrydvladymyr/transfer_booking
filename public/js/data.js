@@ -91,8 +91,8 @@ template = {
             <i class='fa fa-times' onclick="closeModal(event)"></i>
         </div>
         <div class="modal_place" id="transferAdd">
-            <input type="text" id="from" name="from" maxlength="40" inputparam="" value="" autocomplete="off" placeholder="Перевезення з ..." oninput="validationInput(this)" onfocus="showModal('transferTowns', {'param': 'from'})">
-            <input type="text" id="to" name="to" maxlength="40" inputparam="" value="" autocomplete="off" placeholder="Перевезення до ..." oninput="validationInput(this)" onfocus="showModal('transferTowns', {'param': 'to'})">
+            <input type="text" id="from" name="from" maxlength="60" inputparam="" value="" autocomplete="off" placeholder="Перевезення з ..." oninput="validationInput(this)" onfocus="showModal('transferTowns', {'param': 'from'})">
+            <input type="text" id="to" name="to" maxlength="60" inputparam="" value="" autocomplete="off" placeholder="Перевезення до ..." oninput="validationInput(this)" onfocus="showModal('transferTowns', {'param': 'to'})">
             <p class="transfer_dup_to">Поля "Перевезення з" і "Перевезення до" не можуть співпадати!</p>
             <p class="transfer_empty_to">Поля "Перевезення з" і "Перевезення до" не можуть бути пустим!</p>
             <div> 
@@ -165,8 +165,8 @@ template = {
             <i class='fa fa-times' onclick="closeModal(event)"></i>
         </div>
         <div class="modal_place" id="transferEdit" paramid="">
-            <input type="text" id="from" name="from" maxlength="40" inputparam="" value="" autocomplete="off" placeholder="Перевезення з ..." oninput="validationInput(this)" onfocus="showModal('transferTowns', {'param': 'from'})">
-            <input type="text" id="to" name="to" maxlength="40" inputparam="" value="" autocomplete="off" placeholder="Перевезення до ..." oninput="validationInput(this)" onfocus="showModal('transferTowns', {'param': 'to'})">
+            <input type="text" id="from" name="from" maxlength="60" inputparam="" value="" autocomplete="off" placeholder="Перевезення з ..." oninput="validationInput(this)" onfocus="showModal('transferTowns', {'param': 'from'})">
+            <input type="text" id="to" name="to" maxlength="60" inputparam="" value="" autocomplete="off" placeholder="Перевезення до ..." oninput="validationInput(this)" onfocus="showModal('transferTowns', {'param': 'to'})">
             <p class="transfer_dup_to">Поля "Перевезення з" і "Перевезення до" не можуть співпадати!</p>
             <p class="transfer_empty_to">Поля "Перевезення з" і "Перевезення до" не можуть бути пустим!</p>
             <div> 
@@ -220,6 +220,36 @@ template = {
         </div>
         <div class="modal_place" id="transferDel">
             <p class="res_mess">Маршрут видалено із списку!</p>
+        </div>        
+    </div>`,
+    mainformTimes:
+    `<div class="modal_body" onclick="closeModal(event)">
+        <div class="modal_close">
+            <i class='fa fa-times' onclick="closeModal(event)"></i>
+        </div>
+        <div class="modal_place" id="mainformTimes">     
+            <div class="time_modal_wrap">
+                <div>           
+                    <i class='fas fa-angle-up' onclick="selectTime('hour', 'up')"></i>
+                    <p class="hours">00</p>
+                    <i class='fas fa-angle-down' onclick="selectTime('hour', 'down')"></i>
+                </div>
+                <p class="dvokrapka">:</p>
+                <div>           
+                    <i class='fas fa-angle-up' onclick="selectTime('minute', 'up')"></i>
+                    <p class="minutes">00</p>
+                    <i class='fas fa-angle-down' onclick="selectTime('minute', 'down')"></i>
+                </div>
+            </div>
+            <p class="main_form_send admTime"><i class='fas fa-check'></i></p>
+        </div>        
+    </div>`,
+    mainformTimeslimit:
+    `<div class="modal_body" onclick="closeModal(event)">
+        <div class="modal_close">
+            <i class='fa fa-times' onclick="closeModal(event)"></i>
+        </div>
+        <div class="modal_place" id="mainformTimeslimit">     
         </div>        
     </div>`
 };   

@@ -99,6 +99,12 @@ module.exports = {
     "feedback_form_surname" : "Last name",
     "feedback_form_email" : "E-mail",
     "feedback_form_tel" : "Phone",
-    "feedback_form_message" : "Message"
+    "feedback_form_message" : "Message",
+
+    "main_form_message" : "Fill in the details below to book your transfer",
+    "main_form_mess_from" : "From airport, railway station, hotel or location",
+    "main_form_mess_to" : "To airport, railway station, hotel or location",
+    "main_form_date" : "Date",
+    "main_form_time" : "Time",
 
 }

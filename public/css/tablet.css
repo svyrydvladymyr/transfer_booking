@@ -178,7 +178,6 @@
     margin-left: 24px;
     border-radius: 3px;
 }
-
 .menu_container_wrap_mobile > ul{
     position: absolute;
     top: 60px;
@@ -205,7 +204,6 @@
 .menu_container_wrap_mobile > ul > li > a:hover { 
     background: #6ba917;
 } 
-
 .menu_container_wrap_mobile_active > ul > li > a{ 
     font-size: 18px;
     line-height: 60px;
@@ -213,7 +211,6 @@
     border-bottom: 1px solid grey;   
     transition: .2s;
 }
-
 .menu_container_wrap_mobile > .mobile_menu_contacts_active { 
     display: block;
 }

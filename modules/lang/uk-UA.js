@@ -99,5 +99,11 @@ module.exports = {
     "feedback_form_surname" : "Прізвище",
     "feedback_form_email" : "Е-мейл",
     "feedback_form_tel" : "Телефон",
-    "feedback_form_message" : "Повідомлення"
+    "feedback_form_message" : "Повідомлення",
+
+    "main_form_message" : "Fill in the details below to book your transfer",
+    "main_form_mess_from" : "From airport, railway station, hotel or location",
+    "main_form_mess_to" : "To airport, railway station, hotel or location",
+    "main_form_date" : "Дата",
+    "main_form_time" : "Час",
 }
