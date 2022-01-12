@@ -11,10 +11,13 @@ const validEmail = text => (text.match(/^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-
 const exit = () => { send({}, '/exit', (res) => { location.reload() }) };
 
 const modal = $_('.modal_wrap')[0];
+const inputFrom = $_('#main_from')[0];
+const inputTo = $_('#main_to')[0];
 const RegExpInput = new RegExp(/[^a-zA-Zа-яА-Я0-9-()_+=.'\":/\,іІїЇєЄ /\n]/g); 
 
 let idTownPlace, tokenTown;
 let hours, minutes, hArr = [], mArr = [];
+let townsFrom = {}, townsTo = {}, transfersArr = [];
 let hStart = 0, mStart = 0;
 
 //for close mobile menu
@@ -62,6 +65,12 @@ const send = (obj, url, fun, req = 'POST') => {
 const setLang = (lang) => {
     document.cookie = `lang=${lang}`;
     document.location.reload();
+};
+const getLang = (name) => {
+    let matches = document.cookie.match(new RegExp(
+        "(?:^|; )" + name.replace(/([\.$?*|{}\(\)\[\]\\\/\+^])/g, '\\$1') + "=([^;]*)"
+    ));
+    return matches ? decodeURIComponent(matches[1]).slice(0, 2) : 'ua';
 };
 
 //to top
@@ -216,15 +225,76 @@ const closeModal = (el) => {
     });
     if (valClose) { modal.innerHTML = '' }; 
 };  
+
 //show modal window
 const showModal = function(type, obj, el){
     // console.log('type', type);
     // console.log('obj', obj);
     // console.log('el', el);
+    ['townAddRes', 'townEditRes', 'townDelRes', 'transferAdd', 'transferAddRes', 'transferEditRes', 'transferDelRes'].includes(type) 
+        ? modal.innerHTML = template[type] : null;
 
-    // (type === 'transferTimes' || type === 'transferTowns') 
-    //     ? $_('.wrap_sub_modal')[0].innerHTML = template[type]
-    //     : modal.innerHTML = template[type];
+    if (type === 'mainformFrom') {
+        modal.innerHTML = template[type];
+        $_(`#${type}`)[0].children[0].innerHTML = lang[`${type}${getLang('lang')}`];
+        const tawns_list = $_('.towns_select_list')[0];
+        tawns_list.innerHTML = '';  
+        if ((inputFrom.value !== '') && (inputTo.value !== '')) {             
+            for (const [key, value] of Object.entries(townsFrom)) {
+                tawns_list.innerHTML += `<p id="${key}" onclick="selectTownMain(this, 'main_from', 'clear')">${value}</p>`;
+            };
+        } else {
+            if (inputTo.value === '') {                  
+                for (const [key, value] of Object.entries(townsFrom)) {
+                    tawns_list.innerHTML += `<p id="${key}" onclick="selectTownMain(this, 'main_from')">${value}</p>`;
+                };
+            } else {
+                const anotherValue = $_('#main_to')[0].getAttribute('inputmainparam'), resListTowns = [];
+                transfersArr.forEach(element => {
+                    if (element['transfer_to'] === anotherValue) {
+                        resListTowns.push({[`${element['transfer_from']}`] : `${townsFrom[element['transfer_from']]}`});
+                    };
+                });
+                resListTowns.forEach(element => {
+                    for (const [key, value] of Object.entries(element)) {
+                        tawns_list.innerHTML += `<p id="${key}" onclick="selectTownMain(this, 'main_from')">${value}</p>`;
+                    };
+                });
+            };
+        };        
+    };
+
+
+    if (type === 'mainformTo') {
+        modal.innerHTML = template[type];
+        $_(`#${type}`)[0].children[0].innerHTML = lang[`${type}${getLang('lang')}`];
+        const tawns_list = $_('.towns_select_list')[0];
+        tawns_list.innerHTML = '';
+        if ((inputFrom.value !== '') && (inputTo.value !== '')) {
+            for (const [key, value] of Object.entries(townsTo)) {
+                tawns_list.innerHTML += `<p id="${key}" onclick="selectTownMain(this, 'main_to', 'clear')">${value}</p>`;
+            };
+        } else {
+            if (inputFrom.value === '') {
+                for (const [key, value] of Object.entries(townsTo)) {
+                    tawns_list.innerHTML += `<p id="${key}" onclick="selectTownMain(this, 'main_to')">${value}</p>`;
+                };
+            } else {
+                const anotherValue = $_('#main_from')[0].getAttribute('inputmainparam'), resListTowns = [];
+                transfersArr.forEach(element => {
+                    if (element['transfer_from'] === anotherValue) {
+                        resListTowns.push({[`${element['transfer_to']}`] : `${townsTo[element['transfer_to']]}`});
+                    };
+                });
+                resListTowns.forEach(element => {
+                    for (const [key, value] of Object.entries(element)) {
+                        tawns_list.innerHTML += `<p id="${key}" onclick="selectTownMain(this, 'main_to')">${value}</p>`;
+                    };
+                });
+            };
+        };
+    };
+
 
     if (type === 'transferTimes') {
         $_('.wrap_sub_modal')[0].innerHTML = template[type];
@@ -247,6 +317,7 @@ const showModal = function(type, obj, el){
             
         } else {
             modal.innerHTML = template[type];
+            $_(`#${type}`)[0].children[0].innerHTML = lang[`${type}${getLang('lang')}`];
             hours = $_('.hours')[0];
             minutes = $_('.minutes')[0];
             hArr = ['00', '01', '02', '03', '04', '05', '06', '07', '08', '09', '10', '11', '12', '13', '14', '15', '16', '17', '18', '19', '20', '21', '22', '23'];
@@ -267,11 +338,12 @@ const showModal = function(type, obj, el){
                 const tawns_list = $_('.towns_select_list')[0];
                 tawns_list.innerHTML = '';
                 resultat.res.forEach(element => {        
-                    tawns_list.innerHTML += `<p id="${element.town_id}" onclick="selectTown(this, '${setParam}')">${element.name_ua}</p>`
+                    tawns_list.innerHTML += `<p id="${element.town_id}" onclick="selectTown(this, '${setParam}')">${element.name_uk}</p>`
                 });
             };
         });
     };
+    //____TOWNS
     if (type === 'townAdd') {
         modal.innerHTML = template[type];
         idTownPlace = $_('#id_town')[0];
@@ -280,7 +352,7 @@ const showModal = function(type, obj, el){
     if (type === 'townEdit') {
         modal.innerHTML = template[type];
         $_(`#${type} > #id_town`)[0].innerHTML = obj.id;
-        $_(`#${type} > #ua`)[0].value = obj.ua;
+        $_(`#${type} > #ua`)[0].value = obj.uk;
         $_(`#${type} > #en`)[0].value = obj.en;
         $_(`#${type} > #ru`)[0].value = obj.ru; 
     };
@@ -288,9 +360,7 @@ const showModal = function(type, obj, el){
         modal.innerHTML = template[type];
         $_(`#${type} > #id_town`)[0].innerHTML = obj.id 
     };
-    if (type === 'transferAdd') {
-        modal.innerHTML = template[type];
-    }
+    //____TRANSFERS
     if (type === 'transferEdit') {
         modal.innerHTML = template[type];
         const timeList = [];
@@ -339,6 +409,23 @@ const selectTown = (el, param) => {
     inputPlace.inputparam = el.id;
     if (inputPlaceFROM.inputparam === inputPlaceTO.inputparam) {
         $_(`.transfer_dup_to`)[0].style.display = 'block';
+    };
+};
+
+const selectTownMain = (el, param, clear) => {
+    modal.innerHTML = '';
+    const inputPlace = $_(`#${param}`)[0];
+    inputPlace.value = el.innerHTML;
+    inputPlace.setAttribute("inputmainparam", el.id);
+    if (clear === 'clear') {
+        if (param === 'main_from') {
+            inputTo.value = '';
+            inputTo.setAttribute("inputmainparam", '');
+        };
+        if (param === 'main_to') {
+            inputFrom.value = '';
+            inputFrom.setAttribute("inputmainparam", '');
+        };
     };
 };
 
@@ -428,6 +515,24 @@ const selectTime = (type, arrow) => {
     };
 };
 
+//load variables list
+const loadVariablesList = () => {
+    send({} , `/variables`, (result) => {
+        const resultat = JSON.parse(result);
+        if (resultat.res) {
+            console.log('varrrr', resultat.res);
+
+            townsFrom = resultat.res.townsFrom;
+            townsTo = resultat.res.townsTo;
+            transfersArr = resultat.res.transfersArr;
+
+            console.log('townsFrom', townsFrom);
+            console.log('townsTo', townsTo);
+            console.log('transfersArr', transfersArr);
+        };
+    });
+};
+
 //load towns list
 const loadTownsList = () => {
     send({} , `/townlist`, (result) => {
@@ -437,9 +542,9 @@ const loadTownsList = () => {
             tawns_list.innerHTML = '';
             resultat.res.forEach(element => {        
                 tawns_list.innerHTML += `
-                <div class="town"><p>${element.name_ua}
+                <div class="town"><p>${element.name_uk}
                     <span>
-                        <i class='fas fa-edit' onclick="showModal('townEdit', {'id' : '${element.town_id}', 'ua' : '${element.name_ua}', 'en' : '${element.name_en}', 'ru' : '${element.name_ru}'})"></i>
+                        <i class='fas fa-edit' onclick="showModal('townEdit', {'id' : '${element.town_id}', 'uk' : '${element.name_uk}', 'en' : '${element.name_en}', 'ru' : '${element.name_ru}'})"></i>
                         <i class='fas fa-trash-alt' onclick="showModal('townDel', {'id' : '${element.town_id}'})"></i>
                     </span>
                 </p></div>`

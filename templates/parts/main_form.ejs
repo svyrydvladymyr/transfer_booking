@@ -4,11 +4,11 @@
         <div class="main_form_row">
             <div class="main_form_coll">
                 <p class="inp_title"><%=DATA.langPack.main_form_mess_from %></p>
-                <input type="text" name="from" id="main_from" maxlength="60" inputmainparam="" value="" autocomplete="off" >
+                <input type="text" name="from" id="main_from" maxlength="60" inputmainparam="" value="" autocomplete="off" onfocus="showModal('mainformFrom', {}, this)">
             </div>
             <div class="main_form_coll">
                 <p class="inp_title"><%=DATA.langPack.main_form_mess_to %></p>
-                <input type="text" name="to" id="main_to" maxlength="60" inputmainparam="" value="" autocomplete="off" >
+                <input type="text" name="to" id="main_to" maxlength="60" inputmainparam="" value="" autocomplete="off" onfocus="showModal('mainformTo', {}, this)">
             </div>
         </div>
         <div class="main_form_row">
@@ -18,7 +18,7 @@
             </div>
             <div class="main_form_coll">
                 <p class="inp_title"><%=DATA.langPack.main_form_time %></p>
-                <input type="text" name="time" id="main_time" maxlength="60" inputmainparam="" setparam="" value="" autocomplete="off" onclick="showModal('mainformTimes', {}, this)">
+                <input type="text" name="time" id="main_time" maxlength="60" inputmainparam="" setparam="" value="" autocomplete="off" onfocus="showModal('mainformTimes', {}, this)">
             </div>
         </div>
         <div class="main_form_row">

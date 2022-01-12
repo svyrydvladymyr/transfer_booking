@@ -7,10 +7,10 @@ template = {
         <div class="modal_place" id="townAdd">
             <p id="id_town"></p>
             <p class="form_info">Унікальний номер міста</p>            
-            <input type="text" id="ua" name="ua" maxlength="0" placeholder="Назва українською" oninput="creatingIdTown(this), validationInput(this)">
+            <input type="text" id="ua" name="ua" maxlength="50" placeholder="Назва українською" oninput="creatingIdTown(this), validationInput(this)">
             <p class="town_dup_ua">Така назва вже є в базі!</p>
             <p class="town_empty_ua">Не може бути пустим!</p>
-            <input type="text" id="en" name="en" maxlength="0" placeholder="Name in English" oninput="validationInput(this)">
+            <input type="text" id="en" name="en" maxlength="50" placeholder="Name in English" oninput="validationInput(this)">
             <p class="town_dup_en">Така назва вже є в базі!</p>
             <p class="town_empty_en">Не може бути пустим!</p>
             <input type="text" id="ru" name="ru" maxlength="50" placeholder="Название на русском" oninput="validationInput(this)">
@@ -222,12 +222,17 @@ template = {
             <p class="res_mess">Маршрут видалено із списку!</p>
         </div>        
     </div>`,
+
+
+
+
     mainformTimes:
     `<div class="modal_body" onclick="closeModal(event)">
         <div class="modal_close">
             <i class='fa fa-times' onclick="closeModal(event)"></i>
         </div>
         <div class="modal_place" id="mainformTimes">     
+            <p class="mainform_title"></p>
             <div class="time_modal_wrap">
                 <div>           
                     <i class='fas fa-angle-up' onclick="selectTime('hour', 'up')"></i>
@@ -251,6 +256,27 @@ template = {
         </div>
         <div class="modal_place" id="mainformTimeslimit">     
         </div>        
-    </div>`
+    </div>`,
+
+    mainformFrom:
+    `<div class="modal_body" onclick="closeModal(event)">
+        <div class="modal_close">
+            <i class='fa fa-times' onclick="closeModal(event)"></i>
+        </div>
+        <div class="modal_place" id="mainformFrom">
+            <p class="mainform_title"></p>
+            <div class="towns_select_list"></div>
+        </div>        
+    </div>`,
+    mainformTo:
+    `<div class="modal_body" onclick="closeModal(event)">
+        <div class="modal_close">
+            <i class='fa fa-times' onclick="closeModal(event)"></i>
+        </div>
+        <div class="modal_place" id="mainformTo">
+            <p class="mainform_title"></p>
+            <div class="towns_select_list"></div>
+        </div>        
+    </div>`,
 };   
 

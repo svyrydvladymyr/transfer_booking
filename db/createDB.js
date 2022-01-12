@@ -17,7 +17,7 @@ const users = () => {
 const points = () => {
     const sql = `CREATE TABLE points (id INT AUTO_INCREMENT PRIMARY KEY,
         town_id VARCHAR(75) NOT NULL UNIQUE,
-        name_ua VARCHAR(55) NOT NULL UNIQUE,    
+        name_uk VARCHAR(55) NOT NULL UNIQUE,    
         name_en VARCHAR(55) NOT NULL UNIQUE,    
         name_ru VARCHAR(55) NOT NULL UNIQUE        
         )`; 

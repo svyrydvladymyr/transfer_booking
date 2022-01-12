@@ -9,7 +9,7 @@ const townadd = async (req, res) => {
         let resMess, sql;
         if (req.body.param === 'townAdd') {
             resMess = 'Town added!';
-            sql = `INSERT INTO points (town_id, name_ua, name_en, name_ru) 
+            sql = `INSERT INTO points (town_id, name_uk, name_en, name_ru) 
             VALUES ('${checOnTrueVal(req.body.id)}', 
                     '${checOnTrueVal(req.body.ua)}', 
                     '${checOnTrueVal(req.body.en)}', 
@@ -17,7 +17,7 @@ const townadd = async (req, res) => {
         };
         if (req.body.param === 'townEdit') {
             resMess = 'Town edited!';
-            sql = `UPDATE points SET name_ua='${checOnTrueVal(req.body.ua)}', name_en='${checOnTrueVal(req.body.en)}', name_ru='${checOnTrueVal(req.body.ru)}' 
+            sql = `UPDATE points SET name_uk='${checOnTrueVal(req.body.ua)}', name_en='${checOnTrueVal(req.body.en)}', name_ru='${checOnTrueVal(req.body.ru)}' 
             WHERE town_id='${checOnTrueVal(req.body.id)}'`; 
         };
         if (req.body.param === 'townDel') {
@@ -28,7 +28,7 @@ const townadd = async (req, res) => {
         .then((result) => {
             // console.log('result', result);
             if (result.err && result.err.code == 'ER_DUP_ENTRY') {
-                const arr = [req.body.id, req.body.ua, req.body.en, req.body.ru];
+                const arr = [req.body.id, req.body.uk, req.body.en, req.body.ru];
                 for (let i = 0; i < arr.length; i++) {
                     if (result.err.sqlMessage.includes(arr[i])) {
                         res.send({"DUP": arr[i]}); break;
@@ -129,10 +129,10 @@ const transferlist = async (req, res) => {
     await autorisationCheck(req, res)
     .then(async (userid) => {
         if (userid === false) { throw new Error('error-autorisation') };
-        await tableRecord(`SELECT town_id, name_ua FROM points`)
+        await tableRecord(`SELECT town_id, name_uk FROM points`)
         .then((result) => {
             if (result.err) { throw new Error('error-DB') };
-            if (!result.err) { result.forEach(element => { townsArr[`${element.town_id}`] = element.name_ua })};
+            if (!result.err) { result.forEach(element => { townsArr[`${element.town_id}`] = element.name_uk })};
         })
         await tableRecord(`SELECT * FROM transfers`)
         .then((result) => {
@@ -172,9 +172,62 @@ const transferlist = async (req, res) => {
     });
 };
 
+const variables = async (req, res) => {
+    let townsFrom = {}, townsTo = {}, transfersArr = [], townsId = [];
+    const lang = ['uk-UA', 'en-US', 'ru-RU'].includes(req.cookies['lang']) ? req.cookies['lang'].slice(0, 2) : 'uk';
+    await tableRecord(`SELECT town_id, name_${lang} FROM points`)
+    .then((result) => {
+        if (result.err) { throw new Error('error-DB-townsID') };
+        if (!result.err) { 
+            result.forEach(element => { 
+                townsId[`${element.town_id}`] = element[`name_${lang}`]
+            });
+        };
+    })
+    await tableRecord(`SELECT transfer_from FROM transfers GROUP BY transfer_from`)
+    .then((result) => {
+        if (result.err) { throw new Error('error-DB-transferFROM') };
+        if (!result.err) { 
+            result.forEach(element => { 
+                townsFrom[`${element.transfer_from}`] = townsId[element.transfer_from];
+            });   
+        };
+    })
+    await tableRecord(`SELECT transfer_to FROM transfers GROUP BY transfer_to`)
+    .then((result) => {
+        if (result.err) { throw new Error('error-DB-transferTO') };
+        if (!result.err) { 
+            result.forEach(element => { 
+                townsTo[`${element.transfer_to}`] = townsId[element.transfer_to];
+            });   
+        };
+    })
+    await tableRecord(`SELECT * FROM transfers`)
+    .then((result) => {
+        if (result.err) { throw new Error('error-DB-transfersARR') };
+        if (!result.err) { 
+            result.forEach(element => {
+                transfersArr.push(element); 
+            });           
+        };
+    })
+    .then(() => {
+        // console.log('townsId', townsId);
+        // console.log('townsFrom', townsFrom);
+        // console.log('townsTo', townsTo);
+        // console.log('transfersArr', transfersArr);
+        res.send({"res": {townsFrom, townsTo, transfersArr}});
+    })
+    .catch((err) => {
+        log('variables-list-error', err);
+        res.status(400).send('SERVER ERROR: 400 (Bad Request)');
+    });
+};
+
 module.exports = {
     townadd,
     transferadd,
     townlist,
-    transferlist
+    transferlist,
+    variables
 }
