@@ -1499,6 +1499,124 @@ iframe {
   margin: 0px auto 50px auto;
 }
 
+//_______________calendar___________________
+
+.modal_wrap {
+  .modal_place {
+    div {
+      max-width: 100%;
+    }
+    div.calendar_wrap {
+      width: 100%;
+      max-width: 100%;
+      .container {
+        width: 100%;
+        height: auto;
+        max-width: 100%;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+      }      
+      .calendar {
+        width: 100%;
+        height: auto;
+        max-width: 100%;
+        margin: 0;
+      }      
+      .month, .year {
+        width: 100%;
+        height: auto;
+        background-color: #6ba917;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 0 10px;
+        margin: 3px 0px;
+        text-align: center;
+      }      
+      .month i, .year i {
+        font-size: 20px;
+        cursor: pointer;
+      }
+      
+      .month h1, .year h1 {
+        font-size: 16px;
+        width: 100%;
+        font-weight: 400;
+        text-transform: uppercase;
+        letter-spacing: 0.2rem;
+      }
+      
+      .weekdays {
+        width: 100%;
+        height: auto;
+        padding: 0 0.4rem;
+        display: flex;
+        align-items: center;
+        margin: 10px 0px 0px 0px;
+      }
+      
+      .weekdays div {
+        font-size: 12px;
+        font-weight: 400;
+        letter-spacing: 0.1rem;
+        width: 12%;
+        margin: 0;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        background: lightgrey;
+        padding: 5px 0px;
+        color: #111;
+      }      
+      .days {
+        width: 100%;
+        display: flex;
+        flex-wrap: wrap;
+        padding: 0.2rem;
+        justify-content: flex-start;
+      }      
+      .days div {
+        font-size: 16px;
+        width: 14.2%;
+        height: 30px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        color: #111;;
+        font-weight: bold;
+      }      
+      .days div:hover:not(.today) {
+        background-color: #c5c5c5;
+        cursor: pointer;
+      }      
+      .prev-date,
+      .next-date {
+        opacity: 0.3;
+      }      
+      .today {
+        background-color: #6ba917;
+      }
+    }
+  }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 // select::-webkit-scrollbar {
 //   width: 0px;
 // }

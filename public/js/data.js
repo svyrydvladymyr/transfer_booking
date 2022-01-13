@@ -254,10 +254,11 @@ template = {
         <div class="modal_close">
             <i class='fa fa-times' onclick="closeModal(event)"></i>
         </div>
-        <div class="modal_place" id="mainformTimeslimit">     
+        <div class="modal_place" id="mainformTimeslimit">    
+            <p class="mainform_title"></p> 
+            <div class="towns_select_list"></div>
         </div>        
     </div>`,
-
     mainformFrom:
     `<div class="modal_body" onclick="closeModal(event)">
         <div class="modal_close">
@@ -278,5 +279,44 @@ template = {
             <div class="towns_select_list"></div>
         </div>        
     </div>`,
+    mainformCalendar:
+    `<div class="modal_body" onclick="closeModal(event)">
+        <div class="modal_close">
+            <i class='fa fa-times' onclick="closeModal(event)"></i>
+        </div>
+        <div class="modal_place" id="mainformCalendar">
+            <p class="mainform_title"></p>
+            <div class="calendar_wrap">
+                <div class="container">
+                    <div class="calendar">
+                        <div class="year">
+                            <i class="fas fa-angle-left prev_year"></i>
+                            <div class="date_year">
+                                <h1></h1>
+                            </div>
+                            <i class="fas fa-angle-right next_year"></i>
+                        </div>
+                        <div class="month">
+                            <i class="fas fa-angle-left prev"></i>
+                            <div class="date">
+                                <h1></h1>
+                            </div>
+                            <i class="fas fa-angle-right next"></i>
+                        </div>
+                        <div class="weekdays">
+                            <div>Sun</div>
+                            <div>Mon</div>
+                            <div>Tue</div>
+                            <div>Wed</div>
+                            <div>Thu</div>
+                            <div>Fri</div>
+                            <div>Sat</div>
+                        </div>
+                        <div class="days"></div>
+                    </div>
+                </div>            
+            </div>            
+        </div>        
+    </div>`
 };   
 
