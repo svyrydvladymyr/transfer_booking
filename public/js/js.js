@@ -49,6 +49,75 @@ const readyMonth = function(fullDate){
     return ((createDate.getMonth() >= 0) && (createDate.getMonth() <= 8)) ? "0" + (createDate.getMonth() + 1) : createDate.getMonth() + 1;          
 }; 
 
+
+//for creating calendar
+const date = new Date();
+
+const renderCalendar = (year) => {
+  date.setDate(1);
+  date.setYear(year);
+
+  const monthDays = document.querySelector(".days");
+
+  const lastDay = new Date(date.getFullYear(), date.getMonth() + 1, 0).getDate();
+
+  const prevLastDay = new Date(date.getFullYear(), date.getMonth(), 0).getDate();
+
+  const firstDayIndex = date.getDay();
+
+  const lastDayIndex = new Date(date.getFullYear(), date.getMonth() + 1, 0).getDay();
+
+  const nextDays = 7 - lastDayIndex - 1;
+
+  const months = [
+    "January",
+    "February",
+    "March",
+    "April",
+    "May",
+    "June",
+    "July",
+    "August",
+    "September",
+    "October",
+    "November",
+    "December",
+  ];
+
+  document.querySelector(".date h1").innerHTML = months[date.getMonth()];
+
+  let days = "";
+
+  for (let x = firstDayIndex; x > 0; x--) {
+    days += `<div class="prev-date">${prevLastDay - x + 1}</div>`;
+  }
+
+  const today = `${new Date().getFullYear()}-${(readyMonth(new Date()))}-${readyDay(new Date())}`;
+
+  for (let i = 1; i <= lastDay; i++) {
+    const dateDay = `'1988-01-${i}`;
+    if ( i === new Date().getDate() && date.getMonth() === new Date().getMonth() && date.getFullYear() === new Date().getFullYear()) {
+        days += `<div class="today" onclick="selectDate('${i}/${readyMonth(date.getMonth())}/${year}')">${i}</div>`;
+    } else if (`${date.getFullYear()}-${readyMonth(date)}-${readyDay(dateDay)}` < today) {
+        days += `<div class="prev-date">${i}</div>`;
+    } else {
+        days += `<div onclick="selectDate('${i}/${readyMonth(date.getMonth())}/${year}')">${i}</div>`;
+    }
+  }
+
+  for (let j = 1; j <= nextDays; j++) {
+    days += `<div class="next-date">${j}</div>`;
+    monthDays.innerHTML = days;
+  }
+};
+const selectDate = (date) => {
+    console.log('date', date);
+    const inputPlace = $_(`#main_date`)[0];
+    inputPlace.value = date;
+    modal.innerHTML = '';
+};
+
+
 //for send AJAX  
 const send = (obj, url, fun, req = 'POST') => {
     xmlhttp = new XMLHttpRequest();
@@ -70,7 +139,7 @@ const getLang = (name) => {
     let matches = document.cookie.match(new RegExp(
         "(?:^|; )" + name.replace(/([\.$?*|{}\(\)\[\]\\\/\+^])/g, '\\$1') + "=([^;]*)"
     ));
-    return matches ? decodeURIComponent(matches[1]).slice(0, 2) : 'ua';
+    return matches ? decodeURIComponent(matches[1]).slice(0, 2) : 'uk';
 };
 
 //to top
@@ -234,6 +303,32 @@ const showModal = function(type, obj, el){
     ['townAddRes', 'townEditRes', 'townDelRes', 'transferAdd', 'transferAddRes', 'transferEditRes', 'transferDelRes'].includes(type) 
         ? modal.innerHTML = template[type] : null;
 
+    if (type === 'mainformCalendar') {
+        modal.innerHTML = template[type];
+        $_(`#${type}`)[0].children[0].innerHTML = lang[`${type}${getLang('lang')}`];
+        let yearVal = 1, dateField = $_(`.date_year > h1`)[0];
+        dateField.innerHTML = (new Date().getFullYear() -1) + yearVal;
+        document.querySelector(".prev_year").addEventListener("click", () => {
+            (yearVal <= 1) ? yearVal = 1 : yearVal--;
+            dateField.innerHTML = (new Date().getFullYear() -1) + yearVal;
+            renderCalendar((new Date().getFullYear() -1) + yearVal);
+        });          
+        document.querySelector(".next_year").addEventListener("click", () => {
+            (yearVal > 15) ? yearVal = 15 : yearVal++;
+            dateField.innerHTML = (new Date().getFullYear() -1) + yearVal;
+            renderCalendar((new Date().getFullYear() -1) + yearVal);
+        });    
+        document.querySelector(".prev").addEventListener("click", () => {
+            date.setMonth(date.getMonth() - 1);
+            renderCalendar((new Date().getFullYear() -1) + yearVal);
+        });          
+        document.querySelector(".next").addEventListener("click", () => {
+            date.setMonth(date.getMonth() + 1);
+            renderCalendar((new Date().getFullYear() -1) + yearVal);
+        });
+        renderCalendar((new Date().getFullYear() -1) + yearVal);
+    };    
+
     if (type === 'mainformFrom') {
         modal.innerHTML = template[type];
         $_(`#${type}`)[0].children[0].innerHTML = lang[`${type}${getLang('lang')}`];
@@ -309,14 +404,40 @@ const showModal = function(type, obj, el){
         });   
     };
     if (type === 'mainformTimes') {
+
+        console.log('el.getAttribute("setparam")', el.getAttribute("setparam"));
+        
         if (el.getAttribute("setparam") === 'limit') {
             modal.innerHTML = template[`${type}limit`];
+            $_(`#${type}limit`)[0].children[0].innerHTML = lang[`${type}${getLang('lang')}`];
+            // console.log('from', inputFrom);
+            // console.log('to', inputTo);
+            if (inputFrom.value !== '' && inputTo.value !== '') {
+                // const fromParam = inputFrom.getAttribute("inputmainparam")
+                // const fromTo = inputFrom.getAttribute("inputmainparam")
+                // console.log('fromParam', fromParam);
+                // console.log('fromTo', fromTo);
+                const timeArrForm = [];
+                const fromParam = inputFrom.getAttribute("inputmainparam")
+                const toParam = inputTo.getAttribute("inputmainparam")
+                transfersArr.forEach(element => {
+                    if (element.transfer_from === fromParam && element.transfer_to === toParam && element.price_pr !== '') {
+                        for (let i = 0; i < 10; i++) {
+                            if (element[`time${i+1}`] !== '') {
+                                timeArrForm.push(element[`time${i+1}`]);
+                            };                            
+                        };
+                    };
+                });
+                console.log('timeArrForm', timeArrForm);
 
+                timeArrForm.forEach(element => {        
 
-
-            
+                    $_('#mainformTimeslimit > .towns_select_list')[0].innerHTML += `<p onclick="setTime('${element}')">${element}</p>`;
+                });
+            };            
         } else {
-            modal.innerHTML = template[type];
+            modal.innerHTML = template[`${type}`];
             $_(`#${type}`)[0].children[0].innerHTML = lang[`${type}${getLang('lang')}`];
             hours = $_('.hours')[0];
             minutes = $_('.minutes')[0];
@@ -325,7 +446,7 @@ const showModal = function(type, obj, el){
             hStart = 0, mStart = 0;
             $_('.admTime')[0].addEventListener('click', function(){
                 el.value = `${hours.innerHTML}:${minutes.innerHTML}`;
-                modal.innerHTML = ''
+                modal.innerHTML = '';
             }); 
         }; 
     };
@@ -415,6 +536,7 @@ const selectTown = (el, param) => {
 const selectTownMain = (el, param, clear) => {
     modal.innerHTML = '';
     const inputPlace = $_(`#${param}`)[0];
+    $_(`#main_time`)[0].value = '';
     inputPlace.value = el.innerHTML;
     inputPlace.setAttribute("inputmainparam", el.id);
     if (clear === 'clear') {
@@ -426,6 +548,17 @@ const selectTownMain = (el, param, clear) => {
             inputFrom.value = '';
             inputFrom.setAttribute("inputmainparam", '');
         };
+    };
+    if (inputFrom.value !== '' && inputTo.value !== '') {
+        const fromParam = inputFrom.getAttribute("inputmainparam")
+        const toParam = inputTo.getAttribute("inputmainparam")
+        transfersArr.forEach(element => {
+            if (element.transfer_from === fromParam && element.transfer_to === toParam && element.price_pr !== '') {
+                $_(`#main_time`)[0].setAttribute("setparam", 'limit');
+            };
+        });
+    } else {
+        $_(`#main_time`)[0].setAttribute("setparam", '');
     };
 };
 
@@ -487,6 +620,12 @@ const showTimeList = (el) => {
     $_('.add_time')[0].style.display = el.value === '' ? 'none' : 'table';
 };
 
+//for set times to main form 
+const setTime = (value) => {
+    $_(`#main_time`)[0].value = value;
+    modal.innerHTML = '';
+};
+
 //for selecting time
 const selectTime = (type, arrow) => {
     if (type === 'hour') {
@@ -520,15 +659,13 @@ const loadVariablesList = () => {
     send({} , `/variables`, (result) => {
         const resultat = JSON.parse(result);
         if (resultat.res) {
-            console.log('varrrr', resultat.res);
-
+            // console.log('varrrr', resultat.res);
             townsFrom = resultat.res.townsFrom;
             townsTo = resultat.res.townsTo;
             transfersArr = resultat.res.transfersArr;
-
-            console.log('townsFrom', townsFrom);
-            console.log('townsTo', townsTo);
-            console.log('transfersArr', transfersArr);
+            // console.log('townsFrom', townsFrom);
+            // console.log('townsTo', townsTo);
+            // console.log('transfersArr', transfersArr);
         };
     });
 };

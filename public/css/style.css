@@ -1845,3 +1845,129 @@ iframe {
   height: 500px;
   margin: 0px auto 50px auto;
 }
+
+.modal_wrap .modal_place div {
+  max-width: 100%;
+}
+.modal_wrap .modal_place div.calendar_wrap {
+  width: 100%;
+  max-width: 100%;
+}
+.modal_wrap .modal_place div.calendar_wrap .container {
+  width: 100%;
+  height: auto;
+  max-width: 100%;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-pack: center;
+      -ms-flex-pack: center;
+          justify-content: center;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+}
+.modal_wrap .modal_place div.calendar_wrap .calendar {
+  width: 100%;
+  height: auto;
+  max-width: 100%;
+  margin: 0;
+}
+.modal_wrap .modal_place div.calendar_wrap .month, .modal_wrap .modal_place div.calendar_wrap .year {
+  width: 100%;
+  height: auto;
+  background-color: #6ba917;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-pack: justify;
+      -ms-flex-pack: justify;
+          justify-content: space-between;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+  padding: 0 10px;
+  margin: 3px 0px;
+  text-align: center;
+}
+.modal_wrap .modal_place div.calendar_wrap .month i, .modal_wrap .modal_place div.calendar_wrap .year i {
+  font-size: 20px;
+  cursor: pointer;
+}
+.modal_wrap .modal_place div.calendar_wrap .month h1, .modal_wrap .modal_place div.calendar_wrap .year h1 {
+  font-size: 16px;
+  width: 100%;
+  font-weight: 400;
+  text-transform: uppercase;
+  letter-spacing: 0.2rem;
+}
+.modal_wrap .modal_place div.calendar_wrap .weekdays {
+  width: 100%;
+  height: auto;
+  padding: 0 0.4rem;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+  margin: 10px 0px 0px 0px;
+}
+.modal_wrap .modal_place div.calendar_wrap .weekdays div {
+  font-size: 12px;
+  font-weight: 400;
+  letter-spacing: 0.1rem;
+  width: 12%;
+  margin: 0;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-pack: center;
+      -ms-flex-pack: center;
+          justify-content: center;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+  background: lightgrey;
+  padding: 5px 0px;
+  color: #111;
+}
+.modal_wrap .modal_place div.calendar_wrap .days {
+  width: 100%;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -ms-flex-wrap: wrap;
+      flex-wrap: wrap;
+  padding: 0.2rem;
+  -webkit-box-pack: start;
+      -ms-flex-pack: start;
+          justify-content: flex-start;
+}
+.modal_wrap .modal_place div.calendar_wrap .days div {
+  font-size: 16px;
+  width: 14.2%;
+  height: 30px;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-pack: center;
+      -ms-flex-pack: center;
+          justify-content: center;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+  color: #111;
+  font-weight: bold;
+}
+.modal_wrap .modal_place div.calendar_wrap .days div:hover:not(.today) {
+  background-color: #c5c5c5;
+  cursor: pointer;
+}
+.modal_wrap .modal_place div.calendar_wrap .prev-date,
+.modal_wrap .modal_place div.calendar_wrap .next-date {
+  opacity: 0.3;
+}
+.modal_wrap .modal_place div.calendar_wrap .today {
+  background-color: #6ba917;
+}
