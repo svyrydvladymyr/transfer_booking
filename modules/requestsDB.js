@@ -175,42 +175,66 @@ const transferlist = async (req, res) => {
 const variables = async (req, res) => {
     let townsFrom = {}, townsTo = {}, transfersArr = [], townsId = [];
     const lang = ['uk-UA', 'en-US', 'ru-RU'].includes(req.cookies['lang']) ? req.cookies['lang'].slice(0, 2) : 'uk';
-    await tableRecord(`SELECT town_id, name_${lang} FROM points`)
-    .then((result) => {
-        if (result.err) { throw new Error('error-DB-townsID') };
-        if (!result.err) { 
-            result.forEach(element => { 
-                townsId[`${element.town_id}`] = element[`name_${lang}`]
-            });
-        };
+    // const townIdSQL = `SELECT town_id, name_${lang} FROM points`; 
+    // const townsFromSQL = `SELECT transfer_from FROM transfers GROUP BY transfer_from`;
+    // const townsToSQL = `SELECT transfer_to FROM transfers GROUP BY transfer_to`; 
+    // const transfersArrSQL = `SELECT * FROM transfers`; 
+    Promise.all([
+        tableRecord(`SELECT town_id, name_${lang} FROM points`), 
+        tableRecord(`SELECT transfer_from FROM transfers GROUP BY transfer_from`), 
+        tableRecord(`SELECT transfer_to FROM transfers GROUP BY transfer_to`), 
+        tableRecord(`SELECT * FROM transfers`)])
+    .then(([townIdRes, townsFromRes, townsToRes, transfersArrRes]) => {
+        // const [townIdRes, townsFromRes, townsToRes, transfersArrRes] = value;
+        // const townIdRes = value[0]; 
+        // const townsFromRes = value[1];
+        // const townsToRes = value[2]; 
+        // const transfersArrRes = value[3];
+        if (townIdRes.err) { throw new Error('error-DB-townsID') };
+        if (townsFromRes.err) { throw new Error('error-DB-transferFROM') };
+        if (townsToRes.err) { throw new Error('error-DB-transferTO') };
+        if (transfersArrRes.err) { throw new Error('error-DB-transfersARR') };
+        townIdRes.forEach(element => { townsId[`${element.town_id}`] = element[`name_${lang}`] });
+        townsFromRes.forEach(element => { townsFrom[`${element.transfer_from}`] = townsId[element.transfer_from] });   
+        townsToRes.forEach(element => { townsTo[`${element.transfer_to}`] = townsId[element.transfer_to] });   
+        transfersArrRes.forEach(element => { transfersArr.push(element) });
     })
-    await tableRecord(`SELECT transfer_from FROM transfers GROUP BY transfer_from`)
-    .then((result) => {
-        if (result.err) { throw new Error('error-DB-transferFROM') };
-        if (!result.err) { 
-            result.forEach(element => { 
-                townsFrom[`${element.transfer_from}`] = townsId[element.transfer_from];
-            });   
-        };
-    })
-    await tableRecord(`SELECT transfer_to FROM transfers GROUP BY transfer_to`)
-    .then((result) => {
-        if (result.err) { throw new Error('error-DB-transferTO') };
-        if (!result.err) { 
-            result.forEach(element => { 
-                townsTo[`${element.transfer_to}`] = townsId[element.transfer_to];
-            });   
-        };
-    })
-    await tableRecord(`SELECT * FROM transfers`)
-    .then((result) => {
-        if (result.err) { throw new Error('error-DB-transfersARR') };
-        if (!result.err) { 
-            result.forEach(element => {
-                transfersArr.push(element); 
-            });           
-        };
-    })
+    // await tableRecord(`SELECT town_id, name_${lang} FROM points`)
+    // .then((result) => {
+    //     if (result.err) { throw new Error('error-DB-townsID') };
+    //     if (!result.err) { 
+    //         result.forEach(element => { 
+    //             townsId[`${element.town_id}`] = element[`name_${lang}`]
+    //         });
+    //     };
+    // })
+    // await tableRecord(`SELECT transfer_from FROM transfers GROUP BY transfer_from`)
+    // .then((result) => {
+    //     if (result.err) { throw new Error('error-DB-transferFROM') };
+    //     if (!result.err) { 
+    //         result.forEach(element => { 
+    //             townsFrom[`${element.transfer_from}`] = townsId[element.transfer_from];
+    //         });   
+    //     };
+    // })
+    // await tableRecord(`SELECT transfer_to FROM transfers GROUP BY transfer_to`)
+    // .then((result) => {
+    //     if (result.err) { throw new Error('error-DB-transferTO') };
+    //     if (!result.err) { 
+    //         result.forEach(element => { 
+    //             townsTo[`${element.transfer_to}`] = townsId[element.transfer_to];
+    //         });   
+    //     };
+    // })
+    // await tableRecord(`SELECT * FROM transfers`)
+    // .then((result) => {
+    //     if (result.err) { throw new Error('error-DB-transfersARR') };
+    //     if (!result.err) { 
+    //         result.forEach(element => {
+    //             transfersArr.push(element); 
+    //         });           
+    //     };
+    // })
     .then(() => {
         // console.log('townsId', townsId);
         // console.log('townsFrom', townsFrom);

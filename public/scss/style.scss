@@ -429,18 +429,21 @@ body {
       flex-wrap: wrap;
       justify-content: space-between;
       align-items: flex-end;
+      margin-bottom: 30px;
       .main_form_coll {
         width: 47%;
-        > p {
+        label {
           font-size: 13px;
-          color: rgb(167, 167, 167);
-          width: 100%;
+          margin-bottom: 5px;
+          color: #fff;
+          opacity: .7;
         }
         > input {
           width: 100%;
           line-height: 48px;
           text-align: center;
           padding: 0px 15px;
+          margin-top: 9px;
           border: 0;
           outline: 0;
           font-size: 16px;

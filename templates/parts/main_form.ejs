@@ -3,31 +3,39 @@
         <p><%=DATA.langPack.main_form_message %></p>
         <div class="main_form_row">
             <div class="main_form_coll">
-                <p class="inp_title"><%=DATA.langPack.main_form_mess_from %></p>
+                <label for="main_from"><%=DATA.langPack.main_form_mess_from %></label>
                 <input type="text" name="from" id="main_from" maxlength="60" inputmainparam="" value="" autocomplete="off" onfocus="showModal('mainformFrom', {}, this)">
             </div>
             <div class="main_form_coll">
-                <p class="inp_title"><%=DATA.langPack.main_form_mess_to %></p>
+                <label for="main_to"><%=DATA.langPack.main_form_mess_to %></label>
                 <input type="text" name="to" id="main_to" maxlength="60" inputmainparam="" value="" autocomplete="off" onfocus="showModal('mainformTo', {}, this)">
             </div>
         </div>
         <div class="main_form_row">
             <div class="main_form_coll">
-                <p class="inp_title"><%=DATA.langPack.main_form_date %></p>
+                <label for="main_date"><%=DATA.langPack.main_form_date %></label>
                 <input type="text" name="date" id="main_date" maxlength="60" inputmainparam="" value="" autocomplete="off" onfocus="showModal('mainformCalendar', {}, this)">
+            </div>
+            <div class="main_form_coll">
+                <label for="main_time"><%=DATA.langPack.main_form_time %></label>
+                <input type="text" name="time" id="main_time" maxlength="60" inputmainparam="" setparam="" value="" autocomplete="off" onfocus="showModal('mainformTimes', {}, this)">
+            </div>
+        </div>
+        <div class="main_form_row">
+            <div class="main_form_coll">
+                <p class="inp_title"><%=DATA.langPack.main_form_date %></p>
+                <!-- <input type="text" name="date" id="main_date" maxlength="60" inputmainparam="" value="" autocomplete="off" onfocus="showModal('mainformCalendar', {}, this)"> -->
+                <select name="type_transfer" id="type_transfer">
+                    <option value="volvo">Volvo</option>
+                    <option value="saab">Saab</option>
+                    <option value="opel">Opel</option>
+                    <option value="audi">Audi</option>
+                  </select>
             </div>
             <div class="main_form_coll">
                 <p class="inp_title"><%=DATA.langPack.main_form_time %></p>
                 <input type="text" name="time" id="main_time" maxlength="60" inputmainparam="" setparam="" value="" autocomplete="off" onfocus="showModal('mainformTimes', {}, this)">
             </div>
-        </div>
-        <div class="main_form_row">
-
-
-
-
-
-
         </div>
     </div>
     <div class="main_form_wrap booking">
