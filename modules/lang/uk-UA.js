@@ -106,4 +106,13 @@ module.exports = {
     "main_form_mess_to" : "To airport, railway station, hotel or location",
     "main_form_date" : "Дата",
     "main_form_time" : "Час",
+    "main_form_type_transfer" : "Параметри перевезення",
+    "main_form_type_pr" : "Приватний трансфер",
+    "main_form_type_gr" : "Груповий трансфер",
+    "main_form_type_transfer" : "Параметри перевезення",
+    "main_form_adults" : "Дорослі (16+)",
+    "main_form_children" : "Діти",
+    "main_form_equip_title" : "Лижне спорядження",
+    "main_form_equip_yes" : "Так",
+    "main_form_equip_no" : "Ні",
 }

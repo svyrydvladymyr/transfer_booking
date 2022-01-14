@@ -60,16 +60,16 @@ const transferadd = async (req, res) => {
                     '${checOnTrueVal(req.body.to)}', 
                     '${req.body.pr.replace(new RegExp("[^0-9]", "gi"), '')}', 
                     '${req.body.gr.replace(new RegExp("[^0-9]", "gi"), '')}',
-                    '${timeArr.time1}',
-                    '${timeArr.time2}',
-                    '${timeArr.time3}',
-                    '${timeArr.time4}',
-                    '${timeArr.time5}',
-                    '${timeArr.time6}',
-                    '${timeArr.time7}',
-                    '${timeArr.time8}',
-                    '${timeArr.time9}',
-                    '${timeArr.time10}',
+                    '${timeArr.time1.replace(new RegExp("[^0-9:]", "gi"), '')}',
+                    '${timeArr.time2.replace(new RegExp("[^0-9:]", "gi"), '')}',
+                    '${timeArr.time3.replace(new RegExp("[^0-9:]", "gi"), '')}',
+                    '${timeArr.time4.replace(new RegExp("[^0-9:]", "gi"), '')}',
+                    '${timeArr.time5.replace(new RegExp("[^0-9:]", "gi"), '')}',
+                    '${timeArr.time6.replace(new RegExp("[^0-9:]", "gi"), '')}',
+                    '${timeArr.time7.replace(new RegExp("[^0-9:]", "gi"), '')}',
+                    '${timeArr.time8.replace(new RegExp("[^0-9:]", "gi"), '')}',
+                    '${timeArr.time9.replace(new RegExp("[^0-9:]", "gi"), '')}',
+                    '${timeArr.time10.replace(new RegExp("[^0-9:]", "gi"), '')}',
                     '${req.body.select === true || req.body.select === false ? req.body.select : false}')`; 
         };
         if (req.body.param === 'transferEdit') {
@@ -79,16 +79,16 @@ const transferadd = async (req, res) => {
                 transfer_to='${checOnTrueVal(req.body.to)}',  
                 price_pr='${req.body.pr.replace(new RegExp("[^0-9]", "gi"), '')}',  
                 price_gr='${req.body.gr.replace(new RegExp("[^0-9]", "gi"), '')}',  
-                time1='${timeArr.time1}',  
-                time2='${timeArr.time2}',  
-                time3='${timeArr.time3}',  
-                time4='${timeArr.time4}',  
-                time5='${timeArr.time5}',  
-                time6='${timeArr.time6}',  
-                time7='${timeArr.time7}',  
-                time8='${timeArr.time8}',  
-                time9='${timeArr.time9}',  
-                time10='${timeArr.time10}',  
+                time1='${timeArr.time1.replace(new RegExp("[^0-9:]", "gi"), '')}',  
+                time2='${timeArr.time2.replace(new RegExp("[^0-9:]", "gi"), '')}',  
+                time3='${timeArr.time3.replace(new RegExp("[^0-9:]", "gi"), '')}',  
+                time4='${timeArr.time4.replace(new RegExp("[^0-9:]", "gi"), '')}',  
+                time5='${timeArr.time5.replace(new RegExp("[^0-9:]", "gi"), '')}',  
+                time6='${timeArr.time6.replace(new RegExp("[^0-9:]", "gi"), '')}',  
+                time7='${timeArr.time7.replace(new RegExp("[^0-9:]", "gi"), '')}',  
+                time8='${timeArr.time8.replace(new RegExp("[^0-9:]", "gi"), '')}',  
+                time9='${timeArr.time9.replace(new RegExp("[^0-9:]", "gi"), '')}',  
+                time10='${timeArr.time10.replace(new RegExp("[^0-9:]", "gi"), '')}',  
                 selection='${req.body.select === true || req.body.select === false ? req.body.select : false}'
             WHERE transfer_id='${checOnTrueVal(req.body.id)}'`; 
         };
@@ -175,16 +175,16 @@ const transferlist = async (req, res) => {
 const variables = async (req, res) => {
     let townsFrom = {}, townsTo = {}, transfersArr = [], townsId = [];
     const lang = ['uk-UA', 'en-US', 'ru-RU'].includes(req.cookies['lang']) ? req.cookies['lang'].slice(0, 2) : 'uk';
-    // const townIdSQL = `SELECT town_id, name_${lang} FROM points`; 
-    // const townsFromSQL = `SELECT transfer_from FROM transfers GROUP BY transfer_from`;
-    // const townsToSQL = `SELECT transfer_to FROM transfers GROUP BY transfer_to`; 
-    // const transfersArrSQL = `SELECT * FROM transfers`; 
     Promise.all([
         tableRecord(`SELECT town_id, name_${lang} FROM points`), 
         tableRecord(`SELECT transfer_from FROM transfers GROUP BY transfer_from`), 
         tableRecord(`SELECT transfer_to FROM transfers GROUP BY transfer_to`), 
         tableRecord(`SELECT * FROM transfers`)])
     .then(([townIdRes, townsFromRes, townsToRes, transfersArrRes]) => {
+        // console.log('townIdRes', townIdRes);
+        // console.log('townsFromRes', townsFromRes);
+        // console.log('townsToRes', townsToRes);
+        // console.log('transfersArrRes', transfersArrRes);
         // const [townIdRes, townsFromRes, townsToRes, transfersArrRes] = value;
         // const townIdRes = value[0]; 
         // const townsFromRes = value[1];
@@ -199,42 +199,6 @@ const variables = async (req, res) => {
         townsToRes.forEach(element => { townsTo[`${element.transfer_to}`] = townsId[element.transfer_to] });   
         transfersArrRes.forEach(element => { transfersArr.push(element) });
     })
-    // await tableRecord(`SELECT town_id, name_${lang} FROM points`)
-    // .then((result) => {
-    //     if (result.err) { throw new Error('error-DB-townsID') };
-    //     if (!result.err) { 
-    //         result.forEach(element => { 
-    //             townsId[`${element.town_id}`] = element[`name_${lang}`]
-    //         });
-    //     };
-    // })
-    // await tableRecord(`SELECT transfer_from FROM transfers GROUP BY transfer_from`)
-    // .then((result) => {
-    //     if (result.err) { throw new Error('error-DB-transferFROM') };
-    //     if (!result.err) { 
-    //         result.forEach(element => { 
-    //             townsFrom[`${element.transfer_from}`] = townsId[element.transfer_from];
-    //         });   
-    //     };
-    // })
-    // await tableRecord(`SELECT transfer_to FROM transfers GROUP BY transfer_to`)
-    // .then((result) => {
-    //     if (result.err) { throw new Error('error-DB-transferTO') };
-    //     if (!result.err) { 
-    //         result.forEach(element => { 
-    //             townsTo[`${element.transfer_to}`] = townsId[element.transfer_to];
-    //         });   
-    //     };
-    // })
-    // await tableRecord(`SELECT * FROM transfers`)
-    // .then((result) => {
-    //     if (result.err) { throw new Error('error-DB-transfersARR') };
-    //     if (!result.err) { 
-    //         result.forEach(element => {
-    //             transfersArr.push(element); 
-    //         });           
-    //     };
-    // })
     .then(() => {
         // console.log('townsId', townsId);
         // console.log('townsFrom', townsFrom);

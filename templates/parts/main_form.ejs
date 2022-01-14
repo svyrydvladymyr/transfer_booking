@@ -23,18 +23,33 @@
         </div>
         <div class="main_form_row">
             <div class="main_form_coll">
-                <p class="inp_title"><%=DATA.langPack.main_form_date %></p>
-                <!-- <input type="text" name="date" id="main_date" maxlength="60" inputmainparam="" value="" autocomplete="off" onfocus="showModal('mainformCalendar', {}, this)"> -->
+                <label for="type_transfer"><%=DATA.langPack.main_form_type_transfer %></label>
                 <select name="type_transfer" id="type_transfer">
-                    <option value="volvo">Volvo</option>
-                    <option value="saab">Saab</option>
-                    <option value="opel">Opel</option>
-                    <option value="audi">Audi</option>
+                    <option value="" selected disabled hidden></option>
+                    <option value="transfer_pr"><%=DATA.langPack.main_form_type_pr %></option>
+                    <option value="transfer_gr"><%=DATA.langPack.main_form_type_gr %></option>
                   </select>
             </div>
+            <div class="main_form_coll sub">                
+                <div class="main_form_coll_sub">
+                    <label for="adults"><%=DATA.langPack.main_form_adults %></label>
+                    <input type="number" name="adults" id="adults" min="0" max="60" value="" oninput="validationPerson(this)">
+                </div>
+                <div class="main_form_coll_sub">
+                    <label for="children"><%=DATA.langPack.main_form_children %></label>
+                    <input type="number" name="children" id="children" min="0" max="60" value="" oninput="validationPerson(this)">                
+                </div>
+            </div>
+        </div>
+        <label><%=DATA.langPack.main_form_equip_title %></label> 
+        <div class="main_form_row equip">              
+            <div class="main_form_coll">     
+                <input type="radio" id="yes" name="equip" value="yes">           
+                <label for="yes"><%=DATA.langPack.main_form_equip_yes %></label><br>
+            </div>
             <div class="main_form_coll">
-                <p class="inp_title"><%=DATA.langPack.main_form_time %></p>
-                <input type="text" name="time" id="main_time" maxlength="60" inputmainparam="" setparam="" value="" autocomplete="off" onfocus="showModal('mainformTimes', {}, this)">
+                <input type="radio" id="no" name="equip" value="no">
+                <label for="no"><%=DATA.langPack.main_form_equip_no %></label>            
             </div>
         </div>
     </div>

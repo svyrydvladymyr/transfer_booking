@@ -46,21 +46,23 @@ const transfers = () => {
     con.query(sql, function (err, result) {if (err) throw err; console.log("Table tripslist created")});
 };
 
-const user_trips = () => {
-    const sql = `CREATE TABLE user_trips (id INT AUTO_INCREMENT PRIMARY KEY,
-        userid VARCHAR(100) NOT NULL,
-        from INT NOT NULL,
-        to INT NOT NULL, 
-        trip_date DATE NOT NULL, 
-        trip_time TIME NOT NULL, 
-        transfer_options VARCHAR(30) NOT NULL, 
-        adults INT,
+const orders = () => {
+    const sql = `CREATE TABLE orders (id INT AUTO_INCREMENT PRIMARY KEY,
+        orders_id VARCHAR(50) NOT NULL,
+        date VARCHAR(15) NOT NULL,
+        time VARCHAR(15) NOT NULL,
+        type VARCHAR(25) NOT NULL,
+        adult INT NOT NULL,
         children INT,
-        children INT,
-        sky_equipment VARCHAR(10), 
-        date_registered DATETIME
+        equip VARCHAR(10),
+        user_name VARCHAR(10),
+        user_surname VARCHAR(10),
+        user_email VARCHAR(10),
+        user_tel VARCHAR(10),
+        status VARCHAR(10),
+        book_date DATETIME
         )`; 
-    con.query(sql, function (err, result) {if (err) throw err; console.log("Table user_trips created")});
+    con.query(sql, function (err, result) {if (err) throw err; console.log("Table orders created")});
 };
 
 
@@ -68,5 +70,5 @@ module.exports = {
     users,
     transfers,
     points,
-    user_trips
+    orders
 };

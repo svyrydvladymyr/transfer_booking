@@ -583,6 +583,12 @@ const validationPrice = (el) => {
     (priceVal === '') ? el.value = '' : null;
     if (priceVal === '') { errMess.style.display = 'none' };
 };
+const validationPerson = (el) => {
+    const priceVal = el.value;
+    (priceVal < 0) ? el.value = '' : null;
+    (priceVal > 50) ? el.value = 50 : null;
+    (priceVal === '') ? el.value = '' : null;
+};
 
 //for add time field
 const plusTime = (element, type) => {

@@ -106,5 +106,13 @@ module.exports = {
     "main_form_mess_to" : "To airport, railway station, hotel or location",
     "main_form_date" : "Date",
     "main_form_time" : "Time",
+    "main_form_type_transfer" : "Transfer Options",
+    "main_form_type_pr" : "Private Transfer",
+    "main_form_type_gr" : "Group Transfer",
+    "main_form_adults" : "Adult (16+)",
+    "main_form_children" : "Children",
+    "main_form_equip_title" : "Ski equipment",
+    "main_form_equip_yes" : "Yes",
+    "main_form_equip_no" : "No",
 
 }
