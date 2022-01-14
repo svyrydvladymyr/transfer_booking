@@ -404,3 +404,15 @@
     border-bottom: 0px solid grey;
     border-radius: 0px;
 }
+
+.main_form_container .main_form_wrap.check .main_form_row.btn .main_form_coll:first-child {
+    justify-content: center;
+}
+.main_form_container .main_form_wrap.check .main_form_row.btn .main_form_coll {
+    justify-content: center;
+}
+
+.main_form_container .main_form_wrap.check .main_form_row.btn .main_form_coll p {
+    min-width: 180px;
+    width: 60%;
+}

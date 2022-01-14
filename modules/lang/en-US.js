@@ -114,5 +114,9 @@ module.exports = {
     "main_form_equip_title" : "Ski equipment",
     "main_form_equip_yes" : "Yes",
     "main_form_equip_no" : "No",
-
+    "main_form_btn_res" : "book now",
+    "main_form_btn_calk" : "calculate",
+    "main_form_price" : "The cost of transportation:",
+    "main_form_err_calk" : "To calculate the cost of transportation, select all the required fields!",
+    "main_form_err_book" : "Select all required fields for booking!",
 }

@@ -24,16 +24,16 @@
         <div class="main_form_row">
             <div class="main_form_coll">
                 <label for="type_transfer"><%=DATA.langPack.main_form_type_transfer %></label>
-                <select name="type_transfer" id="type_transfer">
+                <select name="type_transfer" id="type_transfer" onchange="typeTransferValid(this)">
                     <option value="" selected disabled hidden></option>
                     <option value="transfer_pr"><%=DATA.langPack.main_form_type_pr %></option>
                     <option value="transfer_gr"><%=DATA.langPack.main_form_type_gr %></option>
-                  </select>
+                </select>
             </div>
             <div class="main_form_coll sub">                
                 <div class="main_form_coll_sub">
                     <label for="adults"><%=DATA.langPack.main_form_adults %></label>
-                    <input type="number" name="adults" id="adults" min="0" max="60" value="" oninput="validationPerson(this)">
+                    <input type="number" name="adults" id="adults" min="0" max="60" value="" oninput="validationPerson(this)" onchange="adultsValid(this)">
                 </div>
                 <div class="main_form_coll_sub">
                     <label for="children"><%=DATA.langPack.main_form_children %></label>
@@ -52,6 +52,17 @@
                 <label for="no"><%=DATA.langPack.main_form_equip_no %></label>            
             </div>
         </div>
+        <div class="main_form_row btn">              
+            <div class="main_form_coll">     
+                <p class="main_form_btn" onclick="culculate()"><%=DATA.langPack.main_form_btn_calk %></p>
+            </div>
+            <div class="main_form_coll">
+                <p class="main_form_btn"><%=DATA.langPack.main_form_btn_res %></p>
+            </div>
+        </div>
+        <p class="main_form_price hide_err"><%=DATA.langPack.main_form_price %><span></span></p>
+        <p class="main_form_err_calk hide_err"><%=DATA.langPack.main_form_err_calk %></p>
+        <p class="main_form_err_book hide_err"><%=DATA.langPack.main_form_err_book %></p>
     </div>
     <div class="main_form_wrap booking">
 

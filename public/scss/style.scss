@@ -409,7 +409,7 @@ body {
   }
 }
 .main_form_container {
-  outline: 1px solid red;
+  // outline: 1px solid red;
   display: flex;
   flex-wrap: wrap;
   .mainform_title {
@@ -419,10 +419,23 @@ body {
     margin: 0;
   }
   .main_form_wrap.check { 
-    outline: 1px solid green;
+    // outline: 1px solid green;
     > p {
       font-size: 14px;
-      margin: 5px 0px 25px 0px;
+      margin: 15px 0px 25px 0px;
+    }
+    > p.main_form_price {
+      color: #ffffff;
+      margin: 15px auto 15px auto;
+    }
+    > p.main_form_err_calk, > p.main_form_err_book {
+      color: #ffffff;
+      padding: 3px 0px;
+      margin: 15px auto 15px auto;
+      border-bottom: 2px solid #e75d5d;
+    }
+    .hide_err {
+      display: none;
     }
     > label {
       font-size: 13px;
@@ -434,7 +447,7 @@ body {
     }
     .main_form_row.equip {
       justify-content: center;
-      width: 120px;
+      width: 105px;
       margin: 10px auto;
       .main_form_coll {
         display: flex;
@@ -449,8 +462,38 @@ body {
         }
       }
     }
+    .main_form_row.btn {
+      justify-content: center;
+      width: 100&;
+      margin: 10px auto;
+      .main_form_coll:first-child { 
+        justify-content: flex-end;
+      }
+      .main_form_coll {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: flex-start;
+        p {
+          cursor: pointer;
+          background: #6ba917;
+          line-height: 50px;
+          font-size: 16px;
+          font-weight: bold;
+          letter-spacing: 1px;
+          text-transform: uppercase;
+          color: #fff;
+          min-width: 180px;
+          padding: 0px 15px;
+          margin: 0px 10px;
+          text-align: center;
+          &:hover {
+            background: #5c9211;
+          }
+        }
+      }
+    }
     .main_form_row {
-      outline: 1px solid pink;
+      // outline: 1px solid pink;
       width: 100%;
       display: flex;
       flex-wrap: wrap;
@@ -465,7 +508,7 @@ body {
       .main_form_coll {
         width: 47%;
         .main_form_coll_sub {
-          outline: 1px solid red;
+          // outline: 1px solid red;
           width: 46%;
           display: flex;
           flex-wrap: wrap;
@@ -492,6 +535,11 @@ body {
           outline: 0;
           font-size: 16px;
           color: #231718;
+        }
+        .err_input {
+          background:pink;
+          border: 2px solid #e47c7c;
+          position: relative;
         }
       }
     }
@@ -1608,11 +1656,11 @@ iframe {
         margin: 10px 0px 0px 0px;
       }
       
-      .weekdays div {
+      .weekdays > div {
         font-size: 12px;
         font-weight: 400;
         letter-spacing: 0.1rem;
-        width: 12%;
+        width: 15%;
         margin: 0;
         display: flex;
         justify-content: center;

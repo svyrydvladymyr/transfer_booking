@@ -19,6 +19,7 @@ let idTownPlace, tokenTown;
 let hours, minutes, hArr = [], mArr = [];
 let townsFrom = {}, townsTo = {}, transfersArr = [];
 let hStart = 0, mStart = 0;
+let calkTrue = true;
 
 //for close mobile menu
 const mobileMenu = $_('.menu_container_wrap_mobile')[0];
@@ -539,14 +540,29 @@ const selectTownMain = (el, param, clear) => {
     $_(`#main_time`)[0].value = '';
     inputPlace.value = el.innerHTML;
     inputPlace.setAttribute("inputmainparam", el.id);
+    checkCulk();
+    if (param === 'main_from') {
+        $_('#main_from')[0].classList.remove('err_input');
+        if (!calkTrue) {
+            $_('.main_form_err_calk')[0].classList.remove('hide_err');
+        }
+    };
+    if (param === 'main_to') {
+        $_('#main_to')[0].classList.remove('err_input');
+        if (!calkTrue) {
+            $_('.main_form_err_calk')[0].classList.remove('hide_err');
+        }
+    };
     if (clear === 'clear') {
         if (param === 'main_from') {
             inputTo.value = '';
             inputTo.setAttribute("inputmainparam", '');
+            $_('#main_from')[0].classList.remove('err_input');
         };
         if (param === 'main_to') {
             inputFrom.value = '';
             inputFrom.setAttribute("inputmainparam", '');
+            $_('#main_to')[0].classList.remove('err_input');
         };
     };
     if (inputFrom.value !== '' && inputTo.value !== '') {
@@ -588,6 +604,56 @@ const validationPerson = (el) => {
     (priceVal < 0) ? el.value = '' : null;
     (priceVal > 50) ? el.value = 50 : null;
     (priceVal === '') ? el.value = '' : null;
+};
+const typeTransferValid = (el) => {
+    console.log('ffff', el.value);
+    $_('#type_transfer')[0].classList.remove('err_input');
+    $_('#main_time')[0].value = '';
+};
+const adultsValid = (el) => {
+    console.log('ooooo', el.value);
+    if ($_('#adults')[0].value > 0) {
+        $_('#adults')[0].classList.remove('err_input');
+    } else {
+        $_('#adults')[0].classList.add('err_input');
+    };    
+};
+
+//culculate main form
+const checkCulk = () => {
+    if (inputFrom.value === '') {
+        calkTrue = false;
+        $_('#main_from')[0].classList.add('err_input');
+    };
+    if (inputTo.value === '') {
+        calkTrue = false;
+        $_('#main_to')[0].classList.add('err_input');
+    };
+    if ($_('#adults')[0].value === '' || $_('#adults')[0].value === 0) {
+        calkTrue = false;
+        $_('#adults')[0].classList.add('err_input');
+    };
+    if ($_('#type_transfer')[0].value === '') {
+        calkTrue = false;
+        $_('#type_transfer')[0].classList.add('err_input');
+    };
+};
+const culculate = () => {
+    checkCulk();
+
+    console.log('calkTrue', calkTrue);
+    if (!calkTrue) {
+        $_('.main_form_err_calk')[0].classList.remove('hide_err');
+    }
+    if (calkTrue) {
+        console.log('inputFrom.getAttribute(inputmainparam)', inputFrom.getAttribute('inputmainparam') );
+        console.log('inputTo.getAttribute(inputmainparam)', inputTo.getAttribute('inputmainparam') );
+        transfersArr.forEach(element => {
+            if (element.transfer_from === inputFrom.getAttribute('inputmainparam') && element.transfer_to === inputTo.getAttribute('inputmainparam')) {
+                console.log('oooo', element);
+            };
+        });
+    };
 };
 
 //for add time field
