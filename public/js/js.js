@@ -13,13 +13,23 @@ const exit = () => { send({}, '/exit', (res) => { location.reload() }) };
 const modal = $_('.modal_wrap')[0];
 const inputFrom = $_('#main_from')[0];
 const inputTo = $_('#main_to')[0];
+const mainTimeInput = $_('#main_time')[0];
 const RegExpInput = new RegExp(/[^a-zA-Zа-яА-Я0-9-()_+=.'\":/\,іІїЇєЄ /\n]/g); 
 
-let idTownPlace, tokenTown;
-let hours, minutes, hArr = [], mArr = [];
+let idTownPlace, tokenTown, formValid;
+let hours, minutes, hArr = [], mArr = [], hStart = 0, mStart = 0;;
 let townsFrom = {}, townsTo = {}, transfersArr = [];
-let hStart = 0, mStart = 0;
 let calkTrue = true;
+
+//to change the language
+const setLang = (lang) => {
+    document.cookie = `lang=${lang}`;
+    document.location.reload();
+};
+const getLang = (name) => {
+    let matches = document.cookie.match(new RegExp("(?:^|; )" + name.replace(/([\.$?*|{}\(\)\[\]\\\/\+^])/g, '\\$1') + "=([^;]*)"));
+    return matches ? decodeURIComponent(matches[1]).slice(0, 2) : 'uk';
+};
 
 //for close mobile menu
 const mobileMenu = $_('.menu_container_wrap_mobile')[0];
@@ -50,74 +60,52 @@ const readyMonth = function(fullDate){
     return ((createDate.getMonth() >= 0) && (createDate.getMonth() <= 8)) ? "0" + (createDate.getMonth() + 1) : createDate.getMonth() + 1;          
 }; 
 
-
 //for creating calendar
 const date = new Date();
-
 const renderCalendar = (year) => {
-  date.setDate(1);
-  date.setYear(year);
-
-  const monthDays = document.querySelector(".days");
-
-  const lastDay = new Date(date.getFullYear(), date.getMonth() + 1, 0).getDate();
-
-  const prevLastDay = new Date(date.getFullYear(), date.getMonth(), 0).getDate();
-
-  const firstDayIndex = date.getDay();
-
-  const lastDayIndex = new Date(date.getFullYear(), date.getMonth() + 1, 0).getDay();
-
-  const nextDays = 7 - lastDayIndex - 1;
-
-  const months = [
-    "January",
-    "February",
-    "March",
-    "April",
-    "May",
-    "June",
-    "July",
-    "August",
-    "September",
-    "October",
-    "November",
-    "December",
-  ];
-
-  document.querySelector(".date h1").innerHTML = months[date.getMonth()];
-
-  let days = "";
-
-  for (let x = firstDayIndex; x > 0; x--) {
-    days += `<div class="prev-date">${prevLastDay - x + 1}</div>`;
-  }
-
-  const today = `${new Date().getFullYear()}-${(readyMonth(new Date()))}-${readyDay(new Date())}`;
-
-  for (let i = 1; i <= lastDay; i++) {
-    const dateDay = `'1988-01-${i}`;
-    if ( i === new Date().getDate() && date.getMonth() === new Date().getMonth() && date.getFullYear() === new Date().getFullYear()) {
-        days += `<div class="today" onclick="selectDate('${i}/${readyMonth(date.getMonth())}/${year}')">${i}</div>`;
-    } else if (`${date.getFullYear()}-${readyMonth(date)}-${readyDay(dateDay)}` < today) {
-        days += `<div class="prev-date">${i}</div>`;
-    } else {
-        days += `<div onclick="selectDate('${i}/${readyMonth(date.getMonth())}/${year}')">${i}</div>`;
+    date.setDate(1);
+    date.setYear(year);
+    const monthDays = document.querySelector(".days");
+    const lastDay = new Date(date.getFullYear(), date.getMonth() + 1, 0).getDate();
+    const prevLastDay = new Date(date.getFullYear(), date.getMonth(), 0).getDate();
+    const firstDayIndex = date.getDay();
+    const lastDayIndex = new Date(date.getFullYear(), date.getMonth() + 1, 0).getDay();
+    const nextDays = 7 - lastDayIndex - 1;
+    let months = [], days = "";
+    if (getLang('lang') === 'uk') {
+        months = ["Січень", "Лютий", "Березень", "Квітень", "Травень", "Червень", "Липень", "Серпень", "Вересень", "Жовтень", "Листопад", "Грудень"];
     }
-  }
-
-  for (let j = 1; j <= nextDays; j++) {
-    days += `<div class="next-date">${j}</div>`;
-    monthDays.innerHTML = days;
-  }
+    if (getLang('lang')  === 'en') {
+        months = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
+    }
+    document.querySelector(".date h1").innerHTML = months[date.getMonth()];    
+    for (let x = firstDayIndex; x > 0; x--) {
+        days += `<div class="prev-date">${prevLastDay - x + 1}</div>`;
+    };
+    const today = `${new Date().getFullYear()}-${(readyMonth(new Date()))}-${readyDay(new Date())}`;
+    for (let i = 1; i <= lastDay; i++) {
+        const dateDay = `'1988-01-${i}`;
+        if ( i === new Date().getDate() && date.getMonth() === new Date().getMonth() && date.getFullYear() === new Date().getFullYear()) {
+            days += `<div class="today" onclick="selectDate('${i}/${readyMonth(date.getMonth())}/${year}')">${i}</div>`;
+        } else if (`${date.getFullYear()}-${readyMonth(date)}-${readyDay(dateDay)}` < today) {
+            days += `<div class="prev-date">${i}</div>`;
+        } else {
+            days += `<div onclick="selectDate('${i}/${readyMonth(date.getMonth())}/${year}')">${i}</div>`;
+        };
+    };
+    for (let j = 1; j <= nextDays; j++) {
+        days += `<div class="next-date">${j}</div>`;
+        monthDays.innerHTML = days;
+    };
 };
 const selectDate = (date) => {
-    console.log('date', date);
+    // console.log('date', date);
     const inputPlace = $_(`#main_date`)[0];
-    inputPlace.value = date;
+    inputPlace.value = date;    
+    inputPlace.classList.remove('err_input');
     modal.innerHTML = '';
+    checkForm();
 };
-
 
 //for send AJAX  
 const send = (obj, url, fun, req = 'POST') => {
@@ -130,18 +118,6 @@ const send = (obj, url, fun, req = 'POST') => {
     xmlhttp.setRequestHeader("Content-type", "application/json");
     xmlhttp.send(JSON.stringify(obj));     
 };    
-
-//to change the language
-const setLang = (lang) => {
-    document.cookie = `lang=${lang}`;
-    document.location.reload();
-};
-const getLang = (name) => {
-    let matches = document.cookie.match(new RegExp(
-        "(?:^|; )" + name.replace(/([\.$?*|{}\(\)\[\]\\\/\+^])/g, '\\$1') + "=([^;]*)"
-    ));
-    return matches ? decodeURIComponent(matches[1]).slice(0, 2) : 'uk';
-};
 
 //to top
 const toTopFn = () => {
@@ -173,15 +149,8 @@ const body = $_('body')[0];
 const menu = $_('.menu_container')[0];
 const social = $_('.social_wrap')[0];
 const toTop = $_('#toTop')[0];
-// console.log('body', body);
-// console.log('menu', menu);
-// console.log('social', social);
-// console.log('toTop', toTop);
 window.onscroll = function() {
     const socialValue = social !== undefined ? social.clientHeight : 0;
-    // console.log('body', body.offsetWidth);
-    // console.log('menu', menu.offsetTop);
-    // console.log('social', socialValue);
     toTop.style.display = (document.body.scrollTop > 200 || document.documentElement.scrollTop > 200) ? "block" : "none";
     if (body.offsetWidth > 1280) {
         (document.body.scrollTop > socialValue || document.documentElement.scrollTop > socialValue) 
@@ -245,16 +214,12 @@ if ($_('.feedback_container')[0]) {
     window.addEventListener('resize', feedback, true);
     function feedbackPosition(el, i){
         $_('.feedback_wrap')[0].style.transform = `translateX(-${i}00%)`;        
-        $_('.feedback_points > p').forEach(element => {
-            element.style.backgroundColor = 'rgb(141, 141, 141)';
-        });
+        $_('.feedback_points > p').forEach(element => { element.style.backgroundColor = 'rgb(141, 141, 141)' });
         el.style.backgroundColor = '#ee9e07';
     };
     const feedbackCount = () => {
         $_('.feedback_points')[0].innerHTML = '';
-        for (let i = 0; i < $_('.feedback_wrap > .feedback_block').length; i++) {
-            $_('.feedback_points')[0].innerHTML += `<p onclick="feedbackPosition(this, ${i})"></p>`;
-        };
+        for (let i = 0; i < $_('.feedback_wrap > .feedback_block').length; i++) { $_('.feedback_points')[0].innerHTML += `<p onclick="feedbackPosition(this, ${i})"></p>` };
         $_('.feedback_points > p')[0].style.backgroundColor = '#ee9e07';
     };
     feedbackCount();
@@ -297,15 +262,16 @@ const closeModal = (el) => {
 };  
 
 //show modal window
-const showModal = function(type, obj, el){
+const showModal = function(type, obj, el) {
     // console.log('type', type);
     // console.log('obj', obj);
     // console.log('el', el);
-    ['townAddRes', 'townEditRes', 'townDelRes', 'transferAdd', 'transferAddRes', 'transferEditRes', 'transferDelRes'].includes(type) 
+    ['townAddRes', 'townEditRes', 'townDelRes', 'transferAddRes', 'transferEditRes', 'transferDelRes',
+    'townAdd', 'townEdit', 'townDel', 'transferAdd', 'transferEdit', 'transferDel',
+    'mainformFrom', 'mainformTo', 'mainformCalendar'].includes(type) 
         ? modal.innerHTML = template[type] : null;
 
     if (type === 'mainformCalendar') {
-        modal.innerHTML = template[type];
         $_(`#${type}`)[0].children[0].innerHTML = lang[`${type}${getLang('lang')}`];
         let yearVal = 1, dateField = $_(`.date_year > h1`)[0];
         dateField.innerHTML = (new Date().getFullYear() -1) + yearVal;
@@ -328,70 +294,38 @@ const showModal = function(type, obj, el){
             renderCalendar((new Date().getFullYear() -1) + yearVal);
         });
         renderCalendar((new Date().getFullYear() -1) + yearVal);
-    };    
-
-    if (type === 'mainformFrom') {
-        modal.innerHTML = template[type];
+    };
+    if (type === 'mainformFrom' || type === 'mainformTo') { 
         $_(`#${type}`)[0].children[0].innerHTML = lang[`${type}${getLang('lang')}`];
         const tawns_list = $_('.towns_select_list')[0];
+        let objTowns = {}, inpValue, param1, param2;
+        if (type === 'mainformFrom') { objTowns = townsFrom; inpValue = inputTo; param1 = 'to'; param2 = 'from'; };
+        if (type === 'mainformTo') { objTowns = townsTo; inpValue = inputFrom; param1 = 'from'; param2 = 'to'; };
         tawns_list.innerHTML = '';  
         if ((inputFrom.value !== '') && (inputTo.value !== '')) {             
-            for (const [key, value] of Object.entries(townsFrom)) {
-                tawns_list.innerHTML += `<p id="${key}" onclick="selectTownMain(this, 'main_from', 'clear')">${value}</p>`;
+            for (const [key, value] of Object.entries(objTowns)) {
+                tawns_list.innerHTML += `<p id="${key}" onclick="selectTownMain(this, 'main_${param2}', 'clear')">${value}</p>`;
             };
         } else {
-            if (inputTo.value === '') {                  
-                for (const [key, value] of Object.entries(townsFrom)) {
-                    tawns_list.innerHTML += `<p id="${key}" onclick="selectTownMain(this, 'main_from')">${value}</p>`;
+            if (inpValue.value === '') {                  
+                for (const [key, value] of Object.entries(objTowns)) {
+                    tawns_list.innerHTML += `<p id="${key}" onclick="selectTownMain(this, 'main_${param2}')">${value}</p>`;
                 };
             } else {
-                const anotherValue = $_('#main_to')[0].getAttribute('inputmainparam'), resListTowns = [];
+                const anotherValue = $_(`#main_${param1}`)[0].getAttribute('inputmainparam'), resListTowns = [];
                 transfersArr.forEach(element => {
-                    if (element['transfer_to'] === anotherValue) {
-                        resListTowns.push({[`${element['transfer_from']}`] : `${townsFrom[element['transfer_from']]}`});
+                    if (element[`transfer_${param1}`] === anotherValue) {
+                        resListTowns.push({[`${element[`transfer_${param2}`]}`] : `${objTowns[element[`transfer_${param2}`]]}`});
                     };
                 });
                 resListTowns.forEach(element => {
                     for (const [key, value] of Object.entries(element)) {
-                        tawns_list.innerHTML += `<p id="${key}" onclick="selectTownMain(this, 'main_from')">${value}</p>`;
+                        tawns_list.innerHTML += `<p id="${key}" onclick="selectTownMain(this, 'main_${param2}')">${value}</p>`;
                     };
                 });
             };
-        };        
-    };
-
-
-    if (type === 'mainformTo') {
-        modal.innerHTML = template[type];
-        $_(`#${type}`)[0].children[0].innerHTML = lang[`${type}${getLang('lang')}`];
-        const tawns_list = $_('.towns_select_list')[0];
-        tawns_list.innerHTML = '';
-        if ((inputFrom.value !== '') && (inputTo.value !== '')) {
-            for (const [key, value] of Object.entries(townsTo)) {
-                tawns_list.innerHTML += `<p id="${key}" onclick="selectTownMain(this, 'main_to', 'clear')">${value}</p>`;
-            };
-        } else {
-            if (inputFrom.value === '') {
-                for (const [key, value] of Object.entries(townsTo)) {
-                    tawns_list.innerHTML += `<p id="${key}" onclick="selectTownMain(this, 'main_to')">${value}</p>`;
-                };
-            } else {
-                const anotherValue = $_('#main_from')[0].getAttribute('inputmainparam'), resListTowns = [];
-                transfersArr.forEach(element => {
-                    if (element['transfer_from'] === anotherValue) {
-                        resListTowns.push({[`${element['transfer_to']}`] : `${townsTo[element['transfer_to']]}`});
-                    };
-                });
-                resListTowns.forEach(element => {
-                    for (const [key, value] of Object.entries(element)) {
-                        tawns_list.innerHTML += `<p id="${key}" onclick="selectTownMain(this, 'main_to')">${value}</p>`;
-                    };
-                });
-            };
-        };
-    };
-
-
+        }; 
+    };    
     if (type === 'transferTimes') {
         $_('.wrap_sub_modal')[0].innerHTML = template[type];
         hours = $_('.hours')[0];
@@ -402,43 +336,31 @@ const showModal = function(type, obj, el){
         $_('.admTime')[0].addEventListener('click', function(){
             el.value = `${hours.innerHTML}:${minutes.innerHTML}`;
             closeSubModal();
+            mainTimeInput.classList.remove('err_input');
+            checkForm();
         });   
     };
-    if (type === 'mainformTimes') {
-
-        console.log('el.getAttribute("setparam")', el.getAttribute("setparam"));
-        
+    if (type === 'mainformTimes') {        
         if (el.getAttribute("setparam") === 'limit') {
             modal.innerHTML = template[`${type}limit`];
             $_(`#${type}limit`)[0].children[0].innerHTML = lang[`${type}${getLang('lang')}`];
-            // console.log('from', inputFrom);
-            // console.log('to', inputTo);
             if (inputFrom.value !== '' && inputTo.value !== '') {
-                // const fromParam = inputFrom.getAttribute("inputmainparam")
-                // const fromTo = inputFrom.getAttribute("inputmainparam")
-                // console.log('fromParam', fromParam);
-                // console.log('fromTo', fromTo);
                 const timeArrForm = [];
                 const fromParam = inputFrom.getAttribute("inputmainparam")
                 const toParam = inputTo.getAttribute("inputmainparam")
                 transfersArr.forEach(element => {
                     if (element.transfer_from === fromParam && element.transfer_to === toParam && element.price_pr !== '') {
                         for (let i = 0; i < 10; i++) {
-                            if (element[`time${i+1}`] !== '') {
-                                timeArrForm.push(element[`time${i+1}`]);
-                            };                            
+                            if (element[`time${i+1}`] !== '') { timeArrForm.push(element[`time${i+1}`])};                            
                         };
                     };
                 });
-                console.log('timeArrForm', timeArrForm);
-
-                timeArrForm.forEach(element => {        
-
-                    $_('#mainformTimeslimit > .towns_select_list')[0].innerHTML += `<p onclick="setTime('${element}')">${element}</p>`;
+                timeArrForm.forEach(element => {
+                    $_('#mainformTimeslimit > .towns_select_list')[0].innerHTML += `<p onclick="setTime('${element}')">${element}</p>`;                    
                 });
             };            
         } else {
-            modal.innerHTML = template[`${type}`];
+            modal.innerHTML = template[type];
             $_(`#${type}`)[0].children[0].innerHTML = lang[`${type}${getLang('lang')}`];
             hours = $_('.hours')[0];
             minutes = $_('.minutes')[0];
@@ -448,6 +370,8 @@ const showModal = function(type, obj, el){
             $_('.admTime')[0].addEventListener('click', function(){
                 el.value = `${hours.innerHTML}:${minutes.innerHTML}`;
                 modal.innerHTML = '';
+                mainTimeInput.classList.remove('err_input');
+                checkForm();
             }); 
         }; 
     };
@@ -466,25 +390,21 @@ const showModal = function(type, obj, el){
         });
     };
     //____TOWNS
-    if (type === 'townAdd') {
-        modal.innerHTML = template[type];
+    if (type === 'townAdd') {        
         idTownPlace = $_('#id_town')[0];
         tokenTown = generate_token(6);
     };
     if (type === 'townEdit') {
-        modal.innerHTML = template[type];
         $_(`#${type} > #id_town`)[0].innerHTML = obj.id;
         $_(`#${type} > #ua`)[0].value = obj.uk;
         $_(`#${type} > #en`)[0].value = obj.en;
         $_(`#${type} > #ru`)[0].value = obj.ru; 
     };
     if (type === 'townDel') { 
-        modal.innerHTML = template[type];
         $_(`#${type} > #id_town`)[0].innerHTML = obj.id 
     };
     //____TRANSFERS
     if (type === 'transferEdit') {
-        modal.innerHTML = template[type];
         const timeList = [];
         for (let i = 0; i < 10; i++) { if (obj[`time${i + 1}`] !== '') { timeList.push(obj[`time${i + 1}`])}};
         $_(`#${type}`)[0].paramid = obj.id;
@@ -513,7 +433,6 @@ const showModal = function(type, obj, el){
         $_('.add_time')[0].style.display = $_(`#${type} #gr`)[0].value !== '' ? 'table' : 'none'
     };
     if (type === 'transferDel') {
-        modal.innerHTML = template[type];
         $_(`#${type} > #id_transfer`)[0].paramid = `${obj.id}`;
         $_(`#${type} > #id_transfer`)[0].innerHTML = `${obj.from} - ${obj.to}`;
     }; 
@@ -537,22 +456,12 @@ const selectTown = (el, param) => {
 const selectTownMain = (el, param, clear) => {
     modal.innerHTML = '';
     const inputPlace = $_(`#${param}`)[0];
-    $_(`#main_time`)[0].value = '';
+    mainTimeInput.value = '';
     inputPlace.value = el.innerHTML;
     inputPlace.setAttribute("inputmainparam", el.id);
-    checkCulk();
-    if (param === 'main_from') {
-        $_('#main_from')[0].classList.remove('err_input');
-        if (!calkTrue) {
-            $_('.main_form_err_calk')[0].classList.remove('hide_err');
-        }
-    };
-    if (param === 'main_to') {
-        $_('#main_to')[0].classList.remove('err_input');
-        if (!calkTrue) {
-            $_('.main_form_err_calk')[0].classList.remove('hide_err');
-        }
-    };
+    checkForm();
+    if (param === 'main_from') { $_('#main_from')[0].classList.remove('err_input') };
+    if (param === 'main_to') { $_('#main_to')[0].classList.remove('err_input') };
     if (clear === 'clear') {
         if (param === 'main_from') {
             inputTo.value = '';
@@ -566,15 +475,26 @@ const selectTownMain = (el, param, clear) => {
         };
     };
     if (inputFrom.value !== '' && inputTo.value !== '') {
-        const fromParam = inputFrom.getAttribute("inputmainparam")
-        const toParam = inputTo.getAttribute("inputmainparam")
+        const fromParam = inputFrom.getAttribute("inputmainparam");
+        const toParam = inputTo.getAttribute("inputmainparam");
+        $_('#type_transfer')[0].value = '';
         transfersArr.forEach(element => {
-            if (element.transfer_from === fromParam && element.transfer_to === toParam && element.price_pr !== '') {
-                $_(`#main_time`)[0].setAttribute("setparam", 'limit');
+            if (element.transfer_from === fromParam && element.transfer_to === toParam && element.price_pr !== '' && element.price_gr === '') {
+                $_(`#type_pr`)[0].selected = true;
+                $_(`#type_pr`)[0].classList.remove('hide_err');
+                $_(`#type_gr`)[0].classList.add('hide_err');
+                mainTimeInput.setAttribute("setparam", 'limit');              
+            } else if (element.transfer_from === fromParam && element.transfer_to === toParam && element.price_pr === ''){
+                $_(`#type_pr`)[0].classList.add('hide_err');
+                mainTimeInput.setAttribute("setparam", '');
             };
         });
     } else {
-        $_(`#main_time`)[0].setAttribute("setparam", '');
+        mainTimeInput.setAttribute("setparam", '');
+        mainTimeInput.value = '';
+        $_(`#type_pr`)[0].classList.remove('hide_err');
+        $_(`#type_gr`)[0].classList.remove('hide_err');
+        $_(`#type_pr`)[0].selected = false;
     };
 };
 
@@ -606,51 +526,95 @@ const validationPerson = (el) => {
     (priceVal === '') ? el.value = '' : null;
 };
 const typeTransferValid = (el) => {
-    console.log('ffff', el.value);
     $_('#type_transfer')[0].classList.remove('err_input');
-    $_('#main_time')[0].value = '';
+    mainTimeInput.value = '';
+    if (el.value === 'transfer_gr') {
+        mainTimeInput.setAttribute("setparam", '');  
+    };
+    if (el.value === 'transfer_pr') {
+        if (inputFrom.value !== '' && inputTo.value !== '') {
+            const fromParam = inputFrom.getAttribute("inputmainparam");
+            const toParam = inputTo.getAttribute("inputmainparam");
+            transfersArr.forEach(element => {
+                if (element.transfer_from === fromParam && element.transfer_to === toParam && element.price_pr !== '') {
+                    mainTimeInput.setAttribute("setparam", 'limit');              
+                };
+            });
+        };
+    };
+    checkForm();
 };
 const adultsValid = (el) => {
-    console.log('ooooo', el.value);
-    if ($_('#adults')[0].value > 0) {
-        $_('#adults')[0].classList.remove('err_input');
-    } else {
-        $_('#adults')[0].classList.add('err_input');
-    };    
+    checkForm();
+    const adultInp =  $_('#adults')[0];
+    (adultInp.value > 0) ? adultInp.classList.remove('err_input') : adultInp.classList.add('err_input');
 };
 
 //culculate main form
-const checkCulk = () => {
-    if (inputFrom.value === '') {
-        calkTrue = false;
-        $_('#main_from')[0].classList.add('err_input');
+const checkForm = () => {
+    let arrInp = [];
+    if (formValid !== undefined && formValid !== '') {
+        const arrCall = ['main_from', 'main_to', 'adults', 'type_transfer'];
+        const arrBook = ['main_from', 'main_to', 'adults', 'type_transfer', 'main_date', 'main_time'];
+        if (formValid === 'calk') {
+            $_(`.main_form_err_book`)[0].classList.add('hide_err');
+            arrInp = arrCall;
+            arrBook.forEach(element => { $_(`#${element}`)[0].classList.remove('err_input') });
+        };
+        if (formValid === 'book') {
+            $_(`.main_form_err_calk`)[0].classList.add('hide_err');
+            arrInp = arrBook;
+            arrCall.forEach(element => { $_(`#${element}`)[0].classList.remove('err_input') });
+        };
     };
-    if (inputTo.value === '') {
+    const arrTrue = [];
+    arrInp.forEach(element => {
+        if ($_(`#${element}`)[0].value === '') {
+            arrTrue.push(false);
+            $_(`#${element}`)[0].classList.add('err_input');
+        };
+        if ($_(`#adults`)[0].value <= 0) {
+            arrTrue.push(false);
+            $_(`#adults`)[0].classList.add('err_input');
+        };
+    });
+    if (arrTrue.includes(false)) {
         calkTrue = false;
-        $_('#main_to')[0].classList.add('err_input');
-    };
-    if ($_('#adults')[0].value === '' || $_('#adults')[0].value === 0) {
-        calkTrue = false;
-        $_('#adults')[0].classList.add('err_input');
-    };
-    if ($_('#type_transfer')[0].value === '') {
-        calkTrue = false;
-        $_('#type_transfer')[0].classList.add('err_input');
+        $_('.main_form_price')[0].classList.add('hide_err');
+        if (formValid !== undefined && formValid !== '') {
+            $_(`.main_form_err_${formValid}`)[0].classList.remove('hide_err');
+        };            
+    } else {
+        calkTrue = true;
+        $_('.main_form_price')[0].classList.add('hide_err');
+        if (formValid !== undefined && formValid !== '') {
+            $_(`.main_form_err_${formValid}`)[0].classList.add('hide_err');
+        };            
     };
 };
 const culculate = () => {
-    checkCulk();
+    checkForm();
 
     console.log('calkTrue', calkTrue);
-    if (!calkTrue) {
-        $_('.main_form_err_calk')[0].classList.remove('hide_err');
-    }
+
     if (calkTrue) {
         console.log('inputFrom.getAttribute(inputmainparam)', inputFrom.getAttribute('inputmainparam') );
         console.log('inputTo.getAttribute(inputmainparam)', inputTo.getAttribute('inputmainparam') );
+
+
         transfersArr.forEach(element => {
             if (element.transfer_from === inputFrom.getAttribute('inputmainparam') && element.transfer_to === inputTo.getAttribute('inputmainparam')) {
-                console.log('oooo', element);
+                console.log('calk_book', element.transfer_id);
+                
+                if (formValid === 'calk') {
+                    $_('.main_form_price')[0].classList.remove('hide_err');
+
+
+                };
+                if (formValid === 'book') {
+
+                    
+                };
             };
         });
     };
@@ -694,8 +658,10 @@ const showTimeList = (el) => {
 
 //for set times to main form 
 const setTime = (value) => {
-    $_(`#main_time`)[0].value = value;
+    mainTimeInput.value = value;
     modal.innerHTML = '';
+    mainTimeInput.classList.remove('err_input');
+    checkForm();
 };
 
 //for selecting time
@@ -731,13 +697,9 @@ const loadVariablesList = () => {
     send({} , `/variables`, (result) => {
         const resultat = JSON.parse(result);
         if (resultat.res) {
-            // console.log('varrrr', resultat.res);
             townsFrom = resultat.res.townsFrom;
             townsTo = resultat.res.townsTo;
             transfersArr = resultat.res.transfersArr;
-            // console.log('townsFrom', townsFrom);
-            // console.log('townsTo', townsTo);
-            // console.log('transfersArr', transfersArr);
         };
     });
 };
@@ -866,12 +828,6 @@ const formSendTransfer = (formID) => {
                 $_(`.transfer_dup_to`)[0].style.display = 'block'; 
                 trueSend = false;
             } else {
-                // if ((transfer_gr !== '' && (transfer_gr >= 1 && transfer_gr <= 50000)) || (transfer_pr !== '' &&  (transfer_pr >= 1 && transfer_pr <= 50000))) {
-                //     trueSend = true;
-                // } else {
-                //     $_(`.transfer_price_empt`)[0].style.display = 'block'; 
-                //     trueSend = false;
-                // };
                 if ((transfer_gr !== '' || transfer_pr !== '')) {
                     if (transfer_gr !== '' && (transfer_gr >= 1 && transfer_gr <= 50000) && transfer_pr === '') {
                         trueSend = true;
@@ -906,11 +862,7 @@ const formSendTransfer = (formID) => {
         send(obj , `/${formID.toLowerCase()}`, (result) => {
             const resultat = JSON.parse(result);
             if (resultat.res) {
-
-                console.log('res', resultat.res);
-
                 showModal(`${formID}Res`);
-                // $_('#id_town')[0].innerHTML = obj.id;
                 setTimeout(() => { modal.innerHTML = '' }, 3000);
                 loadTransfersList();
             };   
