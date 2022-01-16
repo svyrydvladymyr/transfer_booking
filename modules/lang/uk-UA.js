@@ -95,6 +95,13 @@ module.exports = {
     "contacts_title4" : "Години роботи",
     "contacts_title5" : "Соціальні мережі",
 
+    "howitwork1" : "Як ми працюємо?",
+    "howitwork2" : "Бронюйте Он-лайн чи по телефону",
+    "howitwork3" : "Отримайте підтвердження",
+    "howitwork4" : "Зустрічайте свого водія",
+    "howitwork5" : "Прямуйте до пункту призначення",
+    "howitwork6" : "Насолоджуйтесь поїздкою!",
+
     "feedback_form_name" : "Ім'я",
     "feedback_form_surname" : "Прізвище",
     "feedback_form_email" : "Е-мейл",

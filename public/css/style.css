@@ -2158,6 +2158,7 @@ iframe {
   -webkit-box-pack: center;
       -ms-flex-pack: center;
           justify-content: center;
+  overflow: hidden;
   outline: 1px solid blue;
 }
 .howitwork_container .howitwork_wrap .howitwork_row .howitwork_cell .box_border_11 {
@@ -2166,31 +2167,96 @@ iframe {
   bottom: 0;
   width: 50%;
   height: 30%;
+  margin-bottom: -10px;
   -webkit-box-sizing: content-box;
           box-sizing: content-box;
-  border-left: 10px solid grey;
+  border-left: 10px dashed #cdcdcd;
   border-radius: 0px;
+}
+.howitwork_container .howitwork_wrap .howitwork_row .howitwork_cell .arival_text, .howitwork_container .howitwork_wrap .howitwork_row .howitwork_cell .destini_text {
+  position: absolute;
+  bottom: 50%;
+  font-size: 24px;
+  font-weight: bold;
+  text-align: center;
+  margin: 0;
+  width: 100%;
+  color: #3b3334;
+  -webkit-transition: 0.5s;
+  transition: 0.5s;
+}
+.howitwork_container .howitwork_wrap .howitwork_row .howitwork_cell .arival_text:hover, .howitwork_container .howitwork_wrap .howitwork_row .howitwork_cell .destini_text:hover {
+  cursor: pointer;
+  color: #8bc34a;
 }
 .howitwork_container .howitwork_wrap .howitwork_row .howitwork_cell .box_border_21 {
   position: absolute;
   right: 0;
   top: 0;
-  width: 50%;
-  height: 30%;
+  width: calc(50% + 10px);
+  height: calc(30% + 20px);
+  margin-top: -10px;
+  margin-right: -10px;
   -webkit-box-sizing: content-box;
           box-sizing: content-box;
-  border-bottom: 10px solid grey;
-  border-left: 10px solid grey;
+  border-bottom: 10px dashed #cdcdcd;
+  border-left: 10px dashed #cdcdcd;
   border-radius: 0px 0px 0px 50px;
+}
+.howitwork_container .howitwork_wrap .howitwork_row .howitwork_cell .element_21 {
+  position: absolute;
+  right: 0;
+  width: 50%;
+  height: 77%;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -ms-flex-wrap: wrap;
+      flex-wrap: wrap;
+  -webkit-box-orient: vertical;
+  -webkit-box-direction: normal;
+      -ms-flex-direction: column;
+          flex-direction: column;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+  -webkit-box-pack: center;
+      -ms-flex-pack: center;
+          justify-content: center;
+}
+.howitwork_container .howitwork_wrap .howitwork_row .howitwork_cell .element_21 div {
+  cursor: pointer;
+  width: 150px;
+  background: #ee9e07;
+  border-radius: 9px;
+  color: #fff;
+  font-size: 56px;
+  line-height: 90px;
+  text-align: center;
+  -webkit-transition: 0.5s;
+  transition: 0.5s;
+}
+.howitwork_container .howitwork_wrap .howitwork_row .howitwork_cell .element_21 div:hover {
+  background: #8bc34a;
+}
+.howitwork_container .howitwork_wrap .howitwork_row .howitwork_cell .element_21 p {
+  font-size: 14px;
+  font-weight: bold;
+  text-align: center;
+  width: 100%;
+  background: #fff;
+  color: #3b3334;
 }
 .howitwork_container .howitwork_wrap .howitwork_row .howitwork_cell .box_border_22 {
   position: absolute;
   bottom: 0;
   left: 0;
+  margin-bottom: -10px;
+  margin-left: -10px;
   width: 50%;
   height: 70%;
-  border-top: 10px solid grey;
-  border-right: 10px solid grey;
+  border-top: 10px dashed #cdcdcd;
+  border-right: 10px dashed #cdcdcd;
   border-radius: 0px 50px 0px 0px;
 }
 .howitwork_container .howitwork_wrap .howitwork_row .howitwork_cell .box_border_31 {
@@ -2201,8 +2267,8 @@ iframe {
   height: 30%;
   -webkit-box-sizing: content-box;
           box-sizing: content-box;
-  border-top: 10px solid grey;
-  border-left: 10px solid grey;
+  border-top: 10px dashed grey;
+  border-left: 10px dashed grey;
   border-radius: 50px 0px 0px 0px;
 }
 .howitwork_container .howitwork_wrap .howitwork_row .howitwork_cell .box_border_32 {
@@ -2211,8 +2277,8 @@ iframe {
   left: 0;
   width: 50%;
   height: 70%;
-  border-bottom: 10px solid grey;
-  border-right: 10px solid grey;
+  border-bottom: 10px dashed grey;
+  border-right: 10px dashed grey;
   border-radius: 0px 0px 50px 0px;
 }
 .howitwork_container .howitwork_wrap .howitwork_row .howitwork_cell .box_border_41 {
@@ -2223,28 +2289,38 @@ iframe {
   height: 30%;
   -webkit-box-sizing: content-box;
           box-sizing: content-box;
-  border-left: 10px solid grey;
+  border-left: 10px dashed grey;
   border-radius: 0px;
 }
 .howitwork_container .howitwork_wrap .howitwork_row .howitwork_cell .destini {
   width: 30px;
   height: 30px;
-  background: grey;
+  background: #cdcdcd;
   border-radius: 50%;
   position: absolute;
   top: 29%;
   right: 50%;
   -webkit-transform: translateX(34%);
           transform: translateX(34%);
+  -webkit-transition: 0.5s;
+  transition: 0.5s;
+}
+.howitwork_container .howitwork_wrap .howitwork_row .howitwork_cell .destini:hover {
+  background: #8bc34a;
 }
 .howitwork_container .howitwork_wrap .howitwork_row .howitwork_cell .arival {
   width: 30px;
   height: 30px;
-  background: grey;
+  background: #cdcdcd;
   border-radius: 50%;
   position: absolute;
   bottom: 29%;
   right: 50%;
   -webkit-transform: translateX(34%);
           transform: translateX(34%);
+  -webkit-transition: 0.5s;
+  transition: 0.5s;
+}
+.howitwork_container .howitwork_wrap .howitwork_row .howitwork_cell .arival:hover {
+  background: #8bc34a;
 }

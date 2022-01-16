@@ -95,6 +95,13 @@ module.exports = {
     "contacts_title4" : "Opening Hours",
     "contacts_title5" : "Socials",
 
+    "howitwork1" : "How does it work?",
+    "howitwork2" : "Book online",
+    "howitwork3" : "Recive confirmation",
+    "howitwork4" : "Meet your driver",
+    "howitwork5" : "Arrive at your destination",
+    "howitwork6" : "Enjoy your trip!",
+
     "feedback_form_name" : "First name",
     "feedback_form_surname" : "Last name",
     "feedback_form_email" : "E-mail",

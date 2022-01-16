@@ -1739,36 +1739,90 @@ iframe {
         display: flex;
         flex-wrap: wrap;
         justify-content: center;
+        overflow: hidden;
         outline: 1px solid blue;
         .box_border_11 {
           position: absolute;
           right: 0;
-          bottom:0;
+          bottom: 0;
           width: 50%;
           height: 30%;
+          margin-bottom: -10px;
           box-sizing: content-box;
-          border-left: 10px solid grey;
+          border-left: 10px dashed #cdcdcd;
           border-radius: 0px;
+        }
+        .arival_text, .destini_text {
+          position: absolute;
+          bottom: 50%;
+          font-size: 24px;
+          font-weight: bold;
+          text-align: center;
+          margin: 0;
+          width: 100%;
+          color: #3b3334;
+          transition: .5s;
+          &:hover {
+            cursor: pointer;
+            color: #8bc34a;
+          }
         }
         .box_border_21 {
           position: absolute;
           right: 0;
-          top:0;
-          width: 50%;
-          height: 30%;
+          top: 0;
+          width: calc(50% + 10px);
+          height: calc(30% + 20px);
+          margin-top: -10px;
+          margin-right: -10px;
           box-sizing: content-box;
-          border-bottom: 10px solid grey;
-          border-left: 10px solid grey;
+          border-bottom: 10px dashed #cdcdcd;
+          border-left: 10px dashed #cdcdcd;
           border-radius: 0px 0px 0px 50px;
+        }
+        .element_21 {
+          position: absolute;
+          right: 0;
+          width: 50%;
+          height: 77%;
+          display: flex;
+          flex-wrap: wrap;
+          flex-direction: column;
+          align-items: center;
+          justify-content: center;
+          div {
+            cursor: pointer;
+            width: 150px;
+            background: #ee9e07;
+            border-radius: 9px;
+            color: #fff;
+            font-size: 56px;
+            line-height: 90px;
+            text-align: center;
+            transition: .5s;
+            &:hover {
+              background: #8bc34a;
+            }
+          }
+          p {
+            font-size: 14px;
+            font-weight: bold;
+            text-align: center;
+            width: 100%;
+            background: #fff;
+            color: #3b3334;
+          }
         }
         .box_border_22 {
           position: absolute;
           bottom: 0;
-          left:0;
+          left: 0;
+          margin-bottom: -10px;
+          margin-left: -10px;
           width: 50%;
           height: 70%;
-          border-top: 10px solid grey;
-          border-right: 10px solid grey;
+          border-top: 10px dashed #cdcdcd;
+          border-right: 10px dashed #cdcdcd;
           border-radius: 0px 50px 0px 0px;
         }
         .box_border_31 {
@@ -1778,8 +1832,8 @@ iframe {
           width: 50%;
           height: 30%;
           box-sizing: content-box;
-          border-top: 10px solid grey;
-          border-left: 10px solid grey;
+          border-top: 10px dashed  grey;
+          border-left: 10px dashed  grey;
           border-radius: 50px 0px 0px 0px;
         }
         .box_border_32 {
@@ -1788,8 +1842,8 @@ iframe {
           left:0;
           width: 50%;
           height: 70%;
-          border-bottom: 10px solid grey;
-          border-right: 10px solid grey;
+          border-bottom: 10px dashed  grey;
+          border-right: 10px dashed  grey;
           border-radius: 0px 0px 50px 0px;
         }
         .box_border_41 {
@@ -1799,28 +1853,36 @@ iframe {
           width: 50%;
           height: 30%;
           box-sizing: content-box;
-          border-left: 10px solid grey;
+          border-left: 10px dashed  grey;
           border-radius: 0px;
         }
         .destini {
           width: 30px;
           height: 30px;
-          background: grey;
+          background: #cdcdcd;
           border-radius: 50%;
           position: absolute;
           top: 29%;
           right: 50%;
           transform: translateX(34%);
+          transition: .5s;
+          &:hover {
+            background: #8bc34a;
+          }
         }
         .arival {
           width: 30px;
           height: 30px;
-          background: grey;
+          background: #cdcdcd;
           border-radius: 50%;
           position: absolute;
           bottom: 29%;
           right: 50%;
           transform: translateX(34%);
+          transition: .5s;
+          &:hover {
+            background: #8bc34a;
+          }
         }
       }
     }

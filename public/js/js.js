@@ -349,7 +349,7 @@ const showModal = function(type, obj, el) {
                 const fromParam = inputFrom.getAttribute("inputmainparam")
                 const toParam = inputTo.getAttribute("inputmainparam")
                 transfersArr.forEach(element => {
-                    if (element.transfer_from === fromParam && element.transfer_to === toParam && element.price_pr !== '') {
+                    if (element.transfer_from === fromParam && element.transfer_to === toParam && element.price_gr !== '') {
                         for (let i = 0; i < 10; i++) {
                             if (element[`time${i+1}`] !== '') { timeArrForm.push(element[`time${i+1}`])};                            
                         };
@@ -479,22 +479,27 @@ const selectTownMain = (el, param, clear) => {
         const toParam = inputTo.getAttribute("inputmainparam");
         $_('#type_transfer')[0].value = '';
         transfersArr.forEach(element => {
-            if (element.transfer_from === fromParam && element.transfer_to === toParam && element.price_pr !== '' && element.price_gr === '') {
+            if (element.transfer_from === fromParam && element.transfer_to === toParam && element.price_gr !== '' && element.price_pr === '') {
+                $_(`#type_gr`)[0].selected = true;
+                $_(`#type_gr`)[0].classList.remove('hide_err');
+                $_(`#type_pr`)[0].classList.add('hide_err');
+                mainTimeInput.setAttribute("setparam", 'limit');   
+            } else if (element.transfer_from === fromParam && element.transfer_to === toParam && element.price_gr === '' && element.price_pr !== '') {    
                 $_(`#type_pr`)[0].selected = true;
                 $_(`#type_pr`)[0].classList.remove('hide_err');
                 $_(`#type_gr`)[0].classList.add('hide_err');
-                mainTimeInput.setAttribute("setparam", 'limit');              
-            } else if (element.transfer_from === fromParam && element.transfer_to === toParam && element.price_pr === ''){
-                $_(`#type_pr`)[0].classList.add('hide_err');
+                mainTimeInput.setAttribute("setparam", '-');  
+            } else if (element.transfer_from === fromParam && element.transfer_to === toParam && element.price_gr === ''){
+                $_(`#type_gr`)[0].classList.add('hide_err');
                 mainTimeInput.setAttribute("setparam", '');
             };
         });
     } else {
         mainTimeInput.setAttribute("setparam", '');
         mainTimeInput.value = '';
-        $_(`#type_pr`)[0].classList.remove('hide_err');
         $_(`#type_gr`)[0].classList.remove('hide_err');
-        $_(`#type_pr`)[0].selected = false;
+        $_(`#type_pr`)[0].classList.remove('hide_err');
+        $_(`#type_gr`)[0].selected = false;
     };
 };
 
@@ -528,15 +533,15 @@ const validationPerson = (el) => {
 const typeTransferValid = (el) => {
     $_('#type_transfer')[0].classList.remove('err_input');
     mainTimeInput.value = '';
-    if (el.value === 'transfer_gr') {
+    if (el.value === 'transfer_pr') {
         mainTimeInput.setAttribute("setparam", '');  
     };
-    if (el.value === 'transfer_pr') {
+    if (el.value === 'transfer_gr') {
         if (inputFrom.value !== '' && inputTo.value !== '') {
             const fromParam = inputFrom.getAttribute("inputmainparam");
             const toParam = inputTo.getAttribute("inputmainparam");
             transfersArr.forEach(element => {
-                if (element.transfer_from === fromParam && element.transfer_to === toParam && element.price_pr !== '') {
+                if (element.transfer_from === fromParam && element.transfer_to === toParam && element.price_gr !== '') {
                     mainTimeInput.setAttribute("setparam", 'limit');              
                 };
             });
