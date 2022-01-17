@@ -1,5 +1,5 @@
 <div class="main_form_container">
-    <div class="main_form_wrap check">
+    <div class="main_form_wrap check"  id="check">
         <p><%=DATA.langPack.main_form_message %></p>
         <div class="main_form_row">
             <div class="main_form_coll">
@@ -42,13 +42,13 @@
             </div>
         </div>
         <label><%=DATA.langPack.main_form_equip_title %></label> 
-        <div class="main_form_row equip">              
+        <div class="main_form_row equip">   
             <div class="main_form_coll">     
                 <input type="radio" id="yes" name="equip" value="yes">           
                 <label for="yes"><%=DATA.langPack.main_form_equip_yes %></label><br>
             </div>
             <div class="main_form_coll">
-                <input type="radio" id="no" name="equip" value="no">
+                <input type="radio" id="no" name="equip" value="no" checked>
                 <label for="no"><%=DATA.langPack.main_form_equip_no %></label>            
             </div>
         </div>
@@ -64,12 +64,69 @@
         <p class="main_form_err_calk hide_err"><%=DATA.langPack.main_form_err_calk %></p>
         <p class="main_form_err_book hide_err"><%=DATA.langPack.main_form_err_book %></p>
     </div>
-    <div class="main_form_wrap booking">
-
-
-
-
-        
+    <div class="main_form_wrap booking" id="booking">
+        <div class="book_info"></div>
+        <div class="main_form_row">
+            <div class="main_form_coll">
+                <% if (DATA.permission.permissionAuthorization === '0') { %>
+                    <label for="main_name"><%=DATA.langPack.feedback_form_name %></label>
+                    <input type="text" name="name" id="main_name" maxlength="60" value="" autocomplete="off" oninput="validationName(this)">
+                <% } %> 
+                <% if (DATA.permission.permissionAuthorization === '1') { %>
+                    <label for="main_name"><%=DATA.langPack.feedback_form_name %></label>
+                    <input type="text" name="name" id="main_name" class="main_inp_readonly" value="<%=DATA.user.name %>" readonly>
+                <% } %> 
+            </div>
+            <div class="main_form_coll">         
+                <% if (DATA.permission.permissionAuthorization === '0') { %>
+                    <label for="main_surname"><%=DATA.langPack.feedback_form_surname %></label>
+                    <input type="text" name="surname" id="main_surname" maxlength="60" value="" autocomplete="off" oninput="validationName(this)">
+                <% } %> 
+                <% if (DATA.permission.permissionAuthorization === '1') { %>
+                    <label for="main_surname"><%=DATA.langPack.feedback_form_surname %></label>
+                    <input type="text" name="surname" id="main_surname" class="main_inp_readonly" value="<%=DATA.user.surname %>" readonly>
+                <% } %> 
+            </div>
+        </div>
+        <div class="main_form_row">
+            <div class="main_form_coll">
+                <% if (DATA.permission.permissionAuthorization === '0') { %>
+                    <label for="main_email"><%=DATA.langPack.feedback_form_email %></label>
+                    <input type="email" name="email" id="main_email" maxlength="110" value="" autocomplete="off" oninput="">
+                <% } %>         
+                <% if (DATA.permission.permissionAuthorization === '1') { %>
+                    <% if ((DATA.user.email === '') || (DATA.user.email === null) || (DATA.user.email === undefined)) { %>
+                        <label for="main_email"><%=DATA.langPack.feedback_form_email %></label>
+                        <input type="email" name="email" id="main_email" maxlength="110" value="" autocomplete="off" oninput="">
+                    <% } %> 
+                    <% if ((DATA.user.email !== '') && (DATA.user.email !== null) && (DATA.user.email !== undefined)) { %>
+                        <label for="main_email"><%=DATA.langPack.feedback_form_email %></label>
+                        <input type="email" name="email" id="main_email" class="main_inp_readonly" maxlength="110" value="<%=DATA.user.email %>" readonly>
+                    <% } %>                 
+                <% } %> 
+            </div>
+            <div class="main_form_coll">
+                <label for="main_phone"><%=DATA.langPack.feedback_form_tel %></label>
+                <input type="phone" name="phone" id="main_phone" maxlength="15" value="" autocomplete="off" oninput="validationPhone(this)">
+            </div>
+        </div>
+        <div class="main_form_row paid">   
+            <label for="main_paid" style="padding: 5px;"><%=DATA.langPack.main_form_paid %></label>    
+            <input type="checkbox" name="main_paid" id="main_paid">   
+        </div>
+        <div class="main_form_row btn">              
+            <div class="main_form_coll">     
+                <p class="main_form_btn" onclick="mainFormBack()"><%=DATA.langPack.main_form_btn_back %></p>
+            </div>
+            <div class="main_form_coll">
+                <p class="main_form_btn" onclick="book()"><%=DATA.langPack.main_form_btn_res %></p>
+            </div>
+        </div>        
+    </div>
+    <div class="main_form_wrap received"  id="received">
+        <p><%=DATA.langPack.main_form_received1 %></p>
+        <p><%=DATA.langPack.main_form_received2 %></p>
+        <p class="btn_ok" onclick="backAndClear()"><i class='far fa-paper-plane'></i></p>
     </div>
     <div class="modal_wrap"></div>
 </div>

@@ -124,7 +124,11 @@ module.exports = {
     "main_form_equip_no" : "Ні",
     "main_form_btn_res" : "зарезервувати",
     "main_form_btn_calk" : "обчислити",
+    "main_form_btn_back" : "назад",
+    "main_form_paid" : "Оплатити на сайті",
     "main_form_price" : "Вартість перевезення:",
+    "main_form_received" : "Вашу поїздку заброньовано!",
+    "main_form_received2" : "Ви отримаєте підтвердження на номер що ви вказали!",
     "main_form_err_calk" : "Для обчислення вартості перевезення виберіть всі необхідні поля!",
     "main_form_err_book" : "Для бронювання виберіть всі обов'язкові поля!",
 

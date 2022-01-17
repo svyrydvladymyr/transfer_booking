@@ -15,6 +15,8 @@ const inputFrom = $_('#main_from')[0];
 const inputTo = $_('#main_to')[0];
 const mainTimeInput = $_('#main_time')[0];
 const RegExpInput = new RegExp(/[^a-zA-Zа-яА-Я0-9-()_+=.'\":/\,іІїЇєЄ /\n]/g); 
+const RegExpPhone = new RegExp(/[^0-9-()+ /\n]/g); 
+const RegExpName = new RegExp(/[^a-zA-Zа-яА-Я-іІїЇєЄ /\n]/g); 
 
 let idTownPlace, tokenTown, formValid;
 let hours, minutes, hArr = [], mArr = [], hStart = 0, mStart = 0;;
@@ -452,7 +454,6 @@ const selectTown = (el, param) => {
         $_(`.transfer_dup_to`)[0].style.display = 'block';
     };
 };
-
 const selectTownMain = (el, param, clear) => {
     modal.innerHTML = '';
     const inputPlace = $_(`#${param}`)[0];
@@ -483,12 +484,14 @@ const selectTownMain = (el, param, clear) => {
                 $_(`#type_gr`)[0].selected = true;
                 $_(`#type_gr`)[0].classList.remove('hide_err');
                 $_(`#type_pr`)[0].classList.add('hide_err');
-                mainTimeInput.setAttribute("setparam", 'limit');   
+                mainTimeInput.setAttribute("setparam", 'limit');
+                $_('#type_transfer')[0].classList.remove('err_input');   
             } else if (element.transfer_from === fromParam && element.transfer_to === toParam && element.price_gr === '' && element.price_pr !== '') {    
                 $_(`#type_pr`)[0].selected = true;
                 $_(`#type_pr`)[0].classList.remove('hide_err');
                 $_(`#type_gr`)[0].classList.add('hide_err');
-                mainTimeInput.setAttribute("setparam", '-');  
+                mainTimeInput.setAttribute("setparam", '');
+                $_('#type_transfer')[0].classList.remove('err_input');
             } else if (element.transfer_from === fromParam && element.transfer_to === toParam && element.price_gr === ''){
                 $_(`#type_gr`)[0].classList.add('hide_err');
                 mainTimeInput.setAttribute("setparam", '');
@@ -509,6 +512,14 @@ const creatingIdTown = (el) => {
 };
 
 //validation text input
+const validationName = (el) => {
+    const val = `${el.value.replace(RegExpName , "")}`;
+    el.value = val;
+};
+const validationPhone = (el) => {
+    const val = `${el.value.replace(RegExpPhone , "")}`;
+    el.value = val;
+};
 const validationInput = (el) => {
     const val = `${el.value.replace(RegExpInput , "")}`;
     el.value = val;
@@ -556,6 +567,15 @@ const adultsValid = (el) => {
 };
 
 //culculate main form
+const mainFormBack = () => {
+    $_('#check')[0].style.display = 'flex'; 
+    $_('#booking')[0].style.display = 'none'; 
+}
+const backAndClear = () => {
+    $_('#check')[0].style.display = 'flex'; 
+    $_('#booking')[0].style.display = 'none'; 
+    $_('#received')[0].style.display = 'none'; 
+}
 const checkForm = () => {
     let arrInp = [];
     if (formValid !== undefined && formValid !== '') {
@@ -597,28 +617,80 @@ const checkForm = () => {
         };            
     };
 };
+const bookArr = {};
 const culculate = () => {
     checkForm();
 
     console.log('calkTrue', calkTrue);
 
     if (calkTrue) {
-        console.log('inputFrom.getAttribute(inputmainparam)', inputFrom.getAttribute('inputmainparam') );
-        console.log('inputTo.getAttribute(inputmainparam)', inputTo.getAttribute('inputmainparam') );
-
-
+        const inpFrom = inputFrom.getAttribute('inputmainparam');
+        const inpTo = inputTo.getAttribute('inputmainparam');
         transfersArr.forEach(element => {
-            if (element.transfer_from === inputFrom.getAttribute('inputmainparam') && element.transfer_to === inputTo.getAttribute('inputmainparam')) {
+            if (element.transfer_from === inpFrom && element.transfer_to === inpTo) {
+                console.log('element', element);
                 console.log('calk_book', element.transfer_id);
-                
+
+                // const transferId = element.transfer_id;
+                // const transferFrom = townsFrom[inpFrom];
+                // const transferTo = townsTo[inpTo];
+                // const adult = +$_('#adults')[0].value;
+                // const children = +$_('#children')[0].value;
+                // const type = $_('#type_transfer')[0].value;
+                // const sum = (type === 'transfer_gr') ? element.price_gr * (adult + children) : element.price_pr;
+                // const date = $_('#main_date')[0].value;
+                // const time = $_('#main_time')[0].value;
+                // const equip = document.querySelector('input[name="equip"]:checked').value;
+
+                // console.log('transferId', transferId);
+                // console.log('transferFrom', transferFrom);
+                // console.log('transferTo', transferTo);
+                // console.log('type', type);
+                // console.log('persons', adult + adult);
+                // console.log('sum', sum);
+                // console.log('date', date);
+                // console.log('time', time);
+                // console.log('equip', equip);
+
+                bookArr.transferId = element.transfer_id;
+                bookArr.transferFrom = townsFrom[inpFrom];
+                bookArr.transferTo = townsTo[inpTo];
+                bookArr.adult = +$_('#adults')[0].value;
+                bookArr.children = +$_('#children')[0].value;
+                bookArr.type = $_('#type_transfer')[0].value;
+                bookArr.sum = ($_('#type_transfer')[0].value === 'transfer_gr') ? element.price_gr * (bookArr.adult + bookArr.children) : element.price_pr;
+                bookArr.date = $_('#main_date')[0].value;
+                bookArr.time = $_('#main_time')[0].value;
+                bookArr.equip = document.querySelector('input[name="equip"]:checked').value;
+
+                console.log('bookArr', bookArr);
+
                 if (formValid === 'calk') {
                     $_('.main_form_price')[0].classList.remove('hide_err');
-
-
+                    let culkSum = 0;
+                    if (bookArr.type === 'transfer_gr') { culkSum = element.price_gr * (bookArr.adult + bookArr.children) };
+                    if (bookArr.type === 'transfer_pr') { culkSum = element.price_pr };
+                    $_('.main_form_price > span')[0].innerHTML = culkSum;
                 };
                 if (formValid === 'book') {
-
+                    const resInfo = $_('.book_info')[0]; 
+                    const bookLang = getLang('lang');
                     
+                    console.log('resInfo', resInfo);
+                    console.log('bookLang', bookLang);
+                    const resInfoBlock = `
+                        <p class="main_form_color">${bookArr.transferFrom} - ${bookArr.transferTo}</p>
+                        <p>${lang[`date${bookLang}`]} - <span class="main_form_color">${bookArr.date}</span> &nbsp ${lang[`time${bookLang}`]} - <span class="main_form_color">${bookArr.time}</span></p>
+                        <p>${lang[`adult${bookLang}`]} - <span class="main_form_color">${bookArr.adult}</span> &nbsp
+                            ${lang[`children${bookLang}`]} - <span class="main_form_color">${bookArr.children}</span> &nbsp
+                            ${lang[`equip${bookLang}`]} - <span class="main_form_color">${lang[`${bookArr.equip}${bookLang}`]}</span> &nbsp
+                            <b class="main_form_color">${lang[`${bookArr.type}${bookLang}`]}</b></p>
+                        <p>${lang[`sum${bookLang}`]} - <span class="main_form_color">${bookArr.sum}</span> </p>
+                    `;
+
+                    resInfo.innerHTML = resInfoBlock;
+                    $_('#check')[0].style.display = 'none'; 
+                    $_('#booking')[0].style.display = 'flex'; 
                 };
             };
         });

@@ -264,7 +264,7 @@ body {
     }
     .form_wrap {
       // outline: 2px solid green;
-      padding: 70px 15px 70px 15px;
+      padding: 50px 15px 50px 15px;
         .info_container, .tabs_container {
           // outline: 1px solid yellow;
           width: 48%;
@@ -418,7 +418,10 @@ body {
     color: #4e4e4e;
     margin: 0;
   }
-  .main_form_wrap.check { 
+  .main_form_wrap.check{ 
+    display: flex;
+  }
+  .main_form_wrap{ 
     // outline: 1px solid green;
     > p {
       font-size: 14px;
@@ -463,9 +466,26 @@ body {
         }
       }
     }
+    .main_form_row.paid {
+      justify-content: center;
+      width: 100%;
+      margin: 10px auto;
+      .main_form_coll {
+        display: flex;
+        flex-wrap:wrap;
+        align-items:center;
+        input {
+          margin: 0;    
+          margin-right: 5px;      
+        }
+        label {
+          margin: 0;
+        }
+      }
+    }
     .main_form_row.btn {
       justify-content: center;
-      width: 100&;
+      width: 100%;
       margin: 10px auto;
       .main_form_coll:first-child { 
         justify-content: flex-end;
@@ -501,6 +521,10 @@ body {
       justify-content: space-between;
       align-items: flex-end;
       margin-bottom: 30px;
+      input[type=checkbox] {
+        width: 30px;
+        height: 20px;
+      }
       .main_form_coll.sub {
         display: flex;
         flex-wrap: wrap;
@@ -520,6 +544,12 @@ body {
           margin-bottom: 5px;
           color: #fff;
           opacity: .7;
+        }
+        .main_inp_readonly {
+          cursor: no-drop;
+          background: #ffffff14;
+          color: #fff;
+          border-bottom: 2px solid white;
         }
         input[type=radio] {
           width: 20px;
@@ -545,9 +575,57 @@ body {
       }
     }
   }
-  .main_form_wrap.booking {
-    outline: 1px solid yellow;
+  .main_form_wrap.booking, .main_form_wrap.received {
+    // outline: 1px solid yellow;
     display: none;
+    .book_info {
+      width: 100%;
+      text-align: center;
+      padding-bottom: 10px;
+      margin: 5px 0px 20px 0px;
+      border-bottom: 1px solid #726a6a;
+      .main_form_color {
+        color:#cbf790;
+      }
+      p {
+        width: 100%;
+        margin: 5px;
+        font-size: 14px;
+        color: #fff;
+        opacity: 0.7;
+      }
+    }
+  }
+  .main_form_wrap.received {
+    .main_form_coll {
+      display: none;
+      flex-wrap: wrap;
+      justify-content: flex-start;
+      p {
+        width: 100%;
+        margin: 5px;
+        font-size: 16px;
+        color: #fff;
+        opacity: 0.7;
+      }
+      p.btn_ok {
+        cursor: pointer;
+        background: #6ba917;
+        line-height: 50px;
+        font-size: 16px;
+        font-weight: bold;
+        letter-spacing: 1px;
+        text-transform: uppercase;
+        color: #fff;
+        min-width: 180px;
+        padding: 0px 15px;
+        margin: 0px 10px;
+        text-align: center;
+        &:hover {
+          background: #5c9211;
+        }
+      }
+    }
   }
   .main_form_wrap {
     width: 100%;
@@ -1704,7 +1782,7 @@ iframe {
 
 //___________how it work________________
 .howitwork_container {
-  outline: 1px solid red;
+  // outline: 1px solid red;
   width: 100%;
   padding: 40px 10px;
   display: flex;
@@ -1717,21 +1795,31 @@ iframe {
     display: flex;
     flex-wrap: wrap;
     justify-content: center;
-    outline: 1px solid green;
+    // outline: 1px solid green;
     .howitwork_row:first-child {
       min-height: 200px;
     }
     .howitwork_row:last-child {
       min-height: 200px;
     }
+    .order_mob {
+      display: flex;
+      flex-wrap: wrap;
+      .howitwork_cell:first-child {
+        order: 1;
+      }
+      .howitwork_cell:last-child {
+        order: 2;
+      }
+    }
     .howitwork_row {
       width: 100%;
-      min-height: 400px;
+      min-height: 300px;
       padding: 0px 5px;
       display: flex;
       flex-wrap: wrap;
       justify-content: center;
-      outline: 1px solid yellow;
+      // outline: 1px solid yellow;
       .howitwork_cell {
         position: relative;
         width: 50%;
@@ -1740,7 +1828,7 @@ iframe {
         flex-wrap: wrap;
         justify-content: center;
         overflow: hidden;
-        outline: 1px solid blue;
+        // outline: 1px solid blue;
         .box_border_11 {
           position: absolute;
           right: 0;
@@ -1767,12 +1855,16 @@ iframe {
             color: #8bc34a;
           }
         }
+        .destini_text {
+          position: absolute;
+          bottom: 40%;
+        }
         .box_border_21 {
           position: absolute;
           right: 0;
           top: 0;
           width: calc(50% + 10px);
-          height: calc(30% + 20px);
+          height: calc(16% + 20px);
           margin-top: -10px;
           margin-right: -10px;
           box-sizing: content-box;
@@ -1780,11 +1872,9 @@ iframe {
           border-left: 10px dashed #cdcdcd;
           border-radius: 0px 0px 0px 50px;
         }
-        .element_21 {
+        .element_21, .element_22, .element_32, .element_31  {
           position: absolute;
           right: 0;
-          width: 50%;
-          height: 77%;
           display: flex;
           flex-wrap: wrap;
           flex-direction: column;
@@ -1811,7 +1901,33 @@ iframe {
             width: 100%;
             background: #fff;
             color: #3b3334;
+            padding: 6px 0px;
+            margin: 0px;
           }
+        }
+        .element_21 {
+          top: 0;
+          right: 0;
+          width: 50%;
+          height: 50%;
+        }
+        .element_22 {
+          height: 78%;
+          left: 50%;
+          transform: translateX(-70%);
+          bottom: 0;
+        }
+        .element_31 {
+          height: 45%;
+          width: 44%;
+          right: 3%;
+          bottom: 0;
+        }
+        .element_32 {
+          left: 50%;
+          top: 0;
+          height: 70%;
+          transform: translateX(-70%);
         }
         .box_border_22 {
           position: absolute;
@@ -1819,8 +1935,8 @@ iframe {
           left: 0;
           margin-bottom: -10px;
           margin-left: -10px;
-          width: 50%;
-          height: 70%;
+          width: 43%;
+          height: 84%;
           border-top: 10px dashed #cdcdcd;
           border-right: 10px dashed #cdcdcd;
           border-radius: 0px 50px 0px 0px;
@@ -1828,32 +1944,38 @@ iframe {
         .box_border_31 {
           position: absolute;
           bottom: 0;
-          right:0;
-          width: 50%;
-          height: 30%;
+          right: 0;
+          width: calc(50% + 10px);
+          height: calc(20% + 24px);
           box-sizing: content-box;
-          border-top: 10px dashed  grey;
-          border-left: 10px dashed  grey;
-          border-radius: 50px 0px 0px 0px;
+          margin-bottom: -10px;
+          margin-right: -20px;
+          border-top: 10px dashed #cdcdcd;
+          border-left: 10px dashed #cdcdcd;
+          border-radius: 50px 0px 0px 0px;          
         }
         .box_border_32 {
           position: absolute;
           top: 0;
-          left:0;
-          width: 50%;
-          height: 70%;
-          border-bottom: 10px dashed  grey;
-          border-right: 10px dashed  grey;
-          border-radius: 0px 0px 50px 0px;
+          left: 0;
+          width: 43%;
+          height: 84%;
+          margin-left: -10px;
+          margin-top: -26px;
+          border-bottom: 10px dashed #cdcdcd;
+          border-right: 10px dashed #cdcdcd;
+          border-radius: 0px 0px 50px 0px;          
         }
         .box_border_41 {
           position: absolute;
           top: 0;
-          right:0;
+          right: 0;
           width: 50%;
           height: 30%;
+          margin-right: -10px;
+          margin-top: -10px;
           box-sizing: content-box;
-          border-left: 10px dashed  grey;
+          border-left: 10px dashed #cdcdcd;
           border-radius: 0px;
         }
         .destini {
@@ -1864,7 +1986,7 @@ iframe {
           position: absolute;
           top: 29%;
           right: 50%;
-          transform: translateX(34%);
+          transform: translateX(65%);
           transition: .5s;
           &:hover {
             background: #8bc34a;
