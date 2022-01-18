@@ -11,13 +11,13 @@ const townadd = async (req, res) => {
             resMess = 'Town added!';
             sql = `INSERT INTO points (town_id, name_uk, name_en, name_ru) 
             VALUES ('${checOnTrueVal(req.body.id)}', 
-                    '${checOnTrueVal(req.body.ua)}', 
+                    '${checOnTrueVal(req.body.uk)}', 
                     '${checOnTrueVal(req.body.en)}', 
                     '${checOnTrueVal(req.body.ru)}')`; 
         };
         if (req.body.param === 'townEdit') {
             resMess = 'Town edited!';
-            sql = `UPDATE points SET name_uk='${checOnTrueVal(req.body.ua)}', name_en='${checOnTrueVal(req.body.en)}', name_ru='${checOnTrueVal(req.body.ru)}' 
+            sql = `UPDATE points SET name_uk='${checOnTrueVal(req.body.uk)}', name_en='${checOnTrueVal(req.body.en)}', name_ru='${checOnTrueVal(req.body.ru)}' 
             WHERE town_id='${checOnTrueVal(req.body.id)}'`; 
         };
         if (req.body.param === 'townDel') {
@@ -25,7 +25,7 @@ const townadd = async (req, res) => {
             sql = `DELETE FROM points WHERE town_id='${checOnTrueVal(req.body.id)}'`; 
         };
         await tableRecord(sql)
-        .then((result) => {
+        .then(async (result) => {
             // console.log('result', result);
             if (result.err && result.err.code == 'ER_DUP_ENTRY') {
                 const arr = [req.body.id, req.body.uk, req.body.en, req.body.ru];
@@ -36,7 +36,18 @@ const townadd = async (req, res) => {
                 };                
             };
             if (result.err && result.err.code !== 'ER_DUP_ENTRY') { throw new Error('error-DB') };
-            if (!result.err) { res.send({"res": resMess}) };               
+            if (!result.err) {                 
+                if (req.body.param !== 'townDel') { res.send({"res": resMess}) };
+                if (req.body.param === 'townDel') {
+                    resMess = 'Town and routes deleted!';
+                    sql = `DELETE FROM transfers WHERE transfer_from='${checOnTrueVal(req.body.id)}' OR transfer_to='${checOnTrueVal(req.body.id)}'`; 
+                    await tableRecord(sql)
+                    .then((result) => {
+                        if (result.err) { throw new Error('error-DB') };
+                        if (!result.err) { res.send({"res": resMess}) };  
+                    });
+                };
+            };               
         });
     })
     .catch((err) => {

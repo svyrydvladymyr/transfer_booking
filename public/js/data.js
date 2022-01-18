@@ -7,9 +7,9 @@ template = {
         <div class="modal_place" id="townAdd">
             <p id="id_town"></p>
             <p class="form_info">Унікальний номер міста</p>            
-            <input type="text" id="ua" name="ua" maxlength="90" placeholder="Назва українською" oninput="creatingIdTown(this), validation(this, 'Input')">
-            <p class="town_dup_ua">Така назва вже є в базі!</p>
-            <p class="town_empty_ua">Не може бути пустим!</p>
+            <input type="text" id="uk" name="uk" maxlength="90" placeholder="Назва українською" oninput="creatingIdTown(this), validation(this, 'Input')">
+            <p class="town_dup_uk">Така назва вже є в базі!</p>
+            <p class="town_empty_uk">Не може бути пустим!</p>
             <input type="text" id="en" name="en" maxlength="90" placeholder="Name in English" oninput="validation(this, 'Input')">
             <p class="town_dup_en">Така назва вже є в базі!</p>
             <p class="town_empty_en">Не може бути пустим!</p>
@@ -38,9 +38,9 @@ template = {
         <div class="modal_place" id="townEdit">
             <p id="id_town"></p>
             <p class="form_info">Унікальний номер міста</p>            
-            <input type="text" id="ua" name="ua" maxlength="90" placeholder="Назва українською" oninput="validation(this, 'Input')">
-            <p class="town_dup_ua">Така назва вже є в базі!</p>
-            <p class="town_empty_ua">Не може бути пустим!</p>
+            <input type="text" id="uk" name="uk" maxlength="90" placeholder="Назва українською" oninput="validation(this, 'Input')">
+            <p class="town_dup_uk">Така назва вже є в базі!</p>
+            <p class="town_empty_uk">Не може бути пустим!</p>
             <input type="text" id="en" name="en" maxlength="90" placeholder="Name in English" oninput="validation(this, 'Input')">
             <p class="town_dup_en">Така назва вже є в базі!</p>
             <p class="town_empty_en">Не може бути пустим!</p>
@@ -97,12 +97,12 @@ template = {
             <p class="transfer_empty_to">Поля "Перевезення з" і "Перевезення до" не можуть бути пустим!</p>
             <div class="price_form"> 
                 <p>Груповий</p>
-                <input type="number" id="gr" name="gr" min="0" max="50000" autocomplete="off" placeholder="Ціна за груповий..." oninput="validation(this, 'Price'), showTimeList(this)">
+                <input type="number" id="gr" name="gr" min="0" max="50000" autocomplete="off" placeholder="Ціна за груповий..." oninput="validationPrice(this), showTimeList(this)">
             </div>
             <p class="transfer_price_gr">Перевищує допустимі значення! (доступно з 1грн до 50000грн)</p>
             <div class="price_form"> 
                 <p>Приватний</p>
-                <input type="number" id="pr" name="pr" min="0" max="50000" autocomplete="off" placeholder="Ціна за приватний..." oninput="validation(this, 'Price')">
+                <input type="number" id="pr" name="pr" min="0" max="50000" autocomplete="off" placeholder="Ціна за приватний..." oninput="validationPrice(this)">
             </div>
             <p class="transfer_price_pr">Перевищує допустимі значення! (доступно з 1грн до 50000грн)</p>
             <p class="transfer_price_empt">Хоча б одна ціна має бути вказана!</p>
@@ -171,12 +171,12 @@ template = {
             <p class="transfer_empty_to">Поля "Перевезення з" і "Перевезення до" не можуть бути пустим!</p>
             <div class="price_form"> 
                 <p>Груповий</p>
-                <input type="number" id="gr" name="gr" min="1" max="50000" autocomplete="off" placeholder="Ціна за груповий..." oninput="validation(this, 'Price'), showTimeList(this)">
+                <input type="number" id="gr" name="gr" min="1" max="50000" autocomplete="off" placeholder="Ціна за груповий..." oninput="validationPrice(this), showTimeList(this)">
             </div>
             <p class="transfer_price_gr">Перевищує допустимі значення! (доступно з 1грн до 50000грн)</p>
             <div class="price_form"> 
                 <p>Приватний</p>
-                <input type="number" id="pr" name="pr" min="1" max="50000" autocomplete="off" placeholder="Ціна за приватний..." oninput="validation(this, 'Price')">
+                <input type="number" id="pr" name="pr" min="1" max="50000" autocomplete="off" placeholder="Ціна за приватний..." oninput="validationPrice(this)">
             </div>
             <p class="transfer_price_pr">Перевищує допустимі значення! (доступно з 1грн до 50000грн)</p>
             <p class="transfer_price_empt">Хоча б одна ціна має бути вказана!</p>
@@ -221,6 +221,20 @@ template = {
         <div class="modal_place" id="transferDel">
             <p class="res_mess">Маршрут видалено із списку!</p>
         </div>        
+    </div>`,
+    editMenuTown:
+    `<div class="modal_body">
+        <div class="modal_close">
+            <i class='fa fa-times' onclick="closeModal(event)"></i>
+        </div>
+        <div class="modal_place" id="editMenuTown"></div>        
+    </div>`,
+    editMenuTransfer:
+    `<div class="modal_body">
+        <div class="modal_close">
+            <i class='fa fa-times' onclick="closeModal(event)"></i>
+        </div>
+        <div class="modal_place" id="editMenuTransfer"></div>        
     </div>`,
     mainformTimes:
     `<div class="modal_body" onclick="closeModal(event)">

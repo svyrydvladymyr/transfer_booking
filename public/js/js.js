@@ -271,14 +271,45 @@ const closeModal = (el) => {
 
 //show modal window
 const showModal = function(type, obj, el) {
-    // console.log('type', type);
-    // console.log('obj', obj);
-    // console.log('el', el);
+    console.log('type', type);
+    console.log('obj', obj);
+    console.log('el', el);
     ['townAddRes', 'townEditRes', 'townDelRes', 'transferAddRes', 'transferEditRes', 'transferDelRes',
     'townAdd', 'townEdit', 'townDel', 'transferAdd', 'transferEdit', 'transferDel',
-    'mainformFrom', 'mainformTo', 'mainformCalendar'].includes(type) 
+    'mainformFrom', 'mainformTo', 'mainformCalendar', 'editMenuTown', 'editMenuTransfer'].includes(type) 
         ? modal.innerHTML = template[type] : null;
-
+    
+    if (type === 'editMenuTown') {
+        $_(`#${type}`)[0].innerHTML = `
+            <p class="edit_menu" onclick="showModal('townEdit', {'id' : '${obj.id}', 'uk' : '${obj.uk}', 'en' : '${obj.en}', 'ru' : '${obj.ru}'})">Редагувати <i class='far fa-edit'></i></p>
+            <p class="edit_menu" onclick="showModal('townDel', {'id' : '${obj.id}'})">Видалити <i class='far fa-trash-alt'></i></p>`;
+    };        
+    if (type === 'editMenuTransfer') {
+        $_(`#${type}`)[0].innerHTML = `
+        <p class="edit_menu" onclick="showModal('transferEdit', 
+            {'id' : '${obj.id}', 
+            'from' : '${obj.from}', 
+            'from_id' : '${obj.from_id}', 
+            'to' : '${obj.to}', 
+            'to_id' : '${obj.to_id}', 
+            'pricepr' : '${obj.pricepr}', 
+            'pricegr' : '${obj.pricegr}',
+            'time1' : '${obj.time1}',
+            'time2' : '${obj.time2}',
+            'time3' : '${obj.time3}',
+            'time4' : '${obj.time4}',
+            'time5' : '${obj.time5}',
+            'time6' : '${obj.time6}',
+            'time7' : '${obj.time7}',
+            'time8' : '${obj.time8}',
+            'time9' : '${obj.time9}',
+            'time10' : '${obj.time10}',
+            'select' : '${obj.select}'})">Редагувати <i class='far fa-edit'></i></p>
+        <p class="edit_menu" onclick="showModal('transferDel', 
+            {'id' : '${obj.id}', 
+            'from' : '${obj.from}', 
+            'to' : '${obj.to}'})">Видалити <i class='far fa-trash-alt'></i></p>`;
+    };        
     if (type === 'mainformCalendar') {
         $_(`#${type}`)[0].children[0].innerHTML = lang[`${type}${getLang('lang')}`];
         let yearVal = 1, dateField = $_(`.date_year > h1`)[0];
@@ -344,8 +375,8 @@ const showModal = function(type, obj, el) {
         $_('.admTime')[0].addEventListener('click', function(){
             el.value = `${hours.innerHTML}:${minutes.innerHTML}`;
             closeSubModal();
-            mainTimeInput.classList.remove('err_input');
-            checkForm();
+            // mainTimeInput.classList.remove('err_input');
+            // checkForm();
         });   
     };
     if (type === 'mainformTimes') {        
@@ -404,7 +435,7 @@ const showModal = function(type, obj, el) {
     };
     if (type === 'townEdit') {
         $_(`#${type} > #id_town`)[0].innerHTML = obj.id;
-        $_(`#${type} > #ua`)[0].value = obj.uk;
+        $_(`#${type} > #uk`)[0].value = obj.uk;
         $_(`#${type} > #en`)[0].value = obj.en;
         $_(`#${type} > #ru`)[0].value = obj.ru; 
     };
@@ -810,8 +841,7 @@ const loadTownsList = () => {
                 tawns_list.innerHTML += `
                 <div class="town"><p>${element.name_uk}
                     <span>
-                        <i class='fas fa-edit' onclick="showModal('townEdit', {'id' : '${element.town_id}', 'uk' : '${element.name_uk}', 'en' : '${element.name_en}', 'ru' : '${element.name_ru}'})"></i>
-                        <i class='fas fa-trash-alt' onclick="showModal('townDel', {'id' : '${element.town_id}'})"></i>
+                        <i class='fas fa-ellipsis-h' onclick="showModal('editMenuTown', {'id' : '${element.town_id}', 'uk' : '${element.name_uk}', 'en' : '${element.name_en}', 'ru' : '${element.name_ru}'})"></i>
                     </span>
                 </p></div>`
             });
@@ -831,31 +861,25 @@ const loadTransfersList = () => {
                 transfers_list.innerHTML += `
                 <div class="transfer"><p>${element.transfer_from} - ${element.transfer_to}
                     <span>
-                        <i class='fas fa-edit' onclick="showModal('transferEdit', 
-                            {'id' : '${element.transfer_id}', 
-                            'from' : '${element.transfer_from}', 
-                            'from_id' : '${element.transfer_from_id}', 
-                            'to' : '${element.transfer_to}', 
-                            'to_id' : '${element.transfer_to_id}', 
-                            'pricepr' : '${element.price_pr}', 
-                            'pricegr' : '${element.price_gr}',
-                            'time1' : '${element.time1}',
-                            'time2' : '${element.time2}',
-                            'time3' : '${element.time3}',
-                            'time4' : '${element.time4}',
-                            'time5' : '${element.time5}',
-                            'time6' : '${element.time6}',
-                            'time7' : '${element.time7}',
-                            'time8' : '${element.time8}',
-                            'time9' : '${element.time9}',
-                            'time10' : '${element.time10}',
-                            'select' : '${element.selection}'})">
-                        </i>
-                        <i class='fas fa-trash-alt' onclick="showModal('transferDel', 
-                            {'id' : '${element.transfer_id}', 
-                            'from' : '${element.transfer_from}', 
-                            'to' : '${element.transfer_to}'})">
-                        </i>
+                        <i class='fas fa-ellipsis-h' onclick="showModal('editMenuTransfer', 
+                        {'id' : '${element.transfer_id}', 
+                        'from' : '${element.transfer_from}', 
+                        'from_id' : '${element.transfer_from_id}', 
+                        'to' : '${element.transfer_to}', 
+                        'to_id' : '${element.transfer_to_id}', 
+                        'pricepr' : '${element.price_pr}', 
+                        'pricegr' : '${element.price_gr}',
+                        'time1' : '${element.time1}',
+                        'time2' : '${element.time2}',
+                        'time3' : '${element.time3}',
+                        'time4' : '${element.time4}',
+                        'time5' : '${element.time5}',
+                        'time6' : '${element.time6}',
+                        'time7' : '${element.time7}',
+                        'time8' : '${element.time8}',
+                        'time9' : '${element.time9}',
+                        'time10' : '${element.time10}',
+                        'select' : '${element.selection}'})"></i>
                     </span>
                 </p></div>`
             });
@@ -868,11 +892,11 @@ const formSend = (formID) => {
     let obj = {}, trueSend = true;
     if ((formID === 'townAdd') || (formID === 'townEdit')) {
         const id_town = $_(`#${formID} > #id_town`)[0].innerHTML;
-        const ua_town = $_(`#${formID} > #ua`)[0].value.replace(RegExpInput , "");
-        const en_town = $_(`#${formID} > #en`)[0].value.replace(RegExpInput , "");
-        const ru_town = $_(`#${formID} > #ru`)[0].value.replace(RegExpInput , "");
-        obj = {"id" : id_town, "ua" : ua_town, "en" : en_town, "ru" : ru_town, "param" : formID};
-        ["ua", "en", "ru"].forEach(element => {  
+        const uk_town = $_(`#${formID} > #uk`)[0].value.replace(RegExpArr.RegExpInput , "");
+        const en_town = $_(`#${formID} > #en`)[0].value.replace(RegExpArr.RegExpInput , "");
+        const ru_town = $_(`#${formID} > #ru`)[0].value.replace(RegExpArr.RegExpInput , "");
+        obj = {"id" : id_town, "uk" : uk_town, "en" : en_town, "ru" : ru_town, "param" : formID};
+        ["uk", "en", "ru"].forEach(element => {  
             if ($_(`#${formID} > #${element}`)[0].value === '') {
                 $_(`.town_empty_${element}`)[0].style.display = 'block'; 
                 trueSend = false;
@@ -887,6 +911,7 @@ const formSend = (formID) => {
         send(obj , `/${formID.toLowerCase()}`, (result) => {
             const resultat = JSON.parse(result);
             if (resultat.res) {
+                console.log(resultat.res);
                 showModal(`${formID}Res`);
                 $_('#id_town')[0].innerHTML = obj.id;
                 setTimeout(() => { modal.innerHTML = '' }, 3000);

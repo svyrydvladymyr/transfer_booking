@@ -910,7 +910,7 @@ body {
       font-size: 16px;
       font-weight: bold;
     }
-    .exit, .btn, .form_send {
+    .exit, .btn, .form_send, .edit_menu {
       cursor: pointer;
       border-bottom: 2px solid #ee9e07;
       font-weight: bold;
@@ -923,6 +923,23 @@ body {
         border-color: red;
         font-weight: bold;
       }      
+    }
+    .edit_menu:first-child {
+      margin-top: 40px;
+      margin-bottom: 15px;
+      min-width: 130px;
+      i {
+        font-size: 14px;
+        margin-left: 7px;
+      }
+    }
+    .edit_menu:last-child {
+      margin-bottom: 40px;
+      min-width: 130px;
+      i {
+        font-size: 14px;
+        margin-left: 10px;
+      }
     }
     .form_send {
       margin: 20px 0px;
@@ -970,12 +987,26 @@ body {
               flex-direction: column;
               align-items: center;
             }
-            i {
+            P.add_point {
               cursor: pointer;
-              font-size: 40px;
-              margin: 35px 0px 15px 0px;
+              background: #8bc34a;
+              font-weight: bold;
+              width: 17%;
+              line-height: 41px;
+              color: #fff;
+              min-width: 200px;
+              margin: 30px auto 5px auto;
+              font-size: 14px;
+              &:hover {
+                background: #72a339;
+              }  
+              i {
+                cursor: pointer;
+                font-size: 18px;
+                margin: 0px 0px 10px 0px;
+              }
             }
-        }
+          }
         .tawns_list, .transfers_list {
           // outline: 1px solid red;
           width: max-content;
@@ -1011,6 +1042,9 @@ body {
                           font-size: 16px;
                           margin: 0px 3px;
                           color: #5a5a5a;
+                          &:hover {
+                            color: #ee9e07;
+                          }
                         }
                     }
                 }
@@ -1182,7 +1216,7 @@ body {
           font-size: 11px;
           color: #9b9b9b;          
         }
-        .town_empty_ua, .town_empty_en, .town_empty_ru, .transfer_empty_to {
+        .town_empty_uk, .town_empty_en, .town_empty_ru, .transfer_empty_to {
           display: none;
           color: #bd1717;
           font-size: 11px;
@@ -1190,7 +1224,7 @@ body {
           width: 90%;
           max-width: 300px;
         }
-        .town_dup_ua, .town_dup_en, .town_dup_ru, .transfer_dup_to, .transfer_price_gr, .transfer_price_pr, .transfer_price_empt {
+        .town_dup_uk, .town_dup_en, .town_dup_ru, .transfer_dup_to, .transfer_price_gr, .transfer_price_pr, .transfer_price_empt {
           display: none;
           color: #bd1717;
           font-size: 11px;
