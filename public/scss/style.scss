@@ -431,7 +431,7 @@ body {
       color: #ffffff;
       margin: 15px auto 15px auto;
     }
-    > p.main_form_err_calk, > p.main_form_err_book {
+    > p.main_form_err_calk, > p.main_form_err_book, > p.main_form_err_bookfinal {
       color: #ffffff;
       padding: 3px 0px;
       text-align: center;
@@ -597,35 +597,34 @@ body {
     }
   }
   .main_form_wrap.received {
-    .main_form_coll {
-      display: none;
-      flex-wrap: wrap;
-      justify-content: flex-start;
-      p {
-        width: 100%;
-        margin: 5px;
-        font-size: 16px;
-        color: #fff;
-        opacity: 0.7;
-      }
-      p.btn_ok {
-        cursor: pointer;
-        background: #6ba917;
-        line-height: 50px;
-        font-size: 16px;
-        font-weight: bold;
-        letter-spacing: 1px;
-        text-transform: uppercase;
-        color: #fff;
-        min-width: 180px;
-        padding: 0px 15px;
-        margin: 0px 10px;
-        text-align: center;
-        &:hover {
-          background: #5c9211;
-        }
-      }
+    padding: 60px 10px;
+    p {
+      width: 100%;
+      margin: 5px;
+      font-size: 16px;
+      color: #fff;
+      opacity: 0.7;
+      text-align: center;
+      margin-bottom: 10px;
     }
+    p.btn_ok {
+      cursor: pointer;
+      background: #6ba917;
+      line-height: 50px;
+      font-size: 16px;
+      font-weight: bold;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      color: #fff;
+      min-width: 180px;
+      width: 60%;
+      padding: 0px 15px;
+      margin: 30px auto;
+      text-align: center;
+      &:hover {
+        background: #5c9211;
+      }
+    }    
   }
   .main_form_wrap {
     width: 100%;

@@ -361,6 +361,10 @@
     width: 100%;
     padding-top: 5px;
 }
+.main_form_container .main_form_wrap.booking .main_form_row .main_form_coll {
+    width: 100%;
+    padding-top: 5px;
+}
 .main_form_container .main_form_wrap.check .main_form_row {
     margin-bottom: 0px;
 }

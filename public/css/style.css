@@ -502,7 +502,7 @@ body {
   color: #ffffff;
   margin: 15px auto 15px auto;
 }
-.main_form_container .main_form_wrap > p.main_form_err_calk, .main_form_container .main_form_wrap > p.main_form_err_book {
+.main_form_container .main_form_wrap > p.main_form_err_calk, .main_form_container .main_form_wrap > p.main_form_err_book, .main_form_container .main_form_wrap > p.main_form_err_bookfinal {
   color: #ffffff;
   padding: 3px 0px;
   text-align: center;
@@ -703,22 +703,19 @@ body {
   color: #fff;
   opacity: 0.7;
 }
-.main_form_container .main_form_wrap.received .main_form_coll {
-  display: none;
-  -ms-flex-wrap: wrap;
-      flex-wrap: wrap;
-  -webkit-box-pack: start;
-      -ms-flex-pack: start;
-          justify-content: flex-start;
+.main_form_container .main_form_wrap.received {
+  padding: 60px 10px;
 }
-.main_form_container .main_form_wrap.received .main_form_coll p {
+.main_form_container .main_form_wrap.received p {
   width: 100%;
   margin: 5px;
   font-size: 16px;
   color: #fff;
   opacity: 0.7;
+  text-align: center;
+  margin-bottom: 10px;
 }
-.main_form_container .main_form_wrap.received .main_form_coll p.btn_ok {
+.main_form_container .main_form_wrap.received p.btn_ok {
   cursor: pointer;
   background: #6ba917;
   line-height: 50px;
@@ -728,11 +725,12 @@ body {
   text-transform: uppercase;
   color: #fff;
   min-width: 180px;
+  width: 60%;
   padding: 0px 15px;
-  margin: 0px 10px;
+  margin: 30px auto;
   text-align: center;
 }
-.main_form_container .main_form_wrap.received .main_form_coll p.btn_ok:hover {
+.main_form_container .main_form_wrap.received p.btn_ok:hover {
   background: #5c9211;
 }
 .main_form_container .main_form_wrap {

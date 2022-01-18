@@ -212,10 +212,48 @@ const variables = async (req, res) => {
     });
 };
 
+const orders = async (req, res) => {
+
+    console.log('body', req.body);
+    console.log('body', req.body);
+    const {transferId, transferFrom, transferTo, adult, children, type, sum, date, time, equip, user_name, user_surname, user_email, user_phone, paid} = req.body;
+
+    console.log('transferId', transferId);
+    console.log('transferFrom', transferFrom);
+    console.log('transferTo', transferTo);
+    console.log('adult', adult);
+    console.log('children', children);
+    console.log('type', type);
+    console.log('sum', sum);
+    console.log('date', date);
+    console.log('time', time);
+    console.log('equip', equip);
+    console.log('user_name', user_name);
+    console.log('user_surname', user_surname);
+    console.log('user_email', user_email);
+    console.log('user_phone', user_phone);
+    console.log('paid', paid);
+
+    res.send({"res": 'Order created!'});
+    // await tableRecord(`SELECT * FROM transfers`)
+    // .then((result) => {
+    //     if (result.err) { throw new Error('error-DB') };
+    //     if (!result.err) { 
+
+
+    //     };
+    // })
+    // .catch((err) => {
+    //     log('orders-error', err);
+    //     res.status(400).send('SERVER ERROR: 400 (Bad Request)');
+    // });
+};
+
 module.exports = {
     townadd,
     transferadd,
     townlist,
     transferlist,
-    variables
+    variables,
+    orders
 }

@@ -16,10 +16,10 @@ const users = () => {
 
 const points = () => {
     const sql = `CREATE TABLE points (id INT AUTO_INCREMENT PRIMARY KEY,
-        town_id VARCHAR(75) NOT NULL UNIQUE,
-        name_uk VARCHAR(55) NOT NULL UNIQUE,    
-        name_en VARCHAR(55) NOT NULL UNIQUE,    
-        name_ru VARCHAR(55) NOT NULL UNIQUE        
+        town_id VARCHAR(120) NOT NULL UNIQUE,
+        name_uk VARCHAR(95) NOT NULL UNIQUE,    
+        name_en VARCHAR(95) NOT NULL UNIQUE,    
+        name_ru VARCHAR(95) NOT NULL UNIQUE        
         )`; 
     con.query(sql, function (err, result) {if (err) throw err; console.log("Table points created")});
 };
@@ -27,8 +27,8 @@ const points = () => {
 const transfers = () => {
     const sql = `CREATE TABLE transfers (id INT AUTO_INCREMENT PRIMARY KEY,
         transfer_id VARCHAR(20) NOT NULL UNIQUE,
-        transfer_from VARCHAR(75) NOT NULL,
-        transfer_to VARCHAR(75) NOT NULL,    
+        transfer_from VARCHAR(120) NOT NULL,
+        transfer_to VARCHAR(120) NOT NULL,    
         price_pr VARCHAR(7),
         price_gr VARCHAR(7),
         time1 VARCHAR(6),        
@@ -60,6 +60,7 @@ const orders = () => {
         user_email VARCHAR(10),
         user_tel VARCHAR(10),
         status VARCHAR(10),
+        paid VARCHAR(10),
         book_date DATETIME
         )`; 
     con.query(sql, function (err, result) {if (err) throw err; console.log("Table orders created")});

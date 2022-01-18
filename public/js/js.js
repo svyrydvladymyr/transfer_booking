@@ -4,19 +4,23 @@ const $_ = (value, parent = document) => parent.querySelectorAll(value);
 //redirect page
 const redirect = way => window.location.replace(`${way}`);
 
-//validation email
-const validEmail = text => (text.match(/^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/)) ? true : false;
-
 //logout
 const exit = () => { send({}, '/exit', (res) => { location.reload() }) };
+
+//validation email
+const validEmail = text => (text.match(/^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/)) ? true : false;
+const validPhone = text => (text.match(/^[\+]?[(]?[0-9]{3}[)]?[-\s\.]?[0-9]{3}[-\s\.]?[0-9]{4,6}$/im)) ? true : false;
 
 const modal = $_('.modal_wrap')[0];
 const inputFrom = $_('#main_from')[0];
 const inputTo = $_('#main_to')[0];
 const mainTimeInput = $_('#main_time')[0];
-const RegExpInput = new RegExp(/[^a-zA-Zа-яА-Я0-9-()_+=.'\":/\,іІїЇєЄ /\n]/g); 
-const RegExpPhone = new RegExp(/[^0-9-()+ /\n]/g); 
-const RegExpName = new RegExp(/[^a-zA-Zа-яА-Я-іІїЇєЄ /\n]/g); 
+const RegExpArr = {
+    RegExpInput : new RegExp(/[^a-zA-Zа-яА-Я0-9-()_+=.'\":/\,іІїЇєЄ /\n]/g),
+    RegExpPhone : new RegExp(/[^0-9-()+ /\n]/g),
+    RegExpName : new RegExp(/[^a-zA-Zа-яА-Я-іІїЇєЄ /\n]/g),
+    RegExpEmail : new RegExp(/[^a-zA-Z0-9.&@-_]/g)
+} 
 
 let idTownPlace, tokenTown, formValid;
 let hours, minutes, hArr = [], mArr = [], hStart = 0, mStart = 0;;
@@ -28,6 +32,8 @@ const setLang = (lang) => {
     document.cookie = `lang=${lang}`;
     document.location.reload();
 };
+
+//to get the language name
 const getLang = (name) => {
     let matches = document.cookie.match(new RegExp("(?:^|; )" + name.replace(/([\.$?*|{}\(\)\[\]\\\/\+^])/g, '\\$1') + "=([^;]*)"));
     return matches ? decodeURIComponent(matches[1]).slice(0, 2) : 'uk';
@@ -512,19 +518,16 @@ const creatingIdTown = (el) => {
 };
 
 //validation text input
-const validationName = (el) => {
-    const val = `${el.value.replace(RegExpName , "")}`;
+const validation = (el, type) => {
+    const val = `${el.value.replace(RegExpArr[`RegExp${type}`] , "")}`;
     el.value = val;
-};
-const validationPhone = (el) => {
-    const val = `${el.value.replace(RegExpPhone , "")}`;
-    el.value = val;
-};
-const validationInput = (el) => {
-    const val = `${el.value.replace(RegExpInput , "")}`;
-    el.value = val;
-    $_(`.town_empty_${el.id}`)[0].style.display = 'none';
-    $_(`.town_dup_${el.id}`)[0].style.display = 'none';
+    if (type ==='Input') {
+        $_(`.town_empty_${el.id}`)[0].style.display = 'none';
+        $_(`.town_dup_${el.id}`)[0].style.display = 'none';
+    } else {
+        el.classList.remove('err_input');
+        checkForm();
+    };
 };
 const validationPrice = (el) => {
     $_(`.transfer_price_empt`)[0].style.display = 'none'; 
@@ -541,7 +544,7 @@ const validationPerson = (el) => {
     (priceVal > 50) ? el.value = 50 : null;
     (priceVal === '') ? el.value = '' : null;
 };
-const typeTransferValid = (el) => {
+const validationType = (el) => {
     $_('#type_transfer')[0].classList.remove('err_input');
     mainTimeInput.value = '';
     if (el.value === 'transfer_pr') {
@@ -560,7 +563,7 @@ const typeTransferValid = (el) => {
     };
     checkForm();
 };
-const adultsValid = (el) => {
+const validationAdults = (el) => {
     checkForm();
     const adultInp =  $_('#adults')[0];
     (adultInp.value > 0) ? adultInp.classList.remove('err_input') : adultInp.classList.add('err_input');
@@ -571,16 +574,13 @@ const mainFormBack = () => {
     $_('#check')[0].style.display = 'flex'; 
     $_('#booking')[0].style.display = 'none'; 
 }
-const backAndClear = () => {
-    $_('#check')[0].style.display = 'flex'; 
-    $_('#booking')[0].style.display = 'none'; 
-    $_('#received')[0].style.display = 'none'; 
-}
+
 const checkForm = () => {
     let arrInp = [];
     if (formValid !== undefined && formValid !== '') {
         const arrCall = ['main_from', 'main_to', 'adults', 'type_transfer'];
         const arrBook = ['main_from', 'main_to', 'adults', 'type_transfer', 'main_date', 'main_time'];
+        const arrBookFinal = ['main_from', 'main_to', 'adults', 'type_transfer', 'main_date', 'main_time', 'main_name', 'main_surname', 'main_email', 'main_phone'];
         if (formValid === 'calk') {
             $_(`.main_form_err_book`)[0].classList.add('hide_err');
             arrInp = arrCall;
@@ -591,18 +591,40 @@ const checkForm = () => {
             arrInp = arrBook;
             arrCall.forEach(element => { $_(`#${element}`)[0].classList.remove('err_input') });
         };
+        if (formValid === 'bookfinal') {
+            $_(`.main_form_err_bookfinal`)[0].classList.add('hide_err');
+            arrInp = arrBookFinal;
+        };
     };
     const arrTrue = [];
     arrInp.forEach(element => {
-        if ($_(`#${element}`)[0].value === '') {
+        const elemCheck = $_(`#${element}`)[0];
+        const adultsCheck = $_('#adults')[0];
+        const emailCheck = $_('#main_email')[0];
+        const phoneCheck = $_('#main_phone')[0];
+        if (elemCheck.value === '') {
             arrTrue.push(false);
-            $_(`#${element}`)[0].classList.add('err_input');
+            elemCheck.classList.add('err_input');
         };
-        if ($_(`#adults`)[0].value <= 0) {
+        if (adultsCheck.value <= 0) {
             arrTrue.push(false);
-            $_(`#adults`)[0].classList.add('err_input');
+            adultsCheck.classList.add('err_input');
+        };
+        if (formValid === 'bookfinal') { 
+            if (emailCheck.value !== '' && !validEmail(emailCheck.value)) {
+                arrTrue.push(false);
+                emailCheck.classList.add('err_input');
+            };
+            if (phoneCheck.value !== '' && !validPhone(phoneCheck.value)) {
+                arrTrue.push(false);
+                phoneCheck.classList.add('err_input');
+            };
         };
     });
+
+    console.log('formValid', formValid);
+    // console.log('arrTrue', arrTrue);
+
     if (arrTrue.includes(false)) {
         calkTrue = false;
         $_('.main_form_price')[0].classList.add('hide_err');
@@ -621,36 +643,14 @@ const bookArr = {};
 const culculate = () => {
     checkForm();
 
-    console.log('calkTrue', calkTrue);
+    console.log('True', calkTrue);
 
     if (calkTrue) {
         const inpFrom = inputFrom.getAttribute('inputmainparam');
         const inpTo = inputTo.getAttribute('inputmainparam');
         transfersArr.forEach(element => {
             if (element.transfer_from === inpFrom && element.transfer_to === inpTo) {
-                console.log('element', element);
-                console.log('calk_book', element.transfer_id);
-
-                // const transferId = element.transfer_id;
-                // const transferFrom = townsFrom[inpFrom];
-                // const transferTo = townsTo[inpTo];
-                // const adult = +$_('#adults')[0].value;
-                // const children = +$_('#children')[0].value;
-                // const type = $_('#type_transfer')[0].value;
-                // const sum = (type === 'transfer_gr') ? element.price_gr * (adult + children) : element.price_pr;
-                // const date = $_('#main_date')[0].value;
-                // const time = $_('#main_time')[0].value;
-                // const equip = document.querySelector('input[name="equip"]:checked').value;
-
-                // console.log('transferId', transferId);
-                // console.log('transferFrom', transferFrom);
-                // console.log('transferTo', transferTo);
-                // console.log('type', type);
-                // console.log('persons', adult + adult);
-                // console.log('sum', sum);
-                // console.log('date', date);
-                // console.log('time', time);
-                // console.log('equip', equip);
+                console.log('route', element);
 
                 bookArr.transferId = element.transfer_id;
                 bookArr.transferFrom = townsFrom[inpFrom];
@@ -662,6 +662,11 @@ const culculate = () => {
                 bookArr.date = $_('#main_date')[0].value;
                 bookArr.time = $_('#main_time')[0].value;
                 bookArr.equip = document.querySelector('input[name="equip"]:checked').value;
+                bookArr.user_name = $_('#main_name')[0].value;
+                bookArr.user_surname = $_('#main_surname')[0].value;
+                bookArr.user_email = $_('#main_email')[0].value;
+                bookArr.user_phone = $_('#main_phone')[0].value;
+                bookArr.paid = $_('#main_paid')[0].checked;
 
                 console.log('bookArr', bookArr);
 
@@ -687,10 +692,23 @@ const culculate = () => {
                             <b class="main_form_color">${lang[`${bookArr.type}${bookLang}`]}</b></p>
                         <p>${lang[`sum${bookLang}`]} - <span class="main_form_color">${bookArr.sum}</span> </p>
                     `;
-
                     resInfo.innerHTML = resInfoBlock;
                     $_('#check')[0].style.display = 'none'; 
                     $_('#booking')[0].style.display = 'flex'; 
+                };
+                if (formValid === 'bookfinal') {
+                    send(bookArr , `/order`, (result) => {
+                        const resultat = JSON.parse(result);
+                        if (resultat.res) {
+                            console.log("ooooo", resultat.res);
+                            if (resultat.res === 'Order created!') {
+                                console.log("Order!");
+                                $_('#check')[0].style.display = 'none'; 
+                                $_('#booking')[0].style.display = 'none'; 
+                                $_('#received')[0].style.display = 'flex'; 
+                            };
+                        };   
+                    });                    
                 };
             };
         });

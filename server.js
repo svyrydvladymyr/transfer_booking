@@ -12,7 +12,7 @@ const DB = require('./db/createDB');
 
 const {log, accessLog, logOut} = require('./modules/service');
 const renderPage = require('./modules/renderPage');
-const {townadd, townlist, transferadd, transferlist, variables} = require('./modules/requestsDB');
+const {townadd, townlist, transferadd, transferlist, variables, orders} = require('./modules/requestsDB');
 
 
 
@@ -33,6 +33,8 @@ app.use((req, res, next) => {log(`URL-REQUEST:-(${req.method})-`, req.url); next
 //system logs
 app.use((req, res, next) => {accessLog(req, res, next)});
 
+//requests order
+app.use('/order', (req, res) => {orders(req, res)});
 //requests variables
 app.use('/variables', (req, res) => {variables(req, res)});
 //requests towns

@@ -7,13 +7,13 @@ template = {
         <div class="modal_place" id="townAdd">
             <p id="id_town"></p>
             <p class="form_info">Унікальний номер міста</p>            
-            <input type="text" id="ua" name="ua" maxlength="50" placeholder="Назва українською" oninput="creatingIdTown(this), validationInput(this)">
+            <input type="text" id="ua" name="ua" maxlength="90" placeholder="Назва українською" oninput="creatingIdTown(this), validation(this, 'Input')">
             <p class="town_dup_ua">Така назва вже є в базі!</p>
             <p class="town_empty_ua">Не може бути пустим!</p>
-            <input type="text" id="en" name="en" maxlength="50" placeholder="Name in English" oninput="validationInput(this)">
+            <input type="text" id="en" name="en" maxlength="90" placeholder="Name in English" oninput="validation(this, 'Input')">
             <p class="town_dup_en">Така назва вже є в базі!</p>
             <p class="town_empty_en">Не може бути пустим!</p>
-            <input type="text" id="ru" name="ru" maxlength="50" placeholder="Название на русском" oninput="validationInput(this)">
+            <input type="text" id="ru" name="ru" maxlength="90" placeholder="Название на русском" oninput="validation(this, 'Input')">
             <p class="town_dup_ru">Така назва вже є в базі!</p>
             <p class="town_empty_ru">Не може бути пустим!</p>
             <p class="form_send" onclick="formSend('townAdd')">Добавити в базу</p>
@@ -38,13 +38,13 @@ template = {
         <div class="modal_place" id="townEdit">
             <p id="id_town"></p>
             <p class="form_info">Унікальний номер міста</p>            
-            <input type="text" id="ua" name="ua" maxlength="50" placeholder="Назва українською" oninput="validationInput(this)">
+            <input type="text" id="ua" name="ua" maxlength="90" placeholder="Назва українською" oninput="validation(this, 'Input')">
             <p class="town_dup_ua">Така назва вже є в базі!</p>
             <p class="town_empty_ua">Не може бути пустим!</p>
-            <input type="text" id="en" name="en" maxlength="50" placeholder="Name in English" oninput="validationInput(this)">
+            <input type="text" id="en" name="en" maxlength="90" placeholder="Name in English" oninput="validation(this, 'Input')">
             <p class="town_dup_en">Така назва вже є в базі!</p>
             <p class="town_empty_en">Не може бути пустим!</p>
-            <input type="text" id="ru" name="ru" maxlength="50" placeholder="Название на русском" oninput="validationInput(this)">
+            <input type="text" id="ru" name="ru" maxlength="90" placeholder="Название на русском" oninput="validation(this, 'Input')">
             <p class="town_dup_ru">Така назва вже є в базі!</p>
             <p class="town_empty_ru">Не може бути пустим!</p>
             <p class="form_send" onclick="formSend('townEdit')">Зберегти зміни</p>
@@ -91,18 +91,18 @@ template = {
             <i class='fa fa-times' onclick="closeModal(event)"></i>
         </div>
         <div class="modal_place" id="transferAdd">
-            <input type="text" id="from" name="from" maxlength="60" inputparam="" value="" autocomplete="off" placeholder="Перевезення з ..." oninput="validationInput(this)" onfocus="showModal('transferTowns', {'param': 'from'})">
-            <input type="text" id="to" name="to" maxlength="60" inputparam="" value="" autocomplete="off" placeholder="Перевезення до ..." oninput="validationInput(this)" onfocus="showModal('transferTowns', {'param': 'to'})">
+            <input type="text" id="from" name="from" maxlength="120" inputparam="" value="" autocomplete="off" placeholder="Перевезення з ..." oninput="validation(this, 'Input')" onfocus="showModal('transferTowns', {'param': 'from'})">
+            <input type="text" id="to" name="to" maxlength="120" inputparam="" value="" autocomplete="off" placeholder="Перевезення до ..." oninput="validation(this, 'Input')" onfocus="showModal('transferTowns', {'param': 'to'})">
             <p class="transfer_dup_to">Поля "Перевезення з" і "Перевезення до" не можуть співпадати!</p>
             <p class="transfer_empty_to">Поля "Перевезення з" і "Перевезення до" не можуть бути пустим!</p>
             <div class="price_form"> 
                 <p>Груповий</p>
-                <input type="number" id="gr" name="gr" min="0" max="50000" autocomplete="off" placeholder="Ціна за груповий..." oninput="validationPrice(this), showTimeList(this)">
+                <input type="number" id="gr" name="gr" min="0" max="50000" autocomplete="off" placeholder="Ціна за груповий..." oninput="validation(this, 'Price'), showTimeList(this)">
             </div>
             <p class="transfer_price_gr">Перевищує допустимі значення! (доступно з 1грн до 50000грн)</p>
             <div class="price_form"> 
                 <p>Приватний</p>
-                <input type="number" id="pr" name="pr" min="0" max="50000" autocomplete="off" placeholder="Ціна за приватний..." oninput="validationPrice(this)">
+                <input type="number" id="pr" name="pr" min="0" max="50000" autocomplete="off" placeholder="Ціна за приватний..." oninput="validation(this, 'Price')">
             </div>
             <p class="transfer_price_pr">Перевищує допустимі значення! (доступно з 1грн до 50000грн)</p>
             <p class="transfer_price_empt">Хоча б одна ціна має бути вказана!</p>
@@ -165,18 +165,18 @@ template = {
             <i class='fa fa-times' onclick="closeModal(event)"></i>
         </div>
         <div class="modal_place" id="transferEdit" paramid="">
-            <input type="text" id="from" name="from" maxlength="60" inputparam="" value="" autocomplete="off" placeholder="Перевезення з ..." oninput="validationInput(this)" onfocus="showModal('transferTowns', {'param': 'from'})">
-            <input type="text" id="to" name="to" maxlength="60" inputparam="" value="" autocomplete="off" placeholder="Перевезення до ..." oninput="validationInput(this)" onfocus="showModal('transferTowns', {'param': 'to'})">
+            <input type="text" id="from" name="from" maxlength="120" inputparam="" value="" autocomplete="off" placeholder="Перевезення з ..." oninput="validation(this, 'Input')" onfocus="showModal('transferTowns', {'param': 'from'})">
+            <input type="text" id="to" name="to" maxlength="120" inputparam="" value="" autocomplete="off" placeholder="Перевезення до ..." oninput="validation(this, 'Input')" onfocus="showModal('transferTowns', {'param': 'to'})">
             <p class="transfer_dup_to">Поля "Перевезення з" і "Перевезення до" не можуть співпадати!</p>
             <p class="transfer_empty_to">Поля "Перевезення з" і "Перевезення до" не можуть бути пустим!</p>
             <div class="price_form"> 
                 <p>Груповий</p>
-                <input type="number" id="gr" name="gr" min="1" max="50000" autocomplete="off" placeholder="Ціна за груповий..." oninput="validationPrice(this), showTimeList(this)">
+                <input type="number" id="gr" name="gr" min="1" max="50000" autocomplete="off" placeholder="Ціна за груповий..." oninput="validation(this, 'Price'), showTimeList(this)">
             </div>
             <p class="transfer_price_gr">Перевищує допустимі значення! (доступно з 1грн до 50000грн)</p>
             <div class="price_form"> 
                 <p>Приватний</p>
-                <input type="number" id="pr" name="pr" min="1" max="50000" autocomplete="off" placeholder="Ціна за приватний..." oninput="validationPrice(this)">
+                <input type="number" id="pr" name="pr" min="1" max="50000" autocomplete="off" placeholder="Ціна за приватний..." oninput="validation(this, 'Price')">
             </div>
             <p class="transfer_price_pr">Перевищує допустимі значення! (доступно з 1грн до 50000грн)</p>
             <p class="transfer_price_empt">Хоча б одна ціна має бути вказана!</p>
@@ -222,10 +222,6 @@ template = {
             <p class="res_mess">Маршрут видалено із списку!</p>
         </div>        
     </div>`,
-
-
-
-
     mainformTimes:
     `<div class="modal_body" onclick="closeModal(event)">
         <div class="modal_close">
