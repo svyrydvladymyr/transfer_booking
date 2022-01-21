@@ -496,3 +496,16 @@
     min-width: 180px;
     width: 60%;
 }
+.main_form_container .equip_wrap .equip_block:first-child {
+    padding: 0px;
+}
+.main_form_container .equip_wrap .equip_block:first-child .main_form_row .main_form_coll {
+    width: 50%;
+}
+.main_form_container .equip_wrap {
+    margin-top: 15px;
+    margin-bottom: 20px;
+}
+.main_form_container .equip_wrap .equip_block:last-child {
+    padding: 0px 0px 0px 2px;
+}

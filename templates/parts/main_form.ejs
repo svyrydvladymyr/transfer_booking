@@ -14,11 +14,11 @@
         <div class="main_form_row">
             <div class="main_form_coll">
                 <label for="main_date"><%=DATA.langPack.main_form_date %></label>
-                <input type="text" name="date" id="main_date" maxlength="60" inputmainparam="" value="" autocomplete="off" onfocus="showModal('mainformCalendar', {}, this)">
+                <input type="text" name="date" id="main_date" maxlength="10" inputmainparam="" value="" autocomplete="off" onfocus="showModal('mainformCalendar', {}, this)">
             </div>
             <div class="main_form_coll">
                 <label for="main_time"><%=DATA.langPack.main_form_time %></label>
-                <input type="text" name="time" id="main_time" maxlength="60" inputmainparam="" setparam="" value="" autocomplete="off" onfocus="showModal('mainformTimes', {}, this)">
+                <input type="text" name="time" id="main_time" maxlength="10" inputmainparam="" setparam="" value="" autocomplete="off" onfocus="showModal('mainformTimes', {}, this)">
             </div>
         </div>
         <div class="main_form_row">
@@ -33,23 +33,33 @@
             <div class="main_form_coll sub">                
                 <div class="main_form_coll_sub">
                     <label for="adults"><%=DATA.langPack.main_form_adults %></label>
-                    <input type="number" name="adults" id="adults" min="0" max="60" value="" oninput="validationPerson(this)" onchange="validationAdults(this)">
+                    <input type="number" name="adults" id="adults" min="0" max="60" value="" oninput="validationPerson(this, 60)" onchange="validationAdults(this)">
                 </div>
                 <div class="main_form_coll_sub">
                     <label for="children"><%=DATA.langPack.main_form_children %></label>
-                    <input type="number" name="children" id="children" min="0" max="60" value="" oninput="validationPerson(this)">                
+                    <input type="number" name="children" id="children" min="0" max="60" value="" oninput="validationPerson(this, 60), validationChildren(this)">                
                 </div>
             </div>
-        </div>
-        <label><%=DATA.langPack.main_form_equip_title %></label> 
-        <div class="main_form_row equip">   
-            <div class="main_form_coll">     
-                <input type="radio" id="yes" name="equip" value="yes">           
-                <label for="yes"><%=DATA.langPack.main_form_equip_yes %></label><br>
+        </div>  
+        <div class="equip_wrap">
+            <div class="equip_block  equip">
+                <label><%=DATA.langPack.main_form_equip_title %></label> 
+                <div class="main_form_row">
+                    <div class="main_form_coll">     
+                        <input type="radio" id="yes" name="equip" value="yes">           
+                        <label for="yes"><%=DATA.langPack.main_form_equip_yes %></label><br>
+                    </div>
+                    <div class="main_form_coll">
+                        <input type="radio" id="no" name="equip" value="no" checked>
+                        <label for="no"><%=DATA.langPack.main_form_equip_no %></label>            
+                    </div>
+                </div>
             </div>
-            <div class="main_form_coll">
-                <input type="radio" id="no" name="equip" value="no" checked>
-                <label for="no"><%=DATA.langPack.main_form_equip_no %></label>            
+            <div class="equip_block equip_child">                
+                <div class="main_form_row">   
+                    <label><%=DATA.langPack.main_form_equip_child_title %></label> 
+                    <input type="number" name="equip_child" id="equip_child" min="0" max="5" value="" oninput="validationPerson(this, 5)">                
+                </div>
             </div>
         </div>
         <div class="main_form_row btn">              
@@ -60,7 +70,7 @@
                 <p class="main_form_btn" onclick="formValid = 'book', culculate()"><%=DATA.langPack.main_form_btn_res %></p>
             </div>
         </div>
-        <p class="main_form_price hide_err"><%=DATA.langPack.main_form_price %><span></span></p>
+        <p class="main_form_price hide_err"><%=DATA.langPack.main_form_price %> <span></span> <%=DATA.langPack.option_grn %></p>
         <p class="main_form_err_calk hide_err"><%=DATA.langPack.main_form_err_calk %></p>
         <p class="main_form_err_book hide_err"><%=DATA.langPack.main_form_err_book %></p>
     </div>
@@ -70,7 +80,7 @@
             <div class="main_form_coll">
                 <% if (DATA.permission.permissionAuthorization === '0') { %>
                     <label for="main_name"><%=DATA.langPack.feedback_form_name %></label>
-                    <input type="text" name="name" id="main_name" maxlength="60" value="" autocomplete="off" oninput="validation(this, 'Name')">
+                    <input type="text" name="name" id="main_name" maxlength="30" value="" autocomplete="off" oninput="validation(this, 'Name')">
                 <% } %> 
                 <% if (DATA.permission.permissionAuthorization === '1') { %>
                     <label for="main_name"><%=DATA.langPack.feedback_form_name %></label>
@@ -80,7 +90,7 @@
             <div class="main_form_coll">         
                 <% if (DATA.permission.permissionAuthorization === '0') { %>
                     <label for="main_surname"><%=DATA.langPack.feedback_form_surname %></label>
-                    <input type="text" name="surname" id="main_surname" maxlength="60" value="" autocomplete="off" oninput="validation(this, 'Name')">
+                    <input type="text" name="surname" id="main_surname" maxlength="30" value="" autocomplete="off" oninput="validation(this, 'Name')">
                 <% } %> 
                 <% if (DATA.permission.permissionAuthorization === '1') { %>
                     <label for="main_surname"><%=DATA.langPack.feedback_form_surname %></label>
@@ -127,7 +137,8 @@
     <div class="main_form_wrap received"  id="received">
         <p><%=DATA.langPack.main_form_received1 %></p>
         <p><%=DATA.langPack.main_form_received2 %></p>
-        <p class="btn_ok" onclick="document.location.reload()"><i class='fas fa-check-double'></i></p>
+        <!-- <p class="btn_ok" onclick="document.location.reload()"><i class='fas fa-check-double'></i></p> -->
+        <p class="btn_ok" onclick="mainFormBack2()"><i class='fas fa-check-double'></i></p>
     </div>
     <div class="modal_wrap"></div>
 </div>

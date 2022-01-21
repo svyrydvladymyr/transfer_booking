@@ -49,19 +49,21 @@ const transfers = () => {
 const orders = () => {
     const sql = `CREATE TABLE orders (id INT AUTO_INCREMENT PRIMARY KEY,
         orders_id VARCHAR(50) NOT NULL,
-        date VARCHAR(15) NOT NULL,
-        time VARCHAR(15) NOT NULL,
-        type VARCHAR(25) NOT NULL,
+        date VARCHAR(10) NOT NULL,
+        time VARCHAR(5) NOT NULL,
+        type VARCHAR(2) NOT NULL,
         adult INT NOT NULL,
         children INT,
-        equip VARCHAR(10),
-        user_name VARCHAR(10),
-        user_surname VARCHAR(10),
-        user_email VARCHAR(10),
-        user_tel VARCHAR(10),
+        equip_child INT,
+        equip VARCHAR(3),
+        user_name VARCHAR(30),
+        user_surname VARCHAR(30),
+        user_email VARCHAR(110),
+        user_tel VARCHAR(20),
         status VARCHAR(10),
+        sum INT,
         paid VARCHAR(10),
-        book_date DATETIME
+        book_date  VARCHAR(15)
         )`; 
     con.query(sql, function (err, result) {if (err) throw err; console.log("Table orders created")});
 };

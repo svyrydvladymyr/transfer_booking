@@ -11,6 +11,9 @@ const clienttoken = (req, res) => new Cookies(req, res, {"keys":['volodymyr']}).
 //validation email
 const validEmail = text => (text.match(/^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/)) ? true : false;
 
+//chack on true values
+const checOnTrueVal = (el) => el.replace(new RegExp("[^a-zA-Zа-яА-Я0-9-()_+=.'\":/\,іІїЇєЄ /\n]", "gi"), '');
+
 //add or clear Cookies
 const addCookies = (req, res, token, param) => {
     const cookies = new Cookies(req, res, {"keys":['volodymyr']});
@@ -72,20 +75,11 @@ const accessLog = (req, res, next) => {
     next();
 };
 
-//chack on true values
-// let checOnTrueVal = (el) => {
-//     let reg = "[^a-zA-Zа-яА-Я0-9-()_+=.'\":/\,іІїЇєЄ /\n]";
-//     let newReg = new RegExp(reg, "gi");    
-//     let res = el.replace(newReg, '');
-//     return res;    
-// }
-const checOnTrueVal = (el) => el.replace(new RegExp("[^a-zA-Zа-яА-Я0-9-()_+=.'\":/\,іІїЇєЄ /\n]", "gi"), '');
-
 //get table record
 const tableRecord = (sql) => {
     return new Promise((resolve) => { 
         con.query(sql, function (err, result) { 
-            err ? resolve({'err': err}) : resolve(result) 
+            err ? resolve({'err': err}) : resolve(result); 
         }) 
     });
 };

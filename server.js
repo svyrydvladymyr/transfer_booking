@@ -7,14 +7,12 @@ app.use(cookieParser());
 const DB = require('./db/createDB');
 // DB.users();
 // DB.transfers();
-// DB.user_trips();
+// DB.orders();
 // DB.points();
 
 const {log, accessLog, logOut} = require('./modules/service');
 const renderPage = require('./modules/renderPage');
 const {townadd, townlist, transferadd, transferlist, variables, orders} = require('./modules/requestsDB');
-
-
 
 //oaugh
 require('./modules/oaugh.js')(app);

@@ -569,10 +569,10 @@ const validationPrice = (el) => {
     (priceVal === '') ? el.value = '' : null;
     if (priceVal === '') { errMess.style.display = 'none' };
 };
-const validationPerson = (el) => {
+const validationPerson = (el, max) => {
     const priceVal = el.value;
     (priceVal < 0) ? el.value = '' : null;
-    (priceVal > 50) ? el.value = 50 : null;
+    (priceVal > max) ? el.value = max : null;
     (priceVal === '') ? el.value = '' : null;
 };
 const validationType = (el) => {
@@ -599,11 +599,25 @@ const validationAdults = (el) => {
     const adultInp =  $_('#adults')[0];
     (adultInp.value > 0) ? adultInp.classList.remove('err_input') : adultInp.classList.add('err_input');
 };
+const validationChildren = (el) => {
+    const equipchild =  $_('.equip_child')[0];
+    const childrenValue =  $_('#children')[0];
+    const equipchildInp =  $_('.equip_child #equip_child')[0];
+    equipchildInp.setAttribute('max', `${childrenValue.value}`);
+    (equipchildInp.value > childrenValue.value) ? equipchildInp.value = childrenValue.value : null;
+    (el.value < 1) ? equipchild.style.display = 'none' : null;
+    (el.value > 0) ? equipchild.style.display = 'flex' : null;
+};
 
 //culculate main form
 const mainFormBack = () => {
     $_('#check')[0].style.display = 'flex'; 
     $_('#booking')[0].style.display = 'none'; 
+}
+const mainFormBack2 = () => {
+    $_('#check')[0].style.display = 'none'; 
+    $_('#booking')[0].style.display = 'flex'; 
+    $_('#received')[0].style.display = 'none'; 
 }
 
 const checkForm = () => {
@@ -693,6 +707,7 @@ const culculate = () => {
                 bookArr.date = $_('#main_date')[0].value;
                 bookArr.time = $_('#main_time')[0].value;
                 bookArr.equip = document.querySelector('input[name="equip"]:checked').value;
+                bookArr.equip_child = $_('#equip_child')[0].value;
                 bookArr.user_name = $_('#main_name')[0].value;
                 bookArr.user_surname = $_('#main_surname')[0].value;
                 bookArr.user_email = $_('#main_email')[0].value;
@@ -719,7 +734,8 @@ const culculate = () => {
                         <p>${lang[`date${bookLang}`]} - <span class="main_form_color">${bookArr.date}</span> &nbsp ${lang[`time${bookLang}`]} - <span class="main_form_color">${bookArr.time}</span></p>
                         <p>${lang[`adult${bookLang}`]} - <span class="main_form_color">${bookArr.adult}</span> &nbsp
                             ${lang[`children${bookLang}`]} - <span class="main_form_color">${bookArr.children}</span> &nbsp
-                            ${lang[`equip${bookLang}`]} - <span class="main_form_color">${lang[`${bookArr.equip}${bookLang}`]}</span> &nbsp
+                            ${lang[`children_chear${bookLang}`]} - <span class="main_form_color">${bookArr.equip_child}</span></p>
+                        <p>${lang[`equip${bookLang}`]} - <span class="main_form_color">${lang[`${bookArr.equip}${bookLang}`]}</span> &nbsp
                             <b class="main_form_color">${lang[`${bookArr.type}${bookLang}`]}</b></p>
                         <p>${lang[`sum${bookLang}`]} - <span class="main_form_color">${bookArr.sum}</span> </p>
                     `;

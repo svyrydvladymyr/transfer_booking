@@ -1,5 +1,5 @@
 const con = require('../db/connectToDB').con;
-const {checOnTrueVal, autorisationCheck, tableRecord, token, log} = require('../modules/service');
+const {checOnTrueVal, autorisationCheck, tableRecord, token, log, readyFullDate} = require('../modules/service');
 // const lang = ['uk-UA', 'en-US', 'ru-RU'].includes(req.cookies['lang']) ? req.cookies['lang'] : 'uk-UA';
 
 const townadd = async (req, res) => {
@@ -224,10 +224,8 @@ const variables = async (req, res) => {
 };
 
 const orders = async (req, res) => {
-
-    console.log('body', req.body);
-    console.log('body', req.body);
-    const {transferId, transferFrom, transferTo, adult, children, type, sum, date, time, equip, user_name, user_surname, user_email, user_phone, paid} = req.body;
+    const {transferId, transferFrom, transferTo, adult, children, sum, date, time, equip, equip_child, user_name, user_surname, user_email, user_phone, paid} = req.body;
+    const type = req.body.type.replace(/transfer_/gi, '');
 
     console.log('transferId', transferId);
     console.log('transferFrom', transferFrom);
@@ -235,29 +233,54 @@ const orders = async (req, res) => {
     console.log('adult', adult);
     console.log('children', children);
     console.log('type', type);
-    console.log('sum', sum);
     console.log('date', date);
     console.log('time', time);
     console.log('equip', equip);
+    console.log('equip_child', equip_child);
     console.log('user_name', user_name);
     console.log('user_surname', user_surname);
     console.log('user_email', user_email);
     console.log('user_phone', user_phone);
     console.log('paid', paid);
+    console.log('sum', sum);
 
-    res.send({"res": 'Order created!'});
-    // await tableRecord(`SELECT * FROM transfers`)
-    // .then((result) => {
-    //     if (result.err) { throw new Error('error-DB') };
-    //     if (!result.err) { 
-
-
-    //     };
-    // })
-    // .catch((err) => {
-    //     log('orders-error', err);
-    //     res.status(400).send('SERVER ERROR: 400 (Bad Request)');
-    // });
+    await tableRecord(`SELECT price_${type} FROM transfers WHERE transfer_id='${transferId}'`)
+    .then(async (result) => {
+        if (result.err) { throw new Error('error-DB') };
+        if (!result.err) { 
+            let sumfin;
+            if (type === 'pr') {sumfin = result[0].price_pr};
+            if (type === 'gr') {sumfin = result[0].price_gr * (+adult + +children) };
+            let sqlOrder = `INSERT INTO orders (orders_id, adult, children, type, date, time, equip, equip_child, user_name, user_surname, user_email, user_tel, status, paid, sum, book_date) 
+            VALUES ('${checOnTrueVal(transferId)}',
+                    '${adult}', 
+                    '${children}', 
+                    '${type}', 
+                    '${date.replace(new RegExp("[^0-9]//", "gi"), "")}', 
+                    '${time.replace(new RegExp("[^0-9]:", "gi"), "")}', 
+                    '${equip.replace(new RegExp("[^a-z]", "gi"), "")}', 
+                    '${equip_child.replace(new RegExp("[^0-9]", "gi"), "")}',            
+                    '${checOnTrueVal(user_name)}',
+                    '${checOnTrueVal(user_surname)}',
+                    '${user_email.replace(new RegExp("[^a-zA-Z0-9.&@-_]", "gi"), "")}', 
+                    '${user_phone.replace(new RegExp("[^0-9-()+ /\n]", "gi"), "")}', 
+                    'reserv', 
+                    '${paid}', 
+                    '${sumfin}',
+                    '${readyFullDate(new Date(), 'reverse')}')`; 
+            await tableRecord(sqlOrder)
+            .then((result) => {
+                if (result.err) { throw new Error('error-DB') };
+                if (!result.err) { 
+                    res.send({"res": 'Order created!'});
+                };
+            });
+        };
+    })
+    .catch((err) => {
+        log('orders-error', err);
+        res.status(400).send('SERVER ERROR: 400 (Bad Request)');
+    });
 };
 
 module.exports = {
