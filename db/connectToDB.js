@@ -11,11 +11,6 @@ const db_config = {
 };
 const mysql = require("mysql");
 const con = mysql.createConnection(db_config);
-con.connect((err) => {
-    if (err) {
-    console.log("err-connect-to-db", err);
-    // res.send(err);       
-    }});  
-
+con.connect((err) => {if (err) { console.log("err-connect-to-db", err) }});
 setInterval(function () { con.query("SELECT 1") }, 10000);
 module.exports = { con }; 

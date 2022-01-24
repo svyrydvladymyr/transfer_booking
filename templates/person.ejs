@@ -19,15 +19,16 @@
             <div class="user_wrap">
                 <img src="<%=DATA.user.ava %>">
                 <p><%=DATA.user.surname %> <%=DATA.user.name %></p>
+                <p class="provider"><%=DATA.langPack.provider %> <span><%=DATA.user.provider %></span></p>
                 <p onclick="exit()" class="exit"><%=DATA.langPack.exit %></p>
                 <% if (DATA.permission.permissionRules === '1') { %> 
                     <div class="modal_wrap"></div>                
                 <% } %>                 
             
-                <% if (DATA.permission.permissionRules === '0') { %>        
-
-                    <p>autorised USER</p>
-                
+                <% if (DATA.permission.permissionRules === '0') { %>
+                    <p><%=DATA.langPack.orders_title %></p>
+                    <div class="orders_list"></div>
+                    <div class="orders_pagination"></div>
                 <% } %>           
                 <% if (DATA.permission.permissionRules === '1') { %> 
                     <div class="tab_person">
@@ -38,14 +39,12 @@
                             <p class="tab" onclick="tabs(3)">Маршрути</p>
                         </div>
                         <div class="tab_bodys">
-                            <div class="body body_active">
-
-                                
+                            <div class="body body_active">                                
+                                <div class="orders_search"></div>
                                 <div class="orders_list"></div>
+                                <div class="orders_pagination"></div>
                             </div>
                             <div class="body">
-
-
                                 <div class="feedbacks_list"></div>
                             </div>
                             <div class="body">                                
@@ -70,8 +69,17 @@
     <script src="./js/js.js"></script>
     <script src='./js/icon.js'></script>
     <% if (DATA.permission.permissionAuthorization === '1') { %>
+        <% if (DATA.permission.permissionRules === '0') { %> 
+            <script>
+                let context_menu = ``;
+                ordersList(1);  
+            </script>                      
+        <% } %>  
         <% if (DATA.permission.permissionRules === '1') { %> 
             <script>
+                let context_menu = `<i class='fas fa-ellipsis-h' onclick="showModal('editMenuOrder', {}, this)"></i>`;
+                // ordersList(1, {'search': 'Svyryd', 'datefrom': '10-05-2022', 'dateto': '12-05-2022'});  
+                ordersList(1);  
                 loadTownsList();  
                 loadTransfersList();  
             </script>                      

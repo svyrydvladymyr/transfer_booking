@@ -1,7 +1,6 @@
 const con = require('../db/connectToDB').con;
 const {log, tableRecord, autorisationCheck, readyFullDate} = require('./service');
 const {langList} = require('../config/config_variables');
-const moment = require('moment');
 
 const DATA = {
     errors : {
@@ -25,6 +24,7 @@ const DATA = {
         surname : '',
         foto : 'img/no_user.png',
         email : '',
+        provider : '',
         lang : 'uk-UA',
         date_registered : ''
     },
@@ -41,6 +41,7 @@ const clearDATA = () => {
     DATA.user.surname = '';
     DATA.user.foto = 'img/no_user.png';
     DATA.user.email = '';
+    DATA.user.provider = '';
     DATA.user.lang = 'uk-UA';
     DATA.user.date_registered = '';
     DATA.menu.home = '',
@@ -58,12 +59,14 @@ const clearDATA = () => {
 };
 
 const addUser = (profile, done) => {
-    const {id, name: {givenName = '', familyName = ''}, emails: [{value: email = ''}], photos: [{value: photo = ''}]} = profile;
+    console.log('profile', profile);
+    const {id, name: {givenName = '', familyName = ''}, emails: [{value: email = ''}], photos: [{value: photo = ''}], provider} = profile;
     const date = new Date();        
-    const sql = `INSERT INTO users (userid, name, surname, email, date_registered, ava) 
+    const sql = `INSERT INTO users (userid, name, surname, provider, email, date_registered, ava) 
                VALUES ('${id}', 
                '${givenName}', 
                '${familyName}', 
+               '${provider}',
                '${email}', 
                '${date.toISOString().slice(0,10)} ${date.getHours()}:${date.getMinutes()}', 
                '${photo}')`;     
@@ -95,7 +98,7 @@ const getUser = async (req, res, lang = 'uk-UA', pageName) => {
         await tableRecord(`SELECT * FROM users WHERE userid = '${userid.userid}'`)
         .then((user) => {
             if (user.err) { throw new Error(user.err) };
-            const {userid, name, surname, ava, email, permission, date_registered} = user[0];
+            const {userid, name, surname, ava, email, provider, permission, date_registered} = user[0];
             //permission
             DATA.permission.permissionRules = `${permission}`;
             DATA.permission.permissionAuthorization = '1';
@@ -104,6 +107,7 @@ const getUser = async (req, res, lang = 'uk-UA', pageName) => {
             DATA.user.ava = ava;
             DATA.user.name = name;
             DATA.user.surname = surname;
+            DATA.user.provider = provider;
             DATA.user.email = email;
             DATA.user.lang = lang;
             DATA.permission.pageName = pageName;

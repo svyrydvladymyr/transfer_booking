@@ -707,7 +707,7 @@ const culculate = () => {
                 bookArr.date = $_('#main_date')[0].value;
                 bookArr.time = $_('#main_time')[0].value;
                 bookArr.equip = document.querySelector('input[name="equip"]:checked').value;
-                bookArr.equip_child = $_('#equip_child')[0].value;
+                bookArr.equip_child = +$_('#equip_child')[0].value;
                 bookArr.user_name = $_('#main_name')[0].value;
                 bookArr.user_surname = $_('#main_surname')[0].value;
                 bookArr.user_email = $_('#main_email')[0].value;
@@ -847,6 +847,29 @@ const loadVariablesList = () => {
 };
 
 //load towns list
+const ordersList = (page = 1, param = '') => {
+    send({page, param} , `/orderslist`, (result) => {
+        const resultat = JSON.parse(result);
+        if (resultat.res) {
+            const orders_list = $_('.orders_list')[0];
+            orders_list.innerHTML = '';
+            console.log('ressss', resultat.res);
+
+            const bookLang = getLang('lang');
+            resultat.res.orders.forEach(element => {        
+                orders_list.innerHTML += `
+                <div class="order">
+                    <p>${element.from} - ${element.to}  &nbsp 
+                    ${lang[`date${bookLang}`]} - <span>${element.date}</span> &nbsp 
+                    ${lang[`time${bookLang}`]} - <span>${element.time}</span></p>
+                    <i class='fas fa-info-circle ${element.proof}'></i>
+                </div>`
+            });
+        };
+    });
+};
+
+//load towns list
 const loadTownsList = () => {
     send({} , `/townlist`, (result) => {
         const resultat = JSON.parse(result);
@@ -870,7 +893,7 @@ const loadTransfersList = () => {
     send({} , `/transferlist`, (result) => {
         const resultat = JSON.parse(result);
         if (resultat.res) {
-            console.log('res', resultat.res);
+            // console.log('res', resultat.res);
             const transfers_list = $_('.transfers_list')[0];
             transfers_list.innerHTML = '';
             resultat.res.forEach(element => {        

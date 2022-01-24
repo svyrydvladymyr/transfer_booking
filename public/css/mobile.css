@@ -509,3 +509,12 @@
 .main_form_container .equip_wrap .equip_block:last-child {
     padding: 0px 0px 0px 2px;
 }
+.user_wrap .orders_list .order {
+    padding-right: 40px;
+}
+.user_wrap .orders_list .order i {
+    font-size: 20px;
+    line-height: 40px;
+    position: absolute;
+    right: 35px;
+}

@@ -1,15 +1,15 @@
 const con = require('../db/connectToDB').con;
 const {checOnTrueVal, autorisationCheck, tableRecord, token, log, readyFullDate} = require('../modules/service');
-// const lang = ['uk-UA', 'en-US', 'ru-RU'].includes(req.cookies['lang']) ? req.cookies['lang'] : 'uk-UA';
+const {order_limit} = require('../config/config_variables');
 
 const townadd = async (req, res) => {
+    let resMess;
     await autorisationCheck(req, res)
     .then(async (userid) => {
-        if (userid === false) { throw new Error('error-autorisation') };
-        let resMess, sql;
+        if (userid === false) { throw new Error('error-autorisation') };        
         if (req.body.param === 'townAdd') {
             resMess = 'Town added!';
-            sql = `INSERT INTO points (town_id, name_uk, name_en, name_ru) 
+            return `INSERT INTO points (town_id, name_uk, name_en, name_ru) 
             VALUES ('${checOnTrueVal(req.body.id)}', 
                     '${checOnTrueVal(req.body.uk)}', 
                     '${checOnTrueVal(req.body.en)}', 
@@ -17,38 +17,36 @@ const townadd = async (req, res) => {
         };
         if (req.body.param === 'townEdit') {
             resMess = 'Town edited!';
-            sql = `UPDATE points SET name_uk='${checOnTrueVal(req.body.uk)}', name_en='${checOnTrueVal(req.body.en)}', name_ru='${checOnTrueVal(req.body.ru)}' 
+            return `UPDATE points SET name_uk='${checOnTrueVal(req.body.uk)}', name_en='${checOnTrueVal(req.body.en)}', name_ru='${checOnTrueVal(req.body.ru)}' 
             WHERE town_id='${checOnTrueVal(req.body.id)}'`; 
         };
         if (req.body.param === 'townDel') {
             resMess = 'Town deleted!';
-            sql = `DELETE FROM points WHERE town_id='${checOnTrueVal(req.body.id)}'`; 
+            return `DELETE FROM points WHERE town_id='${checOnTrueVal(req.body.id)}'`; 
         };
-        await tableRecord(sql)
-        .then(async (result) => {
-            // console.log('result', result);
-            if (result.err && result.err.code == 'ER_DUP_ENTRY') {
-                const arr = [req.body.id, req.body.uk, req.body.en, req.body.ru];
-                for (let i = 0; i < arr.length; i++) {
-                    if (result.err.sqlMessage.includes(arr[i])) {
-                        res.send({"DUP": arr[i]}); break;
-                    };
-                };                
-            };
-            if (result.err && result.err.code !== 'ER_DUP_ENTRY') { throw new Error('error-DB') };
-            if (!result.err) {                 
-                if (req.body.param !== 'townDel') { res.send({"res": resMess}) };
-                if (req.body.param === 'townDel') {
-                    resMess = 'Town and routes deleted!';
-                    sql = `DELETE FROM transfers WHERE transfer_from='${checOnTrueVal(req.body.id)}' OR transfer_to='${checOnTrueVal(req.body.id)}'`; 
-                    await tableRecord(sql)
-                    .then((result) => {
-                        if (result.err) { throw new Error('error-DB') };
-                        if (!result.err) { res.send({"res": resMess}) };  
-                    });
+    })
+    .then(tableRecord)
+    .then(async (result) => {
+        // console.log('result', result);
+        if (result.err && result.err.code == 'ER_DUP_ENTRY') {
+            const arr = [req.body.id, req.body.uk, req.body.en, req.body.ru];
+            for (let i = 0; i < arr.length; i++) {
+                if (result.err.sqlMessage.includes(arr[i])) {
+                    res.send({"DUP": arr[i]}); break;
                 };
-            };               
-        });
+            };                
+        };
+        if (result.err && result.err.code !== 'ER_DUP_ENTRY') { throw new Error('error-DB') };             
+        if (req.body.param !== 'townDel') { res.send({"res": resMess}) };
+        if (req.body.param === 'townDel') {
+            resMess = 'Town and routes deleted!';
+            sql = `DELETE FROM transfers WHERE transfer_from='${checOnTrueVal(req.body.id)}' OR transfer_to='${checOnTrueVal(req.body.id)}'`; 
+            await tableRecord(sql)
+            .then((result) => {
+                if (result.err) { throw new Error('error-DB') };
+                res.send({"res": resMess});  
+            });
+        };               
     })
     .catch((err) => {
         log('towns-error', err);
@@ -58,14 +56,14 @@ const townadd = async (req, res) => {
 
 const transferadd = async (req, res) => {
     const timeArr = {'time1' : '', 'time2' : '', 'time3' : '', 'time4' : '', 'time5' : '', 'time6' : '', 'time7' : '', 'time8' : '', 'time9' : '', 'time10' : ''};
+    let resMess;
     if (req.body.param !== 'transferDel') { req.body.times.forEach((element, index) => { timeArr[`time${index + 1}`] = element })};
     await autorisationCheck(req, res)
     .then(async (userid) => {
-        if (userid === false) { throw new Error('error-autorisation') };
-        let resMess, sql;
+        if (userid === false) { throw new Error('error-autorisation') };        
         if (req.body.param === 'transferAdd') {
             resMess = 'Transfer added!';
-            sql = `INSERT INTO transfers (transfer_id, transfer_from, transfer_to, price_pr, price_gr, time1, time2, time3, time4, time5, time6, time7, time8, time9, time10, selection) 
+            return `INSERT INTO transfers (transfer_id, transfer_from, transfer_to, price_pr, price_gr, time1, time2, time3, time4, time5, time6, time7, time8, time9, time10, selection) 
             VALUES ('${token(10)}',
                     '${checOnTrueVal(req.body.from)}', 
                     '${checOnTrueVal(req.body.to)}', 
@@ -85,7 +83,7 @@ const transferadd = async (req, res) => {
         };
         if (req.body.param === 'transferEdit') {
             resMess = 'Transfer edited!';
-            sql = `UPDATE transfers 
+            return `UPDATE transfers 
             SET transfer_from='${checOnTrueVal(req.body.from)}', 
                 transfer_to='${checOnTrueVal(req.body.to)}',  
                 price_pr='${req.body.pr.replace(new RegExp("[^0-9]", "gi"), '')}',  
@@ -105,13 +103,14 @@ const transferadd = async (req, res) => {
         };
         if (req.body.param === 'transferDel') {
             resMess = 'Transfer deleted!';
-            sql = `DELETE FROM transfers WHERE transfer_id='${checOnTrueVal(req.body.id)}'`; 
+            return `DELETE FROM transfers WHERE transfer_id='${checOnTrueVal(req.body.id)}'`; 
         };
-        await tableRecord(sql)
-        .then((result) => {
-            if (result.err) { throw new Error('error-DB') };
-            if (!result.err) { res.send({"res": resMess}) };               
-        });
+
+    })
+    .then(tableRecord)
+    .then((result) => {
+        if (result.err) { throw new Error('error-DB') };
+        res.send({"res": resMess});               
     })
     .catch((err) => {
         log('transfers-error', err);
@@ -123,11 +122,12 @@ const townlist = async (req, res) => {
     await autorisationCheck(req, res)
     .then(async (userid) => {
         if (userid === false) { throw new Error('error-autorisation') };
-        await tableRecord(`SELECT * FROM points`)
-        .then((result) => {
-            if (result.err) { throw new Error('error-DB') };
-            res.send({"res": result});
-        }); 
+        return `SELECT * FROM points`;
+    })
+    .then(tableRecord)
+    .then((result) => {
+        if (result.err) { throw new Error('error-DB') };
+        res.send({"res": result});
     })
     .catch((err) => {
         log('towns-list-error', err);
@@ -140,42 +140,42 @@ const transferlist = async (req, res) => {
     await autorisationCheck(req, res)
     .then(async (userid) => {
         if (userid === false) { throw new Error('error-autorisation') };
-        await tableRecord(`SELECT town_id, name_uk FROM points`)
-        .then((result) => {
-            if (result.err) { throw new Error('error-DB') };
-            if (!result.err) { result.forEach(element => { townsArr[`${element.town_id}`] = element.name_uk })};
-        })
-        await tableRecord(`SELECT * FROM transfers`)
-        .then((result) => {
-            if (result.err) { throw new Error('error-DB') };
-            if (!result.err) { 
-                const resArr = []; 
-                result.forEach(element => {
-                    const resEl = {
-                        'transfer_id': element.transfer_id,
-                        'transfer_from': townsArr[element.transfer_from],
-                        'transfer_from_id': element.transfer_from,
-                        'transfer_to': townsArr[element.transfer_to],                
-                        'transfer_to_id': element.transfer_to,                
-                        'price_pr': element.price_pr,                
-                        'price_gr': element.price_gr,                
-                        'time1': element.time1,                
-                        'time2': element.time2,                
-                        'time3': element.time3,                
-                        'time4': element.time4,                
-                        'time5': element.time5,                
-                        'time6': element.time6,                
-                        'time7': element.time7,                
-                        'time8': element.time8,                
-                        'time9': element.time9,                
-                        'time10': element.time10,                
-                        'selection': element.selection,                
-                    };
-                    resArr.push(resEl);
-                });
-                res.send({"res": resArr});
+        return `SELECT town_id, name_uk FROM points`;         
+    })
+    .then(tableRecord)
+    .then((result) => {
+        if (result.err) { throw new Error('error-DB') };
+        result.forEach(element => { townsArr[`${element.town_id}`] = element.name_uk });
+        return `SELECT * FROM transfers`;
+    })
+    .then(tableRecord)
+    .then((result) => {
+        if (result.err) { throw new Error('error-DB') };
+        const resArr = []; 
+        result.forEach(element => {
+            const resEl = {
+                'transfer_id': element.transfer_id,
+                'transfer_from': townsArr[element.transfer_from],
+                'transfer_from_id': element.transfer_from,
+                'transfer_to': townsArr[element.transfer_to],                
+                'transfer_to_id': element.transfer_to,                
+                'price_pr': element.price_pr,                
+                'price_gr': element.price_gr,                
+                'time1': element.time1,                
+                'time2': element.time2,                
+                'time3': element.time3,                
+                'time4': element.time4,                
+                'time5': element.time5,                
+                'time6': element.time6,                
+                'time7': element.time7,                
+                'time8': element.time8,                
+                'time9': element.time9,                
+                'time10': element.time10,                
+                'selection': element.selection,                
             };
-        }); 
+            resArr.push(resEl);
+        });
+        res.send({"res": resArr});
     })
     .catch((err) => {
         log('transfers-list-error', err);
@@ -192,15 +192,6 @@ const variables = async (req, res) => {
         tableRecord(`SELECT transfer_to FROM transfers GROUP BY transfer_to`), 
         tableRecord(`SELECT * FROM transfers`)])
     .then(([townIdRes, townsFromRes, townsToRes, transfersArrRes]) => {
-        // console.log('townIdRes', townIdRes);
-        // console.log('townsFromRes', townsFromRes);
-        // console.log('townsToRes', townsToRes);
-        // console.log('transfersArrRes', transfersArrRes);
-        // const [townIdRes, townsFromRes, townsToRes, transfersArrRes] = value;
-        // const townIdRes = value[0]; 
-        // const townsFromRes = value[1];
-        // const townsToRes = value[2]; 
-        // const transfersArrRes = value[3];
         if (townIdRes.err) { throw new Error('error-DB-townsID') };
         if (townsFromRes.err) { throw new Error('error-DB-transferFROM') };
         if (townsToRes.err) { throw new Error('error-DB-transferTO') };
@@ -247,35 +238,35 @@ const orders = async (req, res) => {
     await tableRecord(`SELECT price_${type} FROM transfers WHERE transfer_id='${transferId}'`)
     .then(async (result) => {
         if (result.err) { throw new Error('error-DB') };
-        if (!result.err) { 
-            let sumfin;
-            if (type === 'pr') {sumfin = result[0].price_pr};
-            if (type === 'gr') {sumfin = result[0].price_gr * (+adult + +children) };
-            let sqlOrder = `INSERT INTO orders (orders_id, adult, children, type, date, time, equip, equip_child, user_name, user_surname, user_email, user_tel, status, paid, sum, book_date) 
-            VALUES ('${checOnTrueVal(transferId)}',
-                    '${adult}', 
-                    '${children}', 
-                    '${type}', 
-                    '${date.replace(new RegExp("[^0-9]//", "gi"), "")}', 
-                    '${time.replace(new RegExp("[^0-9]:", "gi"), "")}', 
-                    '${equip.replace(new RegExp("[^a-z]", "gi"), "")}', 
-                    '${equip_child.replace(new RegExp("[^0-9]", "gi"), "")}',            
-                    '${checOnTrueVal(user_name)}',
-                    '${checOnTrueVal(user_surname)}',
-                    '${user_email.replace(new RegExp("[^a-zA-Z0-9.&@-_]", "gi"), "")}', 
-                    '${user_phone.replace(new RegExp("[^0-9-()+ /\n]", "gi"), "")}', 
-                    'reserv', 
-                    '${paid}', 
-                    '${sumfin}',
-                    '${readyFullDate(new Date(), 'reverse')}')`; 
-            await tableRecord(sqlOrder)
-            .then((result) => {
-                if (result.err) { throw new Error('error-DB') };
-                if (!result.err) { 
-                    res.send({"res": 'Order created!'});
-                };
-            });
+        let sumfin;
+        if (type === 'pr') {sumfin = result[0].price_pr};
+        if (type === 'gr') {sumfin = result[0].price_gr * (+adult + +children) };
+        return `INSERT INTO orders (orders, orders_id, adult, children, type, date, time, equip, equip_child, user_name, user_surname, user_email, user_tel, status, paid, sum, book_date) 
+        VALUES ('${token(10)}',
+                '${checOnTrueVal(transferId)}',
+                '${adult}', 
+                '${children}', 
+                '${type}', 
+                '${date.replace(new RegExp("[^0-9]//", "gi"), "")}', 
+                '${time.replace(new RegExp("[^0-9]:", "gi"), "")}', 
+                '${equip.replace(new RegExp("[^a-z]", "gi"), "")}', 
+                '${equip_child}',            
+                '${checOnTrueVal(user_name)}',
+                '${checOnTrueVal(user_surname)}',
+                '${user_email.replace(new RegExp("[^a-zA-Z0-9.&@-_]", "gi"), "")}', 
+                '${user_phone.replace(new RegExp("[^0-9+]", "gi"), "")}', 
+                'reserv', 
+                'no', 
+                '${sumfin}',
+                '${readyFullDate(new Date(), 'reverse')}')`;
+    })
+    .then(tableRecord)
+    .then((result) => {
+        if (result.err) { 
+            console.log(result.err);            
+            throw new Error('error-DB-oredrs'); 
         };
+        res.send({"res": 'Order created!'});        
     })
     .catch((err) => {
         log('orders-error', err);
@@ -283,11 +274,124 @@ const orders = async (req, res) => {
     });
 };
 
+const orderslist = async (req, res) => {
+    console.log('req.body.page', req.body.page);
+    console.log('req.body.param', req.body.param);
+
+    let user_info, phone_res, count_records, page = req.body.page;
+    let townsFrom = {}, townsTo = {}, transfersArr = [], townsId = [];
+    const lang = ['uk-UA', 'en-US', 'ru-RU'].includes(req.cookies['lang']) ? req.cookies['lang'].slice(0, 2) : 'uk';
+    await autorisationCheck(req, res)    
+    .then((userid) => {
+        if (userid === false) { throw new Error('error-autorisation') };
+        // console.log('userid', userid);
+        return `SELECT email, phone, phone_verified, permission FROM users WHERE userid='${userid.userid}'`;
+    })
+    .then(tableRecord)
+    .then((result) => {
+        if (result.err) { throw new Error('error-DB-get-user') };
+        if (result[0].phone_verified === 'verified') { phone_res = result[0].phone.slice(result[0].phone.length - 10, result[0].phone.length) };
+        user_info = result;
+    })
+    .then(() => {
+        // console.log('user-result', user_info);
+        if (user_info[0].permission === 1) {
+            return (req.body.param === '')
+                ? `SELECT COUNT(*) FROM orders`
+                : ``;
+        } else {
+            return (user_info[0].phone_verified === 'verified')  
+                ? `SELECT COUNT(*) FROM orders WHERE user_email='${user_info[0].email}' OR user_tel='${phone_res}' OR user_tel='+38${phone_res}'`
+                : `SELECT COUNT(*) FROM orders WHERE user_email='${user_info[0].email}'`;
+        };
+    })
+    .then(tableRecord)
+    .then((result) => {
+        if (result.err) { throw new Error('error-DB-get-count') };
+        for (const [key, value] of Object.entries(result[0])) { count_records = value };
+    })
+    Promise.all([
+        tableRecord(`SELECT town_id, name_${lang} FROM points`), 
+        tableRecord(`SELECT transfer_from FROM transfers GROUP BY transfer_from`), 
+        tableRecord(`SELECT transfer_to FROM transfers GROUP BY transfer_to`), 
+        tableRecord(`SELECT * FROM transfers`)])
+    .then(([townIdRes, townsFromRes, townsToRes, transfersArrRes]) => {
+        if (townIdRes.err) { throw new Error('error-DB-townsID') };
+        if (townsFromRes.err) { throw new Error('error-DB-transferFROM') };
+        if (townsToRes.err) { throw new Error('error-DB-transferTO') };
+        if (transfersArrRes.err) { throw new Error('error-DB-transfersARR') };
+        townIdRes.forEach(element => { townsId[`${element.town_id}`] = element[`name_${lang}`] });
+        townsFromRes.forEach(element => { townsFrom[`${element.transfer_from}`] = townsId[element.transfer_from] });   
+        townsToRes.forEach(element => { townsTo[`${element.transfer_to}`] = townsId[element.transfer_to] });   
+        transfersArrRes.forEach(element => { transfersArr.push(element) });
+    })
+    // .then(() => {
+    //     console.log('townsId', townsId);
+    //     console.log('townsFrom', townsFrom);
+    //     console.log('townsTo', townsTo);
+    //     console.log('transfersArr', transfersArr);
+    // })
+    .then(() => {
+        let page_start = (page -1) * order_limit;
+        // console.log('page', page);
+        // console.log('order_limit', order_limit);
+        // console.log('page_start', page_start);
+        if (user_info[0].permission === 1) {
+            return (req.body.param === '')
+                ? `SELECT * FROM orders 
+                    ORDER BY id DESC LIMIT ${page_start}, ${order_limit}`
+                : ``;
+        } else {
+            return (user_info[0].phone_verified === 'verified')  
+                ? `SELECT * FROM orders 
+                    WHERE user_email='${user_info[0].email}' OR user_tel='${phone_res}' OR user_tel='+38${phone_res}' 
+                    ORDER BY id DESC LIMIT ${page_start}, ${order_limit}`
+                : `SELECT * FROM orders 
+                    WHERE user_email='${user_info[0].email}' 
+                    ORDER BY id DESC LIMIT ${page_start}, ${order_limit}`;
+        };
+    })
+    .then(tableRecord)
+    .then((result) => {
+        if (result.err) {             
+        // console.log(result.err);
+        throw new Error('error-DB-get-orders') };
+        // console.log('count_records', count_records);
+        // console.log('result', result);
+        console.log('user-result', user_info);
+        console.log('user-permission', user_info.permission);
+        result.forEach(element => {
+            let from, to;
+            transfersArr.forEach(el => {
+                if (el.transfer_id === element.orders_id) {
+                    from = townsFrom[el.transfer_from];
+                    to = townsTo[el.transfer_to];
+                };
+            });
+            element.from = from; 
+            element.to = to;            
+            element.proof = '';            
+            if (user_info[0].permission === 1) {
+                element.proof = element.status;
+                element.settingsproof = `<p class="edit_menu" onclick="">Підтвердити замовлення <i class='fas fa-check-double'></i></p>`;
+                element.settingsdel = `<p class="edit_menu" onclick="">Скасувати замовлення <i class='fas fa-times'></i></p>`;
+            };             
+        });
+        res.send({"res": {'count': count_records, 'orders': result}});
+    })
+    .catch((err) => {
+        log('orders-error', err);
+        res.status(400).send('SERVER ERROR: 400 (Bad Request)');
+    });
+};
+
+
 module.exports = {
     townadd,
     transferadd,
     townlist,
     transferlist,
     variables,
-    orders
+    orders,
+    orderslist
 }

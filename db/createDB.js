@@ -7,7 +7,10 @@ const users = () => {
         ava VARCHAR(255), 
         name VARCHAR(80) NOT NULL, 
         surname VARCHAR(80) NOT NULL,
+        provider VARCHAR(15) DEFAULT '',
         email VARCHAR(80) DEFAULT '',
+        phone VARCHAR(20) DEFAULT '',
+        phone_verified VARCHAR(10) DEFAULT 'noverified',
         permission INT DEFAULT '0',                  
         date_registered DATETIME
         )`; 
@@ -48,6 +51,7 @@ const transfers = () => {
 
 const orders = () => {
     const sql = `CREATE TABLE orders (id INT AUTO_INCREMENT PRIMARY KEY,
+        orders VARCHAR(10) NOT NULL,
         orders_id VARCHAR(50) NOT NULL,
         date VARCHAR(10) NOT NULL,
         time VARCHAR(5) NOT NULL,
@@ -63,7 +67,7 @@ const orders = () => {
         status VARCHAR(10),
         sum INT,
         paid VARCHAR(10),
-        book_date  VARCHAR(15)
+        book_date  VARCHAR(20)
         )`; 
     con.query(sql, function (err, result) {if (err) throw err; console.log("Table orders created")});
 };

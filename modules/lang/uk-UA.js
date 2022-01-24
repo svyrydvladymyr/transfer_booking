@@ -25,6 +25,7 @@ module.exports = {
 
     "autoriz_info" : "Для входу в кабінет Вам потрібно авторизуватися!",
     "exit" : "Вийти з акаунта",
+    "provider" : "через",
 
     "content_title1" : "Надійні та доступні трансфери",
     "content_body1" : "Замовляйте індивідуальне авто від дверей до дверей, мінівен чи мікроавтобус для групового трансферу",
@@ -46,13 +47,13 @@ module.exports = {
     "advantages_main_title1" : "Чому варто бронювати трансфер у нас",
     "advantages_main_title2" : "Наші переваги",
 
-    "option_main_title" : "Your Transfer Options",
-    "option_title1" : "Private Transfers",
-    "option_title2" : "Professional Drivers",
-    "option_title3" : "Minibus Transfers",
-    "option_title4" : "Affordable Price",
-    "option_title5" : "Bus Transfers",
-    "option_title6" : "Universal Service",
+    "option_main_title" : "Можливі варіанти трансферів",
+    "option_title1" : "Приватні трансфери",
+    "option_title2" : "Професійні водії",
+    "option_title3" : "Трансфери мікроавтобусами",
+    "option_title4" : "Доступні ціни",
+    "option_title5" : "Автобусні трансфери",
+    "option_title6" : "Універсальний сервіс",
     "option_from" : "від",
     "option_grn" : "ГРН",
 
@@ -61,15 +62,15 @@ module.exports = {
     "option_pr3" : "Ivano-Frankivsk – Yasinya (Dragobrat)",
     "option_bus" : "Special prices for large groups",
 
-    "call_header" : "24/7 Customer Support Helpline",
+    "call_header" : "Цілодобова гаряча лінія підтримки клієнтів",
     "call_tel" : "Tel.",
-    "call_mess" : "Our Support Service is available 24 hours a day, 7 days a week to help you book your transfer",
-    "call_btn" : "Get in touch",
+    "call_mess" : "Для бронювання трансферів наша служба підтримки доступна 24 години на добу, 7 днів на тиждень",
+    "call_btn" : "ЗВ'ЯЗАТИСЬ",
 
-    "footer_info_text" : "Bukovel Transfer Booking provides transfer services from the airport and railway station to ski and other resorts in the Carpathian region. We offer the most economical, convenient and safe way to get to and from the Bukovel resort. Our transfer services offer shared transfer, private minibus services and group bus charters. Our main priority is to provide our customers with safe and reliable services at the best price in the Carpathian region.",
+    "footer_info_text" : "Компанія Transfer Booking надає послуги трансферу з аеропорту чи залізничного вокзалу до гірськолижних та інших курортів Карпатського регіону. Ми пропонуємо найбільш доступний, зручний і безпечний спосіб дістатися до Карпат і  курорту Буковель зокрема та у зворотньому напрямку.  У нас Ви можете замовити приватний трансфер для сім’ї чи невеликої  компанії, груповий трансфер для Вас та Ваших  друзів, а також автобус для корпоративних клієнтів чи туристичних груп. Нашими головними пріоритетами є  Ваша безпека, надійність і комфорт за оптимальними цінами на ринку пасажирських перевезень.",
     "footer_info_header_blog" : "Latest Blog Posts",
-    "footer_info_header_people" : "What People Say",
-    "footer_info_header_contact" : "Contact Us",
+    "footer_info_header_people" : "Відгуки",
+    "footer_info_header_contact" : "Зв'яжіться з нами",
 
     "feedback1" : "Наш потяг спізнився майже на годину, але водій чекав нас як і домовлялись, був терплячим і ввічливим. Дуже хороша ціна і комфортний мікроавтобус. Розрахунок був безготівковим, що також дуже зручно. Рекомендую цю компанію для співпраці",
     "feedback_name1" : "Олеся",
@@ -88,7 +89,7 @@ module.exports = {
     "feedback8" : "Чудовий сервіс за ціною, нижчою, ніж таксі. Їхали удвох з дівчиною, нас зустріли і забрали вчасно. Поїздка була швидкою, безпечною і комфортною. Водій – професіонал своєї  справи, завіз нас туди, куди я мабуть не ризикнув би їхати власним автомобілем за таких погодних умов. Замовляли також зворотній трансфер, все було ОК. Рекомендуватиму друзям вашу компанію",
     "feedback_name8" : "Едуард",
 
-    "feedback_text" : "You can contact us any way that is convenient for you. We are available 24/7 via telephone or e-mail. You can also use a quick contact form below. We would be happy to answer your questions",
+    "feedback_text" : "Ви можете зв’язатися з нами будь-яким зручним для вас способом. Ми на зв’язку 24/7 за телефоном чи  електронною поштою. Ви також можете скористатися нижченаведеною  формою  для швидкого зв’язку. Будемо раді відповісти на Ваші запитання",
     "contacts_title1" : "Телефон",
     "contacts_title2" : "Е-мейл",
     "contacts_title3" : "Місцезнаходження",
@@ -108,9 +109,11 @@ module.exports = {
     "feedback_form_tel" : "Телефон",
     "feedback_form_message" : "Повідомлення",
 
-    "main_form_message" : "Fill in the details below to book your transfer",
-    "main_form_mess_from" : "From airport, railway station, hotel or location",
-    "main_form_mess_to" : "To airport, railway station, hotel or location",
+    "orders_title" : "Ваші замовлення",
+
+    "main_form_message" : "Заповніть поля нижче, щоб забронювати трансфер",
+    "main_form_mess_from" : "З аеропорту, залізничного вокзалу, готелю чи іншої локації",
+    "main_form_mess_to" : "В аеропорт,  на залізничний вокзал, готель чи інше місце ",
     "main_form_date" : "Дата",
     "main_form_time" : "Час",
     "main_form_type_transfer" : "Параметри перевезення",

@@ -12,7 +12,7 @@ const DB = require('./db/createDB');
 
 const {log, accessLog, logOut} = require('./modules/service');
 const renderPage = require('./modules/renderPage');
-const {townadd, townlist, transferadd, transferlist, variables, orders} = require('./modules/requestsDB');
+const {townadd, townlist, transferadd, transferlist, variables, orders, orderslist} = require('./modules/requestsDB');
 
 //oaugh
 require('./modules/oaugh.js')(app);
@@ -29,10 +29,11 @@ app.use(bodyParser.json());
 app.use((req, res, next) => {log(`URL-REQUEST:-(${req.method})-`, req.url); next();});
 
 //system logs
-app.use((req, res, next) => {accessLog(req, res, next)});
+// app.use((req, res, next) => {accessLog(req, res, next)});
 
 //requests order
 app.use('/order', (req, res) => {orders(req, res)});
+app.use('/orderslist', (req, res) => {orderslist(req, res)});
 //requests variables
 app.use('/variables', (req, res) => {variables(req, res)});
 //requests towns
@@ -62,4 +63,4 @@ app.get('/', (req, res) => {renderPage(req, res, 'home')});
 app.get('*', (req, res) => {res.status(404).send(require('./config/404'));});
 
 //server listen
-app.listen(process.env.PORT || 4000, () => {console.log('Server is running...')});
+app.listen(4000, () => {console.log('Server is running...')});
