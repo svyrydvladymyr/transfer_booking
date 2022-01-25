@@ -16,6 +16,10 @@
 .advantages > .advantages_title2 {
     font-size: 40px;
 }
+/* .header {
+    background: center/cover no-repeat url(../img/header_bg_small.jpg);
+} */
+
 
 .user_wrap .tab_person .tabs .tab {
     width: 100%;    
@@ -117,7 +121,7 @@
 
 .header .form_wrap .info_container, .header .form_wrap .tabs_container {
     width: 100%;
-    padding: 15px 0px;
+    padding: 15px 8px;
 }
 
 .header .form_wrap .info_container .info_wrap {
@@ -274,8 +278,10 @@
     border-top: 1px solid #717171;
 }
 .menu_container_wrap_mobile > .mobile_menu_contacts > .info > p{
+    font-size: 14px;
+    font-weight: bold;
+    margin: 10px 0px;
     margin-right: 10px;
-    font-size: 16px;
 }
 .menu_container_wrap_mobile > .mobile_menu_contacts > .info > p > i{
     margin-right: 10px;
@@ -299,7 +305,7 @@
 }
 .menu_container_wrap_mobile > .mobile_menu_contacts > .social > .media > a > i{
     font-size: 40px;
-    margin-right: 26px;
+    margin-right: 14px;
 }
 .menu_container_wrap_mobile > .mobile_menu_contacts > .social > .lang{
     width: 40%;
@@ -312,7 +318,7 @@
 .menu_container_wrap_mobile > .mobile_menu_contacts > .social > .lang > img{
     cursor: pointer;
     height: 30px;
-    margin-left: 20px;
+    margin-left: 8px;
     border-radius: 3px;
 }
 .menu_container_wrap_mobile > ul{
@@ -517,4 +523,15 @@
     line-height: 40px;
     position: absolute;
     right: 35px;
+}
+
+.main_form_container .equip_wrap .equip_block .main_form_row {
+    justify-content: flex-end;
+}
+.main_form_container .equip_wrap .equip_block.equip_child input {
+    width: 92%;
+    max-width: 92%;
+}
+.main_form_container .equip_wrap .equip_block.equip_child .main_form_row {
+    max-width: 100%;
 }

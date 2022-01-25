@@ -4,21 +4,21 @@
         <div class="main_form_row">
             <div class="main_form_coll">
                 <label for="main_from"><%=DATA.langPack.main_form_mess_from %></label>
-                <input type="text" name="from" id="main_from" maxlength="60" inputmainparam="" value="" autocomplete="off" onfocus="showModal('mainformFrom', {}, this)">
+                <input type="text" name="from" id="main_from" maxlength="60" inputmainparam="" value="" autocomplete="off" onfocus="showModal('mainformFrom', {}, this)" readonly>
             </div>
             <div class="main_form_coll">
                 <label for="main_to"><%=DATA.langPack.main_form_mess_to %></label>
-                <input type="text" name="to" id="main_to" maxlength="60" inputmainparam="" value="" autocomplete="off" onfocus="showModal('mainformTo', {}, this)">
+                <input type="text" name="to" id="main_to" maxlength="60" inputmainparam="" value="" autocomplete="off" onfocus="showModal('mainformTo', {}, this)" readonly>
             </div>
         </div>
         <div class="main_form_row">
             <div class="main_form_coll">
                 <label for="main_date"><%=DATA.langPack.main_form_date %></label>
-                <input type="text" name="date" id="main_date" maxlength="10" inputmainparam="" value="" autocomplete="off" onfocus="showModal('mainformCalendar', {}, this)">
+                <input type="text" name="date" id="main_date" maxlength="10" inputmainparam="" value="" autocomplete="off" onfocus="showModal('mainformCalendar', {}, this)" readonly>
             </div>
             <div class="main_form_coll">
                 <label for="main_time"><%=DATA.langPack.main_form_time %></label>
-                <input type="text" name="time" id="main_time" maxlength="10" inputmainparam="" setparam="" value="" autocomplete="off" onfocus="showModal('mainformTimes', {}, this)">
+                <input type="text" name="time" id="main_time" maxlength="10" inputmainparam="" setparam="" value="" autocomplete="off" onfocus="showModal('mainformTimes', {}, this)" readonly>
             </div>
         </div>
         <div class="main_form_row">
@@ -58,7 +58,7 @@
             <div class="equip_block equip_child">                
                 <div class="main_form_row">   
                     <label><%=DATA.langPack.main_form_equip_child_title %></label> 
-                    <input type="number" name="equip_child" id="equip_child" min="0" max="5" value="" oninput="validationPerson(this, 5)">                
+                    <input type="number" name="equip_child" id="equip_child" min="0" max="5" value="" oninput="validationEquip(this)">                
                 </div>
             </div>
         </div>

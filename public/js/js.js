@@ -178,6 +178,9 @@ window.onscroll = function() {
 
 //to resize the traffic settings block
 if ($_('.options_container')[0]) { 
+    let touchstartX = 0;
+    let touchendX = 0;
+    const slider = $_('.options_wrap')[0];
     const options = () => {
         let item = 3
         if (body.offsetWidth > 768 && body.offsetWidth < 1100) { item = 2 }; 
@@ -209,28 +212,66 @@ if ($_('.options_container')[0]) {
             wrap.insertBefore(lastChild, wrap.firstChild);            
         }, 100);
     };
+    const optionSlider = () => {
+        const lenghtSwipe = touchendX - touchstartX;
+        if (lenghtSwipe < -40) { if (touchendX < touchstartX) options_left() };
+        if (lenghtSwipe > 40) { if (touchendX > touchstartX) options_right() };        
+    };
+    slider.addEventListener('touchstart', e => {
+        touchstartX = e.changedTouches[0].screenX;        
+    });      
+    slider.addEventListener('touchend', e => {
+        touchendX = e.changedTouches[0].screenX;
+        optionSlider();
+    });
     $_('.arrow_left')[0].addEventListener('click', options_left, true);
     $_('.arrow_right')[0].addEventListener('click', options_right, true);
 };
 
 //to resize the feedback block
 if ($_('.feedback_container')[0]) { 
+    let touchstartFeedX = 0;
+    let touchendFeedX = 0;
+    const sliderFeedback = $_('.feedback_wrap')[0];
     const feedback = () => {
         $_('.feedback_wrap > .feedback_block').forEach(element => { element.style.minWidth = `${$_('.feedback_container')[0].offsetWidth}px` });
     };
     feedback();
     window.addEventListener('resize', feedback, true);
-    function feedbackPosition(el, i){
+    function feedbackPosition(i){
         $_('.feedback_wrap')[0].style.transform = `translateX(-${i}00%)`;        
         $_('.feedback_points > p').forEach(element => { element.style.backgroundColor = 'rgb(141, 141, 141)' });
-        el.style.backgroundColor = '#ee9e07';
+        $_('.feedback_points > p')[i].style.backgroundColor = '#ee9e07';
     };
     const feedbackCount = () => {
         $_('.feedback_points')[0].innerHTML = '';
-        for (let i = 0; i < $_('.feedback_wrap > .feedback_block').length; i++) { $_('.feedback_points')[0].innerHTML += `<p onclick="feedbackPosition(this, ${i})"></p>` };
+        for (let i = 0; i < $_('.feedback_wrap > .feedback_block').length; i++) { $_('.feedback_points')[0].innerHTML += `<p onclick="feedbackPosition(${i})"></p>` };
         $_('.feedback_points > p')[0].style.backgroundColor = '#ee9e07';
     };
     feedbackCount();
+    let stertSwipe = 0;
+    const swipeLanght = $_('.feedback_points > p').length;
+    function slideFeed() {
+        if (touchendFeedX > touchstartFeedX) {
+            if (stertSwipe > 0) {
+                stertSwipe--
+                feedbackPosition(stertSwipe);
+            };
+        };
+        if (touchendFeedX < touchstartFeedX) {
+            if (stertSwipe < swipeLanght-1) {
+                stertSwipe++
+                feedbackPosition(stertSwipe);
+            };
+        };
+    };
+    sliderFeedback.addEventListener('touchstart', e => {
+        touchstartFeedX = e.changedTouches[0].screenX;
+    });    
+    sliderFeedback.addEventListener('touchend', e => {
+        touchendFeedX = e.changedTouches[0].screenX;
+        slideFeed();
+    });
 };
 
 //for change status of mobile menu
@@ -575,6 +616,13 @@ const validationPerson = (el, max) => {
     (priceVal > max) ? el.value = max : null;
     (priceVal === '') ? el.value = '' : null;
 };
+const validationEquip = (el) => {
+    const priceVal = el.value;
+    const maxPerson = el.getAttribute('max');
+    (priceVal < 0) ? el.value = '' : null;
+    (priceVal > maxPerson) ? el.value = maxPerson : null;
+    (priceVal === '') ? el.value = '' : null;
+};
 const validationType = (el) => {
     $_('#type_transfer')[0].classList.remove('err_input');
     mainTimeInput.value = '';
@@ -769,7 +817,7 @@ const plusTime = (element, type) => {
     const plusTransBody = document.createElement("div");
     plusTransBody.setAttribute('class', 'add');
     plusTransBody.innerHTML = `<p class="time_label">Відправлення</p> 
-                               <input type="text" name="translate" class="time" autocomplete="off" placeholder="Час перевезення..." onfocus="showModal('transferTimes', {}, this)">
+                               <input type="text" name="translate" class="time" autocomplete="off" placeholder="Час перевезення..." onfocus="showModal('transferTimes', {}, this)" readonly>
                                <i class='fas fa-plus' onclick="plusTime(this, 'plus')"></i>`;
     class classLists { constructor(){}
         style(element, first, second){

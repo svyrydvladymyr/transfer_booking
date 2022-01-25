@@ -60,7 +60,7 @@ const clearDATA = () => {
 
 const addUser = (profile, done) => {
     console.log('profile', profile);
-    const {id, name: {givenName = '', familyName = ''}, emails: [{value: email = ''}], photos: [{value: photo = ''}], provider} = profile;
+    const {id, name: {givenName = '', familyName = ''}, emails: [{value: email = ''}], photos: [{value: photo = ''}], provider = ''} = profile;
     const date = new Date();        
     const sql = `INSERT INTO users (userid, name, surname, provider, email, date_registered, ava) 
                VALUES ('${id}', 

@@ -16,7 +16,7 @@ module.exports = (app) => {
         passport.use(
             new Strategy[url](StrategyConfig[url], 
             (accessToken, refreshToken, profile, done) => {process.nextTick( async () => {
-                console.log("profile", profile);                    
+                // console.log("profile", profile);                    
                 con.query(`SELECT * FROM users WHERE userid = '${profile.id}'`, (error, result) => {
                     if (error) { 
                         done(`Problem with created user: ${error}`, null); 
@@ -33,7 +33,7 @@ module.exports = (app) => {
         );        
         app.get(`/${url}`, 
             passport.authenticate(`${url}`, 
-                (url === 'google') ? {scope: ['https://www.googleapis.com/auth/userinfo.profile', 'https://www.googleapis.com/auth/userinfo.email']} : ''
+                (url === 'google') ? {scope: ['https://www.googleapis.com/auth/userinfo.profile', 'https://www.googleapis.com/auth/userinfo.email']} : (url === 'google') ? {scope: 'email'} : ''
             ));
         app.get(`/${url}callback`, (req, res, next) => {    
             passport.authenticate(`${url}`, 

@@ -103,7 +103,6 @@ body {
 .menuAddadvantages, .menuAddcontacts, .menuAddtransfer, .menuAddabout, .menuAddperson{
   background: #fff!important;
 }
-
 .menu_container_wrap {
   width: 100%;
   height: 107px;
@@ -537,6 +536,7 @@ body {
         input[type=radio] {
           width: 20px;
           height: 20px;
+          margin-bottom: 14px;
         }
         input, select {
           width: 100%;
@@ -644,23 +644,27 @@ body {
         width: 100%;
         font-size: 13px;
         text-align: center;
-        margin-bottom: 5px;
+        margin-bottom: 12px;
         color: #fff;
         opacity: .7;
       }
     }
     .equip_block.equip_child {
       display: none;
+      label {
+        margin-bottom: 5px;
+      }
       .main_form_row {
         padding: 0px;
       }
       input {
-        width: 50px;
-        height: 22px;
-        line-height: 22px;
+        width: 100%;
+        max-width: 94px;
+        height: 48px;
+        line-height: 48px;
         text-align: center;
         padding: 0px 5px;
-        margin-top: 9px;
+        margin-top: 1px;
         border: 0;
         outline: 0;
         font-size: 16px;
@@ -933,9 +937,8 @@ body {
     }
 }
 
-//----------------user
+//___________________user_________________________
 .user_wrap {
-  // outline: 1px solid red;
   margin: 10px;
   display: flex;
   flex-wrap: wrap;
@@ -1141,7 +1144,7 @@ body {
     }      
 }
 
-//----------------modal
+//__________________modal_______________________
 .modal_wrap {
   position: absolute;
   top: 0;
@@ -1385,7 +1388,7 @@ body {
     }
 }
 
-//----------------container
+//__________________call______________________
 .call_container {
   width: 100%;
   display: flex;
@@ -1466,6 +1469,7 @@ body {
   }
 }
 
+//__________________footer______________________
 .footer_container {
   width: 100%;
   display: flex;
@@ -1480,7 +1484,6 @@ body {
     max-width: 1800px;
     padding: 60px 0px;
     .footer_box {
-      // outline: 1px solid yellow;
       width: 25%;
       padding: 20px;
       display: flex;
@@ -1511,7 +1514,7 @@ body {
   }
 }
 
-
+//__________________feedback______________________
 .feedback_container {
   width: 100%;
   height: max-content;
@@ -1570,6 +1573,7 @@ body {
   }
 }
 
+//__________________footer_copir______________________
 .footer_copir_container {
   width: 100%;
   display: flex;
@@ -1604,7 +1608,7 @@ body {
   }
 }
 
-
+//__________________contacts______________________
 .contacts_container {
   width: 100%;
   display: flex;
@@ -1702,7 +1706,7 @@ body {
   }
 }
 
-
+//__________________feedback_form______________________
 .feedback_form {
   width: 50%;
   padding: 0px 40px;
@@ -1798,7 +1802,6 @@ iframe {
 }
 
 //_______________calendar___________________
-
 .modal_wrap {
   .modal_place {
     div {
@@ -2138,34 +2141,3 @@ iframe {
 
 
 
-
-
-
-
-
-// select::-webkit-scrollbar {
-//   width: 0px;
-// }
-// select::-webkit-scrollbar-track {
-//   background: #f1f1f1; 
-// }
-// select::-webkit-scrollbar-thumb {
-//   background: #888; 
-// }
-// select::-webkit-scrollbar-thumb:hover {
-//   background: #555; 
-// }
-// select {
-//   outline: 0;
-//   width: 70px;
-//   border: 0;
-//   text-align: center;
-// }
-// option {
-//   height: 50px;
-//   display: flex;
-//   flex-wrap: wrap;
-//   align-items:center;
-//   justify-content: center;
-//   text-align: center;
-// }

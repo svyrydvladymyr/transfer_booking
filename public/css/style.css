@@ -641,6 +641,7 @@ body {
 .main_form_container .main_form_wrap .main_form_row .main_form_coll input[type=radio] {
   width: 20px;
   height: 20px;
+  margin-bottom: 14px;
 }
 .main_form_container .main_form_wrap .main_form_row .main_form_coll input, .main_form_container .main_form_wrap .main_form_row .main_form_coll select {
   width: 100%;
@@ -763,23 +764,27 @@ body {
   width: 100%;
   font-size: 13px;
   text-align: center;
-  margin-bottom: 5px;
+  margin-bottom: 12px;
   color: #fff;
   opacity: 0.7;
 }
 .main_form_container .equip_wrap .equip_block.equip_child {
   display: none;
 }
+.main_form_container .equip_wrap .equip_block.equip_child label {
+  margin-bottom: 5px;
+}
 .main_form_container .equip_wrap .equip_block.equip_child .main_form_row {
   padding: 0px;
 }
 .main_form_container .equip_wrap .equip_block.equip_child input {
-  width: 50px;
-  height: 22px;
-  line-height: 22px;
+  width: 100%;
+  max-width: 94px;
+  height: 48px;
+  line-height: 48px;
   text-align: center;
   padding: 0px 5px;
-  margin-top: 9px;
+  margin-top: 1px;
   border: 0;
   outline: 0;
   font-size: 16px;

@@ -63,4 +63,4 @@ app.get('/', (req, res) => {renderPage(req, res, 'home')});
 app.get('*', (req, res) => {res.status(404).send(require('./config/404'));});
 
 //server listen
-app.listen(4000, () => {console.log('Server is running...')});
+app.listen(8054, () => {console.log('Server is running...')});

@@ -91,8 +91,8 @@ template = {
             <i class='fa fa-times' onclick="closeModal(event)"></i>
         </div>
         <div class="modal_place" id="transferAdd">
-            <input type="text" id="from" name="from" maxlength="120" inputparam="" value="" autocomplete="off" placeholder="Перевезення з ..." oninput="validation(this, 'Input')" onfocus="showModal('transferTowns', {'param': 'from'})">
-            <input type="text" id="to" name="to" maxlength="120" inputparam="" value="" autocomplete="off" placeholder="Перевезення до ..." oninput="validation(this, 'Input')" onfocus="showModal('transferTowns', {'param': 'to'})">
+            <input type="text" id="from" name="from" maxlength="120" inputparam="" value="" autocomplete="off" placeholder="Перевезення з ..." oninput="validation(this, 'Input')" onfocus="showModal('transferTowns', {'param': 'from'})" readonly>
+            <input type="text" id="to" name="to" maxlength="120" inputparam="" value="" autocomplete="off" placeholder="Перевезення до ..." oninput="validation(this, 'Input')" onfocus="showModal('transferTowns', {'param': 'to'})" readonly>
             <p class="transfer_dup_to">Поля "Перевезення з" і "Перевезення до" не можуть співпадати!</p>
             <p class="transfer_empty_to">Поля "Перевезення з" і "Перевезення до" не можуть бути пустим!</p>
             <div class="price_form"> 
@@ -109,7 +109,7 @@ template = {
             <div class="add_time" style="display: none">
                 <div class="add">    
                     <p class="time_label">Відправлення 1</p>            
-                    <input type="text" name="time" class="time" autocomplete="off" placeholder="Час перевезення..." onfocus="showModal('transferTimes', {}, this)">
+                    <input type="text" name="time" class="time" autocomplete="off" placeholder="Час перевезення..." onfocus="showModal('transferTimes', {}, this)" readonly>
                     <i class='fas fa-plus' onclick="plusTime(this, 'plus')"></i>
                 </div>  
             </div>
@@ -165,8 +165,8 @@ template = {
             <i class='fa fa-times' onclick="closeModal(event)"></i>
         </div>
         <div class="modal_place" id="transferEdit" paramid="">
-            <input type="text" id="from" name="from" maxlength="120" inputparam="" value="" autocomplete="off" placeholder="Перевезення з ..." oninput="validation(this, 'Input')" onfocus="showModal('transferTowns', {'param': 'from'})">
-            <input type="text" id="to" name="to" maxlength="120" inputparam="" value="" autocomplete="off" placeholder="Перевезення до ..." oninput="validation(this, 'Input')" onfocus="showModal('transferTowns', {'param': 'to'})">
+            <input type="text" id="from" name="from" maxlength="120" inputparam="" value="" autocomplete="off" placeholder="Перевезення з ..." oninput="validation(this, 'Input')" onfocus="showModal('transferTowns', {'param': 'from'})" readonly>
+            <input type="text" id="to" name="to" maxlength="120" inputparam="" value="" autocomplete="off" placeholder="Перевезення до ..." oninput="validation(this, 'Input')" onfocus="showModal('transferTowns', {'param': 'to'})" readonly>
             <p class="transfer_dup_to">Поля "Перевезення з" і "Перевезення до" не можуть співпадати!</p>
             <p class="transfer_empty_to">Поля "Перевезення з" і "Перевезення до" не можуть бути пустим!</p>
             <div class="price_form"> 
@@ -183,7 +183,7 @@ template = {
             <div class="add_time" style="display: none">
                 <div class="add">    
                     <p class="time_label">Відправлення 1</p>            
-                    <input type="text" name="time" class="time" autocomplete="off" placeholder="Час перевезення..." onfocus="showModal('transferTimes', {}, this)">
+                    <input type="text" name="time" class="time" autocomplete="off" placeholder="Час перевезення..." onfocus="showModal('transferTimes', {}, this)" readonly>
                     <i class='fas fa-plus' onclick="plusTime(this, 'plus')"></i>
                 </div>  
             </div>
