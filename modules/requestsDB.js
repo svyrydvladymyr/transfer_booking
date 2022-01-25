@@ -214,7 +214,7 @@ const variables = async (req, res) => {
     });
 };
 
-const orders = async (req, res) => {
+const orders = (req, res) => {
     const {transferId, transferFrom, transferTo, adult, children, sum, date, time, equip, equip_child, user_name, user_surname, user_email, user_phone, paid} = req.body;
     const type = req.body.type.replace(/transfer_/gi, '');
 
@@ -235,37 +235,37 @@ const orders = async (req, res) => {
     console.log('paid', paid);
     console.log('sum', sum);
 
-    await tableRecord(`SELECT price_${type} FROM transfers WHERE transfer_id='${transferId}'`)
+    tableRecord(`SELECT price_${type} FROM transfers WHERE transfer_id='${transferId}'`)
     .then(async (result) => {
         if (result.err) { throw new Error('error-DB') };
-        let sumfin;
-        if (type === 'pr') {sumfin = result[0].price_pr};
-        if (type === 'gr') {sumfin = result[0].price_gr * (+adult + +children) };
-        return `INSERT INTO orders (orders, orders_id, adult, children, type, date, time, equip, equip_child, user_name, user_surname, user_email, user_tel, status, paid, sum, book_date) 
-        VALUES ('${token(10)}',
-                '${checOnTrueVal(transferId)}',
-                '${adult}', 
-                '${children}', 
-                '${type}', 
-                '${date.replace(new RegExp("[^0-9]//", "gi"), "")}', 
-                '${time.replace(new RegExp("[^0-9]:", "gi"), "")}', 
-                '${equip.replace(new RegExp("[^a-z]", "gi"), "")}', 
-                '${equip_child}',            
-                '${checOnTrueVal(user_name)}',
-                '${checOnTrueVal(user_surname)}',
-                '${user_email.replace(new RegExp("[^a-zA-Z0-9.&@-_]", "gi"), "")}', 
-                '${user_phone.replace(new RegExp("[^0-9+]", "gi"), "")}', 
-                'reserv', 
-                'no', 
-                '${sumfin}',
-                '${readyFullDate(new Date(), 'reverse')}')`;
+        if (result[0] === undefined) { throw new Error('error-bad-route');
+        } else {
+            let sumfin;
+            if (type === 'pr') {sumfin = result[0].price_pr};
+            if (type === 'gr') {sumfin = result[0].price_gr * (+adult + +children) };
+            return `INSERT INTO orders (orders, orders_id, adult, children, type, date, time, equip, equip_child, user_name, user_surname, user_email, user_tel, status, paid, sum, book_date) 
+            VALUES ('${token(10)}',
+                    '${checOnTrueVal(transferId)}',
+                    '${adult}', 
+                    '${children}', 
+                    '${type}', 
+                    '${date.replace(new RegExp("[^0-9]//", "gi"), "")}', 
+                    '${time.replace(new RegExp("[^0-9]:", "gi"), "")}', 
+                    '${equip.replace(new RegExp("[^a-z]", "gi"), "")}', 
+                    '${equip_child}',            
+                    '${checOnTrueVal(user_name)}',
+                    '${checOnTrueVal(user_surname)}',
+                    '${user_email.replace(new RegExp("[^a-zA-Z0-9.&@-_]", "gi"), "")}', 
+                    '${user_phone.replace(new RegExp("[^0-9+]", "gi"), "")}', 
+                    'reserv', 
+                    'no', 
+                    '${sumfin}',
+                    '${readyFullDate(new Date(), 'reverse')}')`;
+        };
     })
     .then(tableRecord)
     .then((result) => {
-        if (result.err) { 
-            console.log(result.err);            
-            throw new Error('error-DB-oredrs'); 
-        };
+        if (result.err) { throw new Error('error-DB-oredrs') };
         res.send({"res": 'Order created!'});        
     })
     .catch((err) => {
@@ -281,6 +281,24 @@ const orderslist = async (req, res) => {
     let user_info, phone_res, count_records, page = req.body.page;
     let townsFrom = {}, townsTo = {}, transfersArr = [], townsId = [];
     const lang = ['uk-UA', 'en-US', 'ru-RU'].includes(req.cookies['lang']) ? req.cookies['lang'].slice(0, 2) : 'uk';
+
+
+
+    Promise.all([
+        tableRecord(`SELECT town_id, name_${lang} FROM points`), 
+        tableRecord(`SELECT transfer_from FROM transfers GROUP BY transfer_from`), 
+        tableRecord(`SELECT transfer_to FROM transfers GROUP BY transfer_to`), 
+        tableRecord(`SELECT * FROM transfers`)])
+    .then(([townIdRes, townsFromRes, townsToRes, transfersArrRes]) => {
+        if (townIdRes.err) { throw new Error('error-DB-townsID') };
+        if (townsFromRes.err) { throw new Error('error-DB-transferFROM') };
+        if (townsToRes.err) { throw new Error('error-DB-transferTO') };
+        if (transfersArrRes.err) { throw new Error('error-DB-transfersARR') };
+        townIdRes.forEach(element => { townsId[`${element.town_id}`] = element[`name_${lang}`] });
+        townsFromRes.forEach(element => { townsFrom[`${element.transfer_from}`] = townsId[element.transfer_from] });   
+        townsToRes.forEach(element => { townsTo[`${element.transfer_to}`] = townsId[element.transfer_to] });   
+        transfersArrRes.forEach(element => { transfersArr.push(element) });
+    })
     await autorisationCheck(req, res)    
     .then((userid) => {
         if (userid === false) { throw new Error('error-autorisation') };
@@ -309,21 +327,6 @@ const orderslist = async (req, res) => {
     .then((result) => {
         if (result.err) { throw new Error('error-DB-get-count') };
         for (const [key, value] of Object.entries(result[0])) { count_records = value };
-    })
-    Promise.all([
-        tableRecord(`SELECT town_id, name_${lang} FROM points`), 
-        tableRecord(`SELECT transfer_from FROM transfers GROUP BY transfer_from`), 
-        tableRecord(`SELECT transfer_to FROM transfers GROUP BY transfer_to`), 
-        tableRecord(`SELECT * FROM transfers`)])
-    .then(([townIdRes, townsFromRes, townsToRes, transfersArrRes]) => {
-        if (townIdRes.err) { throw new Error('error-DB-townsID') };
-        if (townsFromRes.err) { throw new Error('error-DB-transferFROM') };
-        if (townsToRes.err) { throw new Error('error-DB-transferTO') };
-        if (transfersArrRes.err) { throw new Error('error-DB-transfersARR') };
-        townIdRes.forEach(element => { townsId[`${element.town_id}`] = element[`name_${lang}`] });
-        townsFromRes.forEach(element => { townsFrom[`${element.transfer_from}`] = townsId[element.transfer_from] });   
-        townsToRes.forEach(element => { townsTo[`${element.transfer_to}`] = townsId[element.transfer_to] });   
-        transfersArrRes.forEach(element => { transfersArr.push(element) });
     })
     // .then(() => {
     //     console.log('townsId', townsId);

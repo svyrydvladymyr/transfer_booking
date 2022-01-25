@@ -899,17 +899,26 @@ const ordersList = (page = 1, param = '') => {
     send({page, param} , `/orderslist`, (result) => {
         const resultat = JSON.parse(result);
         if (resultat.res) {
+            const bookLang = getLang('lang');
             const orders_list = $_('.orders_list')[0];
+            const orders_pagination = $_('.orders_pagination')[0];
+            const present_pagination = orders_pagination.children;
+            const pagin_page = Math.ceil(resultat.res.count / 3);
             orders_list.innerHTML = '';
+            orders_pagination.innerHTML = '';
+
             console.log('ressss', resultat.res);
 
-            const bookLang = getLang('lang');
+            for (let i = 1; i <= pagin_page; i++) { orders_pagination.innerHTML += `<p onclick="ordersList(${i}, '')">${i}</p>` };            
+            present_pagination[page-1].style.borderColor = '#3f3f3f';
+            present_pagination[page-1].style.backgroundColor = '#d9d9d9';
+            present_pagination[page-1].removeAttribute("onclick");            
             resultat.res.orders.forEach(element => {        
                 orders_list.innerHTML += `
                 <div class="order">
-                    <p>${element.from} - ${element.to}  &nbsp 
-                    ${lang[`date${bookLang}`]} - <span>${element.date}</span> &nbsp 
-                    ${lang[`time${bookLang}`]} - <span>${element.time}</span></p>
+                    <p>${element.from} - ${element.to}  </p>
+                    <p>${lang[`date${bookLang}`]} - <span>${element.date}</span> </p>
+                    <p>${lang[`time${bookLang}`]} - <span>${element.time}</span></p>
                     <i class='fas fa-info-circle ${element.proof}'></i>
                 </div>`
             });
