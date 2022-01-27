@@ -55,7 +55,7 @@ module.exports = {
     "option_title5" : "Bus Transfers",
     "option_title6" : "Universal Service",
     "option_from" : "from",
-    "option_grn" : "UAN",
+    "option_grn" : "uan",
 
     "option_pr1" : "Ivano-Frankivsk – Bukovel",
     "option_pr2" : "Lviv – Bukovel",

@@ -12,7 +12,7 @@ const DB = require('./db/createDB');
 
 const {log, accessLog, logOut} = require('./modules/service');
 const renderPage = require('./modules/renderPage');
-const {townadd, townlist, transferadd, transferlist, variables, orders, orderslist} = require('./modules/requestsDB');
+const {townadd, townlist, transferadd, transferlist, variables, orders, orderslist, saveposition} = require('./modules/requestsDB');
 
 //oaugh
 require('./modules/oaugh.js')(app);
@@ -36,6 +36,8 @@ app.use('/order', (req, res) => {orders(req, res)});
 app.use('/orderslist', (req, res) => {orderslist(req, res)});
 //requests variables
 app.use('/variables', (req, res) => {variables(req, res)});
+//requests saveposition
+app.use('/saveposition', (req, res) => {saveposition(req, res)});
 //requests towns
 app.use('/townadd', (req, res) => {townadd(req, res)});
 app.use('/townedit', (req, res) => {townadd(req, res)});

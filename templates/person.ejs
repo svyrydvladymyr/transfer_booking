@@ -2,8 +2,21 @@
 <html lang="en">
 <head>
     <%- include("./parts/head.ejs") %>
+    <link rel="stylesheet" href="//code.jquery.com/ui/1.13.1/themes/base/jquery-ui.css">
 </head>
 <body>
+    <% if (DATA.permission.permissionAuthorization === '1') { %>
+        <script>
+            let numb = 30; 
+        </script>
+        <script src="https://code.jquery.com/jquery-3.6.0.js"></script>
+        <script src="https://code.jquery.com/ui/1.13.1/jquery-ui.js"></script>
+        <script>
+            $( function() { $( "#sortable" ).sortable({
+                update: function() { $_('#save_position')[0].style.display = 'block' }
+            })});
+        </script>
+    <% } %> 
     <%- include("./parts/header.ejs") %>    
     <div class="main_body">
         <% if (DATA.permission.permissionAuthorization === '0') { %>        
@@ -21,9 +34,8 @@
                 <p><%=DATA.user.surname %> <%=DATA.user.name %></p>
                 <p class="provider"><%=DATA.langPack.provider %> <span><%=DATA.user.provider %></span></p>
                 <p onclick="exit()" class="exit"><%=DATA.langPack.exit %></p>
-                <% if (DATA.permission.permissionRules === '1') { %> 
-                    <div class="modal_wrap"></div>                
-                <% } %>                 
+                <div class="modal_wrap"></div>                
+             
             
                 <% if (DATA.permission.permissionRules === '0') { %>
                     <p class="title_order"><%=DATA.langPack.orders_title %></p>
@@ -40,7 +52,17 @@
                         </div>
                         <div class="tab_bodys">
                             <div class="body body_active">                                
-                                <div class="orders_search"></div>
+                                <div class="orders_search">
+                                    <select name="order_number" onchange="setOrderNumb(this)">
+                                        <option value="30" selected>30</option>
+                                        <option value="50">50</option>
+                                        <option value="100">100</option>
+                                        <option value="1">1</option>
+                                        <option value="3">3</option>
+                                        <option value="5">5</option>
+                                        <option value="7">7</option>
+                                    </select>
+                                </div>
                                 <div class="orders_list"></div>
                                 <div class="orders_pagination"></div>
                             </div>
@@ -53,15 +75,14 @@
                             </div>
                             <div class="body">
                                 <p onclick="showModal('transferAdd')" class="add_point">Додати маршрут</p>
-                                <div class="transfers_list"></div>
+                                <p onclick="savePosition()" id="save_position" class="add_point" style="margin-top: 5px; display: none;">Зберегти позиції</p>
+                                <div class="transfers_list" id="sortable"></div>
                             </div>
                         </div>
                     </div>                
                 <% } %>   
             </div> 
         <% } %> 
-
-
     </div>
     <%- include("./parts/footer.ejs") %>
     <script src="./js/lang.js"></script>
@@ -71,14 +92,11 @@
     <% if (DATA.permission.permissionAuthorization === '1') { %>
         <% if (DATA.permission.permissionRules === '0') { %> 
             <script>
-                let context_menu = ``;
                 ordersList(1);  
             </script>                      
         <% } %>  
         <% if (DATA.permission.permissionRules === '1') { %> 
             <script>
-                let context_menu = `<i class='fas fa-ellipsis-h' onclick="showModal('editMenuOrder', {}, this)"></i>`;
-                // ordersList(1, {'search': 'Svyryd', 'datefrom': '10-05-2022', 'dateto': '12-05-2022'});  
                 ordersList(1);  
                 loadTownsList();  
                 loadTransfersList();  

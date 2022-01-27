@@ -44,7 +44,9 @@ const transfers = () => {
         time8 VARCHAR(6),        
         time9 VARCHAR(6),        
         time10 VARCHAR(6),
-        selection VARCHAR(10)   
+        selection VARCHAR(10),   
+        privat VARCHAR(10),   
+        microbus VARCHAR(10)   
         )`; 
     con.query(sql, function (err, result) {if (err) throw err; console.log("Table tripslist created")});
 };
@@ -52,7 +54,9 @@ const transfers = () => {
 const orders = () => {
     const sql = `CREATE TABLE orders (id INT AUTO_INCREMENT PRIMARY KEY,
         orders VARCHAR(10) NOT NULL,
-        orders_id VARCHAR(50) NOT NULL,
+        transfer_id VARCHAR(50) NOT NULL,
+        order_from VARCHAR(100) NOT NULL,
+        order_to VARCHAR(100) NOT NULL,
         date VARCHAR(10) NOT NULL,
         time VARCHAR(5) NOT NULL,
         type VARCHAR(2) NOT NULL,

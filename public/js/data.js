@@ -115,6 +115,10 @@ template = {
             </div>
             <p class="title">Поставте галочку щоб добавити в список обраних перевезень</p>
             <input type="checkbox" id="selection" name="selection">
+            <p class="title" style="margin-top:5px">Поставте галочку щоб добавити в список <span style="color:#c95f5f">приватних перевезень</span> максисально 3 шт.</p>
+            <input type="checkbox" id="privat" name="privat">
+            <p class="title" style="margin-top:5px">Поставте галочку щоб добавити в список <span style="color:#c95f5f">перевезень мікроавтобусом</span> максисально 3 шт.</p>
+            <input type="checkbox" id="microbus" name="microbus">
             <p class="form_send" onclick="formSendTransfer('transferAdd')">Добавити в базу</p>
         </div>  
         <div class="wrap_sub_modal"></div>      
@@ -189,7 +193,11 @@ template = {
             </div>
             <p class="title">Поставте галочку що добавити в список обраних перевезень</p>
             <input type="checkbox" id="selection" name="selection">
-            <p class="form_send" onclick="formSendTransfer('transferEdit')">Добавити в базу</p>
+            <p class="title" style="margin-top:5px">Поставте галочку щоб добавити в список <span style="color:#c95f5f">приватних перевезень</span> максисально 3 шт.</p>
+            <input type="checkbox" id="privat" name="privat">
+            <p class="title" style="margin-top:5px">Поставте галочку щоб добавити в список <span style="color:#c95f5f">перевезень мікроавтобусом</span> максисально 3 шт.</p>
+            <input type="checkbox" id="microbus" name="microbus">
+            <p class="form_send" onclick="formSendTransfer('transferEdit')">Зберегти зміни</p>
         </div>  
         <div class="wrap_sub_modal"></div>      
     </div>`,
@@ -327,6 +335,13 @@ template = {
                 </div>            
             </div>            
         </div>        
-    </div>`
+    </div>`,
+    orderInfo:
+    `<div class="modal_body" onclick="closeModal(event)">
+        <div class="modal_close">
+            <i class='fa fa-times' onclick="closeModal(event)"></i>
+        </div>
+        <div class="modal_place" id="orderInfo"></div>        
+    </div>`,
 };   
 

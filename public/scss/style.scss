@@ -944,6 +944,13 @@ body {
   flex-wrap: wrap;
   justify-content: center;
   flex-direction: column;
+    .orders_search {
+      width: 100%;
+      padding: 30px 0px 15px 0px;
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+    }
     .orders_pagination {
       width: 100%;
       display: flex;
@@ -981,11 +988,18 @@ body {
         border-radius: 0px;
         border-bottom: 1px solid #d1d1d1;
         margin: 0px 0px;
+        position: relative;
         &:hover {
           background: #f2f2f2;
         }
         .reserv {
           color: #ee9e07;
+        }
+        .proof {
+          color: #8bc34a;
+        }
+        .del {
+          color: #be3219;
         }
         i {
           cursor: pointer;
@@ -993,10 +1007,7 @@ body {
           margin: 0px 5px;
           line-height: 26px;
           position: absolute;
-          right: 40px;
-          &:hover {
-            color: #ee9e07;
-          }
+          right: 6px;
         }
         p {          
           font-size: 12px;
@@ -1099,11 +1110,12 @@ body {
           align-items: center;
             .body {
               // outline: 1px solid red;
-              width: 100%;
+              width: 93%;
               display: none;
               flex-wrap: wrap;
               flex-direction: column;
               align-items: center;
+              padding: 0px;
             }
             P.add_point {
               cursor: pointer;
@@ -1127,49 +1139,51 @@ body {
           }
         .tawns_list, .transfers_list {
           // outline: 1px solid red;
-          width: max-content;
+          width: 100%;
           display: flex;
           flex-wrap: wrap;
           flex-direction: column;
           align-items: center;
-          padding: 15px 5px;
+          padding: 15px 0px;
             .town, .transfer {
-              // outline: 1px solid green;
               width: 100%;
-              padding: 14px 30px;
+              padding: 12px 30px 12px 30px;
               border-bottom: 1px solid #d9d9d9;
-              &::before {
-                content: "";
-                position: absolute;
-                left: 8%;
-                margin-top: 31px;
-                width: 84%;
-                height: 1px;
-                background: #d9d9d9;
-              }
+              position: relative;
+              background: #fff;
+                span {
+                  margin: 0px auto;
+                  display: flex;
+                  flex-wrap: wrap;
+                  justify-content: center;
+                  .selfalse, .prfalse, .microfalse {
+                    display: none;
+                  }
+                  .seltrue, .prtrue, .microtrue {
+                    display: flex;
+                    color: #559f00;
+                    font-size: 10px;
+                    margin: 0px 5px;
+                  }
+                }
                 p {
                   font-size: 14px;
                   margin: 0px;
-                  display: flex;
-                  justify-content: right;
-                    span {
-                      // outline: 1px solid yellow;
-                      margin-left: 20px;
-                        i {
-                          cursor: pointer;
-                          font-size: 16px;
-                          margin: 0px 3px;
-                          color: #5a5a5a;
-                          &:hover {
-                            color: #ee9e07;
-                          }
-                        }
-                    }
+                }
+                i {
+                  cursor: pointer;
+                  position: absolute;
+                  right: 5px;
+                  top: 25%;
+                  font-size: 16px;
+                  margin: 0px 3px;
+                  color: #5a5a5a;
+                  &:hover {
+                    color: #ee9e07;
+                  }
                 }
             }
-
         }
-
     }      
 }
 
@@ -1180,13 +1194,20 @@ body {
   right: 0;      
     .modal_close{
       cursor: pointer;
-      width: 30px;
-      height: 30px;
+      width: 31px;
+      height: 31px;
       position: absolute;
       font-size: 30px;
+      text-align: center;
       color: var(--fourth-color);
       right: 10px;
       top: 10px;
+      border-radius: 4px;
+      background: #3b3b3bf0;
+      z-index: 999;
+      &:hover {
+        background: #707070f0;
+      }
     }
     .modal_body{
       position: fixed;
@@ -1262,7 +1283,47 @@ body {
       max-height: 99%;
       overflow-y: auto;
       padding: 30px 10px 25px 10px;
-      z-index: 999;
+      z-index: 998;
+        p.order_info {
+          font-size: 13px;
+          font-weight: normal;
+          margin: 3px;
+          span.no, span.reserv{
+            color:#a7a715;
+          }
+          span.del{
+            color:#e72222;
+          }
+          span.yes, span.proof{
+            color:#2da52d;
+          }
+          span {
+            font-weight: bold;
+            color: #2da52d;
+          }
+        }
+        > p.title_order {
+          font-weight: bold;
+          background: #e5e5e5;
+          padding: 9px;
+          width: 94%;
+          margin-bottom: 7px;
+          font-weight: bold;
+          border-radius: 5px;
+        }
+        > p.block {
+          background: #f1f1f1;
+          padding: 6px;
+          width: 94%;
+          margin: 3px 3px;
+          border-radius: 5px;
+        }
+        > p.name {
+          background: #f1f1f1;
+          padding: 6px;
+          width: 94%;
+          margin: 0px 3px;
+        }
         > div.price_form {
           max-width: 300px;
         }

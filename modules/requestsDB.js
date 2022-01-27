@@ -1,6 +1,5 @@
 const con = require('../db/connectToDB').con;
 const {checOnTrueVal, autorisationCheck, tableRecord, token, log, readyFullDate} = require('../modules/service');
-const {order_limit} = require('../config/config_variables');
 
 const townadd = async (req, res) => {
     let resMess;
@@ -63,7 +62,7 @@ const transferadd = async (req, res) => {
         if (userid === false) { throw new Error('error-autorisation') };        
         if (req.body.param === 'transferAdd') {
             resMess = 'Transfer added!';
-            return `INSERT INTO transfers (transfer_id, transfer_from, transfer_to, price_pr, price_gr, time1, time2, time3, time4, time5, time6, time7, time8, time9, time10, selection) 
+            return `INSERT INTO transfers (transfer_id, transfer_from, transfer_to, price_pr, price_gr, time1, time2, time3, time4, time5, time6, time7, time8, time9, time10, selection, privat, microbus) 
             VALUES ('${token(10)}',
                     '${checOnTrueVal(req.body.from)}', 
                     '${checOnTrueVal(req.body.to)}', 
@@ -79,7 +78,9 @@ const transferadd = async (req, res) => {
                     '${timeArr.time8.replace(new RegExp("[^0-9:]", "gi"), '')}',
                     '${timeArr.time9.replace(new RegExp("[^0-9:]", "gi"), '')}',
                     '${timeArr.time10.replace(new RegExp("[^0-9:]", "gi"), '')}',
-                    '${req.body.select === true || req.body.select === false ? req.body.select : false}')`; 
+                    '${req.body.select === true ? true : false}', 
+                    '${req.body.privat === true ? true : false}', 
+                    '${req.body.microbus === true ? true : false}')`; 
         };
         if (req.body.param === 'transferEdit') {
             resMess = 'Transfer edited!';
@@ -98,18 +99,22 @@ const transferadd = async (req, res) => {
                 time8='${timeArr.time8.replace(new RegExp("[^0-9:]", "gi"), '')}',  
                 time9='${timeArr.time9.replace(new RegExp("[^0-9:]", "gi"), '')}',  
                 time10='${timeArr.time10.replace(new RegExp("[^0-9:]", "gi"), '')}',  
-                selection='${req.body.select === true || req.body.select === false ? req.body.select : false}'
+                selection='${req.body.select === true ? true : false}',
+                privat='${req.body.privat === true ? true : false}',
+                microbus='${req.body.microbus === true ? true : false}'
             WHERE transfer_id='${checOnTrueVal(req.body.id)}'`; 
         };
         if (req.body.param === 'transferDel') {
             resMess = 'Transfer deleted!';
             return `DELETE FROM transfers WHERE transfer_id='${checOnTrueVal(req.body.id)}'`; 
         };
-
     })
     .then(tableRecord)
     .then((result) => {
-        if (result.err) { throw new Error('error-DB') };
+        if (result.err) { 
+            console.log(result.err);
+            
+            throw new Error('error-DB') };
         res.send({"res": resMess});               
     })
     .catch((err) => {
@@ -154,6 +159,7 @@ const transferlist = async (req, res) => {
         const resArr = []; 
         result.forEach(element => {
             const resEl = {
+                'id': element.id,
                 'transfer_id': element.transfer_id,
                 'transfer_from': townsArr[element.transfer_from],
                 'transfer_from_id': element.transfer_from,
@@ -171,7 +177,9 @@ const transferlist = async (req, res) => {
                 'time8': element.time8,                
                 'time9': element.time9,                
                 'time10': element.time10,                
-                'selection': element.selection,                
+                'selection': element.selection === 'true' ? true : false,                
+                'privat': element.privat === 'true' ? true : false,                
+                'microbus': element.microbus === 'true' ? true : false,                
             };
             resArr.push(resEl);
         });
@@ -215,12 +223,14 @@ const variables = async (req, res) => {
 };
 
 const orders = (req, res) => {
-    const {transferId, transferFrom, transferTo, adult, children, sum, date, time, equip, equip_child, user_name, user_surname, user_email, user_phone, paid} = req.body;
+    const {transferId, transferFrom, transferTo, transferFromName, transferToName, adult, children, sum, date, time, equip, equip_child, user_name, user_surname, user_email, user_phone, paid} = req.body;
     const type = req.body.type.replace(/transfer_/gi, '');
 
     console.log('transferId', transferId);
     console.log('transferFrom', transferFrom);
     console.log('transferTo', transferTo);
+    console.log('transferFromName', transferFromName);
+    console.log('transferToName', transferToName);
     console.log('adult', adult);
     console.log('children', children);
     console.log('type', type);
@@ -243,9 +253,11 @@ const orders = (req, res) => {
             let sumfin;
             if (type === 'pr') {sumfin = result[0].price_pr};
             if (type === 'gr') {sumfin = result[0].price_gr * (+adult + +children) };
-            return `INSERT INTO orders (orders, orders_id, adult, children, type, date, time, equip, equip_child, user_name, user_surname, user_email, user_tel, status, paid, sum, book_date) 
+            return `INSERT INTO orders (orders, transfer_id, order_from, order_to, adult, children, type, date, time, equip, equip_child, user_name, user_surname, user_email, user_tel, status, paid, sum, book_date) 
             VALUES ('${token(10)}',
                     '${checOnTrueVal(transferId)}',
+                    '${checOnTrueVal(transferFromName)}',
+                    '${checOnTrueVal(transferToName)}',
                     '${adult}', 
                     '${children}', 
                     '${type}', 
@@ -277,28 +289,27 @@ const orders = (req, res) => {
 const orderslist = async (req, res) => {
     console.log('req.body.page', req.body.page);
     console.log('req.body.param', req.body.param);
+    console.log('req.body.numb', req.body.numb);
 
-    let user_info, phone_res, count_records, page = req.body.page;
-    let townsFrom = {}, townsTo = {}, transfersArr = [], townsId = [];
-    const lang = ['uk-UA', 'en-US', 'ru-RU'].includes(req.cookies['lang']) ? req.cookies['lang'].slice(0, 2) : 'uk';
+    let user_info, phone_res, count_records, page = req.body.page, order_limit = req.body.numb;
+    // let townsFrom = {}, townsTo = {}, transfersArr = [], townsId = [];
+    // const lang = ['uk-UA', 'en-US', 'ru-RU'].includes(req.cookies['lang']) ? req.cookies['lang'].slice(0, 2) : 'uk';
 
-
-
-    Promise.all([
-        tableRecord(`SELECT town_id, name_${lang} FROM points`), 
-        tableRecord(`SELECT transfer_from FROM transfers GROUP BY transfer_from`), 
-        tableRecord(`SELECT transfer_to FROM transfers GROUP BY transfer_to`), 
-        tableRecord(`SELECT * FROM transfers`)])
-    .then(([townIdRes, townsFromRes, townsToRes, transfersArrRes]) => {
-        if (townIdRes.err) { throw new Error('error-DB-townsID') };
-        if (townsFromRes.err) { throw new Error('error-DB-transferFROM') };
-        if (townsToRes.err) { throw new Error('error-DB-transferTO') };
-        if (transfersArrRes.err) { throw new Error('error-DB-transfersARR') };
-        townIdRes.forEach(element => { townsId[`${element.town_id}`] = element[`name_${lang}`] });
-        townsFromRes.forEach(element => { townsFrom[`${element.transfer_from}`] = townsId[element.transfer_from] });   
-        townsToRes.forEach(element => { townsTo[`${element.transfer_to}`] = townsId[element.transfer_to] });   
-        transfersArrRes.forEach(element => { transfersArr.push(element) });
-    })
+    // Promise.all([
+    //     tableRecord(`SELECT town_id, name_${lang} FROM points`), 
+    //     tableRecord(`SELECT transfer_from FROM transfers GROUP BY transfer_from`), 
+    //     tableRecord(`SELECT transfer_to FROM transfers GROUP BY transfer_to`), 
+    //     tableRecord(`SELECT * FROM transfers`)])
+    // .then(([townIdRes, townsFromRes, townsToRes, transfersArrRes]) => {
+    //     if (townIdRes.err) { throw new Error('error-DB-townsID') };
+    //     if (townsFromRes.err) { throw new Error('error-DB-transferFROM') };
+    //     if (townsToRes.err) { throw new Error('error-DB-transferTO') };
+    //     if (transfersArrRes.err) { throw new Error('error-DB-transfersARR') };
+    //     townIdRes.forEach(element => { townsId[`${element.town_id}`] = element[`name_${lang}`] });
+    //     townsFromRes.forEach(element => { townsFrom[`${element.transfer_from}`] = townsId[element.transfer_from] });   
+    //     townsToRes.forEach(element => { townsTo[`${element.transfer_to}`] = townsId[element.transfer_to] });   
+    //     transfersArrRes.forEach(element => { transfersArr.push(element) });
+    // })
     await autorisationCheck(req, res)    
     .then((userid) => {
         if (userid === false) { throw new Error('error-autorisation') };
@@ -364,20 +375,19 @@ const orderslist = async (req, res) => {
         console.log('user-result', user_info);
         console.log('user-permission', user_info.permission);
         result.forEach(element => {
-            let from, to;
-            transfersArr.forEach(el => {
-                if (el.transfer_id === element.orders_id) {
-                    from = townsFrom[el.transfer_from];
-                    to = townsTo[el.transfer_to];
-                };
-            });
-            element.from = from; 
-            element.to = to;            
-            element.proof = '';            
+            // let from, to;
+            // transfersArr.forEach(el => {
+            //     if (el.transfer_id === element.transfer_id) {
+            //         from = townsFrom[el.transfer_from];
+            //         to = townsTo[el.transfer_to];
+            //     };
+            // });
+            // element.from = element.from; 
+            // element.to = element.to;            
+            element.proof = element.status;    
+            element.settings = false;        
             if (user_info[0].permission === 1) {
-                element.proof = element.status;
-                element.settingsproof = `<p class="edit_menu" onclick="">Підтвердити замовлення <i class='fas fa-check-double'></i></p>`;
-                element.settingsdel = `<p class="edit_menu" onclick="">Скасувати замовлення <i class='fas fa-times'></i></p>`;
+                element.settings = true;
             };             
         });
         res.send({"res": {'count': count_records, 'orders': result}});
@@ -388,6 +398,24 @@ const orderslist = async (req, res) => {
     });
 };
 
+const saveposition = async (req, res) => {
+    await autorisationCheck(req, res)
+    .then(async (userid) => {
+        if (userid === false) { throw new Error('error-autorisation') };
+        let sqlvalarr = [];
+        for (const [key, value] of Object.entries(req.body)) { sqlvalarr.push(`WHEN id = ${key} THEN ${value}`) };
+        return `UPDATE transfers SET id = CASE ${sqlvalarr.join(' ')} END`;
+    })
+    .then(tableRecord)
+    .then((result) => {
+        if (result.err) { throw new Error('error-DB-saveposition') };
+        res.send({"res": 'Position saved!'});
+    })
+    .catch((err) => {
+        log('towns-list-error', err);
+        res.status(400).send('SERVER ERROR: 400 (Bad Request)');
+    });
+};
 
 module.exports = {
     townadd,
@@ -396,5 +424,6 @@ module.exports = {
     transferlist,
     variables,
     orders,
-    orderslist
+    orderslist,
+    saveposition
 }

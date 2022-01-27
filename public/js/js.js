@@ -7,6 +7,14 @@ const redirect = way => window.location.replace(`${way}`);
 //logout
 const exit = () => { send({}, '/exit', (res) => { location.reload() }) };
 
+//token
+const token = length => {
+    let result = '';
+    const characters = '123456789';
+    for ( var i = 0; i < length; i++ ) {result += characters.charAt(Math.floor(Math.random() * characters.length))}
+    return result;
+};
+
 //validation email
 const validEmail = text => (text.match(/^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/)) ? true : false;
 const validPhone = text => (text.match(/^[\+]?[(]?[0-9]{3}[)]?[-\s\.]?[0-9]{3}[-\s\.]?[0-9]{4,6}$/im)) ? true : false;
@@ -314,12 +322,35 @@ const closeModal = (el) => {
 const showModal = function(type, obj, el) {
     console.log('type', type);
     console.log('obj', obj);
-    console.log('el', el);
+    // console.log('el', el);
     ['townAddRes', 'townEditRes', 'townDelRes', 'transferAddRes', 'transferEditRes', 'transferDelRes',
     'townAdd', 'townEdit', 'townDel', 'transferAdd', 'transferEdit', 'transferDel',
-    'mainformFrom', 'mainformTo', 'mainformCalendar', 'editMenuTown', 'editMenuTransfer'].includes(type) 
+    'mainformFrom', 'mainformTo', 'mainformCalendar', 'editMenuTown', 'editMenuTransfer', 'orderInfo'].includes(type) 
         ? modal.innerHTML = template[type] : null;
     
+    if (type === 'orderInfo') {
+        const bookLang = getLang('lang');
+        let proof = '', del = '';
+        if (obj.settings === 'true') {
+            proof = `<p class="edit_menu" style="min-width: 200px; margin-top: 25px;" onclick="">Підтвердити замовлення <i class='fas fa-check-double'></i></p>`;
+            del = `<p class="edit_menu" style="min-width: 200px; margin-bottom: 20px;" oonclick="">Скасувати замовлення <i class='fas fa-times'></i></p>`;
+        }
+        $_(`#${type}`)[0].innerHTML = `
+            <p class="order_info title_order">${obj.from} - ${obj.to} </p>
+            <p class="order_info name" style="border-radius: 5px 5px 0px 0px;"><span>${obj.user_name}</span> - <span>${obj.user_surname}</span></p>
+            <p class="order_info name" style="border-radius: 0px; border-top: 1px solid #e1e1e1; border-bottom: 1px solid #e1e1e1;"><span>${obj.user_email}</span></p>
+            <p class="order_info name" style="border-radius: 0px 0px 5px 5px; margin-bottom: 7px;"><span>${obj.user_tel}</span></p>
+            <p class="order_info block">${lang[`date${bookLang}`]} - <span>${obj.date}</span> &nbsp ${lang[`time${bookLang}`]} - <span>${obj.time}</span></p>
+            <p class="order_info block">${lang[`adult${bookLang}`]} - <span>${obj.adult}</span> &nbsp ${lang[`children${bookLang}`]} - <span>${obj.children}</span></p>
+            <p class="order_info block">${lang[`equip${bookLang}`]} - <span>${lang[`${obj.equip}${bookLang}`]}</span> &nbsp ${lang[`equip_child${bookLang}`]} - <span>${obj.equip_child}</span></p>
+            <p class="order_info block">${lang[`sum${bookLang}`]} - <span>${obj.sum}</span> ${lang[`sum_type${bookLang}`]} &nbsp <span>${lang[`transfer_${obj.type}${bookLang}`]}</span></p>
+            <p class="order_info block">${lang[`bookdate${bookLang}`]} - <span>${obj.book_date}</span></p>
+            <p class="order_info block">${lang[`paid${bookLang}`]} - <span class="${obj.paid}">${lang[`${obj.paid}${bookLang}`]}</span></p>
+            <p class="order_info block">${lang[`status${bookLang}`]} - <span class="${obj.status}">${lang[`${obj.status}${bookLang}`]}</span></p>
+            ${proof}
+            ${del}
+        `;
+    };        
     if (type === 'editMenuTown') {
         $_(`#${type}`)[0].innerHTML = `
             <p class="edit_menu" onclick="showModal('townEdit', {'id' : '${obj.id}', 'uk' : '${obj.uk}', 'en' : '${obj.en}', 'ru' : '${obj.ru}'})">Редагувати <i class='far fa-edit'></i></p>
@@ -345,7 +376,9 @@ const showModal = function(type, obj, el) {
             'time8' : '${obj.time8}',
             'time9' : '${obj.time9}',
             'time10' : '${obj.time10}',
-            'select' : '${obj.select}'})">Редагувати <i class='far fa-edit'></i></p>
+            'select' : '${obj.select}',
+            'privat' : '${obj.privat}',
+            'microbus' : '${obj.microbus}'})">Редагувати <i class='far fa-edit'></i></p>
         <p class="edit_menu" onclick="showModal('transferDel', 
             {'id' : '${obj.id}', 
             'from' : '${obj.from}', 
@@ -494,7 +527,9 @@ const showModal = function(type, obj, el) {
         $_(`#${type} > #to`)[0].value = obj.to;
         $_(`#${type} #gr`)[0].value = obj.pricegr;
         $_(`#${type} #pr`)[0].value = obj.pricepr;
-        $_(`#${type} > #selection`)[0].checked = obj.select;        
+        $_(`#${type} > #selection`)[0].checked = obj.select === 'true' ? true : false;        
+        $_(`#${type} > #privat`)[0].checked = obj.privat === 'true' ? true : false;        
+        $_(`#${type} > #microbus`)[0].checked = obj.microbus === 'true' ? true : false;        
         if (timeList.length > 0) {
             const translateBody = $_('.add_time')[0];
             translateBody.style.display = 'block';
@@ -748,6 +783,8 @@ const culculate = () => {
                 bookArr.transferId = element.transfer_id;
                 bookArr.transferFrom = townsFrom[inpFrom];
                 bookArr.transferTo = townsTo[inpTo];
+                bookArr.transferFromName = $_('#main_from')[0].value;
+                bookArr.transferToName = $_('#main_to')[0].value;
                 bookArr.adult = +$_('#adults')[0].value;
                 bookArr.children = +$_('#children')[0].value;
                 bookArr.type = $_('#type_transfer')[0].value;
@@ -894,31 +931,69 @@ const loadVariablesList = () => {
     });
 };
 
+//for set order numbers
+const setOrderNumb = (el) => {
+    console.log('el', el.value);
+    numb = el.value;
+    ordersList(1);
+}
+
 //load towns list
-const ordersList = (page = 1, param = '') => {
-    send({page, param} , `/orderslist`, (result) => {
+const ordersList = (page = 1) => {
+    let param = '';
+
+    console.log('order_numb', numb);
+    console.log('param', param);
+
+    send({page, param, numb} , `/orderslist`, (result) => {
         const resultat = JSON.parse(result);
         if (resultat.res) {
             const bookLang = getLang('lang');
             const orders_list = $_('.orders_list')[0];
             const orders_pagination = $_('.orders_pagination')[0];
             const present_pagination = orders_pagination.children;
-            const pagin_page = Math.ceil(resultat.res.count / 3);
+            const pagin_page = Math.ceil(resultat.res.count / numb);
             orders_list.innerHTML = '';
             orders_pagination.innerHTML = '';
 
+
             console.log('ressss', resultat.res);
 
-            for (let i = 1; i <= pagin_page; i++) { orders_pagination.innerHTML += `<p onclick="ordersList(${i}, '')">${i}</p>` };            
-            present_pagination[page-1].style.borderColor = '#3f3f3f';
-            present_pagination[page-1].style.backgroundColor = '#d9d9d9';
-            present_pagination[page-1].removeAttribute("onclick");            
-            resultat.res.orders.forEach(element => {        
+
+            if (pagin_page > 1) {
+                for (let i = 1; i <= pagin_page; i++) { orders_pagination.innerHTML += `<p onclick="ordersList(${i})">${i}</p>` };            
+                present_pagination[page-1].style.color = '#fff';
+                present_pagination[page-1].style.backgroundColor = 'rgb(139 195 74)';
+                present_pagination[page-1].removeAttribute("onclick");  
+            };           
+            resultat.res.orders.forEach(element => {      
+                console.log('element', element);  
                 orders_list.innerHTML += `
-                <div class="order">
-                    <p>${element.from} - ${element.to}  </p>
+                <div class="order" onclick="showModal('orderInfo', 
+                {'orders' : '${element.orders}',
+                'from' : '${element.order_from}',
+                'to' : '${element.order_to}',
+                'date' : '${element.date}',
+                'time' : '${element.time}',
+                'type' : '${element.type}',
+                'adult' : '${element.adult}',
+                'children' : '${element.children}',
+                'equip' : '${element.equip}',
+                'equip_child' : '${element.equip_child}',
+                'sum' : '${element.sum}',
+                'paid' : '${element.paid}',
+                'status' : '${element.status}',
+                'book_date' : '${element.book_date}',
+                'user_email' : '${element.user_email}',
+                'user_name' : '${element.user_name}',
+                'user_surname' : '${element.user_surname}',
+                'user_tel' : '${element.user_tel}',
+                'settings' : '${element.settings}'}, this)">
+                    <p>${element.order_from} - ${element.order_to}  </p>
                     <p>${lang[`date${bookLang}`]} - <span>${element.date}</span> </p>
                     <p>${lang[`time${bookLang}`]} - <span>${element.time}</span></p>
+                    <p>${lang[`sum${bookLang}`]} - <span>${element.sum}</span> ${lang[`sum_type${bookLang}`]}</p>
+                    <p><span>${lang[`transfer_${element.type}${bookLang}`]}</span></p>
                     <i class='fas fa-info-circle ${element.proof}'></i>
                 </div>`
             });
@@ -935,12 +1010,23 @@ const loadTownsList = () => {
             tawns_list.innerHTML = '';
             resultat.res.forEach(element => {        
                 tawns_list.innerHTML += `
-                <div class="town"><p>${element.name_uk}
-                    <span>
-                        <i class='fas fa-ellipsis-h' onclick="showModal('editMenuTown', {'id' : '${element.town_id}', 'uk' : '${element.name_uk}', 'en' : '${element.name_en}', 'ru' : '${element.name_ru}'})"></i>
-                    </span>
-                </p></div>`
+                <div class="town"><p>${element.name_uk}</p>
+                <i class='fas fa-ellipsis-h' onclick="showModal('editMenuTown', {'id' : '${element.town_id}', 'uk' : '${element.name_uk}', 'en' : '${element.name_en}', 'ru' : '${element.name_ru}'})"></i>
+                </div>`
             });
+        };
+    });
+};
+
+//for save transfer list position
+const savePosition = () => {
+    const sortWrap = $_('#sortable')[0].children, sortArr = {}; 
+    for (var i = 0; i < sortWrap.length; ++i) { sortArr[`${sortWrap[i].id}`] = `${i+1}${token(4)}` };
+    send(sortArr , `/saveposition`, (result) => {
+        const resultat = JSON.parse(result);
+        if (resultat.res) {
+            $_('#save_position')[0].style.display = 'none';
+            loadTransfersList(); 
         };
     });
 };
@@ -955,29 +1041,31 @@ const loadTransfersList = () => {
             transfers_list.innerHTML = '';
             resultat.res.forEach(element => {        
                 transfers_list.innerHTML += `
-                <div class="transfer"><p>${element.transfer_from} - ${element.transfer_to}
-                    <span>
-                        <i class='fas fa-ellipsis-h' onclick="showModal('editMenuTransfer', 
-                        {'id' : '${element.transfer_id}', 
-                        'from' : '${element.transfer_from}', 
-                        'from_id' : '${element.transfer_from_id}', 
-                        'to' : '${element.transfer_to}', 
-                        'to_id' : '${element.transfer_to_id}', 
-                        'pricepr' : '${element.price_pr}', 
-                        'pricegr' : '${element.price_gr}',
-                        'time1' : '${element.time1}',
-                        'time2' : '${element.time2}',
-                        'time3' : '${element.time3}',
-                        'time4' : '${element.time4}',
-                        'time5' : '${element.time5}',
-                        'time6' : '${element.time6}',
-                        'time7' : '${element.time7}',
-                        'time8' : '${element.time8}',
-                        'time9' : '${element.time9}',
-                        'time10' : '${element.time10}',
-                        'select' : '${element.selection}'})"></i>
-                    </span>
-                </p></div>`
+                <div class="transfer" id="${element.id}">
+                    <p>${element.transfer_from} - ${element.transfer_to}</p>
+                    <span><p class="sel${element.selection}">обрані</p><p class="pr${element.privat}">приватні</p><p class="micro${element.microbus}">мікроавтобус</p></span>
+                    <i class='fas fa-ellipsis-h' onclick="showModal('editMenuTransfer', 
+                    {'id' : '${element.transfer_id}', 
+                    'from' : '${element.transfer_from}', 
+                    'from_id' : '${element.transfer_from_id}', 
+                    'to' : '${element.transfer_to}', 
+                    'to_id' : '${element.transfer_to_id}', 
+                    'pricepr' : '${element.price_pr}', 
+                    'pricegr' : '${element.price_gr}',
+                    'time1' : '${element.time1}',
+                    'time2' : '${element.time2}',
+                    'time3' : '${element.time3}',
+                    'time4' : '${element.time4}',
+                    'time5' : '${element.time5}',
+                    'time6' : '${element.time6}',
+                    'time7' : '${element.time7}',
+                    'time8' : '${element.time8}',
+                    'time9' : '${element.time9}',
+                    'time10' : '${element.time10}',
+                    'select' : '${element.selection}',
+                    'privat' : '${element.privat}',
+                    'microbus' : '${element.microbus}'})"></i>
+                </div>`
             });
         };
     });
@@ -1036,9 +1124,12 @@ const formSendTransfer = (formID) => {
         const transfer_gr = $_(`#${formID} #gr`)[0].value;
         const transfer_pr = $_(`#${formID} #pr`)[0].value;
         const transfer_select = $_(`#${formID} > #selection`)[0].checked;
+        const privat = $_(`#${formID} > #privat`)[0].checked;
+        const microbus = $_(`#${formID} > #microbus`)[0].checked;
         const transfer_times = [];
         $_('.time').forEach(element => { if (element.value !== '') { transfer_times.push(element.value)}});
-        obj = {"id" : transfer_id, "from" : transfer_from, "to" : transfer_to, "gr" : transfer_gr, "pr" : transfer_pr, "select" : transfer_select, "times" : transfer_times, "param" : formID};
+        obj = {"id" : transfer_id, "from" : transfer_from, "to" : transfer_to, "gr" : transfer_gr, "pr" : transfer_pr, 
+               "select" : transfer_select, "privat" : privat, "microbus" : microbus, "times" : transfer_times, "param" : formID};
         if (transfer_from !== '' && transfer_from !== undefined && transfer_to !== '' && transfer_to !== undefined) {
             if (transfer_from === transfer_to) {
                 $_(`.transfer_dup_to`)[0].style.display = 'block'; 

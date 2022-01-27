@@ -55,7 +55,7 @@ module.exports = {
     "option_title5" : "Автобусні трансфери",
     "option_title6" : "Універсальний сервіс",
     "option_from" : "від",
-    "option_grn" : "ГРН",
+    "option_grn" : "грн",
 
     "option_pr1" : "Ivano-Frankivsk – Bukovel",
     "option_pr2" : "Lviv – Bukovel",

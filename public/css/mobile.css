@@ -30,14 +30,14 @@
 }
 .user_wrap .tab_person .tawns_list .town {
     width: 100%;
-    padding: 3px 10px;
+    padding: 12px 30px 12px 0px;
     border-bottom: 1px solid #d9d9d9;
     border-radius: 0px;
     margin-bottom: 4px;
 }
 .user_wrap .tab_person .tawns_list .town p {
     align-items: center;
-    text-align: right;
+    text-align: left;
     word-break: break-all;
 }
 .user_wrap .tab_person .tawns_list .town p span {
@@ -56,11 +56,11 @@
     width: 100%;
 }
 .user_wrap .tab_person .transfers_list .transfer {
-    padding: 10px;
+    padding: 12px 30px 12px 0px;
 }
 .user_wrap .tab_person .transfers_list .transfer p {
     align-items: center;
-    text-align: right;
+    text-align: left;
 }
 .user_wrap .tab_person .transfers_list .transfer p span {
     margin-left: 10px;
@@ -520,9 +520,11 @@
 }
 .user_wrap .orders_list .order i {
     font-size: 20px;
-    line-height: 40px;
     position: absolute;
-    right: 35px;
+    height: 70%;
+    right: 5px;
+    display: flex;
+    align-items: center;
 }
 
 .main_form_container .equip_wrap .equip_block .main_form_row {
@@ -534,4 +536,11 @@
 }
 .main_form_container .equip_wrap .equip_block.equip_child .main_form_row {
     max-width: 100%;
+}
+.user_wrap .tab_person .tab_bodys .body {
+    width: 100%;
+    padding: 0px 10px;
+}
+.user_wrap .tab_person .transfers_list .transfer span {
+    justify-content: left;
 }
