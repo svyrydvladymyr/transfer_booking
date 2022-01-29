@@ -939,8 +939,9 @@ body {
 }
 .options_container .options_wrap .blok div:last-child h5 {
   width: 100%;
-  font-size: 24px;
+  font-size: 22px;
   margin: 8px 0px;
+  word-break: break-word;
 }
 .options_container .options_wrap .blok div:last-child h6 {
   width: 100%;
@@ -950,28 +951,34 @@ body {
   color: #808080;
   margin: 8px 0px 40px 0px;
 }
-.options_container .options_wrap .blok div:last-child p {
+.options_container .options_wrap .blok div:last-child div.wrap_prevat, .options_container .options_wrap .blok div:last-child div.wrap_microbus, .options_container .options_wrap .blok div:last-child div.wrap_spec {
+  width: 100%;
+  padding: 0;
+  margin: 0;
+}
+.options_container .options_wrap .blok div:last-child div.wrap_prevat p, .options_container .options_wrap .blok div:last-child div.wrap_microbus p, .options_container .options_wrap .blok div:last-child div.wrap_spec p {
+  cursor: pointer;
   margin: 15px 0px 4px 0px;
   color: #6ba917;
   font-size: 16px;
 }
-.options_container .options_wrap .blok div:last-child p i {
+.options_container .options_wrap .blok div:last-child div.wrap_prevat p i, .options_container .options_wrap .blok div:last-child div.wrap_microbus p i, .options_container .options_wrap .blok div:last-child div.wrap_spec p i {
   font-size: 13px;
   margin: 0px 10px 0px 0px;
   color: #ee9e07;
 }
-.options_container .options_wrap .blok div:last-child .price {
+.options_container .options_wrap .blok div:last-child div.wrap_prevat .price, .options_container .options_wrap .blok div:last-child div.wrap_microbus .price, .options_container .options_wrap .blok div:last-child div.wrap_spec .price {
   margin: 0px;
   color: #3e3f40;
   font-size: 15px;
   padding: 0px 0px 6px 0px;
   border-bottom: 1px solid #e1e1e1;
 }
-.options_container .options_wrap .blok div:last-child .price span:first-child {
+.options_container .options_wrap .blok div:last-child div.wrap_prevat .price span:first-child, .options_container .options_wrap .blok div:last-child div.wrap_microbus .price span:first-child, .options_container .options_wrap .blok div:last-child div.wrap_spec .price span:first-child {
   font-size: 11px;
   margin: 0px 4px 0px 0px;
 }
-.options_container .options_wrap .blok div:last-child .price span:last-child {
+.options_container .options_wrap .blok div:last-child div.wrap_prevat .price span:last-child, .options_container .options_wrap .blok div:last-child div.wrap_microbus .price span:last-child, .options_container .options_wrap .blok div:last-child div.wrap_spec .price span:last-child {
   margin: 0px 0px 0px 4px;
 }
 .options_container .arrow_wrap {
@@ -1002,6 +1009,56 @@ body {
 .options_container .arrow_wrap p:hover {
   background: #6ba917;
   color: #fff;
+}
+
+/*_____________________transfers page________________________*/
+.wrap_special {
+  outline: 1px solid red;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -ms-flex-wrap: wrap;
+      flex-wrap: wrap;
+  -webkit-box-pack: center;
+      -ms-flex-pack: center;
+          justify-content: center;
+  width: 100%;
+  padding: 0;
+  margin: 0;
+}
+.wrap_special div {
+  outline: 1px solid green;
+  width: 60%;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -ms-flex-wrap: wrap;
+      flex-wrap: wrap;
+}
+.wrap_special p {
+  cursor: pointer;
+  margin: 15px 0px 4px 0px;
+  color: #6ba917;
+  font-size: 16px;
+}
+.wrap_special p i {
+  font-size: 13px;
+  margin: 0px 10px 0px 0px;
+  color: #ee9e07;
+}
+.wrap_special .price {
+  margin: 0px;
+  color: #3e3f40;
+  font-size: 15px;
+  padding: 0px 0px 6px 0px;
+  border-bottom: 1px solid #e1e1e1;
+}
+.wrap_special .price span:first-child {
+  font-size: 11px;
+  margin: 0px 4px 0px 0px;
+}
+.wrap_special .price span:last-child {
+  margin: 0px 0px 0px 4px;
 }
 
 /*_____________________advantages________________________*/
@@ -1132,6 +1189,18 @@ body {
       -ms-flex-pack: center;
           justify-content: center;
 }
+.user_wrap .orders_search input, .user_wrap .orders_search select {
+  height: 30px;
+  width: -webkit-fit-content;
+  width: -moz-fit-content;
+  width: fit-content;
+  outline: 0;
+  background: #f7f7f7;
+  border: 1px solid #adadad;
+  padding: 0px 10px;
+  margin: 3px 5px;
+  border-radius: 4px;
+}
 .user_wrap .orders_pagination {
   width: 100%;
   display: -webkit-box;
@@ -1146,7 +1215,7 @@ body {
 .user_wrap .orders_pagination p {
   cursor: pointer;
   width: 25px;
-  line-height: 21px;
+  line-height: 22px;
   font-size: 14px;
   font-weight: bold;
   border: 1px solid #ababab;
@@ -1372,6 +1441,9 @@ body {
       -ms-flex-align: center;
           align-items: center;
   padding: 15px 0px;
+}
+.user_wrap .tab_person .tawns_list .transfer, .user_wrap .tab_person .transfers_list .transfer {
+  cursor: pointer;
 }
 .user_wrap .tab_person .tawns_list .town, .user_wrap .tab_person .tawns_list .transfer, .user_wrap .tab_person .transfers_list .town, .user_wrap .tab_person .transfers_list .transfer {
   width: 100%;

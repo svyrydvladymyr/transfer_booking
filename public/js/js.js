@@ -15,6 +15,9 @@ const token = length => {
     return result;
 };
 
+//to top
+const toTopFn = () => { window.scrollTo({ top: 1, behavior: "smooth" })};
+
 //validation email
 const validEmail = text => (text.match(/^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/)) ? true : false;
 const validPhone = text => (text.match(/^[\+]?[(]?[0-9]{3}[)]?[-\s\.]?[0-9]{3}[-\s\.]?[0-9]{4,6}$/im)) ? true : false;
@@ -32,7 +35,7 @@ const RegExpArr = {
 
 let idTownPlace, tokenTown, formValid;
 let hours, minutes, hArr = [], mArr = [], hStart = 0, mStart = 0;;
-let townsFrom = {}, townsTo = {}, transfersArr = [];
+let townsFrom = {}, townsTo = {}, transfersArr = [], microbusArr = [], privatArr = [], specArr = [];
 let calkTrue = true;
 
 //to change the language
@@ -45,6 +48,123 @@ const setLang = (lang) => {
 const getLang = (name) => {
     let matches = document.cookie.match(new RegExp("(?:^|; )" + name.replace(/([\.$?*|{}\(\)\[\]\\\/\+^])/g, '\\$1') + "=([^;]*)"));
     return matches ? decodeURIComponent(matches[1]).slice(0, 2) : 'uk';
+};
+
+//for send to main page and set route to main form
+const sendToMainForm = (transfid, type, obj) => {
+    localStorage.setItem("transfid", transfid);
+    localStorage.setItem("transftype", type);
+    localStorage.setItem("transffromid", obj.fromid);
+    localStorage.setItem("transffrom", obj.from);
+    localStorage.setItem("transftoid", obj.toid);
+    localStorage.setItem("transfto", obj.to);
+    window.location.href = "/";
+};
+
+//for set route to main form
+const setToMainForm = (transfid, type, obj) => {
+    window.scrollTo({
+        top: $_('.main_form_container')[0].offsetTop - 140,
+        behavior: "smooth"
+    });
+    formValid = 'book';
+    inputFrom.value = obj.from;
+    inputTo.value = obj.to;
+    $_('#type_transfer')[0].value = `transfer_${type}`;
+    inputFrom.setAttribute("inputmainparam", obj.fromid);
+    inputTo.setAttribute("inputmainparam", obj.toid);
+    validationType($_('#type_transfer')[0]);
+    checkForm();
+};
+
+//for set private and micro bus routes
+window.onload = function(event) {    
+    const tab_cont = $_('.tabs_container')[0];
+    const info_cont = $_('.info_container')[0];
+    if (tab_cont !== undefined && info_cont !== undefined) {
+        tab_cont.style.opacity = '1';
+        info_cont.style.opacity = '1';
+    };
+    if (localStorage.getItem("transfid") !== null && localStorage.getItem("transfid") !== '') {
+        const transid = localStorage.getItem("transfid");
+        const transtype = localStorage.getItem("transftype");
+        const transobj = {
+            'from' : `${localStorage.getItem("transffrom")}`, 
+            'to' : `${localStorage.getItem("transfto")}`, 
+            'fromid' : `${localStorage.getItem("transffromid")}`, 
+            'toid' : `${localStorage.getItem("transftoid")}`};
+        localStorage.setItem("transfid", '');
+        localStorage.setItem("transftype", '');
+        localStorage.setItem("transffromid", '');
+        localStorage.setItem("transffrom", '');
+        localStorage.setItem("transftoid", '');
+        localStorage.setItem("transfto", '');
+        setToMainForm(transid, transtype, transobj);
+    };
+    // console.log('privatArr', privatArr);
+    // console.log('microbusArr', microbusArr);
+    // console.log('townsFrom', townsFrom);
+    // console.log('townsTo', townsTo);
+    // console.log('transfersArr', transfersArr);
+    // console.log('specArr', specArr);
+    const langName = getLang('lang');
+    const privatWrap = $_('.wrap_prevat')[0];
+    const microbusWrap = $_('.wrap_microbus')[0];
+    const specialWrap = $_('.wrap_special')[0];
+    if (privatWrap !== undefined) {
+        privatWrap.innerHTML = '';
+        privatArr.forEach(priv => {
+            transfersArr.forEach(transf => {
+                if (transf.transfer_id === priv.transfer_id) {
+                    privatWrap.innerHTML += `
+                    <p onclick="setToMainForm('${transf.transfer_id}', 'pr', 
+                        {'from': '${townsFrom[transf.transfer_from]}', 
+                        'to': '${townsTo[transf.transfer_to]}',
+                        'fromid': '${transf.transfer_from}',
+                        'toid': '${transf.transfer_to}'})">
+                        <i class='fas fa-arrow-alt-circle-right'></i>${townsFrom[transf.transfer_from]} - ${townsTo[transf.transfer_to]}</p>
+                    <p class="price"><span>${lang[`from${langName}`]}</span>${transf.price_pr}<span>${lang[`sum_type${langName}`]}</span></p>`
+                };            
+            });        
+        });
+    };
+    if (microbusWrap !== undefined) {
+        microbusWrap.innerHTML = '';
+        microbusArr.forEach(micro => {
+            transfersArr.forEach(transf => {
+                if (transf.transfer_id === micro.transfer_id) {
+                    microbusWrap.innerHTML += `
+                    <p onclick="setToMainForm('${transf.transfer_id}', 'gr', 
+                        {'from': '${townsFrom[transf.transfer_from]}', 
+                        'to': '${townsTo[transf.transfer_to]}',
+                        'fromid': '${transf.transfer_from}',
+                        'toid': '${transf.transfer_to}'})">
+                        <i class='fas fa-arrow-alt-circle-right'></i>${townsFrom[transf.transfer_from]} - ${townsTo[transf.transfer_to]}</p>
+                    <p class="price"><span>${lang[`from${langName}`]}</span>${transf.price_gr}<span>${lang[`sum_type${langName}`]}</span></p>`
+                };            
+            });        
+        });
+    };
+    if (specialWrap !== undefined) {
+        specialWrap.innerHTML = '';
+        specArr.forEach(spec => {
+            transfersArr.forEach(transf => {
+                if (transf.transfer_id === spec.transfer_id) {
+                    specialWrap.innerHTML += `
+                    <div>
+                        <p><i class='fas fa-arrow-alt-circle-right'></i>${townsFrom[transf.transfer_from]} - ${townsTo[transf.transfer_to]}</p>
+                        <p class="price"><span>${lang[`from${langName}`]}</span>${transf.price_pr}<span>${lang[`sum_type${langName}`]}</span></p>
+                        <p class="special_btn" onclick="sendToMainForm('${transf.transfer_id}', 'pr', 
+                            {'from': '${townsFrom[transf.transfer_from]}', 
+                            'to': '${townsTo[transf.transfer_to]}',
+                            'fromid': '${transf.transfer_from}',
+                            'toid': '${transf.transfer_to}'}
+                        )">${lang[`book${langName}`]}</p>
+                    </div>`
+                };            
+            });        
+        });
+    };
 };
 
 //for close mobile menu
@@ -88,25 +208,25 @@ const renderCalendar = (year) => {
     const lastDayIndex = new Date(date.getFullYear(), date.getMonth() + 1, 0).getDay();
     const nextDays = 7 - lastDayIndex - 1;
     let months = [], days = "";
+
     if (getLang('lang') === 'uk') {
         months = ["Січень", "Лютий", "Березень", "Квітень", "Травень", "Червень", "Липень", "Серпень", "Вересень", "Жовтень", "Листопад", "Грудень"];
     }
     if (getLang('lang')  === 'en') {
         months = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
     }
-    document.querySelector(".date h1").innerHTML = months[date.getMonth()];    
+    document.querySelector(".date h1").innerHTML = months[date.getMonth()];
     for (let x = firstDayIndex; x > 0; x--) {
         days += `<div class="prev-date">${prevLastDay - x + 1}</div>`;
     };
     const today = `${new Date().getFullYear()}-${(readyMonth(new Date()))}-${readyDay(new Date())}`;
     for (let i = 1; i <= lastDay; i++) {
-        const dateDay = `'1988-01-${i}`;
         if ( i === new Date().getDate() && date.getMonth() === new Date().getMonth() && date.getFullYear() === new Date().getFullYear()) {
             days += `<div class="today" onclick="selectDate('${i}/${readyMonth(date.getMonth())}/${year}')">${i}</div>`;
-        } else if (`${date.getFullYear()}-${readyMonth(date)}-${readyDay(dateDay)}` < today) {
+        } else if (`${date.getFullYear()}-${readyMonth(date)}-${readyDay(`2022-01-${i}`)}` < today) {
             days += `<div class="prev-date">${i}</div>`;
         } else {
-            days += `<div onclick="selectDate('${i}/${readyMonth(date.getMonth())}/${year}')">${i}</div>`;
+            days += `<div onclick="selectDate('${i}/${readyMonth(`${year}-${date.getMonth() + 1}-${i}`)}/${year}')">${i}</div>`;
         };
     };
     for (let j = 1; j <= nextDays; j++) {
@@ -135,12 +255,6 @@ const send = (obj, url, fun, req = 'POST') => {
     xmlhttp.send(JSON.stringify(obj));     
 };    
 
-//to top
-const toTopFn = () => {
-    document.body.scrollTop = 0;
-    document.documentElement.scrollTop = 0;
-};
-
 //token
 const generate_token = (length) => {
     const a = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890".split("");
@@ -165,7 +279,32 @@ const body = $_('body')[0];
 const menu = $_('.menu_container')[0];
 const social = $_('.social_wrap')[0];
 const toTop = $_('#toTop')[0];
+const header_node = $_('.header')[0];
+const content_cont = $_('.content_container')[0];
+const option_cont = $_('.options_container')[0];
+const call_cont = $_('.call_container')[0];
 window.onscroll = function() {
+    if (content_cont !== undefined && option_cont !== undefined && call_cont !== undefined) {
+        let heightBlok, heightBlok2, heightBlok3;
+        if (body.offsetWidth > 1280) {
+            heightBlok = header_node.offsetHeight + content_cont.offsetHeight;
+            heightBlok2 = header_node.offsetHeight + content_cont.offsetHeight + (option_cont.offsetHeight / 1.5);
+            heightBlok3 = header_node.offsetHeight + content_cont.offsetHeight + option_cont.offsetHeight + (call_cont.offsetHeight / 1.5);
+            (document.documentElement.scrollTop + window.screen.height > heightBlok) 
+                ? content_cont.style.opacity = '1'
+                : content_cont.style.opacity = '0';
+            (document.documentElement.scrollTop + window.screen.height > heightBlok2) 
+                ? option_cont.style.opacity = '1'
+                : option_cont.style.opacity = '0';
+            (document.documentElement.scrollTop + window.screen.height > heightBlok3) 
+                ? call_cont.style.opacity = '1'
+                : call_cont.style.opacity = '0';
+        } else {
+            content_cont.style.opacity = '1'
+            option_cont.style.opacity = '1'
+            call_cont.style.opacity = '1'
+        };      
+    };
     const socialValue = social !== undefined ? social.clientHeight : 0;
     toTop.style.display = (document.body.scrollTop > 200 || document.documentElement.scrollTop > 200) ? "block" : "none";
     if (body.offsetWidth > 1280) {
@@ -325,15 +464,18 @@ const showModal = function(type, obj, el) {
     // console.log('el', el);
     ['townAddRes', 'townEditRes', 'townDelRes', 'transferAddRes', 'transferEditRes', 'transferDelRes',
     'townAdd', 'townEdit', 'townDel', 'transferAdd', 'transferEdit', 'transferDel',
-    'mainformFrom', 'mainformTo', 'mainformCalendar', 'editMenuTown', 'editMenuTransfer', 'orderInfo'].includes(type) 
+    'mainformFrom', 'mainformTo', 'mainformCalendar', 'editMenuTown', 'editMenuTransfer', 'orderInfo', 'confirmPhone'].includes(type) 
         ? modal.innerHTML = template[type] : null;
     
+    if (type === 'confirmPhone') {
+
+    }
     if (type === 'orderInfo') {
         const bookLang = getLang('lang');
         let proof = '', del = '';
         if (obj.settings === 'true') {
-            proof = `<p class="edit_menu" style="min-width: 200px; margin-top: 25px;" onclick="">Підтвердити замовлення <i class='fas fa-check-double'></i></p>`;
-            del = `<p class="edit_menu" style="min-width: 200px; margin-bottom: 20px;" oonclick="">Скасувати замовлення <i class='fas fa-times'></i></p>`;
+            proof = `<p class="edit_menu" style="min-width: 200px; margin-top: 25px;" onclick="proofOrder('${obj.orders}', 'proof')">Підтвердити замовлення <i class='fas fa-check-double'></i></p>`;
+            del = `<p class="edit_menu" style="min-width: 200px; margin-bottom: 20px;" onclick="proofOrder('${obj.orders}', 'del')">Скасувати замовлення <i class='fas fa-times'></i></p>`;
         }
         $_(`#${type}`)[0].innerHTML = `
             <p class="order_info title_order">${obj.from} - ${obj.to} </p>
@@ -692,17 +834,13 @@ const validationChildren = (el) => {
     (el.value > 0) ? equipchild.style.display = 'flex' : null;
 };
 
-//culculate main form
+//for back to previous tab
 const mainFormBack = () => {
     $_('#check')[0].style.display = 'flex'; 
     $_('#booking')[0].style.display = 'none'; 
 }
-const mainFormBack2 = () => {
-    $_('#check')[0].style.display = 'none'; 
-    $_('#booking')[0].style.display = 'flex'; 
-    $_('#received')[0].style.display = 'none'; 
-}
 
+//for check form
 const checkForm = () => {
     let arrInp = [];
     if (formValid !== undefined && formValid !== '') {
@@ -927,22 +1065,33 @@ const loadVariablesList = () => {
             townsFrom = resultat.res.townsFrom;
             townsTo = resultat.res.townsTo;
             transfersArr = resultat.res.transfersArr;
+            privatArr = resultat.res.privatArr;
+            microbusArr = resultat.res.microbusArr;
+            specArr = resultat.res.specArr;
         };
     });
 };
 
+//for proofing or canceling order
+const proofOrder = (orderid, param) => { 
+    send({"id": `${orderid}`, 'param': `${param}`} , `/order${param}`, (result) => {
+        const resultat = JSON.parse(result);
+        if (resultat.res) { ordersList(1); modal.innerHTML = '' };
+    });
+};
+
 //for set order numbers
-const setOrderNumb = (el) => {
-    console.log('el', el.value);
-    numb = el.value;
-    ordersList(1);
-}
+const setOrderNumb = (el) => { numb = el.value; ordersList(1) };
+const setOrderStatus = (el) => { orderstat = el.value; ordersList(1) };
+const setOrderDate = (el) => { orderdate = el.value; ordersList(1) };
 
 //load towns list
 const ordersList = (page = 1) => {
     let param = '';
 
     console.log('order_numb', numb);
+    console.log('order_status', orderstat);
+    console.log('order_date', orderdate);
     console.log('param', param);
 
     send({page, param, numb} , `/orderslist`, (result) => {

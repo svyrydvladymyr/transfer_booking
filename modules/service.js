@@ -58,12 +58,12 @@ const readyFullDate = (fullDate, reverse) => {
     const DATE = new Date();
     if (reverse === 'reverse'){
         return ((fullDate === '') || (fullDate === undefined)) 
-            ? DATE.getHours() + ":" + readyMin(DATE) + " " + readyDay(DATE) + "-" + readyMonth(DATE) + "-" + DATE.getFullYear() 
-            : dateFull.getHours() + ":" + readyMin(dateFull) + " " + readyDay(dateFull) + "-" + readyMonth(dateFull) + "-" + dateFull.getFullYear();
+            ? readyDay(DATE) + "-" + readyMonth(DATE) + "-" + DATE.getFullYear() + ' ' + DATE.getHours() + ":" + readyMin(DATE) 
+            : readyDay(dateFull) + "-" + readyMonth(dateFull) + "-" + dateFull.getFullYear() + ' ' + dateFull.getHours() + ":" + readyMin(dateFull);
     } else {
         return ((fullDate === '') || (fullDate === undefined))
-            ? DATE.getHours() + ":" + readyMin(DATE) + " " + DATE.getFullYear() + "-" + readyMonth(DATE) + "-" + readyDay(DATE)
-            : dateFull.getHours() + ":" + readyMin(dateFull) + " " + dateFull.getFullYear() + "-" + readyMonth(dateFull) + "-" + readyDay(dateFull);
+            ? DATE.getFullYear() + "-" + readyMonth(DATE) + "-" + readyDay(DATE) + ' ' + DATE.getHours() + ":" + readyMin(DATE)
+            : dateFull.getFullYear() + "-" + readyMonth(dateFull) + "-" + readyDay(dateFull) + ' ' + dateFull.getHours() + ":" + readyMin(dateFull);
     };
 };
 

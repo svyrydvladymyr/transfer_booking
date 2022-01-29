@@ -25,6 +25,7 @@ module.exports = {
 
     "autoriz_info" : "Для входу в кабінет Вам потрібно авторизуватися!",
     "exit" : "Вийти з акаунта",
+    "phone_verified" : "Підтвердити номер телефону",
     "provider" : "через",
 
     "content_title1" : "Надійні та доступні трансфери",
@@ -56,11 +57,7 @@ module.exports = {
     "option_title6" : "Універсальний сервіс",
     "option_from" : "від",
     "option_grn" : "грн",
-
-    "option_pr1" : "Ivano-Frankivsk – Bukovel",
-    "option_pr2" : "Lviv – Bukovel",
-    "option_pr3" : "Ivano-Frankivsk – Yasinya (Dragobrat)",
-    "option_bus" : "Special prices for large groups",
+    "option_bus" : "Спеціальні ціни для великих груп",
 
     "call_header" : "Цілодобова гаряча лінія підтримки клієнтів",
     "call_tel" : "Tel.",

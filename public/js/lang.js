@@ -45,4 +45,8 @@ lang = {
     nouk : 'Ні',
     sum_typeen : 'uan',
     sum_typeuk : 'грн',
+    fromen : 'fron',
+    fromuk : 'від',
+    booken : 'Reserve',
+    bookuk : 'Забронювати',
 }

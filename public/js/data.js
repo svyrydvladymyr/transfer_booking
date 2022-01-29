@@ -343,5 +343,14 @@ template = {
         </div>
         <div class="modal_place" id="orderInfo"></div>        
     </div>`,
+    confirmPhone:
+    `<div class="modal_body" onclick="closeModal(event)">
+        <div class="modal_close">
+            <i class='fa fa-times' onclick="closeModal(event)"></i>
+        </div>
+        <div class="modal_place" id="confirmPhone">
+        <p>confirmPhone</p>
+        </div>        
+    </div>`,
 };   
 

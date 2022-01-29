@@ -192,29 +192,41 @@ const transferlist = async (req, res) => {
 };
 
 const variables = async (req, res) => {
-    let townsFrom = {}, townsTo = {}, transfersArr = [], townsId = [];
+    let townsFrom = {}, townsTo = {}, transfersArr = [], townsId = [],  privatArr = [], microbusArr = [], specArr = [];
     const lang = ['uk-UA', 'en-US', 'ru-RU'].includes(req.cookies['lang']) ? req.cookies['lang'].slice(0, 2) : 'uk';
     Promise.all([
         tableRecord(`SELECT town_id, name_${lang} FROM points`), 
         tableRecord(`SELECT transfer_from FROM transfers GROUP BY transfer_from`), 
         tableRecord(`SELECT transfer_to FROM transfers GROUP BY transfer_to`), 
-        tableRecord(`SELECT * FROM transfers`)])
-    .then(([townIdRes, townsFromRes, townsToRes, transfersArrRes]) => {
+        tableRecord(`SELECT * FROM transfers`),
+        tableRecord(`SELECT transfer_id FROM transfers WHERE privat='true' AND price_pr!='' LIMIT 3`),
+        tableRecord(`SELECT transfer_id FROM transfers WHERE microbus='true' AND price_gr!='' LIMIT 3`),
+        tableRecord(`SELECT transfer_id FROM transfers WHERE selection='true' AND price_pr!=''`)])
+    .then(([townIdRes, townsFromRes, townsToRes, transfersArrRes, privatRes, microbusRes, specRes]) => {
         if (townIdRes.err) { throw new Error('error-DB-townsID') };
         if (townsFromRes.err) { throw new Error('error-DB-transferFROM') };
         if (townsToRes.err) { throw new Error('error-DB-transferTO') };
         if (transfersArrRes.err) { throw new Error('error-DB-transfersARR') };
+        if (privatRes.err) { throw new Error('error-DB-privatARR') };
+        if (microbusRes.err) { throw new Error('error-DB-microbusARR') };
+        if (specRes.err) { throw new Error('error-DB-specArr') };
         townIdRes.forEach(element => { townsId[`${element.town_id}`] = element[`name_${lang}`] });
         townsFromRes.forEach(element => { townsFrom[`${element.transfer_from}`] = townsId[element.transfer_from] });   
         townsToRes.forEach(element => { townsTo[`${element.transfer_to}`] = townsId[element.transfer_to] });   
         transfersArrRes.forEach(element => { transfersArr.push(element) });
+        privatRes.forEach(element => { privatArr.push(element) });
+        microbusRes.forEach(element => { microbusArr.push(element) });
+        specRes.forEach(element => { specArr.push(element) });
     })
     .then(() => {
         // console.log('townsId', townsId);
         // console.log('townsFrom', townsFrom);
         // console.log('townsTo', townsTo);
         // console.log('transfersArr', transfersArr);
-        res.send({"res": {townsFrom, townsTo, transfersArr}});
+        // console.log('privatArr', privatArr);
+        // console.log('microbusArr', microbusArr);
+        // console.log('specArr', specArr);
+        res.send({"res": {townsFrom, townsTo, transfersArr, privatArr, microbusArr, specArr}});
     })
     .catch((err) => {
         log('variables-list-error', err);
@@ -225,26 +237,24 @@ const variables = async (req, res) => {
 const orders = (req, res) => {
     const {transferId, transferFrom, transferTo, transferFromName, transferToName, adult, children, sum, date, time, equip, equip_child, user_name, user_surname, user_email, user_phone, paid} = req.body;
     const type = req.body.type.replace(/transfer_/gi, '');
-
-    console.log('transferId', transferId);
-    console.log('transferFrom', transferFrom);
-    console.log('transferTo', transferTo);
-    console.log('transferFromName', transferFromName);
-    console.log('transferToName', transferToName);
-    console.log('adult', adult);
-    console.log('children', children);
-    console.log('type', type);
-    console.log('date', date);
-    console.log('time', time);
-    console.log('equip', equip);
-    console.log('equip_child', equip_child);
-    console.log('user_name', user_name);
-    console.log('user_surname', user_surname);
-    console.log('user_email', user_email);
-    console.log('user_phone', user_phone);
-    console.log('paid', paid);
-    console.log('sum', sum);
-
+    // console.log('transferId', transferId);
+    // console.log('transferFrom', transferFrom);
+    // console.log('transferTo', transferTo);
+    // console.log('transferFromName', transferFromName);
+    // console.log('transferToName', transferToName);
+    // console.log('adult', adult);
+    // console.log('children', children);
+    // console.log('type', type);
+    // console.log('date', date);
+    // console.log('time', time);
+    // console.log('equip', equip);
+    // console.log('equip_child', equip_child);
+    // console.log('user_name', user_name);
+    // console.log('user_surname', user_surname);
+    // console.log('user_email', user_email);
+    // console.log('user_phone', user_phone);
+    // console.log('paid', paid);
+    // console.log('sum', sum);
     tableRecord(`SELECT price_${type} FROM transfers WHERE transfer_id='${transferId}'`)
     .then(async (result) => {
         if (result.err) { throw new Error('error-DB') };
@@ -272,7 +282,7 @@ const orders = (req, res) => {
                     'reserv', 
                     'no', 
                     '${sumfin}',
-                    '${readyFullDate(new Date(), 'reverse')}')`;
+                    '${readyFullDate(new Date(), '')}')`;
         };
     })
     .then(tableRecord)
@@ -292,24 +302,23 @@ const orderslist = async (req, res) => {
     console.log('req.body.numb', req.body.numb);
 
     let user_info, phone_res, count_records, page = req.body.page, order_limit = req.body.numb;
-    // let townsFrom = {}, townsTo = {}, transfersArr = [], townsId = [];
-    // const lang = ['uk-UA', 'en-US', 'ru-RU'].includes(req.cookies['lang']) ? req.cookies['lang'].slice(0, 2) : 'uk';
-
-    // Promise.all([
-    //     tableRecord(`SELECT town_id, name_${lang} FROM points`), 
-    //     tableRecord(`SELECT transfer_from FROM transfers GROUP BY transfer_from`), 
-    //     tableRecord(`SELECT transfer_to FROM transfers GROUP BY transfer_to`), 
-    //     tableRecord(`SELECT * FROM transfers`)])
-    // .then(([townIdRes, townsFromRes, townsToRes, transfersArrRes]) => {
-    //     if (townIdRes.err) { throw new Error('error-DB-townsID') };
-    //     if (townsFromRes.err) { throw new Error('error-DB-transferFROM') };
-    //     if (townsToRes.err) { throw new Error('error-DB-transferTO') };
-    //     if (transfersArrRes.err) { throw new Error('error-DB-transfersARR') };
-    //     townIdRes.forEach(element => { townsId[`${element.town_id}`] = element[`name_${lang}`] });
-    //     townsFromRes.forEach(element => { townsFrom[`${element.transfer_from}`] = townsId[element.transfer_from] });   
-    //     townsToRes.forEach(element => { townsTo[`${element.transfer_to}`] = townsId[element.transfer_to] });   
-    //     transfersArrRes.forEach(element => { transfersArr.push(element) });
-    // })
+    let townsFrom = {}, townsTo = {}, transfersArr = [], townsId = [];
+    const lang = ['uk-UA', 'en-US', 'ru-RU'].includes(req.cookies['lang']) ? req.cookies['lang'].slice(0, 2) : 'uk';
+    Promise.all([
+        tableRecord(`SELECT town_id, name_${lang} FROM points`), 
+        tableRecord(`SELECT transfer_from FROM transfers GROUP BY transfer_from`), 
+        tableRecord(`SELECT transfer_to FROM transfers GROUP BY transfer_to`), 
+        tableRecord(`SELECT * FROM transfers`)])
+    .then(([townIdRes, townsFromRes, townsToRes, transfersArrRes]) => {
+        if (townIdRes.err) { throw new Error('error-DB-townsID') };
+        if (townsFromRes.err) { throw new Error('error-DB-transferFROM') };
+        if (townsToRes.err) { throw new Error('error-DB-transferTO') };
+        if (transfersArrRes.err) { throw new Error('error-DB-transfersARR') };
+        townIdRes.forEach(element => { townsId[`${element.town_id}`] = element[`name_${lang}`] });
+        townsFromRes.forEach(element => { townsFrom[`${element.transfer_from}`] = townsId[element.transfer_from] });   
+        townsToRes.forEach(element => { townsTo[`${element.transfer_to}`] = townsId[element.transfer_to] });   
+        transfersArrRes.forEach(element => { transfersArr.push(element) });
+    })
     await autorisationCheck(req, res)    
     .then((userid) => {
         if (userid === false) { throw new Error('error-autorisation') };
@@ -375,15 +384,12 @@ const orderslist = async (req, res) => {
         console.log('user-result', user_info);
         console.log('user-permission', user_info.permission);
         result.forEach(element => {
-            // let from, to;
-            // transfersArr.forEach(el => {
-            //     if (el.transfer_id === element.transfer_id) {
-            //         from = townsFrom[el.transfer_from];
-            //         to = townsTo[el.transfer_to];
-            //     };
-            // });
-            // element.from = element.from; 
-            // element.to = element.to;            
+            transfersArr.forEach(el => {
+                if (el.transfer_id === element.transfer_id) {
+                    element.order_from = townsFrom[el.transfer_from];
+                    element.order_to = townsTo[el.transfer_to];
+                };                
+            });         
             element.proof = element.status;    
             element.settings = false;        
             if (user_info[0].permission === 1) {
@@ -394,6 +400,24 @@ const orderslist = async (req, res) => {
     })
     .catch((err) => {
         log('orders-error', err);
+        res.status(400).send('SERVER ERROR: 400 (Bad Request)');
+    });
+};
+
+const orderstatus = async (req, res) => {
+    await autorisationCheck(req, res)
+    .then(async (userid) => {
+        if (userid === false) { throw new Error('error-autorisation') };
+        let status = (req.body.param === 'proof' || req.body.param === 'del') ? req.body.param : 'reserv';
+        return `UPDATE orders SET status='${status}' WHERE orders='${req.body.id}'`;
+    })
+    .then(tableRecord)
+    .then((result) => {
+        if (result.err) { throw new Error('error-DB-orderstatus') };
+        res.send({"res": 'Status saved!'});
+    })
+    .catch((err) => {
+        log('towns-list-error', err);
         res.status(400).send('SERVER ERROR: 400 (Bad Request)');
     });
 };
@@ -425,5 +449,6 @@ module.exports = {
     variables,
     orders,
     orderslist,
+    orderstatus,
     saveposition
 }

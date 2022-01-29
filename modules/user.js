@@ -24,6 +24,7 @@ const DATA = {
         surname : '',
         foto : 'img/no_user.png',
         email : '',
+        phone : '',
         provider : '',
         lang : 'uk-UA',
         date_registered : ''
@@ -41,6 +42,7 @@ const clearDATA = () => {
     DATA.user.surname = '';
     DATA.user.foto = 'img/no_user.png';
     DATA.user.email = '';
+    DATA.user.phone = '';
     DATA.user.provider = '';
     DATA.user.lang = 'uk-UA';
     DATA.user.date_registered = '';
@@ -98,7 +100,7 @@ const getUser = async (req, res, lang = 'uk-UA', pageName) => {
         await tableRecord(`SELECT * FROM users WHERE userid = '${userid.userid}'`)
         .then((user) => {
             if (user.err) { throw new Error(user.err) };
-            const {userid, name, surname, ava, email, provider, permission, date_registered} = user[0];
+            const {userid, name, surname, ava, email, phone, phone_verified, provider, permission, date_registered} = user[0];
             //permission
             DATA.permission.permissionRules = `${permission}`;
             DATA.permission.permissionAuthorization = '1';
@@ -107,14 +109,16 @@ const getUser = async (req, res, lang = 'uk-UA', pageName) => {
             DATA.user.ava = ava;
             DATA.user.name = name;
             DATA.user.surname = surname;
-            DATA.user.provider = provider;
             DATA.user.email = email;
             DATA.user.lang = lang;
             DATA.permission.pageName = pageName;
             DATA.langPack = require(`./lang/${lang}`);
             if (pageName === 'person') {
-                DATA.user.foto = ava;        
-                DATA.user.email = email;        
+                DATA.user.ava = ava;        
+                DATA.user.email = email;      
+                DATA.user.phone = phone;      
+                DATA.user.phone_verified = phone_verified;      
+                DATA.user.provider = provider;  
                 DATA.user.date_registered = readyFullDate(date_registered, 'reverse');
                 DATA.menu.home = 'active_menu'
                 if (permission === 1) {

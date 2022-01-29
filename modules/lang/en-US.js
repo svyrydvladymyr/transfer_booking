@@ -25,6 +25,7 @@ module.exports = {
 
     "autoriz_info" : "You need to log in to enter the office!",
     "exit" : "Log out",
+    "phone_verified" : "Confirm phone number",
     "provider" : "by",
 
     "content_title1" : "Reliable, Low Cost Airport and Railway Station Transfers",
@@ -56,10 +57,6 @@ module.exports = {
     "option_title6" : "Universal Service",
     "option_from" : "from",
     "option_grn" : "uan",
-
-    "option_pr1" : "Ivano-Frankivsk – Bukovel",
-    "option_pr2" : "Lviv – Bukovel",
-    "option_pr3" : "Ivano-Frankivsk – Yasinya (Dragobrat)",
     "option_bus" : "Special prices for large groups",
 
     "call_header" : "24/7 Customer Support Helpline",

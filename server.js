@@ -12,7 +12,7 @@ const DB = require('./db/createDB');
 
 const {log, accessLog, logOut} = require('./modules/service');
 const renderPage = require('./modules/renderPage');
-const {townadd, townlist, transferadd, transferlist, variables, orders, orderslist, saveposition} = require('./modules/requestsDB');
+const {townadd, townlist, transferadd, transferlist, variables, orders, orderslist, saveposition, orderstatus} = require('./modules/requestsDB');
 
 //oaugh
 require('./modules/oaugh.js')(app);
@@ -34,6 +34,8 @@ app.use((req, res, next) => {log(`URL-REQUEST:-(${req.method})-`, req.url); next
 //requests order
 app.use('/order', (req, res) => {orders(req, res)});
 app.use('/orderslist', (req, res) => {orderslist(req, res)});
+app.use('/orderproof', (req, res) => {orderstatus(req, res)});
+app.use('/orderdel', (req, res) => {orderstatus(req, res)});
 //requests variables
 app.use('/variables', (req, res) => {variables(req, res)});
 //requests saveposition

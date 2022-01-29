@@ -544,3 +544,10 @@
 .user_wrap .tab_person .transfers_list .transfer span {
     justify-content: left;
 }
+.user_wrap .orders_search {
+    flex-direction: column;
+    align-items: center;
+}
+.user_wrap .orders_search input, .user_wrap .orders_search select {
+    width: 200px;
+}

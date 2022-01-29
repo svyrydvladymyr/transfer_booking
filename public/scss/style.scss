@@ -789,8 +789,9 @@ body {
         border-radius: 0px 5px 5px 0px;
         h5 {
           width: 100%;
-          font-size: 24px;
+          font-size: 22px;
           margin: 8px 0px;
+          word-break: break-word;
         }
         h6 {
           width: 100%;
@@ -800,28 +801,34 @@ body {
           color: #808080;
           margin: 8px 0px 40px 0px;
         }
-        p {
-          margin: 15px 0px 4px 0px;
-          color: #6ba917;
-          font-size: 16px;
-          i {
-            font-size: 13px;
-            margin: 0px 10px 0px 0px;
-            color: #ee9e07
+        div.wrap_prevat, div.wrap_microbus, div.wrap_spec {
+          width: 100%;
+          padding: 0;
+          margin: 0;
+          p {
+            cursor: pointer;
+            margin: 15px 0px 4px 0px;
+            color: #6ba917;
+            font-size: 16px;
+            i {
+              font-size: 13px;
+              margin: 0px 10px 0px 0px;
+              color: #ee9e07
+            }
           }
-        }
-        .price {
-          margin: 0px;
-          color: #3e3f40;
-          font-size: 15px;
-          padding: 0px 0px 6px 0px;
-          border-bottom: 1px solid #e1e1e1;
-          span:first-child {
-            font-size: 11px;
-            margin: 0px 4px 0px 0px;
-          }
-          span:last-child {
-            margin: 0px 0px 0px 4px;            
+          .price {
+            margin: 0px;
+            color: #3e3f40;
+            font-size: 15px;
+            padding: 0px 0px 6px 0px;
+            border-bottom: 1px solid #e1e1e1;
+            span:first-child {
+              font-size: 11px;
+              margin: 0px 4px 0px 0px;
+            }
+            span:last-child {
+              margin: 0px 0px 0px 4px;            
+            }
           }
         }
       }
@@ -834,6 +841,7 @@ body {
     // outline: 1px solid green;
     width: 100%;
     margin-top: 80px;
+
     p {
       cursor: pointer;
       width: 40px;
@@ -849,6 +857,48 @@ body {
         background : #6ba917;
         color: #fff;
       }
+    }
+  }
+}
+
+/*_____________________transfers page________________________*/
+.wrap_special {
+  outline: 1px solid red;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  width: 100%;
+  padding: 0;
+  margin: 0;
+  div {
+    outline: 1px solid green;
+    width: 60%;
+    display: flex;
+    flex-wrap: wrap;
+  }
+  p {
+    cursor: pointer;
+    margin: 15px 0px 4px 0px;
+    color: #6ba917;
+    font-size: 16px;
+    i {
+      font-size: 13px;
+      margin: 0px 10px 0px 0px;
+      color: #ee9e07
+    }
+  }
+  .price {
+    margin: 0px;
+    color: #3e3f40;
+    font-size: 15px;
+    padding: 0px 0px 6px 0px;
+    border-bottom: 1px solid #e1e1e1;
+    span:first-child {
+      font-size: 11px;
+      margin: 0px 4px 0px 0px;
+    }
+    span:last-child {
+      margin: 0px 0px 0px 4px;            
     }
   }
 }
@@ -950,6 +1000,16 @@ body {
       display: flex;
       flex-wrap: wrap;
       justify-content: center;
+      input, select {
+        height: 30px;
+        width: fit-content;
+        outline: 0;
+        background: #f7f7f7;
+        border: 1px solid #adadad;
+        padding: 0px 10px;
+        margin: 3px 5px;
+        border-radius: 4px;
+      }
     }
     .orders_pagination {
       width: 100%;
@@ -959,7 +1019,7 @@ body {
       p {
         cursor: pointer;
         width: 25px;
-        line-height: 21px;
+        line-height: 22px;
         font-size: 14px;
         font-weight: bold;
         border: 1px solid #ababab;
@@ -1145,6 +1205,9 @@ body {
           flex-direction: column;
           align-items: center;
           padding: 15px 0px;
+            .transfer {
+              cursor: pointer;
+            }
             .town, .transfer {
               width: 100%;
               padding: 12px 30px 12px 30px;

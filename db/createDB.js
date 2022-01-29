@@ -10,6 +10,7 @@ const users = () => {
         provider VARCHAR(15) DEFAULT '',
         email VARCHAR(80) DEFAULT '',
         phone VARCHAR(20) DEFAULT '',
+        phone_code VARCHAR(6) DEFAULT '',
         phone_verified VARCHAR(10) DEFAULT 'noverified',
         permission INT DEFAULT '0',                  
         date_registered DATETIME
