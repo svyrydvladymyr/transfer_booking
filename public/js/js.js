@@ -208,17 +208,14 @@ const renderCalendar = (year) => {
     const lastDayIndex = new Date(date.getFullYear(), date.getMonth() + 1, 0).getDay();
     const nextDays = 7 - lastDayIndex - 1;
     let months = [], days = "";
-
     if (getLang('lang') === 'uk') {
         months = ["Січень", "Лютий", "Березень", "Квітень", "Травень", "Червень", "Липень", "Серпень", "Вересень", "Жовтень", "Листопад", "Грудень"];
-    }
+    };
     if (getLang('lang')  === 'en') {
         months = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
-    }
-    document.querySelector(".date h1").innerHTML = months[date.getMonth()];
-    for (let x = firstDayIndex; x > 0; x--) {
-        days += `<div class="prev-date">${prevLastDay - x + 1}</div>`;
     };
+    document.querySelector(".date h1").innerHTML = months[date.getMonth()];
+    for (let i = firstDayIndex; i > 0; i--) { days += `<div class="prev-date">${prevLastDay - i + 1}</div>` };
     const today = `${new Date().getFullYear()}-${(readyMonth(new Date()))}-${readyDay(new Date())}`;
     for (let i = 1; i <= lastDay; i++) {
         if ( i === new Date().getDate() && date.getMonth() === new Date().getMonth() && date.getFullYear() === new Date().getFullYear()) {
@@ -229,13 +226,10 @@ const renderCalendar = (year) => {
             days += `<div onclick="selectDate('${i}/${readyMonth(`${year}-${date.getMonth() + 1}-${i}`)}/${year}')">${i}</div>`;
         };
     };
-    for (let j = 1; j <= nextDays; j++) {
-        days += `<div class="next-date">${j}</div>`;
-        monthDays.innerHTML = days;
-    };
+    for (let i = 1; i <= nextDays; i++) { days += `<div class="next-date">${i}</div>` };
+    monthDays.innerHTML = days;
 };
 const selectDate = (date) => {
-    // console.log('date', date);
     const inputPlace = $_(`#main_date`)[0];
     inputPlace.value = date;    
     inputPlace.classList.remove('err_input');
