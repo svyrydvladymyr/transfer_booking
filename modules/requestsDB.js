@@ -1,5 +1,5 @@
 const con = require('../db/connectToDB').con;
-const {checOnTrueVal, autorisationCheck, tableRecord, token, log, readyFullDate} = require('../modules/service');
+const {checOnTrueVal, autorisationCheck, tableRecord, token, log, readyFullDate, clienttoken} = require('../modules/service');
 
 const townadd = async (req, res) => {
     let resMess;
@@ -235,11 +235,9 @@ const variables = async (req, res) => {
 };
 
 const orders = (req, res) => {
-    const {transferId, transferFrom, transferTo, transferFromName, transferToName, adult, children, sum, date, time, equip, equip_child, user_name, user_surname, user_email, user_phone, paid} = req.body;
+    const {transferId, transferFromName, transferToName, adult, children, sum, date, time, equip, equip_child, user_name, user_surname, user_email, user_phone, paid} = req.body;
     const type = req.body.type.replace(/transfer_/gi, '');
     // console.log('transferId', transferId);
-    // console.log('transferFrom', transferFrom);
-    // console.log('transferTo', transferTo);
     // console.log('transferFromName', transferFromName);
     // console.log('transferToName', transferToName);
     // console.log('adult', adult);
@@ -297,12 +295,8 @@ const orders = (req, res) => {
 };
 
 const orderslist = async (req, res) => {
-    console.log('req.body.page', req.body.page);
-    console.log('req.body.param', req.body.param);
-    console.log('req.body.numb', req.body.numb);
-
     let user_info, phone_res, count_records, page = req.body.page, order_limit = req.body.numb;
-    let townsFrom = {}, townsTo = {}, transfersArr = [], townsId = [];
+    let townsFrom = {}, townsTo = {}, transfersArr = [], townsId = [], countsql = '', ordersresult = {};
     const lang = ['uk-UA', 'en-US', 'ru-RU'].includes(req.cookies['lang']) ? req.cookies['lang'].slice(0, 2) : 'uk';
     Promise.all([
         tableRecord(`SELECT town_id, name_${lang} FROM points`), 
@@ -318,12 +312,12 @@ const orderslist = async (req, res) => {
         townsFromRes.forEach(element => { townsFrom[`${element.transfer_from}`] = townsId[element.transfer_from] });   
         townsToRes.forEach(element => { townsTo[`${element.transfer_to}`] = townsId[element.transfer_to] });   
         transfersArrRes.forEach(element => { transfersArr.push(element) });
+        return `SELECT userid FROM users WHERE token = '${clienttoken(req, res)}'`
     })
-    await autorisationCheck(req, res)    
-    .then((userid) => {
-        if (userid === false) { throw new Error('error-autorisation') };
-        // console.log('userid', userid);
-        return `SELECT email, phone, phone_verified, permission FROM users WHERE userid='${userid.userid}'`;
+    .then(tableRecord)
+    .then((user) => { 
+        if (user.err || user == '') { throw new Error('user-not-autorised') }; 
+        return `SELECT email, phone, phone_verified, permission FROM users WHERE userid='${user[0].userid}'`;
     })
     .then(tableRecord)
     .then((result) => {
@@ -332,39 +326,32 @@ const orderslist = async (req, res) => {
         user_info = result;
     })
     .then(() => {
-        // console.log('user-result', user_info);
+        let page_start = (page -1) * order_limit;
         if (user_info[0].permission === 1) {
-            return (req.body.param === '')
-                ? `SELECT COUNT(*) FROM orders`
-                : ``;
+            let where = '', status = '', datesql = '';
+            const orderstatus = req.body.param[0]['status'];
+            const orderdate = req.body.param[1]['orderdate'];
+            if (orderdate !== '') {
+                where = ' WHERE ';
+                const present_date = readyFullDate(new Date(), '');
+                const date = new Date();
+                date.setMonth(date.getMonth() - +orderdate);
+                const next_date = readyFullDate(date, '');
+                datesql = `book_date>'${next_date}' AND book_date<'${present_date}' `;
+            };               
+            if (orderstatus !== '' && orderdate !== '') {
+                status = `AND status='${orderstatus}' `;
+            };
+            if (orderstatus !== '' && orderdate === '') {
+                where = ' WHERE ';
+                status = `status='${orderstatus}' `;
+            };
+            countsql = `SELECT COUNT(*) FROM orders${where}${datesql}${status}`;
+            return `SELECT * FROM orders${where}${datesql}${status} ORDER BY id DESC LIMIT ${page_start}, ${order_limit}`;
         } else {
-            return (user_info[0].phone_verified === 'verified')  
+            countsql = (user_info[0].phone_verified === 'verified')  
                 ? `SELECT COUNT(*) FROM orders WHERE user_email='${user_info[0].email}' OR user_tel='${phone_res}' OR user_tel='+38${phone_res}'`
                 : `SELECT COUNT(*) FROM orders WHERE user_email='${user_info[0].email}'`;
-        };
-    })
-    .then(tableRecord)
-    .then((result) => {
-        if (result.err) { throw new Error('error-DB-get-count') };
-        for (const [key, value] of Object.entries(result[0])) { count_records = value };
-    })
-    // .then(() => {
-    //     console.log('townsId', townsId);
-    //     console.log('townsFrom', townsFrom);
-    //     console.log('townsTo', townsTo);
-    //     console.log('transfersArr', transfersArr);
-    // })
-    .then(() => {
-        let page_start = (page -1) * order_limit;
-        // console.log('page', page);
-        // console.log('order_limit', order_limit);
-        // console.log('page_start', page_start);
-        if (user_info[0].permission === 1) {
-            return (req.body.param === '')
-                ? `SELECT * FROM orders 
-                    ORDER BY id DESC LIMIT ${page_start}, ${order_limit}`
-                : ``;
-        } else {
             return (user_info[0].phone_verified === 'verified')  
                 ? `SELECT * FROM orders 
                     WHERE user_email='${user_info[0].email}' OR user_tel='${phone_res}' OR user_tel='+38${phone_res}' 
@@ -376,13 +363,7 @@ const orderslist = async (req, res) => {
     })
     .then(tableRecord)
     .then((result) => {
-        if (result.err) {             
-        // console.log(result.err);
-        throw new Error('error-DB-get-orders') };
-        // console.log('count_records', count_records);
-        // console.log('result', result);
-        console.log('user-result', user_info);
-        console.log('user-permission', user_info.permission);
+        if (result.err) { throw new Error('error-DB-get-orders') };
         result.forEach(element => {
             transfersArr.forEach(el => {
                 if (el.transfer_id === element.transfer_id) {
@@ -395,9 +376,16 @@ const orderslist = async (req, res) => {
             if (user_info[0].permission === 1) {
                 element.settings = true;
             };             
-        });
-        res.send({"res": {'count': count_records, 'orders': result}});
+        });  
+        ordersresult = result;
+        return countsql;
     })
+    .then(tableRecord)
+    .then((result) => {
+        if (result.err) { throw new Error('error-DB-get-count') };
+        for (const [key, value] of Object.entries(result[0])) { count_records = value };
+    })
+    .then(() => { res.send({"res": {'count': count_records, 'orders': ordersresult}}) })
     .catch((err) => {
         log('orders-error', err);
         res.status(400).send('SERVER ERROR: 400 (Bad Request)');

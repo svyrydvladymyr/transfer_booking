@@ -94,46 +94,52 @@ const getUser = async (req, res, lang = 'uk-UA', pageName) => {
     await autorisationCheck(req, res)
     .then(async (userid) => {
         // console.log('userid', userid);
-        console.log('pageName', pageName);
-
-        if (userid === false) { throw new Error('error-autorisation') };
-        await tableRecord(`SELECT * FROM users WHERE userid = '${userid.userid}'`)
-        .then((user) => {
-            if (user.err) { throw new Error(user.err) };
-            const {userid, name, surname, ava, email, phone, phone_verified, provider, permission, date_registered} = user[0];
-            //permission
-            DATA.permission.permissionRules = `${permission}`;
-            DATA.permission.permissionAuthorization = '1';
-            //user
-            DATA.user.id = userid;
-            DATA.user.ava = ava;
-            DATA.user.name = name;
-            DATA.user.surname = surname;
-            DATA.user.email = email;
-            DATA.user.lang = lang;
-            DATA.permission.pageName = pageName;
-            DATA.langPack = require(`./lang/${lang}`);
-            if (pageName === 'person') {
-                DATA.user.ava = ava;        
-                DATA.user.email = email;      
-                DATA.user.phone = phone;      
-                DATA.user.phone_verified = phone_verified;      
-                DATA.user.provider = provider;  
-                DATA.user.date_registered = readyFullDate(date_registered, 'reverse');
-                DATA.menu.home = 'active_menu'
-                if (permission === 1) {
-                    DATA.person.townArr = ``;
-                    DATA.person.routeArr = ``;
-                };                
-            };
-        });   
+        // console.log('pageName', pageName);
+        if (userid === false) { throw new Error('user-not-authorized') };
+        return `SELECT * FROM users WHERE userid = '${userid.userid}'`; 
+    })
+    .then(tableRecord)
+    .then((user) => {
+        if (user.err) { throw new Error(user.err) };
+        const {userid, name, surname, ava, email, phone, phone_verified, provider, permission, date_registered} = user[0];
+        //permission
+        DATA.permission.permissionRules = `${permission}`;
+        DATA.permission.permissionAuthorization = '1';
+        //user
+        DATA.user.id = userid;
+        DATA.user.ava = ava;
+        DATA.user.name = name;
+        DATA.user.surname = surname;
+        DATA.user.email = email;
+        DATA.user.lang = lang;
+        DATA.permission.pageName = pageName;
+        DATA.langPack = require(`./lang/${lang}`);
+        if (pageName === 'person') {
+            DATA.user.ava = ava;        
+            DATA.user.email = email;      
+            DATA.user.phone = phone;      
+            DATA.user.phone_verified = phone_verified;      
+            DATA.user.provider = provider;  
+            DATA.user.date_registered = readyFullDate(date_registered, 'reverse');
+            DATA.menu.home = 'active_menu'
+            if (permission === 1) {
+                DATA.person.townArr = ``;
+                DATA.person.routeArr = ``;
+            };                
+        };
+    }, 
+    (no_user) => {
+        // log('no-authorization', no_user); 
+        DATA.permission.permissionAuthorization = '0';  
     })
     .catch((err) => {
-        log('error-user-info', err); 
+        log('error-user-info', err);
+        DATA.permission.permissionAuthorization = '0';  
+    })
+    .finally(() => {
         DATA.langPack = require(`./lang/${lang}`);
         DATA.permission.pageName = pageName;
-        DATA.permission.permissionAuthorization = '0';   
-    }); 
+    });
 };
 
 module.exports = {

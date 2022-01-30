@@ -83,7 +83,13 @@ window.onload = function(event) {
     const info_cont = $_('.info_container')[0];
     if (tab_cont !== undefined && info_cont !== undefined) {
         tab_cont.style.opacity = '1';
+        tab_cont.style.transition = '1.5s';
         info_cont.style.opacity = '1';
+        info_cont.style.transition = '1.5s';
+        setTimeout(() => {
+            tab_cont.style.transition = '0s';
+            info_cont.style.transition = '0s';
+        }, 1500);
     };
     if (localStorage.getItem("transfid") !== null && localStorage.getItem("transfid") !== '') {
         const transid = localStorage.getItem("transfid");
@@ -913,8 +919,6 @@ const culculate = () => {
                 console.log('route', element);
 
                 bookArr.transferId = element.transfer_id;
-                bookArr.transferFrom = townsFrom[inpFrom];
-                bookArr.transferTo = townsTo[inpTo];
                 bookArr.transferFromName = $_('#main_from')[0].value;
                 bookArr.transferToName = $_('#main_to')[0].value;
                 bookArr.adult = +$_('#adults')[0].value;
@@ -1081,13 +1085,9 @@ const setOrderDate = (el) => { orderdate = el.value; ordersList(1) };
 
 //load towns list
 const ordersList = (page = 1) => {
-    let param = '';
-
-    console.log('order_numb', numb);
-    console.log('order_status', orderstat);
-    console.log('order_date', orderdate);
-    console.log('param', param);
-
+    let param = [];
+    ['reserv', 'proof', 'del'].includes(orderstat) ? param.push({"status": orderstat}) : param.push({"status": ''});
+    ['3', '6', '12', ''].includes(orderdate) ? param.push({"orderdate": orderdate}) : param.push({"orderdate": ''});
     send({page, param, numb} , `/orderslist`, (result) => {
         const resultat = JSON.parse(result);
         if (resultat.res) {
@@ -1098,11 +1098,6 @@ const ordersList = (page = 1) => {
             const pagin_page = Math.ceil(resultat.res.count / numb);
             orders_list.innerHTML = '';
             orders_pagination.innerHTML = '';
-
-
-            console.log('ressss', resultat.res);
-
-
             if (pagin_page > 1) {
                 for (let i = 1; i <= pagin_page; i++) { orders_pagination.innerHTML += `<p onclick="ordersList(${i})">${i}</p>` };            
                 present_pagination[page-1].style.color = '#fff';
@@ -1110,7 +1105,6 @@ const ordersList = (page = 1) => {
                 present_pagination[page-1].removeAttribute("onclick");  
             };           
             resultat.res.orders.forEach(element => {      
-                console.log('element', element);  
                 orders_list.innerHTML += `
                 <div class="order" onclick="showModal('orderInfo', 
                 {'orders' : '${element.orders}',

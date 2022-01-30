@@ -7,9 +7,6 @@ module.exports = (req, res, pageName, lang = 'ua', err = '') => {
         res.status(500).render('home', { DATA });
     } else {
         const lang = ['uk-UA', 'en-US', 'ru-RU'].includes(req.cookies['lang']) ? req.cookies['lang'] : 'uk-UA';
-
-        // console.log('lang', lang);
-
         require('./user').getUser(req, res, lang, pageName)
         // .then(() => { console.log("DATA", DATA) })
         .then(() => { res.render(pageName, { DATA }) });

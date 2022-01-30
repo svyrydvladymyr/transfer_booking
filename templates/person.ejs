@@ -7,7 +7,7 @@
 <body>
     <% if (DATA.permission.permissionAuthorization === '1') { %>
         <script>
-            let numb = 30, orderstat = '', orderdate = ''; 
+            let numb = 30, orderstat = '', orderdate = '3'; 
         </script>
         <script src="https://code.jquery.com/jquery-3.6.0.js"></script>
         <script src="https://code.jquery.com/ui/1.13.1/jquery-ui.js"></script>
@@ -63,7 +63,7 @@
                                         <option value="">За весь час</option>
                                     </select>
                                     <select name="order_status" onchange="setOrderStatus(this)">
-                                        <option value="" selected disabled hidden></option>
+                                        <option value="" selected>Всі</option>
                                         <option value="reserv">Зарезервовано</option>
                                         <option value="proof">Підтверджено</option>
                                         <option value="del">Видалено</option>
