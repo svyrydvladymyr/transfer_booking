@@ -99,10 +99,7 @@
         <% } %> 
     </div>
     <%- include("./parts/footer.ejs") %>
-    <script src="./js/lang.js"></script>
-    <script src="./js/data.js"></script>
-    <script src="./js/js.js"></script>
-    <script src='./js/icon.js'></script>
+    <%- include("./parts/script.ejs") %>
     <% if (DATA.permission.permissionAuthorization === '1') { %>
         <% if (DATA.permission.permissionRules === '0') { %> 
             <script>

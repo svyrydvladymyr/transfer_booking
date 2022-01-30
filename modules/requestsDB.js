@@ -203,7 +203,9 @@ const variables = async (req, res) => {
         tableRecord(`SELECT transfer_id FROM transfers WHERE microbus='true' AND price_gr!='' LIMIT 3`),
         tableRecord(`SELECT transfer_id FROM transfers WHERE selection='true' AND price_pr!=''`)])
     .then(([townIdRes, townsFromRes, townsToRes, transfersArrRes, privatRes, microbusRes, specRes]) => {
-        if (townIdRes.err) { throw new Error('error-DB-townsID') };
+        if (townIdRes.err) { 
+            console.log('townIdRes.err', townIdRes.err);
+            throw new Error('error-DB-townsID') };
         if (townsFromRes.err) { throw new Error('error-DB-transferFROM') };
         if (townsToRes.err) { throw new Error('error-DB-transferTO') };
         if (transfersArrRes.err) { throw new Error('error-DB-transfersARR') };

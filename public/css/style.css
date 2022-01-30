@@ -1013,7 +1013,6 @@ body {
 
 /*_____________________transfers page________________________*/
 .wrap_special {
-  outline: 1px solid red;
   display: -webkit-box;
   display: -ms-flexbox;
   display: flex;
@@ -1023,42 +1022,58 @@ body {
       -ms-flex-pack: center;
           justify-content: center;
   width: 100%;
-  padding: 0;
+  padding: 50px 0px;
   margin: 0;
 }
 .wrap_special div {
-  outline: 1px solid green;
-  width: 60%;
+  width: 96%;
   display: -webkit-box;
   display: -ms-flexbox;
   display: flex;
   -ms-flex-wrap: wrap;
-      flex-wrap: wrap;
+  flex-wrap: wrap;
+  -webkit-box-pack: center;
+      -ms-flex-pack: center;
+          justify-content: center;
+  border-bottom: 1px solid #cfcfcf;
+  padding: 15px;
 }
 .wrap_special p {
-  cursor: pointer;
-  margin: 15px 0px 4px 0px;
-  color: #6ba917;
+  margin: 0px;
+  color: #3b5c0f;
   font-size: 16px;
+  font-weight: bold;
+  padding: 0px 10px;
 }
 .wrap_special p i {
   font-size: 13px;
   margin: 0px 10px 0px 0px;
   color: #ee9e07;
 }
-.wrap_special .price {
+.wrap_special p.price {
   margin: 0px;
-  color: #3e3f40;
+  color: #3b5c2e;
   font-size: 15px;
-  padding: 0px 0px 6px 0px;
-  border-bottom: 1px solid #e1e1e1;
+  padding: 0px 10px;
 }
-.wrap_special .price span:first-child {
+.wrap_special p.price span:first-child {
   font-size: 11px;
   margin: 0px 4px 0px 0px;
 }
-.wrap_special .price span:last-child {
+.wrap_special p.price span:last-child {
   margin: 0px 0px 0px 4px;
+}
+.wrap_special p.special_btn {
+  cursor: pointer;
+  margin: 0px;
+  color: #6ba917;
+  font-size: 15px;
+  padding: 0px 12px;
+}
+.wrap_special p.special_btn:hover {
+  -webkit-text-decoration-line: underline;
+          text-decoration-line: underline;
+  color: #ee9e07;
 }
 
 /*_____________________advantages________________________*/
@@ -2575,6 +2590,36 @@ iframe {
       -ms-flex-pack: center;
           justify-content: center;
   overflow: hidden;
+}
+.howitwork_container .howitwork_wrap .howitwork_row .howitwork_cell .img_22 {
+  position: absolute;
+  width: 60%;
+  top: -58%;
+}
+.howitwork_container .howitwork_wrap .howitwork_row .howitwork_cell .img_12 {
+  position: absolute;
+  width: 60%;
+  top: 13%;
+}
+.howitwork_container .howitwork_wrap .howitwork_row .howitwork_cell .img_21 {
+  position: absolute;
+  width: 60%;
+  top: 50%;
+}
+.howitwork_container .howitwork_wrap .howitwork_row .howitwork_cell .img_31 {
+  position: absolute;
+  width: 60%;
+  top: -50%;
+}
+.howitwork_container .howitwork_wrap .howitwork_row .howitwork_cell .img_32 {
+  position: absolute;
+  width: 60%;
+  top: 67%;
+}
+.howitwork_container .howitwork_wrap .howitwork_row .howitwork_cell .img_42 {
+  position: absolute;
+  width: 60%;
+  top: -50%;
 }
 .howitwork_container .howitwork_wrap .howitwork_row .howitwork_cell .box_border_11 {
   position: absolute;

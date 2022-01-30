@@ -1,55 +1,3 @@
-//get element
-const $_ = (value, parent = document) => parent.querySelectorAll(value);
-
-//redirect page
-const redirect = way => window.location.replace(`${way}`);
-
-//logout
-const exit = () => { send({}, '/exit', (res) => { location.reload() }) };
-
-//token
-const token = length => {
-    let result = '';
-    const characters = '123456789';
-    for ( var i = 0; i < length; i++ ) {result += characters.charAt(Math.floor(Math.random() * characters.length))}
-    return result;
-};
-
-//to top
-const toTopFn = () => { window.scrollTo({ top: 1, behavior: "smooth" })};
-
-//validation email
-const validEmail = text => (text.match(/^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/)) ? true : false;
-const validPhone = text => (text.match(/^[\+]?[(]?[0-9]{3}[)]?[-\s\.]?[0-9]{3}[-\s\.]?[0-9]{4,6}$/im)) ? true : false;
-
-const modal = $_('.modal_wrap')[0];
-const inputFrom = $_('#main_from')[0];
-const inputTo = $_('#main_to')[0];
-const mainTimeInput = $_('#main_time')[0];
-const RegExpArr = {
-    RegExpInput : new RegExp(/[^a-zA-Zа-яА-Я0-9-()_+=.'\":/\,іІїЇєЄ /\n]/g),
-    RegExpPhone : new RegExp(/[^0-9-()+ /\n]/g),
-    RegExpName : new RegExp(/[^a-zA-Zа-яА-Я-іІїЇєЄ /\n]/g),
-    RegExpEmail : new RegExp(/[^a-zA-Z0-9.&@-_]/g)
-} 
-
-let idTownPlace, tokenTown, formValid;
-let hours, minutes, hArr = [], mArr = [], hStart = 0, mStart = 0;;
-let townsFrom = {}, townsTo = {}, transfersArr = [], microbusArr = [], privatArr = [], specArr = [];
-let calkTrue = true;
-
-//to change the language
-const setLang = (lang) => {
-    document.cookie = `lang=${lang}`;
-    document.location.reload();
-};
-
-//to get the language name
-const getLang = (name) => {
-    let matches = document.cookie.match(new RegExp("(?:^|; )" + name.replace(/([\.$?*|{}\(\)\[\]\\\/\+^])/g, '\\$1') + "=([^;]*)"));
-    return matches ? decodeURIComponent(matches[1]).slice(0, 2) : 'uk';
-};
-
 //for send to main page and set route to main form
 const sendToMainForm = (transfid, type, obj) => {
     localStorage.setItem("transfid", transfid);
@@ -190,18 +138,6 @@ window.onclick = function(event) {
     };
 };
 
-//date format day
-const readyDay = function(fullDate){
-    const createDate = new Date(fullDate);
-    return ((createDate.getDate() >= 1) && (createDate.getDate() <= 9)) ? "0" + createDate.getDate() : createDate.getDate();
-};  
-
-//date format month
-const readyMonth = function(fullDate){    
-    const createDate = new Date(fullDate);
-    return ((createDate.getMonth() >= 0) && (createDate.getMonth() <= 8)) ? "0" + (createDate.getMonth() + 1) : createDate.getMonth() + 1;          
-}; 
-
 //for creating calendar
 const date = new Date();
 const renderCalendar = (year) => {
@@ -243,46 +179,79 @@ const selectDate = (date) => {
     checkForm();
 };
 
-//for send AJAX  
-const send = (obj, url, fun, req = 'POST') => {
-    xmlhttp = new XMLHttpRequest();
-    xmlhttp.onload = function() {
-        if (this.readyState == 4 && this.status == 200) {
-            fun(this.responseText);
-        }};
-    xmlhttp.open(req, url, true);
-    xmlhttp.setRequestHeader("Content-type", "application/json");
-    xmlhttp.send(JSON.stringify(obj));     
-};    
-
-//token
-const generate_token = (length) => {
-    const a = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890".split("");
-    const b = [];  
-    for (let i = 0; i < length; i++) {
-        let j = (Math.random() * (a.length-1)).toFixed(0);
-        b[i] = a[j];
+//for add time field
+const plusTime = (element, type) => {
+    const translateBody = $_('.add_time')[0];
+    const translateBodyChild = translateBody.children;
+    const plusTransBody = document.createElement("div");
+    plusTransBody.setAttribute('class', 'add');
+    plusTransBody.innerHTML = `<p class="time_label">Відправлення</p> 
+                               <input type="text" name="translate" class="time" autocomplete="off" placeholder="Час перевезення..." onfocus="showModal('transferTimes', {}, this)" readonly>
+                               <i class='fas fa-plus' onclick="plusTime(this, 'plus')"></i>`;
+    class classLists { constructor(){}
+        style(element, first, second){
+            element.classList.replace(`fa-${first}`, `fa-${second}`);
+            element.setAttribute('onclick', `plusTime(this, '${second}')`);
+        };
     };
-    return b.join("");
+    const classStyle = new classLists(); 
+    if (type === 'plus') {
+        classStyle.style(element, 'plus', 'minus');
+        if (translateBodyChild.length < 10) { translateBody.appendChild(plusTransBody) };
+        if (translateBodyChild.length === 10) { classStyle.style(translateBodyChild[translateBodyChild.length - 1].children[2], 'plus', 'minus') };
+    };
+    if (type === 'minus') {
+        element.parentNode.remove();
+        if (translateBodyChild.length < 10) { classStyle.style(translateBodyChild[translateBodyChild.length - 1].children[2], 'minus', 'plus') };
+    };
+    const timeLabels = $_('.time_label');
+    for (const [index, iterator] of timeLabels.entries()) {
+        timeLabels[index].innerHTML = `Відправлення ${index + 1}`;
+    };
 };
 
-//transliteration
-var a = {"Ё":"YO","Й":"I","Ц":"TS","У":"U","К":"K","Е":"E","Н":"N","Г":"G","Ш":"SH","Щ":"SCH","З":"Z","Х":"H","Ъ":"'","ё":"yo","й":"i","ц":"ts","у":"u","к":"k","е":"e","н":"n","г":"g","ш":"sh","щ":"sch","з":"z","х":"h","ъ":"'","Ф":"F","Ы":"I","В":"V","А":"a","П":"P","Р":"R","О":"O","Л":"L","Д":"D","Ж":"ZH","Э":"E","ф":"f","ы":"i","в":"v","а":"a","п":"p","р":"r","о":"o","л":"l","д":"d","ж":"zh","э":"e","Я":"Ya","Ч":"CH","С":"S","М":"M","И":"I","Т":"T","Ь":"'","Б":"B","Ю":"YU","я":"ya","ч":"ch","с":"s","м":"m","и":"i","т":"t","ь":"'","б":"b","ю":"yu"};
-const transliterate = (word) => {
-    return word.split('').map(function (char) { 
-        return a[char] || char; 
-    }).join("");
+//for show times form 
+const showTimeList = (el) => {
+    $_('.add_time')[0].style.display = el.value === '' ? 'none' : 'table';
+};
+
+//for set times to main form 
+const setTime = (value) => {
+    mainTimeInput.value = value;
+    modal.innerHTML = '';
+    mainTimeInput.classList.remove('err_input');
+    checkForm();
+};
+
+//for selecting time
+const selectTime = (type, arrow) => {
+    if (type === 'hour') {
+        if (arrow === 'up') {            
+            hStart++
+            if (hStart === 24) {hStart = 0}
+            hours.innerHTML = hArr[hStart];
+        };
+        if (arrow === 'down') {            
+            hStart--
+            if (hStart === -1) {hStart = 23}
+            hours.innerHTML = hArr[hStart];
+        };       
+    };
+    if (type === 'minute') {
+        if (arrow === 'up') {
+            mStart++
+            if (mStart === 13) {mStart = 0}
+            minutes.innerHTML = mArr[mStart];
+        };
+        if (arrow === 'down') {
+            mStart--
+            if (mStart === -1) {mStart = 12}
+            minutes.innerHTML = mArr[mStart];
+        };  
+    };
 };
 
 //for changing menu in skroling process
-const body = $_('body')[0];
-const menu = $_('.menu_container')[0];
-const social = $_('.social_wrap')[0];
-const toTop = $_('#toTop')[0];
-const header_node = $_('.header')[0];
-const content_cont = $_('.content_container')[0];
-const option_cont = $_('.options_container')[0];
-const call_cont = $_('.call_container')[0];
 window.onscroll = function() {
     if (content_cont !== undefined && option_cont !== undefined && call_cont !== undefined) {
         let heightBlok, heightBlok2, heightBlok3;
@@ -419,32 +388,6 @@ if ($_('.feedback_container')[0]) {
         touchendFeedX = e.changedTouches[0].screenX;
         slideFeed();
     });
-};
-
-//for change status of mobile menu
-const shoeMobilMenu = (el) => {
-    el.classList.toggle("change");
-    $_('.menu_container_wrap_mobile')[0].classList.toggle("menu_container_wrap_mobile_active");
-}
-const shoeMobilInfo = () => {
-    $_('.mobile_menu_contacts')[0].classList.toggle("mobile_menu_contacts_active");
-}
-
-//tabs
-const tabs = (tab) => {
-    const tabs = $_('.tabs > p');
-    const bodys = $_('.tab_bodys > .body');
-    tabs.forEach(element => { element.classList.remove('tab_active') });
-    bodys.forEach(element => { element.classList.remove('body_active') });
-    tabs[tab].classList.add('tab_active');
-    bodys[tab].classList.add('body_active');
-}
-
-//sliders
-const slider = (el) => {
-    const active = el.classList.contains('active_sl');
-    $_('.slider > p').forEach(element => { element.classList.remove('active_sl') });
-    active ? null : el.classList.toggle('active_sl');
 };
 
 //close modal window
@@ -761,11 +704,6 @@ const selectTownMain = (el, param, clear) => {
     };
 };
 
-//creating town id
-const creatingIdTown = (el) => {
-    idTownPlace.innerHTML = `${transliterate(el.value).replace( /[^a-zA-ZiIіІ]/g, "" )}_${tokenTown}`;
-};
-
 //validation text input
 const validation = (el, type) => {
     const val = `${el.value.replace(RegExpArr[`RegExp${type}`] , "")}`;
@@ -905,6 +843,8 @@ const checkForm = () => {
         };            
     };
 };
+
+//for culculate and send orders
 const bookArr = {};
 const culculate = () => {
     checkForm();
@@ -983,93 +923,6 @@ const culculate = () => {
     };
 };
 
-//for add time field
-const plusTime = (element, type) => {
-    const translateBody = $_('.add_time')[0];
-    const translateBodyChild = translateBody.children;
-    const plusTransBody = document.createElement("div");
-    plusTransBody.setAttribute('class', 'add');
-    plusTransBody.innerHTML = `<p class="time_label">Відправлення</p> 
-                               <input type="text" name="translate" class="time" autocomplete="off" placeholder="Час перевезення..." onfocus="showModal('transferTimes', {}, this)" readonly>
-                               <i class='fas fa-plus' onclick="plusTime(this, 'plus')"></i>`;
-    class classLists { constructor(){}
-        style(element, first, second){
-            element.classList.replace(`fa-${first}`, `fa-${second}`);
-            element.setAttribute('onclick', `plusTime(this, '${second}')`);
-        };
-    };
-    const classStyle = new classLists(); 
-    if (type === 'plus') {
-        classStyle.style(element, 'plus', 'minus');
-        if (translateBodyChild.length < 10) { translateBody.appendChild(plusTransBody) };
-        if (translateBodyChild.length === 10) { classStyle.style(translateBodyChild[translateBodyChild.length - 1].children[2], 'plus', 'minus') };
-    };
-    if (type === 'minus') {
-        element.parentNode.remove();
-        if (translateBodyChild.length < 10) { classStyle.style(translateBodyChild[translateBodyChild.length - 1].children[2], 'minus', 'plus') };
-    };
-    const timeLabels = $_('.time_label');
-    for (const [index, iterator] of timeLabels.entries()) {
-        timeLabels[index].innerHTML = `Відправлення ${index + 1}`;
-    };
-};
-
-//for show times form 
-const showTimeList = (el) => {
-    $_('.add_time')[0].style.display = el.value === '' ? 'none' : 'table';
-};
-
-//for set times to main form 
-const setTime = (value) => {
-    mainTimeInput.value = value;
-    modal.innerHTML = '';
-    mainTimeInput.classList.remove('err_input');
-    checkForm();
-};
-
-//for selecting time
-const selectTime = (type, arrow) => {
-    if (type === 'hour') {
-        if (arrow === 'up') {            
-            hStart++
-            if (hStart === 24) {hStart = 0}
-            hours.innerHTML = hArr[hStart];
-        };
-        if (arrow === 'down') {            
-            hStart--
-            if (hStart === -1) {hStart = 23}
-            hours.innerHTML = hArr[hStart];
-        };       
-    };
-    if (type === 'minute') {
-        if (arrow === 'up') {
-            mStart++
-            if (mStart === 13) {mStart = 0}
-            minutes.innerHTML = mArr[mStart];
-        };
-        if (arrow === 'down') {
-            mStart--
-            if (mStart === -1) {mStart = 12}
-            minutes.innerHTML = mArr[mStart];
-        };  
-    };
-};
-
-//load variables list
-const loadVariablesList = () => {
-    send({} , `/variables`, (result) => {
-        const resultat = JSON.parse(result);
-        if (resultat.res) {
-            townsFrom = resultat.res.townsFrom;
-            townsTo = resultat.res.townsTo;
-            transfersArr = resultat.res.transfersArr;
-            privatArr = resultat.res.privatArr;
-            microbusArr = resultat.res.microbusArr;
-            specArr = resultat.res.specArr;
-        };
-    });
-};
-
 //for proofing or canceling order
 const proofOrder = (orderid, param) => { 
     send({"id": `${orderid}`, 'param': `${param}`} , `/order${param}`, (result) => {
@@ -1134,6 +987,21 @@ const ordersList = (page = 1) => {
                     <i class='fas fa-info-circle ${element.proof}'></i>
                 </div>`
             });
+        };
+    });
+};
+
+//load variables list
+const loadVariablesList = () => {
+    send({} , `/variables`, (result) => {
+        const resultat = JSON.parse(result);
+        if (resultat.res) {
+            townsFrom = resultat.res.townsFrom;
+            townsTo = resultat.res.townsTo;
+            transfersArr = resultat.res.transfersArr;
+            privatArr = resultat.res.privatArr;
+            microbusArr = resultat.res.microbusArr;
+            specArr = resultat.res.specArr;
         };
     });
 };

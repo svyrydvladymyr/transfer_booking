@@ -863,42 +863,57 @@ body {
 
 /*_____________________transfers page________________________*/
 .wrap_special {
-  outline: 1px solid red;
   display: flex;
   flex-wrap: wrap;
   justify-content: center;
   width: 100%;
-  padding: 0;
+  padding: 50px 0px;
   margin: 0;
   div {
-    outline: 1px solid green;
-    width: 60%;
+    width: 96%;
+    display: -webkit-box;
+    display: -ms-flexbox;
     display: flex;
+    -ms-flex-wrap: wrap;
     flex-wrap: wrap;
+    justify-content: center;
+    border-bottom: 1px solid #cfcfcf;
+    padding: 15px;
   }
   p {
-    cursor: pointer;
-    margin: 15px 0px 4px 0px;
-    color: #6ba917;
+    margin: 0px;
+    color: #3b5c0f;
     font-size: 16px;
+    font-weight: bold;
+    padding: 0px 10px;
     i {
       font-size: 13px;
       margin: 0px 10px 0px 0px;
       color: #ee9e07
     }
   }
-  .price {
+  p.price {
     margin: 0px;
-    color: #3e3f40;
+    color: #3b5c2e;
     font-size: 15px;
-    padding: 0px 0px 6px 0px;
-    border-bottom: 1px solid #e1e1e1;
+    padding: 0px 10px;
     span:first-child {
       font-size: 11px;
       margin: 0px 4px 0px 0px;
     }
     span:last-child {
       margin: 0px 0px 0px 4px;            
+    }
+  }
+  p.special_btn {
+    cursor: pointer;
+    margin: 0px;
+    color: #6ba917;
+    font-size: 15px;
+    padding: 0px 12px;
+    &:hover {
+      text-decoration-line: underline;
+      color: #ee9e07;
     }
   }
 }
@@ -2104,6 +2119,36 @@ iframe {
         justify-content: center;
         overflow: hidden;
         // outline: 1px solid blue;
+        .img_22 {
+          position: absolute;
+          width: 60%;
+          top: -58%;
+        }
+        .img_12 {
+          position: absolute;
+          width: 60%;
+          top: 13%;
+        }
+        .img_21 {
+          position: absolute;
+          width: 60%;
+          top: 50%;
+        }
+        .img_31 {
+          position: absolute;
+          width: 60%;
+          top: -50%;
+        }
+        .img_32 {
+          position: absolute;
+          width: 60%;
+          top: 67%;
+        }
+        .img_42 {
+          position: absolute;
+          width: 60%;
+          top: -50%;
+        }
         .box_border_11 {
           position: absolute;
           right: 0;
