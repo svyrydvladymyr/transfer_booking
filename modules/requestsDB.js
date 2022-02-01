@@ -433,7 +433,7 @@ const saveposition = async (req, res) => {
 
 const sendfeedback = (req, res) => {
     const {feedbackName, feedbackSurname, feedbackEmail, feedbackPhone, feedbackComment} = req.body;
-    const sql = `INSERT INTO feedback (idfeedback, feedbackName, feedbackSurname, feedbackEmail, feedbackPhone, feedbackComment, date_create, answered, answer, date_answer) 
+    const sql = `INSERT INTO feedback (idfeedback, feedbackName, feedbackSurname, feedbackEmail, feedbackPhone, feedbackComment, date_create, status, answer, date_answer) 
     VALUES ('${token(10)}',       
             '${checOnTrueVal(feedbackName)}',
             '${checOnTrueVal(feedbackSurname)}',
@@ -446,7 +446,9 @@ const sendfeedback = (req, res) => {
             '${readyFullDate(new Date(), '')}')`;
     tableRecord(sql)
     .then((result) => {
-        if (result.err) { throw new Error('error-DB-feedback') };
+        if (result.err) { 
+            console.log('result.err', result.err);
+            throw new Error('error-DB-feedback') };
         res.send({"res": 'Feedback sended!'});
     })
     .catch((err) => {
