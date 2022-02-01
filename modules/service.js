@@ -12,7 +12,7 @@ const clienttoken = (req, res) => new Cookies(req, res, {"keys":['volodymyr']}).
 const validEmail = text => (text.match(/^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/)) ? true : false;
 
 //chack on true values
-const checOnTrueVal = (el) => el.replace(new RegExp("[^a-zA-Zа-яА-Я0-9-()_+=.'\":/\,іІїЇєЄ /\n]", "gi"), '');
+const checOnTrueVal = (el) => el.replace(new RegExp("[^a-zA-Zа-яА-Я0-9-()_+=!?.'\":;/\,іІїЇєЄ /\n]", "gi"), '');
 
 //add or clear Cookies
 const addCookies = (req, res, token, param) => {
