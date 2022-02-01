@@ -8,7 +8,7 @@ const users = () => {
         name VARCHAR(80) NOT NULL, 
         surname VARCHAR(80) NOT NULL,
         provider VARCHAR(15) DEFAULT '',
-        email VARCHAR(80) DEFAULT '',
+        email VARCHAR(110) DEFAULT '',
         phone VARCHAR(20) DEFAULT '',
         phone_code VARCHAR(6) DEFAULT '',
         phone_verified VARCHAR(10) DEFAULT 'noverified',
@@ -57,7 +57,7 @@ const orders = () => {
         orders VARCHAR(10) NOT NULL,
         transfer_id VARCHAR(50) NOT NULL,
         order_from VARCHAR(100) NOT NULL,
-        order_to VARCHAR(100) NOT NULL,
+        order_to VARCHAR(110) NOT NULL,
         date VARCHAR(10) NOT NULL,
         time VARCHAR(5) NOT NULL,
         type VARCHAR(2) NOT NULL,
@@ -77,10 +77,26 @@ const orders = () => {
     con.query(sql, function (err, result) {if (err) throw err; console.log("Table orders created")});
 };
 
+const feedback = () => {
+    const sql = `CREATE TABLE feedback (id INT AUTO_INCREMENT PRIMARY KEY,
+        idfeedback VARCHAR(10) NOT NULL UNIQUE,
+        feedbackName VARCHAR(80) NOT NULL, 
+        feedbackSurname VARCHAR(80) NOT NULL,
+        feedbackEmail VARCHAR(110) NOT NULL,
+        feedbackPhone VARCHAR(20) NOT NULL,
+        feedbackComment VARCHAR(310) NOT NULL,
+        date_create DATETIME,
+        status VARCHAR(10) DEFAULT 'noanswer',
+        answer VARCHAR(310) DEFAULT '',
+        date_answer DATETIME
+        )`; 
+    con.query(sql, function (err, result) {if (err) throw err; console.log("Table feedback created")});
+};
 
 module.exports = {
     users,
     transfers,
     points,
-    orders
+    orders,
+    feedback
 };

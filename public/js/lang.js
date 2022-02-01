@@ -49,4 +49,6 @@ lang = {
     fromuk : 'від',
     booken : 'Reserve',
     bookuk : 'Забронювати',
+    answeren : 'Answer',
+    answeruk : 'Відповідь',
 }

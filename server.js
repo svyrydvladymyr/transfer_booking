@@ -9,10 +9,11 @@ const DB = require('./db/createDB');
 // DB.transfers();
 // DB.orders();
 // DB.points();
+// DB.feedback();
 
 const {log, accessLog, logOut} = require('./modules/service');
 const renderPage = require('./modules/renderPage');
-const {townadd, townlist, transferadd, transferlist, variables, orders, orderslist, saveposition, orderstatus} = require('./modules/requestsDB');
+const {townadd, townlist, transferadd, transferlist, variables, orders, orderslist, saveposition, orderstatus, sendfeedback, feedbacklist, sendanswer} = require('./modules/requestsDB');
 
 //oaugh
 require('./modules/oaugh.js')(app);
@@ -31,6 +32,10 @@ app.use((req, res, next) => {log(`URL-REQUEST:-(${req.method})-`, req.url); next
 //system logs
 // app.use((req, res, next) => {accessLog(req, res, next)});
 
+//requests feedback
+app.use('/sendfeedback', (req, res) => {sendfeedback(req, res)});
+app.use('/feedbacklist', (req, res) => {feedbacklist(req, res)});
+app.use('/sendanswer', (req, res) => {sendanswer(req, res)});
 //requests order
 app.use('/order', (req, res) => {orders(req, res)});
 app.use('/orderslist', (req, res) => {orderslist(req, res)});

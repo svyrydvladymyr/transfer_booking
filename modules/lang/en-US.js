@@ -106,7 +106,8 @@ module.exports = {
     "feedback_form_tel" : "Phone",
     "feedback_form_message" : "Message",
 
-    "orders_title" : "Your orders",
+    "orders_title" : "Orders",
+    "feedback_title" : "Message",
 
     "main_form_message" : "Fill in the details below to book your transfer",
     "main_form_mess_from" : "From airport, railway station, hotel or location",
@@ -132,4 +133,6 @@ module.exports = {
     "main_form_err_calk" : "To calculate the cost of transportation, select all the required fields!",
     "main_form_err_book" : "Select all required fields for booking!",
     "main_form_err_bookfinal" : "Select all required fields for booking!",
+    "feedback_form_err" : "To send a message, fill in all required fields!",
+    "feedback_sended" : "Message sent!",
 }

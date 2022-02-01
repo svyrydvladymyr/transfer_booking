@@ -23,7 +23,7 @@ const RegExpArr = {
 let idTownPlace, tokenTown, formValid;
 let hours, minutes, hArr = [], mArr = [], hStart = 0, mStart = 0;;
 let townsFrom = {}, townsTo = {}, transfersArr = [], microbusArr = [], privatArr = [], specArr = [];
-let calkTrue = true;
+let calkTrue = true, feedbackCalkTrue = true;
 
 //redirect page
 const redirect = way => window.location.replace(`${way}`);

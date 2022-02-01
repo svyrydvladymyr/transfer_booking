@@ -407,7 +407,7 @@ const orderstatus = async (req, res) => {
         res.send({"res": 'Status saved!'});
     })
     .catch((err) => {
-        log('towns-list-error', err);
+        log('order-status-list-error', err);
         res.status(400).send('SERVER ERROR: 400 (Bad Request)');
     });
 };
@@ -426,7 +426,123 @@ const saveposition = async (req, res) => {
         res.send({"res": 'Position saved!'});
     })
     .catch((err) => {
-        log('towns-list-error', err);
+        log('save_position-list-error', err);
+        res.status(400).send('SERVER ERROR: 400 (Bad Request)');
+    });
+};
+
+const sendfeedback = (req, res) => {
+    const {feedbackName, feedbackSurname, feedbackEmail, feedbackPhone, feedbackComment} = req.body;
+    const sql = `INSERT INTO feedback (idfeedback, feedbackName, feedbackSurname, feedbackEmail, feedbackPhone, feedbackComment, date_create, answered, answer, date_answer) 
+    VALUES ('${token(10)}',       
+            '${checOnTrueVal(feedbackName)}',
+            '${checOnTrueVal(feedbackSurname)}',
+            '${feedbackEmail.replace(new RegExp("[^a-zA-Z0-9.&@-_]", "gi"), "")}', 
+            '${feedbackPhone.replace(new RegExp("[^0-9+]", "gi"), "")}', 
+            '${checOnTrueVal(feedbackComment)}',
+            '${readyFullDate(new Date(), '')}',
+            'noanswer',
+            '',
+            '${readyFullDate(new Date(), '')}')`;
+    tableRecord(sql)
+    .then((result) => {
+        if (result.err) { throw new Error('error-DB-feedback') };
+        res.send({"res": 'Feedback sended!'});
+    })
+    .catch((err) => {
+        log('send-feedback-list-error', err);
+        res.status(400).send('SERVER ERROR: 400 (Bad Request)');
+    });
+};
+
+const feedbacklist = (req, res) => {
+    let user_info, phone_res, count_records, page = req.body.page, feedback_limit = req.body.feedback_numb, countsql = '', feedbackresult = {};
+    tableRecord(`SELECT userid FROM users WHERE token = '${clienttoken(req, res)}'`)
+    .then((user) => { 
+        if (user.err || user == '') { throw new Error('user-not-autorised') }; 
+        return `SELECT email, phone, phone_verified, permission FROM users WHERE userid='${user[0].userid}'`;
+    })
+    .then(tableRecord)
+    .then((result) => {
+        if (result.err) { throw new Error('error-DB-get-user') };
+        if (result[0].phone_verified === 'verified') { phone_res = result[0].phone.slice(result[0].phone.length - 10, result[0].phone.length) };
+        user_info = result;
+    })
+    .then(() => {
+        let page_start = (page -1) * feedback_limit;
+        if (user_info[0].permission === 1) {
+            let where = '', status = '', datesql = '';
+            const feedbackstatus = req.body.param[0]['status'];
+            const feedbackdate = req.body.param[1]['feedbackdate'];
+            if (feedbackdate !== '') {
+                where = ' WHERE ';
+                const present_date = readyFullDate(new Date(), '');
+                const date = new Date();
+                date.setMonth(date.getMonth() - +feedbackdate);
+                const next_date = readyFullDate(date, '');
+                datesql = `date_create>'${next_date}' AND date_create<'${present_date}' `;
+            };               
+            if (feedbackstatus !== '' && feedbackdate !== '') {
+                status = `AND status='${feedbackstatus}' `;
+            };
+            if (feedbackstatus !== '' && feedbackdate === '') {
+                where = ' WHERE ';
+                status = `status='${feedbackstatus}' `;
+            };
+            countsql = `SELECT COUNT(*) FROM feedback${where}${datesql}${status}`;
+            return `SELECT * FROM feedback${where}${datesql}${status} ORDER BY id DESC LIMIT ${page_start}, ${feedback_limit}`;
+        } else {
+            countsql = (user_info[0].phone_verified === 'verified')  
+                ? `SELECT COUNT(*) FROM feedback WHERE feedbackEmail='${user_info[0].email}' OR feedbackPhone='${phone_res}' OR feedbackPhone='+38${phone_res}'`
+                : `SELECT COUNT(*) FROM feedback WHERE feedbackEmail='${user_info[0].email}'`;
+            return (user_info[0].phone_verified === 'verified')  
+                ? `SELECT * FROM feedback 
+                    WHERE feedbackEmail='${user_info[0].email}' OR feedbackPhone='${phone_res}' OR feedbackPhone='+38${phone_res}' 
+                    ORDER BY id DESC LIMIT ${page_start}, ${feedback_limit}`
+                : `SELECT * FROM feedback 
+                    WHERE feedbackEmail='${user_info[0].email}' 
+                    ORDER BY id DESC LIMIT ${page_start}, ${feedback_limit}`;
+        };
+    })
+    .then(tableRecord)
+    .then((result) => {
+        if (result.err) { throw new Error('error-DB-get-feedback') };
+        result.forEach(element => {
+            element.date_answer = readyFullDate(element.date_answer, '');        
+            element.date_create = readyFullDate(element.date_create, '');        
+            element.settings = 'false';        
+            if (user_info[0].permission === 1) {
+                element.settings = 'true';
+            };             
+        });  
+        feedbackresult = result;
+        return countsql;
+    })
+    .then(tableRecord)
+    .then((result) => {
+        if (result.err) { throw new Error('error-DB-get-count') };
+        for (const [key, value] of Object.entries(result[0])) { count_records = value };
+    })
+    .then(() => { res.send({"res": {'count': count_records, 'feedback': feedbackresult}}) })
+    .catch((err) => {
+        log('feedback-list-error', err);
+        res.status(400).send('SERVER ERROR: 400 (Bad Request)');
+    });
+};
+
+const sendanswer = (req, res) => {
+    autorisationCheck(req, res)
+    .then( (userid) => {
+        if (userid === false) { throw new Error('error-autorisation') };
+        return `UPDATE feedback SET status='answer', answer='${req.body.answer}', date_answer='${readyFullDate(new Date(), '')}' WHERE idfeedback='${req.body.id}'`;
+    })
+    .then(tableRecord)
+    .then((result) => {
+        if (result.err) { throw new Error('error-DB-feedback-answer') };
+        res.send({"res": 'Answer added!'});
+    })
+    .catch((err) => {
+        log('answer-list-error', err);
         res.status(400).send('SERVER ERROR: 400 (Bad Request)');
     });
 };
@@ -440,5 +556,8 @@ module.exports = {
     orders,
     orderslist,
     orderstatus,
-    saveposition
+    saveposition,
+    sendfeedback,
+    feedbacklist,
+    sendanswer
 }

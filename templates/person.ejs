@@ -8,6 +8,7 @@
     <% if (DATA.permission.permissionAuthorization === '1') { %>
         <script>
             let numb = 30, orderstat = '', orderdate = '3'; 
+            let feedback_numb = 30, feedback_stat = '', feedback_date = '3'; 
         </script>
         <script src="https://code.jquery.com/jquery-3.6.0.js"></script>
         <script src="https://code.jquery.com/ui/1.13.1/jquery-ui.js"></script>
@@ -37,13 +38,24 @@
                 <% if (DATA.user.phone_verified === 'noverified') { %>
                     <p onclick="showModal('confirmPhone')" class="exit"><%=DATA.langPack.phone_verified %></p>
                 <% } %> 
-                <div class="modal_wrap"></div>                
-             
-            
+                <div class="modal_wrap"></div>           
                 <% if (DATA.permission.permissionRules === '0') { %>
-                    <p class="title_order"><%=DATA.langPack.orders_title %></p>
-                    <div class="orders_list"></div>
-                    <div class="orders_pagination"></div>
+                    <div class="tab_person">
+                        <div class="tabs">
+                            <p class="tab tab_user tab_active" onclick="tabs(0)"><%=DATA.langPack.orders_title %></p>
+                            <p class="tab tab_user" onclick="tabs(1)"><%=DATA.langPack.feedback_title %></p>
+                        </div>
+                        <div class="tab_bodys">
+                            <div class="body body_active">  
+                                <div class="orders_list" style="border-top: 0"></div>
+                                <div class="orders_pagination"></div>
+                            </div>
+                            <div class="body">
+                                <div class="feedback_list" style="border-top: 0"></div>
+                                <div class="feedback_pagination"></div>
+                            </div>
+                        </div>
+                    </div>  
                 <% } %>           
                 <% if (DATA.permission.permissionRules === '1') { %> 
                     <div class="tab_person">
@@ -81,7 +93,28 @@
                                 <div class="orders_pagination"></div>
                             </div>
                             <div class="body">
-                                <div class="feedbacks_list"></div>
+                                <div class="feedback_search">
+                                    <select name="feedback_date" onchange="setFeedbackDate(this)">
+                                        <option value="3" selected>За 3 місяці</option>
+                                        <option value="6">За 6 місяців</option>
+                                        <option value="12">За 1 рік</option>
+                                        <option value="">За весь час</option>
+                                    </select>
+                                    <select name="feedback_status" onchange="setFeedbackStatus(this)">
+                                        <option value="" selected>Всі</option>
+                                        <option value="answer">З відповіддю</option>
+                                        <option value="noanswer">Без відповіді</option>
+                                    </select>
+                                    <select name="feedback_number" onchange="setFeedbackNumb(this)">
+                                        <option value="30" selected>30</option>
+                                        <option value="50">50</option>
+                                        <option value="100">100</option>
+                                        <option value="2">2</option>
+                                        <option value="5">5</option>
+                                    </select>
+                                </div>
+                                <div class="feedback_list"></div>
+                                <div class="feedback_pagination"></div>
                             </div>
                             <div class="body">                                
                                 <p onclick="showModal('townAdd')" class="add_point">Додати місто</p>
@@ -104,11 +137,13 @@
         <% if (DATA.permission.permissionRules === '0') { %> 
             <script>
                 ordersList(1);  
+                feedbackList(1);
             </script>                      
         <% } %>  
         <% if (DATA.permission.permissionRules === '1') { %> 
             <script>
-                ordersList(1);  
+                ordersList(1);
+                feedbackList(1);  
                 loadTownsList();  
                 loadTransfersList();  
             </script>                      

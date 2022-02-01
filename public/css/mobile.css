@@ -559,3 +559,11 @@
 .img_22, .img_12, .img_21, .img_31, .img_32, .img_42 {
     display: none;
 }
+.user_wrap .orders_search, .user_wrap .feedback_search {
+    flex-direction: column;
+    align-items: center;
+    padding: 10px;
+}
+.user_wrap .feedback_search input, .user_wrap .feedback_search select {
+    width: 200px;
+}

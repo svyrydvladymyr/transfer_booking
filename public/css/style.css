@@ -1089,6 +1089,7 @@ body {
 }
 .advantages .line > span {
   width: 90px;
+  background: #ee9e07;
   border: 1px solid #ee9e07;
   height: 0px;
 }
@@ -1192,7 +1193,7 @@ body {
       -ms-flex-direction: column;
           flex-direction: column;
 }
-.user_wrap .orders_search {
+.user_wrap .orders_search, .user_wrap .feedback_search {
   width: 100%;
   padding: 30px 0px 15px 0px;
   display: -webkit-box;
@@ -1204,7 +1205,7 @@ body {
       -ms-flex-pack: center;
           justify-content: center;
 }
-.user_wrap .orders_search input, .user_wrap .orders_search select {
+.user_wrap .orders_search input, .user_wrap .orders_search select, .user_wrap .feedback_search input, .user_wrap .feedback_search select {
   height: 30px;
   width: -webkit-fit-content;
   width: -moz-fit-content;
@@ -1216,7 +1217,7 @@ body {
   margin: 3px 5px;
   border-radius: 4px;
 }
-.user_wrap .orders_pagination {
+.user_wrap .orders_pagination, .user_wrap .feedback_pagination {
   width: 100%;
   display: -webkit-box;
   display: -ms-flexbox;
@@ -1227,7 +1228,7 @@ body {
       -ms-flex-pack: center;
           justify-content: center;
 }
-.user_wrap .orders_pagination p {
+.user_wrap .orders_pagination p, .user_wrap .feedback_pagination p {
   cursor: pointer;
   width: 25px;
   line-height: 22px;
@@ -1238,18 +1239,73 @@ body {
   text-align: center;
   margin: 5px;
 }
-.user_wrap .orders_pagination p:hover {
+.user_wrap .orders_pagination p:hover, .user_wrap .feedback_pagination p:hover {
   background: #f0f0f0;
 }
 .user_wrap p.title_order {
   margin-top: 50px;
 }
-.user_wrap .orders_list {
+.user_wrap .orders_list, .user_wrap .feedback_list {
   width: 100%;
   border-top: 1px solid #3e3f40;
   padding: 30px 0px;
 }
-.user_wrap .orders_list .order {
+.user_wrap .orders_list .feedback, .user_wrap .feedback_list .feedback {
+  width: 100%;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -ms-flex-wrap: wrap;
+      flex-wrap: wrap;
+  -webkit-box-pack: start;
+      -ms-flex-pack: start;
+          justify-content: flex-start;
+  padding: 10px 40px 10px 0px;
+  border-radius: 0px;
+  border-bottom: 1px solid #d1d1d1;
+  margin: 0px 0px;
+  position: relative;
+}
+.user_wrap .orders_list .feedback p, .user_wrap .feedback_list .feedback p {
+  width: 100%;
+  display: block;
+  font-size: 13px;
+  font-weight: normal;
+  text-align: left;
+  margin: 5px 0px;
+}
+.user_wrap .orders_list .feedback p.f_date, .user_wrap .feedback_list .feedback p.f_date {
+  font-size: 10px;
+  color: grey;
+}
+.user_wrap .orders_list .feedback p.f_answer, .user_wrap .feedback_list .feedback p.f_answer {
+  padding-left: 40px;
+  font-style: italic;
+}
+.user_wrap .orders_list .feedback p.f_answer span, .user_wrap .feedback_list .feedback p.f_answer span {
+  color: #77ad38;
+  font-weight: bold;
+}
+.user_wrap .orders_list .feedback p.f_answer_date, .user_wrap .feedback_list .feedback p.f_answer_date {
+  padding-left: 40px;
+  font-size: 10px;
+  color: grey;
+}
+.user_wrap .orders_list .feedback i, .user_wrap .feedback_list .feedback i {
+  cursor: pointer;
+  font-size: 18px;
+  margin: 0px 5px;
+  line-height: 26px;
+  position: absolute;
+  right: 6px;
+}
+.user_wrap .orders_list .feedback i:hover, .user_wrap .feedback_list .feedback i:hover {
+  color: #ee9e07;
+}
+.user_wrap .orders_list .userfalse, .user_wrap .feedback_list .userfalse {
+  padding: 10px 0px;
+}
+.user_wrap .orders_list .order, .user_wrap .feedback_list .order {
   cursor: pointer;
   width: 100%;
   display: -webkit-box;
@@ -1266,19 +1322,19 @@ body {
   margin: 0px 0px;
   position: relative;
 }
-.user_wrap .orders_list .order:hover {
+.user_wrap .orders_list .order:hover, .user_wrap .feedback_list .order:hover {
   background: #f2f2f2;
 }
-.user_wrap .orders_list .order .reserv {
+.user_wrap .orders_list .order .reserv, .user_wrap .feedback_list .order .reserv {
   color: #ee9e07;
 }
-.user_wrap .orders_list .order .proof {
+.user_wrap .orders_list .order .proof, .user_wrap .feedback_list .order .proof {
   color: #8bc34a;
 }
-.user_wrap .orders_list .order .del {
+.user_wrap .orders_list .order .del, .user_wrap .feedback_list .order .del {
   color: #be3219;
 }
-.user_wrap .orders_list .order i {
+.user_wrap .orders_list .order i, .user_wrap .feedback_list .order i {
   cursor: pointer;
   font-size: 18px;
   margin: 0px 5px;
@@ -1286,12 +1342,12 @@ body {
   position: absolute;
   right: 6px;
 }
-.user_wrap .orders_list .order p {
+.user_wrap .orders_list .order p, .user_wrap .feedback_list .order p {
   font-size: 12px;
   padding: 5px;
   margin: 2px;
 }
-.user_wrap .orders_list .order p span {
+.user_wrap .orders_list .order p span, .user_wrap .feedback_list .order p span {
   font-weight: bold;
   color: #2da52d;
 }
@@ -1392,6 +1448,9 @@ body {
 }
 .user_wrap .tab_person .tabs .tab:hover {
   background: #fafafa;
+}
+.user_wrap .tab_person .tabs .tab_user {
+  width: 46%;
 }
 .user_wrap .tab_person .tab_bodys {
   width: 100%;
@@ -1523,6 +1582,7 @@ body {
   top: 10px;
   border-radius: 4px;
   background: #3b3b3bf0;
+  color: #fff;
   z-index: 999;
 }
 .modal_wrap .modal_close:hover {
@@ -1629,6 +1689,29 @@ body {
   overflow-y: auto;
   padding: 30px 10px 25px 10px;
   z-index: 998;
+}
+.modal_wrap .modal_place p.feedback_info {
+  width: 90%;
+  font-size: 13px;
+  text-align: center;
+  margin: 3px 0px;
+}
+.modal_wrap .modal_place p.feedback_mess {
+  width: 90%;
+  font-size: 13px;
+  font-weight: normal;
+  text-align: left;
+  border-top: 1px solid grey;
+  padding: 15px 0px;
+}
+.modal_wrap .modal_place textarea {
+  width: 90%;
+  max-height: 200px;
+  min-height: 100px;
+  padding: 10px;
+  border: 1px solid #cacaca;
+  resize: vertical;
+  outline: 0;
 }
 .modal_wrap .modal_place p.order_info {
   font-size: 13px;
@@ -2040,6 +2123,7 @@ body {
 }
 .footer_container .footer_wrap .footer_box p.line {
   width: 50px;
+  background: #ee9e07;
   border: 1px solid #ee9e07;
   margin: 12px 0px 30px 0px;
 }
@@ -2107,6 +2191,27 @@ body {
   display: -ms-flexbox;
   display: flex;
   border: 1px solid #cacaca;
+}
+.feedback_container .feedback_wrap .feedback_block > p.feedback_form_err {
+  color: #ffffff;
+  padding: 3px 0px;
+  text-align: center;
+  margin: 15px auto 15px auto;
+  border-bottom: 2px solid #e75d5d;
+}
+.feedback_container .feedback_wrap .feedback_block > p.feedback_sended {
+  color: #242424;
+  padding: 3px 0px;
+  text-align: center;
+  margin: 12px auto 12px auto;
+  border-bottom: 2px solid #6ba917;
+}
+.feedback_container .feedback_wrap .feedback_block .hide_err {
+  display: none;
+}
+.feedback_container .feedback_wrap .feedback_block .err_input {
+  background: pink;
+  border: 2px solid #e47c7c;
 }
 .feedback_container .feedback_points {
   height: 15px;
@@ -2363,6 +2468,27 @@ body {
 }
 .feedback_form .feedback_form_wrap p.send:hover {
   background: #54850f;
+}
+.feedback_form .feedback_form_wrap > p.feedback_form_err {
+  color: #ffffff;
+  padding: 3px 0px;
+  text-align: left;
+  margin: 8px auto 0px auto;
+  border-bottom: 2px solid #e75d5d;
+}
+.feedback_form .feedback_form_wrap > p.feedback_sended {
+  color: #ffffff;
+  padding: 3px 0px;
+  text-align: center;
+  margin: 8px auto 0px auto;
+  border-bottom: 2px solid #6ba917;
+}
+.feedback_form .feedback_form_wrap .hide_err {
+  display: none;
+}
+.feedback_form .feedback_form_wrap .err_input {
+  background: #ffe1e6;
+  color: #3b3334;
 }
 
 .feedback_form .feedbak_inp_info > input {
