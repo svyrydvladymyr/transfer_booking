@@ -806,6 +806,7 @@ const sendFeedback = () => {
                 if (resultat.res === 'Feedback sended!') {
                     if ($_('.feedback_name')[0]) {$_('.feedback_name')[0].value = ''};
                     if ($_('.feedback_surname')[0]) {$_('.feedback_surname')[0].value = ''};
+                    if ($_('.feedback_email')[0]) {$_('.feedback_email')[0].value = ''};                    
                     if ($_('#feedback_phone')[0]) {$_('#feedback_phone')[0].value = ''};                    
                     $_('#feedback_comment')[0].value = '';
                     $_(`.feedback_sended`)[0].classList.remove('hide_err');  
@@ -826,9 +827,6 @@ const setFeedbackDate = (el) => { feedback_date = el.value; feedbackList(1) };
 //for sending feedback answer 
 const saveAnswer = (feedbackid) => { 
     const answer_mess = $_('#feedback_answer')[0].value;
-
-    console.log('answer_mess', answer_mess);
-
     send({"id": `${feedbackid}`, 'answer': `${answer_mess}`}, `/sendanswer`, (result) => {
         const resultat = JSON.parse(result);
         if (resultat.res) { feedbackList(1); modal.innerHTML = '' };
@@ -843,11 +841,6 @@ const feedbackList = (page = 1) => {
     send({page, param, feedback_numb} , `/feedbacklist`, (result) => {
         const resultat = JSON.parse(result);
         if (resultat.res) {
-
-            console.log('resultat.res', resultat.res);
-
-
-
             const bookLang = getLang('lang');
             const feedback_list = $_('.feedback_list')[0];
             const feedback_pagination = $_('.feedback_pagination')[0];

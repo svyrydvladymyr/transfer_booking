@@ -3,8 +3,17 @@ const {checOnTrueVal, autorisationCheck, tableRecord, token, log, readyFullDate,
 
 const townadd = async (req, res) => {
     let resMess;
-    await autorisationCheck(req, res)
-    .then(async (userid) => {
+    autorisationCheck(req, res)
+    // .then((userid) => {
+    //     console.log('oooo', userid);
+    //     if (userid === false) { throw new Error('error-autorisation') };       
+    //     tableRecord(`SELECT permission FROM users WHERE userid='${userid}'`) 
+    //     .then((userid) => {
+    //         return userid;
+    //     })
+        
+    // })
+    .then((userid) => {
         if (userid === false) { throw new Error('error-autorisation') };        
         if (req.body.param === 'townAdd') {
             resMess = 'Town added!';
