@@ -13,10 +13,12 @@ module.exports = (app) => {
     passport.deserializeUser(function(obj, done) {done(null, obj)});
     app.use(passport.initialize());
     ['google', 'facebook'].forEach(url => {
+        let oauthScope = '';
+        if (url === 'google') oauthScope = {scope: ['https://www.googleapis.com/auth/userinfo.profile', 'https://www.googleapis.com/auth/userinfo.email']};
+        if (url === 'facebook') oauthScope = {scope: ['email']};
         passport.use(
             new Strategy[url](StrategyConfig[url], 
             (accessToken, refreshToken, profile, done) => {process.nextTick( async () => {
-                // console.log("profile", profile);                    
                 con.query(`SELECT * FROM users WHERE userid = '${profile.id}'`, (error, result) => {
                     if (error) { 
                         done(`Problem with created user: ${error}`, null); 
@@ -25,20 +27,14 @@ module.exports = (app) => {
                     } else if (result[0].userid === profile.id){
                         Users.isUser(profile);
                         return done(null, profile);
-                    } else {
-                        return done(`Problem with created user: code-error`, null);
                     }; 
                 }); 
             })})
         );        
-        app.get(`/${url}`, 
-            passport.authenticate(`${url}`, 
-                (url === 'google') ? {scope: ['https://www.googleapis.com/auth/userinfo.profile', 'https://www.googleapis.com/auth/userinfo.email']} : (url === 'google') ? {scope: 'email'} : ''
-            ));
+        app.get(`/${url}`, passport.authenticate(`${url}`, oauthScope ));
         app.get(`/${url}callback`, (req, res, next) => {    
             passport.authenticate(`${url}`, 
-                (err, user, info) => { 
-                    console.log(err);
+                (err, user, info) => {
                     if (err) renderPage(req, res, 'home', err);
                     if (!err) {
                         const tokenId = require('./service').token(20);

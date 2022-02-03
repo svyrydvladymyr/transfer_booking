@@ -660,7 +660,7 @@ const culculate = () => {
                     // console.log('resInfo', resInfo);
                     // console.log('bookLang', bookLang);
                     const resInfoBlock = `
-                        <p class="main_form_color">${bookArr.transferFrom} - ${bookArr.transferTo}</p>
+                        <p class="main_form_color">${bookArr.transferFromName} - ${bookArr.transferToName}</p>
                         <p>${lang[`date${bookLang}`]} - <span class="main_form_color">${bookArr.date}</span> &nbsp ${lang[`time${bookLang}`]} - <span class="main_form_color">${bookArr.time}</span></p>
                         <p>${lang[`adult${bookLang}`]} - <span class="main_form_color">${bookArr.adult}</span> &nbsp
                             ${lang[`children${bookLang}`]} - <span class="main_form_color">${bookArr.children}</span> &nbsp
@@ -886,7 +886,7 @@ const feedbackList = (page = 1) => {
 
 //load variables list
 const loadVariablesList = () => {
-    send({} , `/variables`, (result) => {
+    send('', `/variables`, (result) => {
         const resultat = JSON.parse(result);
         if (resultat.res) {
             townsFrom = resultat.res.townsFrom;
@@ -895,8 +895,66 @@ const loadVariablesList = () => {
             privatArr = resultat.res.privatArr;
             microbusArr = resultat.res.microbusArr;
             specArr = resultat.res.specArr;
+            const langName = getLang('lang');
+            const privatWrap = $_('.wrap_prevat')[0];
+            const microbusWrap = $_('.wrap_microbus')[0];
+            const specialWrap = $_('.wrap_special')[0];
+            if (privatWrap !== undefined) {
+                privatWrap.innerHTML = '';
+                privatArr.forEach(priv => {
+                    transfersArr.forEach(transf => {
+                        if (transf.transfer_id === priv.transfer_id) {
+                            privatWrap.innerHTML += `
+                            <p onclick="setToMainForm('${transf.transfer_id}', 'pr', 
+                                {'from': '${townsFrom[transf.transfer_from]}', 
+                                'to': '${townsTo[transf.transfer_to]}',
+                                'fromid': '${transf.transfer_from}',
+                                'toid': '${transf.transfer_to}'})">
+                                <i class='fas fa-arrow-alt-circle-right'></i>${townsFrom[transf.transfer_from]} - ${townsTo[transf.transfer_to]}</p>
+                            <p class="price"><span>${lang[`from${langName}`]}</span>${transf.price_pr}<span>${lang[`sum_type${langName}`]}</span></p>`
+                        };            
+                    });        
+                });
+            };
+            if (microbusWrap !== undefined) {
+                microbusWrap.innerHTML = '';
+                microbusArr.forEach(micro => {
+                    transfersArr.forEach(transf => {
+                        if (transf.transfer_id === micro.transfer_id) {
+                            microbusWrap.innerHTML += `
+                            <p onclick="setToMainForm('${transf.transfer_id}', 'gr', 
+                                {'from': '${townsFrom[transf.transfer_from]}', 
+                                'to': '${townsTo[transf.transfer_to]}',
+                                'fromid': '${transf.transfer_from}',
+                                'toid': '${transf.transfer_to}'})">
+                                <i class='fas fa-arrow-alt-circle-right'></i>${townsFrom[transf.transfer_from]} - ${townsTo[transf.transfer_to]}</p>
+                            <p class="price"><span>${lang[`from${langName}`]}</span>${transf.price_gr}<span>${lang[`sum_type${langName}`]}</span></p>`
+                        };            
+                    });        
+                });
+            };
+            if (specialWrap !== undefined) {
+                specialWrap.innerHTML = '';
+                specArr.forEach(spec => {
+                    transfersArr.forEach(transf => {
+                        if (transf.transfer_id === spec.transfer_id) {
+                            specialWrap.innerHTML += `
+                            <div>
+                                <p><i class='fas fa-arrow-alt-circle-right'></i>${townsFrom[transf.transfer_from]} - ${townsTo[transf.transfer_to]}</p>
+                                <p class="price"><span>${lang[`from${langName}`]}</span>${transf.price_pr}<span>${lang[`sum_type${langName}`]}</span></p>
+                                <p class="special_btn" onclick="sendToMainForm('${transf.transfer_id}', 'pr', 
+                                    {'from': '${townsFrom[transf.transfer_from]}', 
+                                    'to': '${townsTo[transf.transfer_to]}',
+                                    'fromid': '${transf.transfer_from}',
+                                    'toid': '${transf.transfer_to}'}
+                                )">${lang[`book${langName}`]}</p>
+                            </div>`
+                        };            
+                    });        
+                });
+            };
         };
-    });
+    }, 'GET');
 };
 
 //load towns list

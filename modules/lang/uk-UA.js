@@ -124,7 +124,7 @@ module.exports = {
     "main_form_equip_title" : "Лижне спорядження",
     "main_form_equip_yes" : "Так",
     "main_form_equip_no" : "Ні",
-    "main_form_btn_res" : "зарезервувати",
+    "main_form_btn_res" : "забронювати",
     "main_form_btn_calk" : "розрахувати",
     "main_form_btn_back" : "назад",
     "main_form_paid" : "Оплатити на сайті",

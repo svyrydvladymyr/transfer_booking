@@ -6,7 +6,7 @@ module.exports = {
     "adress" : "76006, Ivano-Frankivsk, Ukraine",
 
     "header_info_title" : "Enjoy the Freedom",
-    "header_info_body" : "With Bukovel Transfer Booking you can easily book any car you need to safely reach Bukovel ski resort from local airports or railway transfer tickets",
+    "header_info_body" : "With Transfer Booking, you can easily book any car you need to safely reach the Bukovel resort from airport or railway station thanks to our detailed system of searching and booking transfer tickets",
     "header_info_readmore" : "Read more",
 
     "header_tab_booking" : "Booking",
@@ -39,7 +39,7 @@ module.exports = {
     
     "advantages_title1" : "Wide Range of Quality Safe & Licensed Vehicles",
     "advantages_body1" : "We have a wide fleet of reliable and licensed vehicles that provide safe airport/railway transfer",
-    "advantages_title2" : "10+ years of experience in passenger transportation",
+    "advantages_title2" : "15+ years of experience in passenger transportation",
     "advantages_body2" : "Thousands people are satisfied with our services all over Ukraine",
     "advantages_title3" : "Fully Inclusive Pricing, No Hidden Extras",
     "advantages_body3" : "At Bukovel Transfer Booking there are no hidden fees or extra charges for our clients",

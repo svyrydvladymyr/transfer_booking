@@ -120,10 +120,7 @@ const transferadd = async (req, res) => {
     })
     .then(tableRecord)
     .then((result) => {
-        if (result.err) { 
-            console.log(result.err);
-            
-            throw new Error('error-DB') };
+        if (result.err) { throw new Error('error-DB') };
         res.send({"res": resMess});               
     })
     .catch((err) => {
@@ -200,7 +197,7 @@ const transferlist = async (req, res) => {
     });
 };
 
-const variables = async (req, res) => {
+const variables = (req, res) => {
     let townsFrom = {}, townsTo = {}, transfersArr = [], townsId = [],  privatArr = [], microbusArr = [], specArr = [];
     const lang = ['uk-UA', 'en-US', 'ru-RU'].includes(req.cookies['lang']) ? req.cookies['lang'].slice(0, 2) : 'uk';
     Promise.all([
@@ -212,9 +209,7 @@ const variables = async (req, res) => {
         tableRecord(`SELECT transfer_id FROM transfers WHERE microbus='true' AND price_gr!='' LIMIT 3`),
         tableRecord(`SELECT transfer_id FROM transfers WHERE selection='true' AND price_pr!=''`)])
     .then(([townIdRes, townsFromRes, townsToRes, transfersArrRes, privatRes, microbusRes, specRes]) => {
-        if (townIdRes.err) { 
-            console.log('townIdRes.err', townIdRes.err);
-            throw new Error('error-DB-townsID') };
+        if (townIdRes.err) { throw new Error('error-DB-townsID') };
         if (townsFromRes.err) { throw new Error('error-DB-transferFROM') };
         if (townsToRes.err) { throw new Error('error-DB-transferTO') };
         if (transfersArrRes.err) { throw new Error('error-DB-transfersARR') };
@@ -229,6 +224,7 @@ const variables = async (req, res) => {
         microbusRes.forEach(element => { microbusArr.push(element) });
         specRes.forEach(element => { specArr.push(element) });
     })
+    .then(tableRecord)
     .then(() => {
         // console.log('townsId', townsId);
         // console.log('townsFrom', townsFrom);
@@ -248,6 +244,7 @@ const variables = async (req, res) => {
 const orders = (req, res) => {
     const {transferId, transferFromName, transferToName, adult, children, sum, date, time, equip, equip_child, user_name, user_surname, user_email, user_phone, paid} = req.body;
     const type = req.body.type.replace(/transfer_/gi, '');
+    let userid = '';
     // console.log('transferId', transferId);
     // console.log('transferFromName', transferFromName);
     // console.log('transferToName', transferToName);
@@ -264,7 +261,12 @@ const orders = (req, res) => {
     // console.log('user_phone', user_phone);
     // console.log('paid', paid);
     // console.log('sum', sum);
-    tableRecord(`SELECT price_${type} FROM transfers WHERE transfer_id='${transferId}'`)
+    tableRecord(`SELECT userid FROM users WHERE token = '${clienttoken(req, res)}'`)
+    .then((user) => { 
+        userid = !user.err && user != '' ? user[0].userid : '';
+        return `SELECT price_${type} FROM transfers WHERE transfer_id='${transferId}'`
+    })
+    .then(tableRecord)
     .then(async (result) => {
         if (result.err) { throw new Error('error-DB') };
         if (result[0] === undefined) { throw new Error('error-bad-route');
@@ -272,8 +274,9 @@ const orders = (req, res) => {
             let sumfin;
             if (type === 'pr') {sumfin = result[0].price_pr};
             if (type === 'gr') {sumfin = result[0].price_gr * (+adult + +children) };
-            return `INSERT INTO orders (orders, transfer_id, order_from, order_to, adult, children, type, date, time, equip, equip_child, user_name, user_surname, user_email, user_tel, status, paid, sum, book_date) 
+            return `INSERT INTO orders (orders, user_id, transfer_id, order_from, order_to, adult, children, type, date, time, equip, equip_child, user_name, user_surname, user_email, user_tel, status, paid, sum, book_date) 
             VALUES ('${token(10)}',
+                    '${userid}',
                     '${checOnTrueVal(transferId)}',
                     '${checOnTrueVal(transferFromName)}',
                     '${checOnTrueVal(transferToName)}',
@@ -328,7 +331,7 @@ const orderslist = async (req, res) => {
     .then(tableRecord)
     .then((user) => { 
         if (user.err || user == '') { throw new Error('user-not-autorised') }; 
-        return `SELECT email, phone, phone_verified, permission FROM users WHERE userid='${user[0].userid}'`;
+        return `SELECT userid, email, phone, phone_verified, permission FROM users WHERE userid='${user[0].userid}'`;
     })
     .then(tableRecord)
     .then((result) => {
@@ -361,14 +364,14 @@ const orderslist = async (req, res) => {
             return `SELECT * FROM orders${where}${datesql}${status} ORDER BY id DESC LIMIT ${page_start}, ${order_limit}`;
         } else {
             countsql = (user_info[0].phone_verified === 'verified')  
-                ? `SELECT COUNT(*) FROM orders WHERE user_email='${user_info[0].email}' OR user_tel='${phone_res}' OR user_tel='+38${phone_res}'`
-                : `SELECT COUNT(*) FROM orders WHERE user_email='${user_info[0].email}'`;
+                ? `SELECT COUNT(*) FROM orders WHERE user_id='${user_info[0].userid}' OR user_email='${user_info[0].email}' OR user_tel='${phone_res}' OR user_tel='+38${phone_res}'`
+                : `SELECT COUNT(*) FROM orders WHERE user_id='${user_info[0].userid}' OR user_email='${user_info[0].email}'`;
             return (user_info[0].phone_verified === 'verified')  
                 ? `SELECT * FROM orders 
-                    WHERE user_email='${user_info[0].email}' OR user_tel='${phone_res}' OR user_tel='+38${phone_res}' 
+                    WHERE user_id='${user_info[0].userid}' OR user_email='${user_info[0].email}' OR user_tel='${phone_res}' OR user_tel='+38${phone_res}' 
                     ORDER BY id DESC LIMIT ${page_start}, ${order_limit}`
                 : `SELECT * FROM orders 
-                    WHERE user_email='${user_info[0].email}' 
+                    WHERE user_id='${user_info[0].userid}' OR user_email='${user_info[0].email}' 
                     ORDER BY id DESC LIMIT ${page_start}, ${order_limit}`;
         };
     })
@@ -442,18 +445,24 @@ const saveposition = async (req, res) => {
 
 const sendfeedback = (req, res) => {
     const {feedbackName, feedbackSurname, feedbackEmail, feedbackPhone, feedbackComment} = req.body;
-    const sql = `INSERT INTO feedback (idfeedback, feedbackName, feedbackSurname, feedbackEmail, feedbackPhone, feedbackComment, date_create, status, answer, date_answer) 
-    VALUES ('${token(10)}',       
-            '${checOnTrueVal(feedbackName)}',
-            '${checOnTrueVal(feedbackSurname)}',
-            '${feedbackEmail.replace(new RegExp("[^a-zA-Z0-9.&@-_]", "gi"), "")}', 
-            '${feedbackPhone.replace(new RegExp("[^0-9+]", "gi"), "")}', 
-            '${checOnTrueVal(feedbackComment)}',
-            '${readyFullDate(new Date(), '')}',
-            'noanswer',
-            '',
-            '${readyFullDate(new Date(), '')}')`;
-    tableRecord(sql)
+    let userid = '';
+    tableRecord(`SELECT userid FROM users WHERE token = '${clienttoken(req, res)}'`)
+    .then((user) => { 
+        userid = !user.err && user != '' ? user[0].userid : '';
+        return `INSERT INTO feedback (idfeedback, user_id, feedbackName, feedbackSurname, feedbackEmail, feedbackPhone, feedbackComment, date_create, status, answer, date_answer) 
+            VALUES ('${token(10)}',  
+                '${userid}',     
+                '${checOnTrueVal(feedbackName)}',
+                '${checOnTrueVal(feedbackSurname)}',
+                '${feedbackEmail.replace(new RegExp("[^a-zA-Z0-9.&@-_]", "gi"), "")}', 
+                '${feedbackPhone.replace(new RegExp("[^0-9+]", "gi"), "")}', 
+                '${checOnTrueVal(feedbackComment)}',
+                '${readyFullDate(new Date(), '')}',
+                'noanswer',
+                '',
+                '${readyFullDate(new Date(), '')}')`;
+    })
+    .then(tableRecord)
     .then((result) => {
         if (result.err) { 
             console.log('result.err', result.err);
@@ -467,11 +476,12 @@ const sendfeedback = (req, res) => {
 };
 
 const feedbacklist = (req, res) => {
-    let user_info, phone_res, count_records, page = req.body.page, feedback_limit = req.body.feedback_numb, countsql = '', feedbackresult = {};
+    let user_info, phone_res, count_records; 
+    let page = req.body.page, feedback_limit = req.body.feedback_numb, countsql = '', feedbackresult = {};
     tableRecord(`SELECT userid FROM users WHERE token = '${clienttoken(req, res)}'`)
     .then((user) => { 
         if (user.err || user == '') { throw new Error('user-not-autorised') }; 
-        return `SELECT email, phone, phone_verified, permission FROM users WHERE userid='${user[0].userid}'`;
+        return `SELECT userid, email, phone, phone_verified, permission FROM users WHERE userid='${user[0].userid}'`;
     })
     .then(tableRecord)
     .then((result) => {
@@ -504,14 +514,14 @@ const feedbacklist = (req, res) => {
             return `SELECT * FROM feedback${where}${datesql}${status} ORDER BY id DESC LIMIT ${page_start}, ${feedback_limit}`;
         } else {
             countsql = (user_info[0].phone_verified === 'verified')  
-                ? `SELECT COUNT(*) FROM feedback WHERE feedbackEmail='${user_info[0].email}' OR feedbackPhone='${phone_res}' OR feedbackPhone='+38${phone_res}'`
-                : `SELECT COUNT(*) FROM feedback WHERE feedbackEmail='${user_info[0].email}'`;
+                ? `SELECT COUNT(*) FROM feedback WHERE user_id='${user_info[0].userid}' OR feedbackEmail='${user_info[0].email}' OR feedbackPhone='${phone_res}' OR feedbackPhone='+38${phone_res}'`
+                : `SELECT COUNT(*) FROM feedback WHERE user_id='${user_info[0].userid}' OR feedbackEmail='${user_info[0].email}'`;
             return (user_info[0].phone_verified === 'verified')  
                 ? `SELECT * FROM feedback 
-                    WHERE feedbackEmail='${user_info[0].email}' OR feedbackPhone='${phone_res}' OR feedbackPhone='+38${phone_res}' 
+                    WHERE user_id='${user_info[0].userid}' OR feedbackEmail='${user_info[0].email}' OR feedbackPhone='${phone_res}' OR feedbackPhone='+38${phone_res}' 
                     ORDER BY id DESC LIMIT ${page_start}, ${feedback_limit}`
                 : `SELECT * FROM feedback 
-                    WHERE feedbackEmail='${user_info[0].email}' 
+                    WHERE user_id='${user_info[0].userid}' OR feedbackEmail='${user_info[0].email}' 
                     ORDER BY id DESC LIMIT ${page_start}, ${feedback_limit}`;
         };
     })

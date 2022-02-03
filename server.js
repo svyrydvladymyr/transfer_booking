@@ -42,7 +42,7 @@ app.use('/orderslist', (req, res) => {orderslist(req, res)});
 app.use('/orderproof', (req, res) => {orderstatus(req, res)});
 app.use('/orderdel', (req, res) => {orderstatus(req, res)});
 //requests variables
-app.use('/variables', (req, res) => {variables(req, res)});
+app.get('/variables', (req, res) => {variables(req, res)});
 //requests saveposition
 app.use('/saveposition', (req, res) => {saveposition(req, res)});
 //requests towns

@@ -60,18 +60,29 @@ const clearDATA = () => {
     DATA.langPack = require('./lang/uk-UA');
 };
 
+const createUser = (profile) => {
+    const date = new Date();
+    return user = {
+        id : profile.id,
+        provider : profile.provider,
+        firstName: profile.name && profile.name.givenName ? profile.name.givenName : '',
+        lastName: profile.name && profile.name.familyName ? profile.name.familyName : '', 
+        email: profile.emails && profile.emails.length > 0 && profile.emails[0].value !== undefined ? profile.emails[0].value : '',
+        photo: profile.photos && profile.photos.length > 0 && profile.photos[0].value !== undefined ? profile.photos[0].value : '',
+        date : `${date.toISOString().slice(0,10)} ${date.getHours()}:${date.getMinutes()}`
+    };
+};
+
 const addUser = (profile, done) => {
-    console.log('profile', profile);
-    const {id, name: {givenName = '', familyName = ''}, emails: [{value: email = ''}], photos: [{value: photo = ''}], provider = ''} = profile;
-    const date = new Date();        
+    const user = createUser(profile);
     const sql = `INSERT INTO users (userid, name, surname, provider, email, date_registered, ava) 
-               VALUES ('${id}', 
-               '${givenName}', 
-               '${familyName}', 
-               '${provider}',
-               '${email}', 
-               '${date.toISOString().slice(0,10)} ${date.getHours()}:${date.getMinutes()}', 
-               '${photo}')`;     
+               VALUES ('${user.id}', 
+               '${user.firstName}', 
+               '${user.lastName}', 
+               '${user.provider}',
+               '${user.email}', 
+               '${user.date}', 
+               '${user.photo}')`;     
     con.query(sql, (error, result) => {
         error 
             ? done(`Error creating user record: ${error}`, null) 
@@ -79,13 +90,15 @@ const addUser = (profile, done) => {
     });
 };
 
-const isUser = ({id, name: {familyName = '', givenName = ''}, photos: [{value: photo = ''}]}) => {
+const isUser = (profile) => {
+    const user = createUser(profile);
     con.query(`UPDATE users SET 
-        name = '${givenName}', 
-        surname = '${familyName}', 
-        ava = '${photo}'
-    WHERE userid = '${id}'`, (err, result) => { 
-        if (err) { log("error-update-user", err.code) };
+        name = '${user.firstName}', 
+        surname = '${user.lastName}', 
+        email = '${user.email}',
+        ava = '${user.photo}'
+    WHERE userid = '${user.id}'`, (err, result) => { 
+        if (err) { log("error-update-user", err) };
     });
 };
 
