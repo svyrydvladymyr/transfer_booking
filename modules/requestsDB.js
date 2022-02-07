@@ -267,83 +267,6 @@ const orders = (req, res) => {
     });
 };
 
-const orderslist = (req, res) => {
-    let user_info = req.user[0], phone_res, count_records, page = req.body.page, order_limit = req.body.numb;
-    let townsFrom = {}, townsTo = {}, transfersArr = [], sql = '', countsql = '', ordersresult = {};
-    if (user_info.phone_verified === 'verified') { phone_res = user_info.phone.slice(user_info.phone.length - 10, user_info.phone.length) };
-    townNames({req, res})
-    .then((towns) => { 
-        townsFrom = towns.townsFrom;
-        townsTo = towns.townsTo;
-        transfersArr = towns.transfersArr
-    })
-    .then(() => {
-        let page_start = (page -1) * order_limit;
-        if (user_info.permission === 1) {
-            let where = '', status = '', datesql = '';
-            const orderstatus = req.body.param[0]['status'];
-            const orderdate = req.body.param[1]['orderdate'];
-            if (orderdate !== '') {
-                where = ' WHERE ';
-                const present_date = readyFullDate(new Date(), '');
-                const date = new Date();
-                date.setMonth(date.getMonth() - +orderdate);
-                const next_date = readyFullDate(date, '');
-                datesql = `book_date>'${next_date}' AND book_date<'${present_date}' `;
-            };               
-            if (orderstatus !== '' && orderdate !== '') {
-                status = `AND status='${orderstatus}' `;
-            };
-            if (orderstatus !== '' && orderdate === '') {
-                where = ' WHERE ';
-                status = `status='${orderstatus}' `;
-            };
-            countsql = `SELECT COUNT(*) FROM orders${where}${datesql}${status}`;
-            return `SELECT * FROM orders${where}${datesql}${status} ORDER BY id DESC LIMIT ${page_start}, ${order_limit}`;
-        } else {
-            countsql = (user_info[0].phone_verified === 'verified')  
-                ? `SELECT COUNT(*) FROM orders WHERE user_id='${user_info.userid}' OR user_email='${user_info.email}' OR user_tel='${phone_res}' OR user_tel='+38${phone_res}'`
-                : `SELECT COUNT(*) FROM orders WHERE user_id='${user_info.userid}' OR user_email='${user_info.email}'`;
-            return (user_info.phone_verified === 'verified')  
-                ? `SELECT * FROM orders 
-                    WHERE user_id='${user_info.userid}' OR user_email='${user_info.email}' OR user_tel='${phone_res}' OR user_tel='+38${phone_res}' 
-                    ORDER BY id DESC LIMIT ${page_start}, ${order_limit}`
-                : `SELECT * FROM orders 
-                    WHERE user_id='${user_info.userid}' OR user_email='${user_info.email}' 
-                    ORDER BY id DESC LIMIT ${page_start}, ${order_limit}`;
-        };
-    })
-    .then(tableRecord)
-    .then((result) => {
-        if (result.err) { throw new Error('err-get-orders') };
-        result.forEach(element => {
-            transfersArr.forEach(el => {
-                if (el.transfer_id === element.transfer_id) {
-                    element.order_from = townsFrom[el.transfer_from];
-                    element.order_to = townsTo[el.transfer_to];
-                };                
-            });         
-            element.proof = element.status;    
-            element.settings = false;        
-            if (user_info.permission === 1) {
-                element.settings = true;
-            };             
-        });  
-        ordersresult = result;
-        return countsql;
-    })
-    .then(tableRecord)
-    .then((result) => {
-        if (result.err) { throw new Error('err-get-count') };
-        for (const [key, value] of Object.entries(result[0])) { count_records = value };
-    })
-    .then(() => { res.send({"res": {'count': count_records, 'orders': ordersresult}}) })
-    .catch((err) => {
-        log('orders-error', err);
-        res.status(400).send('');
-    });
-};
-
 const orderstatus = (req, res) => {
     let status = (req.body.param === 'proof' || req.body.param === 'del') ? req.body.param : 'reserv';
     tableRecord(`UPDATE orders SET status='${status}' WHERE orders='${req.body.id}'`)
@@ -401,73 +324,6 @@ const sendfeedback = (req, res) => {
     });
 };
 
-const feedbacklist = (req, res) => {
-    let user_info = req.user[0], phone_res, count_records; 
-    let page = req.body.page, feedback_limit = req.body.feedback_numb, sql = '', countsql = '', feedbackresult = {};
-    if (user_info.phone_verified === 'verified') { phone_res = user_info.phone.slice(user_info.phone.length - 10, user_info.phone.length) };
-
- 
-        let page_start = (page -1) * feedback_limit;
-        if (user_info.permission === 1) {
-            let where = '', status = '', datesql = '';
-            const feedbackstatus = req.body.param[0]['status'];
-            const feedbackdate = req.body.param[1]['feedbackdate'];
-            if (feedbackdate !== '') {
-                where = ' WHERE ';
-                const present_date = readyFullDate(new Date(), '');
-                const date = new Date();
-                date.setMonth(date.getMonth() - +feedbackdate);
-                const next_date = readyFullDate(date, '');
-                datesql = `date_create>'${next_date}' AND date_create<'${present_date}' `;
-            };               
-            if (feedbackstatus !== '' && feedbackdate !== '') {
-                status = `AND status='${feedbackstatus}' `;
-            };
-            if (feedbackstatus !== '' && feedbackdate === '') {
-                where = ' WHERE ';
-                status = `status='${feedbackstatus}' `;
-            };
-            countsql = `SELECT COUNT(*) FROM feedback${where}${datesql}${status}`;
-            sql = `SELECT * FROM feedback${where}${datesql}${status} ORDER BY id DESC LIMIT ${page_start}, ${feedback_limit}`;
-        } else {
-            countsql = (user_info[0].phone_verified === 'verified')  
-                ? `SELECT COUNT(*) FROM feedback WHERE user_id='${user_info.userid}' OR feedbackEmail='${user_info.email}' OR feedbackPhone='${phone_res}' OR feedbackPhone='+38${phone_res}'`
-                : `SELECT COUNT(*) FROM feedback WHERE user_id='${user_info.userid}' OR feedbackEmail='${user_info.email}'`;
-            sql = (user_info.phone_verified === 'verified')  
-                ? `SELECT * FROM feedback 
-                    WHERE user_id='${user_info.userid}' OR feedbackEmail='${user_info.email}' OR feedbackPhone='${phone_res}' OR feedbackPhone='+38${phone_res}' 
-                    ORDER BY id DESC LIMIT ${page_start}, ${feedback_limit}`
-                : `SELECT * FROM feedback 
-                    WHERE user_id='${user_info.userid}' OR feedbackEmail='${user_info.email}' 
-                    ORDER BY id DESC LIMIT ${page_start}, ${feedback_limit}`;
-        };
-
-    tableRecord(sql)
-    .then((result) => {
-        if (result.err) { throw new Error('error-DB-get-feedback') };
-        result.forEach(element => {
-            element.date_answer = readyFullDate(element.date_answer, '');        
-            element.date_create = readyFullDate(element.date_create, '');        
-            element.settings = 'false';        
-            if (user_info.permission === 1) {
-                element.settings = 'true';
-            };             
-        });  
-        feedbackresult = result;
-        return countsql;
-    })
-    .then(tableRecord)
-    .then((result) => {
-        if (result.err) { throw new Error('error-DB-get-count') };
-        for (const [key, value] of Object.entries(result[0])) { count_records = value };
-    })
-    .then(() => { res.send({"res": {'count': count_records, 'feedback': feedbackresult}}) })
-    .catch((err) => {
-        log('feedback-list-error', err);
-        res.status(400).send('');
-    });
-};
-
 const sendanswer = (req, res) => {
     let sql = `UPDATE feedback SET status='answer', answer='${req.body.answer}', date_answer='${readyFullDate(new Date(), '')}' WHERE idfeedback='${req.body.id}'`;
     tableRecord(sql)
@@ -481,17 +337,108 @@ const sendanswer = (req, res) => {
     });
 };
 
+const OFlist = (req, res) => {
+    const originalUrl = req.originalUrl; 
+    const url = originalUrl !== undefined ? originalUrl.replace('/', '') : '';
+    let user_info = req.user[0], page = req.body.page, limit = req.body.numb;
+    let townsFrom = {}, townsTo = {}, transfersArr = [],  resultat = {};
+    let page_start = (page -1) * limit, table = '', date_field = '', sql = '', countsql = '';
+    let phone_res, count_records;
+    if (user_info.phone_verified === 'verified') { phone_res = user_info.phone.slice(user_info.phone.length - 10, user_info.phone.length) };
+    if (url === 'orderslist') { 
+        townNames({req, res})
+        .then((towns) => { 
+            townsFrom = towns.townsFrom;
+            townsTo = towns.townsTo;
+            transfersArr = towns.transfersArr
+        });
+        table = 'orders';
+        date_field = 'book_date';
+    };
+    if (url === 'feedbacklist') { 
+        table = 'feedback';
+        date_field = 'date_create';
+    };
+    if (user_info.permission === 1) {
+        let where = '', statussql = '', datesql = '';
+        const status = req.body.param[0]['status'];
+        const date = req.body.param[1]['date'];
+        if (date !== '') {
+            where = ' WHERE ';
+            const present_date = readyFullDate(new Date(), '');
+            const date_now = new Date();
+            date_now.setMonth(date_now.getMonth() - +date);
+            const next_date = readyFullDate(date_now, '');
+            datesql = `${date_field}>'${next_date}' AND ${date_field}<'${present_date}'`;
+        };               
+        if (status !== '' && date !== '') {
+            statussql = `AND status='${status}' `;
+        };
+        if (status !== '' && date === '') {
+            where = ' WHERE ';
+            statussql = `status='${status}' `;
+        };
+        countsql = `SELECT COUNT(*) FROM ${table}${where}${datesql}${statussql}`;
+        sql = `SELECT * FROM ${table}${where}${datesql}${statussql} ORDER BY id DESC LIMIT ${page_start}, ${limit}`;
+    } else {
+        countsql = (user_info.phone_verified === 'verified')  
+            ? `SELECT COUNT(*) FROM ${table} WHERE user_id='${user_info.userid}' OR user_email='${user_info.email}' OR user_tel='${phone_res}' OR user_tel='+38${phone_res}'`
+            : `SELECT COUNT(*) FROM ${table} WHERE user_id='${user_info.userid}' OR user_email='${user_info.email}'`;
+        sql = (user_info.phone_verified === 'verified')  
+            ? `SELECT * FROM ${table} 
+                WHERE user_id='${user_info.userid}' OR user_email='${user_info.email}' OR user_tel='${phone_res}' OR user_tel='+38${phone_res}' 
+                ORDER BY id DESC LIMIT ${page_start}, ${limit}`
+            : `SELECT * FROM ${table} 
+                WHERE user_id='${user_info.userid}' OR user_email='${user_info.email}' 
+                ORDER BY id DESC LIMIT ${page_start}, ${limit}`;
+    };
+    tableRecord(sql)
+    .then((result) => {
+        if (result.err) { throw new Error(`err-get-${table}`) };
+        result.forEach(element => { 
+            if (url === 'orderslist') { 
+                transfersArr.forEach(el => {
+                    if (el.transfer_id === element.transfer_id) {
+                        element.order_from = townsFrom[el.transfer_from];
+                        element.order_to = townsTo[el.transfer_to];
+                    };                
+                });         
+                element.proof = element.status;   
+            };
+            if (url === 'feedbacklist') { 
+                element.date_answer = readyFullDate(element.date_answer, '');
+                element.date_create = readyFullDate(element.date_create, '');
+            };   
+            element.settings = 'false';        
+            if (user_info.permission === 1) {
+                element.settings = 'true';
+            };           
+        });  
+        resultat = result;
+        return countsql;
+    })
+    .then(tableRecord)
+    .then((result) => {
+        if (result.err) { throw new Error('err-get-count') };
+        for (const [key, value] of Object.entries(result[0])) { count_records = value };
+    })
+    .then(() => { res.send({"res": {'count': count_records, 'list': resultat}}) })
+    .catch((err) => {
+        log(`${table}-error`, err);
+        res.status(400).send('');
+    });
+};
+
 module.exports = {
     town,
     transfer,
     townlist,
     transferlist,
     variables,
-    orders,
-    orderslist,
+    orders,    
     orderstatus,
     saveposition,
     sendfeedback,
-    feedbacklist,
-    sendanswer    
+    sendanswer,
+    OFlist    
 }

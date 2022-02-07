@@ -99,12 +99,12 @@ const userAutorisation = (req, res, next) => {
         (user.err || user == '') ? res.status(400).send('') : next();
     });
 };
-const userPermission = (req, res, next) => {
-    console.log('req.user[0]', req.user[0]);
+// const userPermission = (req, res, next) => {
+//     console.log('req.user[0]', req.user[0]);
 
-    return (req.user[0].permission !== 1) ? res.status(400).send('') : next();
-}
-// const userPermission = (req, res, next) => (req.user[0].permission !== 1) ? res.status(400).send('') : next();
+//     return (req.user[0].permission !== 1) ? res.status(400).send('') : next();
+// }
+const userPermission = (req, res, next) => (req.user[0].permission !== 1) ? res.status(400).send('') : next();
 
 //logout
 const logOut = (req, res) => {

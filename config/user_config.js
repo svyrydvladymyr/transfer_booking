@@ -1,6 +1,6 @@
 
-const permit = ['town', 'townlist', 'transfer', 'transferlist', 'orderstatus', 'saveposition', 'feedbacklist', 'sendanswer'];
-const data = ['orderslist'];
+const permit = ['town', 'townlist', 'transfer', 'transferlist', 'orderstatus', 'saveposition', 'sendanswer'];
+const data = ['orderslist', 'feedbacklist'];
 const id = [];
 
 const userDate = {

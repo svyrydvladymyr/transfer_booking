@@ -753,8 +753,8 @@ const proofOrder = (orderid, param) => {
 const ordersList = (page = 1) => {
     let param = [];
     ['reserv', 'proof', 'del'].includes(orderstat) ? param.push({"status": orderstat}) : param.push({"status": ''});
-    ['3', '6', '12', ''].includes(orderdate) ? param.push({"orderdate": orderdate}) : param.push({"orderdate": ''});
-    send({page, param, numb} , `/orderslist`, (result) => {
+    ['3', '6', '12', ''].includes(orderdate) ? param.push({"date": orderdate}) : param.push({"date": ''});
+    send({page, param, 'numb' : numb} , `/orderslist`, (result) => {
         const resultat = JSON.parse(result);
         if (resultat.res) {
             const bookLang = getLang('lang');
@@ -770,7 +770,7 @@ const ordersList = (page = 1) => {
                 present_pagination[page-1].style.backgroundColor = 'rgb(139 195 74)';
                 present_pagination[page-1].removeAttribute("onclick");  
             };           
-            resultat.res.orders.forEach(element => {      
+            resultat.res.list.forEach(element => {      
                 orders_list.innerHTML += `
                 <div class="order" onclick="showModal('orderInfo', 
                 {'orders' : '${element.orders}',
@@ -881,8 +881,8 @@ const saveAnswer = (feedbackid) => {
 const feedbackList = (page = 1) => {
     let param = [];
     ['answer', 'noanswer'].includes(feedback_stat) ? param.push({"status": feedback_stat}) : param.push({"status": ''});
-    ['3', '6', '12', ''].includes(feedback_date) ? param.push({"feedbackdate": feedback_date}) : param.push({"feedbackdate": ''});
-    send({page, param, feedback_numb} , `/feedbacklist`, (result) => {
+    ['3', '6', '12', ''].includes(feedback_date) ? param.push({"date": feedback_date}) : param.push({"date": ''});
+    send({page, param, 'numb' : feedback_numb} , `/feedbacklist`, (result) => {
         const resultat = JSON.parse(result);
         if (resultat.res) {
             const bookLang = getLang('lang');
@@ -898,7 +898,7 @@ const feedbackList = (page = 1) => {
                 present_pagination[page-1].style.backgroundColor = 'rgb(139 195 74)';
                 present_pagination[page-1].removeAttribute("onclick");  
             }; 
-            resultat.res.feedback.forEach(element => {    
+            resultat.res.list.forEach(element => {    
                 let settings = '', answer = '', answerdate = '';            
                 if (element.settings === 'true') {
                     settings = `<i class='fas fa-edit' onclick="showModal('feedbackInfo', 

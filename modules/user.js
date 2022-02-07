@@ -102,10 +102,10 @@ const isUser = (profile) => {
     });
 };
 
-const getUser = async (req, res, lang = 'uk-UA', pageName) => {
+const getUser = (req, res, lang = 'uk-UA', pageName) => {
     ['home', 'about', 'transfer', 'contacts'].includes(pageName) ? DATA.menu[pageName] = 'active_menu' : DATA.menu.home = 'active_menu';
-    await autorisationCheck(req, res)
-    .then(async (userid) => {
+    autorisationCheck(req, res)
+    .then((userid) => {
         // console.log('userid', userid);
         // console.log('pageName', pageName);
         if (userid === false) { throw new Error('user-not-authorized') };
