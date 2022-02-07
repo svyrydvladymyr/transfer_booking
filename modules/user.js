@@ -1,5 +1,5 @@
 const con = require('../db/connectToDB').con;
-const {log, tableRecord, autorisationCheck, readyFullDate} = require('./service');
+const {log, tableRecord, clienttoken, readyFullDate} = require('./service');
 const {langList} = require('../config/config_variables');
 
 const DATA = {
@@ -102,18 +102,12 @@ const isUser = (profile) => {
     });
 };
 
-const getUser = (req, res, lang = 'uk-UA', pageName) => {
+const getUser = async (req, res, lang = 'uk-UA', pageName) => {
     ['home', 'about', 'transfer', 'contacts'].includes(pageName) ? DATA.menu[pageName] = 'active_menu' : DATA.menu.home = 'active_menu';
-    autorisationCheck(req, res)
-    .then((userid) => {
-        // console.log('userid', userid);
-        // console.log('pageName', pageName);
-        if (userid === false) { throw new Error('user-not-authorized') };
-        return `SELECT * FROM users WHERE userid = '${userid.userid}'`; 
-    })
-    .then(tableRecord)
+    await tableRecord(`SELECT * FROM users WHERE token = '${clienttoken(req, res)}'`)
     .then((user) => {
         if (user.err) { throw new Error(user.err) };
+        if (user.err || user == '') { throw new Error('user-not-authorized') };
         const {userid, name, surname, ava, email, phone, phone_verified, provider, permission, date_registered} = user[0];
         //permission
         DATA.permission.permissionRules = `${permission}`;
@@ -140,11 +134,8 @@ const getUser = (req, res, lang = 'uk-UA', pageName) => {
                 DATA.person.routeArr = ``;
             };                
         };
-    }, 
-    (no_user) => {
-        // log('no-authorization', no_user); 
-        DATA.permission.permissionAuthorization = '0';  
-    })
+    }) 
+    .then(() => {}, (no_user) => { DATA.permission.permissionAuthorization = '0' })
     .catch((err) => {
         log('error-user-info', err);
         DATA.permission.permissionAuthorization = '0';  

@@ -1,14 +1,9 @@
-module.exports = (req, res, pageName, lang = 'ua', err = '') => {
+module.exports = (req, res) => {
     const DATA = require('./user').DATA;
     require('./user').clearDATA();
-    if (err !== '') {        
-        DATA.errors.SERVER_ERROR = 'SERVER ERROR: 500 (Internal Server Errorjjjjj)';
-        console.log('SERVER ERROR:', err);
-        res.status(500).render('home', { DATA });
-    } else {
-        const lang = ['uk-UA', 'en-US', 'ru-RU'].includes(req.cookies['lang']) ? req.cookies['lang'] : 'uk-UA';
-        require('./user').getUser(req, res, lang, pageName)
-        // .then(() => { console.log("DATA", DATA) })
-        .then(() => { res.render(pageName, { DATA }) });
-    };
+    const originalUrl = req.originalUrl; 
+    const pageName = originalUrl !== undefined && originalUrl !== '/' ? originalUrl.replace('/', '') : 'home';
+    const lang = ['uk-UA', 'en-US', 'ru-RU'].includes(req.cookies['lang']) ? req.cookies['lang'] : 'uk-UA';
+    require('./user').getUser(req, res, lang, pageName)
+    .then(() => { res.render(pageName, { DATA }) });
 };

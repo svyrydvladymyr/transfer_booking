@@ -354,10 +354,14 @@ const OFlist = (req, res) => {
         });
         table = 'orders';
         date_field = 'book_date';
+        email_field = 'user_email';
+        phome_field = 'user_tel';
     };
     if (url === 'feedbacklist') { 
         table = 'feedback';
         date_field = 'date_create';
+        email_field = 'feedbackEmail';
+        phome_field = 'feedbackPhone';
     };
     if (user_info.permission === 1) {
         let where = '', statussql = '', datesql = '';
@@ -382,14 +386,14 @@ const OFlist = (req, res) => {
         sql = `SELECT * FROM ${table}${where}${datesql}${statussql} ORDER BY id DESC LIMIT ${page_start}, ${limit}`;
     } else {
         countsql = (user_info.phone_verified === 'verified')  
-            ? `SELECT COUNT(*) FROM ${table} WHERE user_id='${user_info.userid}' OR user_email='${user_info.email}' OR user_tel='${phone_res}' OR user_tel='+38${phone_res}'`
-            : `SELECT COUNT(*) FROM ${table} WHERE user_id='${user_info.userid}' OR user_email='${user_info.email}'`;
+            ? `SELECT COUNT(*) FROM ${table} WHERE user_id='${user_info.userid}' OR ${email_field}='${user_info.email}' OR ${phome_field}='${phone_res}' OR ${phome_field}='+38${phone_res}'`
+            : `SELECT COUNT(*) FROM ${table} WHERE user_id='${user_info.userid}' OR ${email_field}='${user_info.email}'`;
         sql = (user_info.phone_verified === 'verified')  
             ? `SELECT * FROM ${table} 
-                WHERE user_id='${user_info.userid}' OR user_email='${user_info.email}' OR user_tel='${phone_res}' OR user_tel='+38${phone_res}' 
+                WHERE user_id='${user_info.userid}' OR ${email_field}='${user_info.email}' OR ${phome_field}='${phone_res}' OR ${phome_field}='+38${phone_res}' 
                 ORDER BY id DESC LIMIT ${page_start}, ${limit}`
             : `SELECT * FROM ${table} 
-                WHERE user_id='${user_info.userid}' OR user_email='${user_info.email}' 
+                WHERE user_id='${user_info.userid}' OR ${email_field}='${user_info.email}' 
                 ORDER BY id DESC LIMIT ${page_start}, ${limit}`;
     };
     tableRecord(sql)

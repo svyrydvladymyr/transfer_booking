@@ -86,25 +86,19 @@ const tableRecord = (sql) => {
 };
 
 //check the authenticity of the authorization
-const autorisationCheck = async (req, res) => {
-    return await tableRecord(`SELECT userid FROM users WHERE token = '${clienttoken(req, res)}'`)
-    .then((user) => { 
-        return (user.err || user == '') ? false : user[0]; 
-    });
-};
-const userAutorisation = (req, res, next) => {
+const autorisation = (req, res, next) => {
     tableRecord(`SELECT ${userDate(req, res)} FROM users WHERE token = '${clienttoken(req, res)}'`)
     .then((user) => {
         req.user = user;
-        (user.err || user == '') ? res.status(400).send('') : next();
+        if (user.err || user == '') { 
+            //must be logs
+            res.status(400).send(''); 
+        } else {
+            next();
+        };
     });
 };
-// const userPermission = (req, res, next) => {
-//     console.log('req.user[0]', req.user[0]);
-
-//     return (req.user[0].permission !== 1) ? res.status(400).send('') : next();
-// }
-const userPermission = (req, res, next) => (req.user[0].permission !== 1) ? res.status(400).send('') : next();
+const permission = (req, res, next) => (req.user[0].permission !== 1) ? res.status(400).send('') : next();
 
 //logout
 const logOut = (req, res) => {
@@ -123,8 +117,7 @@ module.exports = {
     accessLog,
     tableRecord,
     validEmail,
-    autorisationCheck,
     logOut,
-    userAutorisation,
-    userPermission
+    autorisation,
+    permission
 }

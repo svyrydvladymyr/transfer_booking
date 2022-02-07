@@ -11,7 +11,7 @@ const DB = require('./db/createDB');
 // DB.points();
 // DB.feedback();
 
-const {log, accessLog, logOut, userAutorisation, userPermission} = require('./modules/service');
+const {log, accessLog, logOut, autorisation, permission} = require('./modules/service');
 const renderPage = require('./modules/renderPage');
 const {town, townlist, transfer, transferlist, variables, orders, OFlist, saveposition, orderstatus, sendfeedback, sendanswer} = require('./modules/requestsDB');
 
@@ -34,35 +34,35 @@ app.use((req, res, next) => {log(`URL-REQUEST:-(${req.method})-`, req.url); next
 
 //requests feedback
 app.post('/sendfeedback', sendfeedback);
-app.post('/feedbacklist', userAutorisation, OFlist);
-app.post('/sendanswer', userAutorisation, userPermission, sendanswer);
+app.post('/feedbacklist', autorisation, OFlist);
+app.post('/sendanswer', autorisation, permission, sendanswer);
 //requests order
 app.post('/order', orders);
-app.post('/orderslist', userAutorisation, OFlist);
-app.post('/orderstatus', userAutorisation, userPermission, orderstatus);
+app.post('/orderslist', autorisation, OFlist);
+app.post('/orderstatus', autorisation, permission, orderstatus);
 //requests variables
 app.get('/variables', variables);
 //requests saveposition
-app.post('/saveposition', userAutorisation, userPermission, saveposition);
+app.post('/saveposition', autorisation, permission, saveposition);
 //requests towns
-app.post('/town', userAutorisation, userPermission, town);
-app.get('/townlist', userAutorisation, userPermission, townlist);
+app.post('/town', autorisation, permission, town);
+app.get('/townlist', autorisation, permission, townlist);
 //requests transfers
-app.post('/transfer', userAutorisation, userPermission, transfer);
-app.get('/transferlist', userAutorisation, userPermission, transferlist);
+app.post('/transfer', autorisation, permission, transfer);
+app.get('/transferlist', autorisation, permission, transferlist);
 
 //pages
-app.get('/home', (req, res) => {renderPage(req, res, 'home')});
-app.get('/about', (req, res) => {renderPage(req, res, 'about')});
-app.get('/transfer', (req, res) => {renderPage(req, res, 'transfer')});
-app.get('/contacts', (req, res) => {renderPage(req, res, 'contacts')});
-app.get('/person', (req, res) => {renderPage(req, res, 'person')});
-app.get('/advantages', (req, res) => {renderPage(req, res, 'advantages')});
+app.get('/home', renderPage);
+app.get('/about', renderPage);
+app.get('/transfer', renderPage);
+app.get('/contacts', renderPage);
+app.get('/person', renderPage);
+app.get('/advantages', renderPage);
 
 //logout
 app.get('/exit', logOut);
 
-app.get('/', (req, res) => {renderPage(req, res, 'home')});
+app.get('/', renderPage);
 app.get('*', (req, res) => {res.status(404).send(require('./config/404'));});
 
 //server listen
