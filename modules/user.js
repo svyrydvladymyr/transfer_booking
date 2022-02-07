@@ -1,5 +1,5 @@
 const con = require('../db/connectToDB').con;
-const {log, tableRecord, autorisationCheck, readyFullDate} = require('./service');
+const {log, tableRecord, clienttoken, readyFullDate} = require('./service');
 const {langList} = require('../config/config_variables');
 
 const DATA = {
@@ -60,18 +60,29 @@ const clearDATA = () => {
     DATA.langPack = require('./lang/uk-UA');
 };
 
+const createUser = (profile) => {
+    const date = new Date();
+    return user = {
+        id : profile.id,
+        provider : profile.provider,
+        firstName: profile.name && profile.name.givenName ? profile.name.givenName : '',
+        lastName: profile.name && profile.name.familyName ? profile.name.familyName : '', 
+        email: profile.emails && profile.emails.length > 0 && profile.emails[0].value !== undefined ? profile.emails[0].value : '',
+        photo: profile.photos && profile.photos.length > 0 && profile.photos[0].value !== undefined ? profile.photos[0].value : '',
+        date : `${date.toISOString().slice(0,10)} ${date.getHours()}:${date.getMinutes()}`
+    };
+};
+
 const addUser = (profile, done) => {
-    console.log('profile', profile);
-    const {id, name: {givenName = '', familyName = ''}, emails: [{value: email = ''}], photos: [{value: photo = ''}], provider = ''} = profile;
-    const date = new Date();        
+    const user = createUser(profile);
     const sql = `INSERT INTO users (userid, name, surname, provider, email, date_registered, ava) 
-               VALUES ('${id}', 
-               '${givenName}', 
-               '${familyName}', 
-               '${provider}',
-               '${email}', 
-               '${date.toISOString().slice(0,10)} ${date.getHours()}:${date.getMinutes()}', 
-               '${photo}')`;     
+               VALUES ('${user.id}', 
+               '${user.firstName}', 
+               '${user.lastName}', 
+               '${user.provider}',
+               '${user.email}', 
+               '${user.date}', 
+               '${user.photo}')`;     
     con.query(sql, (error, result) => {
         error 
             ? done(`Error creating user record: ${error}`, null) 
@@ -79,28 +90,24 @@ const addUser = (profile, done) => {
     });
 };
 
-const isUser = ({id, name: {familyName = '', givenName = ''}, photos: [{value: photo = ''}]}) => {
+const isUser = (profile) => {
+    const user = createUser(profile);
     con.query(`UPDATE users SET 
-        name = '${givenName}', 
-        surname = '${familyName}', 
-        ava = '${photo}'
-    WHERE userid = '${id}'`, (err, result) => { 
-        if (err) { log("error-update-user", err.code) };
+        name = '${user.firstName}', 
+        surname = '${user.lastName}', 
+        email = '${user.email}',
+        ava = '${user.photo}'
+    WHERE userid = '${user.id}'`, (err, result) => { 
+        if (err) { log("error-update-user", err) };
     });
 };
 
 const getUser = async (req, res, lang = 'uk-UA', pageName) => {
     ['home', 'about', 'transfer', 'contacts'].includes(pageName) ? DATA.menu[pageName] = 'active_menu' : DATA.menu.home = 'active_menu';
-    await autorisationCheck(req, res)
-    .then(async (userid) => {
-        // console.log('userid', userid);
-        // console.log('pageName', pageName);
-        if (userid === false) { throw new Error('user-not-authorized') };
-        return `SELECT * FROM users WHERE userid = '${userid.userid}'`; 
-    })
-    .then(tableRecord)
+    await tableRecord(`SELECT * FROM users WHERE token = '${clienttoken(req, res)}'`)
     .then((user) => {
         if (user.err) { throw new Error(user.err) };
+        if (user.err || user == '') { throw new Error('user-not-authorized') };
         const {userid, name, surname, ava, email, phone, phone_verified, provider, permission, date_registered} = user[0];
         //permission
         DATA.permission.permissionRules = `${permission}`;
@@ -127,11 +134,8 @@ const getUser = async (req, res, lang = 'uk-UA', pageName) => {
                 DATA.person.routeArr = ``;
             };                
         };
-    }, 
-    (no_user) => {
-        // log('no-authorization', no_user); 
-        DATA.permission.permissionAuthorization = '0';  
-    })
+    }) 
+    .then(() => {}, (no_user) => { DATA.permission.permissionAuthorization = '0' })
     .catch((err) => {
         log('error-user-info', err);
         DATA.permission.permissionAuthorization = '0';  

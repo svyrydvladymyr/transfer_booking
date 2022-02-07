@@ -1,5 +1,61 @@
-//for set private and micro bus routes
-window.onload = function(event) {    
+const body = $_('body')[0];
+
+//for showing containers
+const header_node = $_('.header')[0];
+const content_cont = $_('.content_container')[0];
+const option_cont = $_('.options_container')[0];
+const call_cont = $_('.call_container')[0];
+const showContainers = () => {
+    if (content_cont !== undefined && option_cont !== undefined && call_cont !== undefined) {
+        let heightBlok, heightBlok2, heightBlok3;
+        if (body.offsetWidth > 1280) {
+            heightBlok = header_node.offsetHeight + content_cont.offsetHeight;
+            heightBlok2 = header_node.offsetHeight + content_cont.offsetHeight + (option_cont.offsetHeight / 1.5);
+            heightBlok3 = header_node.offsetHeight + content_cont.offsetHeight + option_cont.offsetHeight + (call_cont.offsetHeight / 1.5);
+            (document.documentElement.scrollTop + window.screen.height > heightBlok) 
+                ? content_cont.style.opacity = '1'
+                : content_cont.style.opacity = '0';
+            (document.documentElement.scrollTop + window.screen.height > heightBlok2) 
+                ? option_cont.style.opacity = '1'
+                : option_cont.style.opacity = '0';
+            (document.documentElement.scrollTop + window.screen.height > heightBlok3) 
+                ? call_cont.style.opacity = '1'
+                : call_cont.style.opacity = '0';
+        } else {
+            content_cont.style.opacity = '1'
+            option_cont.style.opacity = '1'
+            call_cont.style.opacity = '1'
+        };      
+    };
+};
+
+//for changing menu in skroling process
+const menu = $_('.menu_container')[0];
+const social = $_('.social_wrap')[0];
+const toTop = $_('#toTop')[0];
+const menuOnScroll = () => {
+    const socialValue = social !== undefined ? social.clientHeight : 0;
+    toTop.style.display = (document.body.scrollTop > 200 || document.documentElement.scrollTop > 200) ? "block" : "none";
+    if (body.offsetWidth > 1280) {
+        (document.body.scrollTop > socialValue || document.documentElement.scrollTop > socialValue) 
+            ? menu.classList.add('menu_scroll') 
+            : menu.classList.remove('menu_scroll');
+    }; 
+    if (body.offsetWidth <= 1280) {
+        if (mobileMenu.classList.contains('menu_container_wrap_mobile_active')) {
+            mobileMenu.classList.remove("menu_container_wrap_mobile_active");
+            $_('.container_menu')[0].classList.remove("change");
+        };
+        if ($_('.mobile_menu_contacts')[0].classList.contains('mobile_menu_contacts_active')) {
+            mobileMenuContact.classList.remove("mobile_menu_contacts_active");
+        };
+    };
+};
+
+//on load
+window.onload = function(event) { 
+    showContainers();
+    menuOnScroll()
     const tab_cont = $_('.tabs_container')[0];
     const info_cont = $_('.info_container')[0];
     if (tab_cont !== undefined && info_cont !== undefined) {
@@ -28,70 +84,6 @@ window.onload = function(event) {
         localStorage.setItem("transfto", '');
         setToMainForm(transid, transtype, transobj);
     };
-    // console.log('privatArr', privatArr);
-    // console.log('microbusArr', microbusArr);
-    // console.log('townsFrom', townsFrom);
-    // console.log('townsTo', townsTo);
-    // console.log('transfersArr', transfersArr);
-    // console.log('specArr', specArr);
-    const langName = getLang('lang');
-    const privatWrap = $_('.wrap_prevat')[0];
-    const microbusWrap = $_('.wrap_microbus')[0];
-    const specialWrap = $_('.wrap_special')[0];
-    if (privatWrap !== undefined) {
-        privatWrap.innerHTML = '';
-        privatArr.forEach(priv => {
-            transfersArr.forEach(transf => {
-                if (transf.transfer_id === priv.transfer_id) {
-                    privatWrap.innerHTML += `
-                    <p onclick="setToMainForm('${transf.transfer_id}', 'pr', 
-                        {'from': '${townsFrom[transf.transfer_from]}', 
-                        'to': '${townsTo[transf.transfer_to]}',
-                        'fromid': '${transf.transfer_from}',
-                        'toid': '${transf.transfer_to}'})">
-                        <i class='fas fa-arrow-alt-circle-right'></i>${townsFrom[transf.transfer_from]} - ${townsTo[transf.transfer_to]}</p>
-                    <p class="price"><span>${lang[`from${langName}`]}</span>${transf.price_pr}<span>${lang[`sum_type${langName}`]}</span></p>`
-                };            
-            });        
-        });
-    };
-    if (microbusWrap !== undefined) {
-        microbusWrap.innerHTML = '';
-        microbusArr.forEach(micro => {
-            transfersArr.forEach(transf => {
-                if (transf.transfer_id === micro.transfer_id) {
-                    microbusWrap.innerHTML += `
-                    <p onclick="setToMainForm('${transf.transfer_id}', 'gr', 
-                        {'from': '${townsFrom[transf.transfer_from]}', 
-                        'to': '${townsTo[transf.transfer_to]}',
-                        'fromid': '${transf.transfer_from}',
-                        'toid': '${transf.transfer_to}'})">
-                        <i class='fas fa-arrow-alt-circle-right'></i>${townsFrom[transf.transfer_from]} - ${townsTo[transf.transfer_to]}</p>
-                    <p class="price"><span>${lang[`from${langName}`]}</span>${transf.price_gr}<span>${lang[`sum_type${langName}`]}</span></p>`
-                };            
-            });        
-        });
-    };
-    if (specialWrap !== undefined) {
-        specialWrap.innerHTML = '';
-        specArr.forEach(spec => {
-            transfersArr.forEach(transf => {
-                if (transf.transfer_id === spec.transfer_id) {
-                    specialWrap.innerHTML += `
-                    <div>
-                        <p><i class='fas fa-arrow-alt-circle-right'></i>${townsFrom[transf.transfer_from]} - ${townsTo[transf.transfer_to]}</p>
-                        <p class="price"><span>${lang[`from${langName}`]}</span>${transf.price_pr}<span>${lang[`sum_type${langName}`]}</span></p>
-                        <p class="special_btn" onclick="sendToMainForm('${transf.transfer_id}', 'pr', 
-                            {'from': '${townsFrom[transf.transfer_from]}', 
-                            'to': '${townsTo[transf.transfer_to]}',
-                            'fromid': '${transf.transfer_from}',
-                            'toid': '${transf.transfer_to}'}
-                        )">${lang[`book${langName}`]}</p>
-                    </div>`
-                };            
-            });        
-        });
-    };
 };
 
 //for close mobile menu
@@ -111,45 +103,10 @@ window.onclick = function(event) {
     };
 };
 
-//for changing menu in skroling process
+//on scroll
 window.onscroll = function() {
-    if (content_cont !== undefined && option_cont !== undefined && call_cont !== undefined) {
-        let heightBlok, heightBlok2, heightBlok3;
-        if (body.offsetWidth > 1280) {
-            heightBlok = header_node.offsetHeight + content_cont.offsetHeight;
-            heightBlok2 = header_node.offsetHeight + content_cont.offsetHeight + (option_cont.offsetHeight / 1.5);
-            heightBlok3 = header_node.offsetHeight + content_cont.offsetHeight + option_cont.offsetHeight + (call_cont.offsetHeight / 1.5);
-            (document.documentElement.scrollTop + window.screen.height > heightBlok) 
-                ? content_cont.style.opacity = '1'
-                : content_cont.style.opacity = '0';
-            (document.documentElement.scrollTop + window.screen.height > heightBlok2) 
-                ? option_cont.style.opacity = '1'
-                : option_cont.style.opacity = '0';
-            (document.documentElement.scrollTop + window.screen.height > heightBlok3) 
-                ? call_cont.style.opacity = '1'
-                : call_cont.style.opacity = '0';
-        } else {
-            content_cont.style.opacity = '1'
-            option_cont.style.opacity = '1'
-            call_cont.style.opacity = '1'
-        };      
-    };
-    const socialValue = social !== undefined ? social.clientHeight : 0;
-    toTop.style.display = (document.body.scrollTop > 200 || document.documentElement.scrollTop > 200) ? "block" : "none";
-    if (body.offsetWidth > 1280) {
-        (document.body.scrollTop > socialValue || document.documentElement.scrollTop > socialValue) 
-            ? menu.classList.add('menu_scroll') 
-            : menu.classList.remove('menu_scroll');
-    }; 
-    if (body.offsetWidth <= 1280) {
-        if (mobileMenu.classList.contains('menu_container_wrap_mobile_active')) {
-            mobileMenu.classList.remove("menu_container_wrap_mobile_active");
-            $_('.container_menu')[0].classList.remove("change");
-        };
-        if ($_('.mobile_menu_contacts')[0].classList.contains('mobile_menu_contacts_active')) {
-            mobileMenuContact.classList.remove("mobile_menu_contacts_active");
-        };
-    };
+    showContainers();
+    menuOnScroll();
 };
 
 //to resize the traffic settings block

@@ -124,7 +124,7 @@ module.exports = {
     "main_form_equip_title" : "Лижне спорядження",
     "main_form_equip_yes" : "Так",
     "main_form_equip_no" : "Ні",
-    "main_form_btn_res" : "зарезервувати",
+    "main_form_btn_res" : "забронювати",
     "main_form_btn_calk" : "розрахувати",
     "main_form_btn_back" : "назад",
     "main_form_paid" : "Оплатити на сайті",
@@ -134,6 +134,8 @@ module.exports = {
     "main_form_err_calk" : "Для обчислення вартості перевезення виберіть всі необхідні поля!",
     "main_form_err_book" : "Для бронювання виберіть всі обов'язкові поля!",
     "main_form_err_bookfinal" : "Для бронювання виберіть всі обов'язкові поля!",
+    "main_form_err_limit_pr" : "Для приватного перевезення доступно максимально 7 місць!",
+    "main_form_err_limit_gr" : "Для групового перевезення доступно максимально 50 місць!",
     "feedback_form_err" : "Щоб відправити повідомлення заповніть всі обов'язкові поля!",
     "feedback_sended" : "Повідомлення відправлено!",
 }

@@ -16,10 +16,9 @@
 .advantages > .advantages_title2 {
     font-size: 40px;
 }
-/* .header {
-    background: center/cover no-repeat url(../img/header_bg_small.jpg);
-} */
-
+.header {
+    background: center/cover no-repeat url(../img/header_bg_mobile.jpg);
+}
 
 .user_wrap .tab_person .tabs .tab {
     width: 100%;    

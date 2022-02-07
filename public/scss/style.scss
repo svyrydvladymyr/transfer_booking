@@ -401,11 +401,11 @@ body {
       color: #ffffff;
       margin: 15px auto 15px auto;
     }
-    > p.main_form_err_calk, > p.main_form_err_book, > p.main_form_err_bookfinal {
+    > p.main_form_err_calk, > p.main_form_err_book, > p.main_form_err_bookfinal, p.main_form_err_limit_gr, p.main_form_err_limit_pr {
       color: #ffffff;
       padding: 3px 0px;
       text-align: center;
-      margin: 15px auto 15px auto;
+      margin: 15px auto 0px auto;
       border-bottom: 2px solid #e75d5d;
     }
     .hide_err {
@@ -989,11 +989,12 @@ body {
         height: 30px;
         width: fit-content;
         outline: 0;
-        background: #f7f7f7;
-        border: 1px solid #adadad;
+        background: #e7e7e7;
+        border: 0;
+        border-bottom: 2px solid #3e3f40;
         padding: 0px 10px;
-        margin: 3px 5px;
-        border-radius: 4px;
+        margin: 3px 5px 10px 5px;
+        border-radius: 0px;
       }
     }
     .orders_pagination, .feedback_pagination {
@@ -1028,6 +1029,7 @@ body {
         display: flex;
         flex-wrap: wrap;
         justify-content: flex-start;
+        align-items: center;
         padding: 10px 40px 10px 0px;
         border-radius: 0px;
         border-bottom: 1px solid #d1d1d1;
@@ -1397,15 +1399,18 @@ body {
           font-size: 13px;
           font-weight: normal;
           text-align: left;
-          border-top: 1px solid grey;
-          padding: 15px 0px;
+          border: 1px solid #b7b7b7;
+          background: #f3f3f3;
+          border-radius: 5px;
+          padding: 15px 10px;
         }
         textarea {
           width: 90%;
           max-height: 200px;
           min-height: 100px;
           padding: 10px;
-          border: 1px solid #cacaca;
+          border: 1px solid #b7b7b7;
+          border-radius: 5px;
           resize: vertical;
           outline: 0;
         }

@@ -55,6 +55,7 @@ const transfers = () => {
 const orders = () => {
     const sql = `CREATE TABLE orders (id INT AUTO_INCREMENT PRIMARY KEY,
         orders VARCHAR(10) NOT NULL,
+        user_id VARCHAR(60),
         transfer_id VARCHAR(50) NOT NULL,
         order_from VARCHAR(100) NOT NULL,
         order_to VARCHAR(110) NOT NULL,
@@ -80,6 +81,7 @@ const orders = () => {
 const feedback = () => {
     const sql = `CREATE TABLE feedback (id INT AUTO_INCREMENT PRIMARY KEY,
         idfeedback VARCHAR(10) NOT NULL UNIQUE,
+        user_id VARCHAR(60),
         feedbackName VARCHAR(80) NOT NULL, 
         feedbackSurname VARCHAR(80) NOT NULL,
         feedbackEmail VARCHAR(110) NOT NULL,
