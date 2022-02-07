@@ -15,6 +15,28 @@ const {log, accessLog, logOut} = require('./modules/service');
 const renderPage = require('./modules/renderPage');
 const {townadd, townlist, transferadd, transferlist, variables, orders, orderslist, saveposition, orderstatus, sendfeedback, feedbacklist, sendanswer} = require('./modules/requestsDB');
 
+const ViberBot = require('viber-bot').Bot;
+const BotEvents = require('viber-bot').Events;
+
+const bot = new ViberBot({
+	authToken: '4eb4f438a427dd57-70770adb3ea17ac5-589c8791b4fcb1e4',
+	name: "Transfer Bookinggg",
+    avatar: "http://viber.com/avatar.jpg"
+});
+bot.onError(err => console.log(err));
+bot.getBotProfile().then(response => console.log(`Bot Named: ${response.name}`));
+
+bot.onSubscribe(response => bot.getUserDetails(response.userProfile)
+        .then(userDetails => console.log(userDetails)));
+
+bot.onTextMessage(/^hi|hello$/i, (message, response) =>
+    response.send(new TextMessage(`Hi there ${response.userProfile.name}. I am ${bot.name}`)));
+
+// const TextMessage = require('viber-bot').Message.Text;
+
+// bot.onTextMessage(/^hi|hello$/i, (message, response) =>
+//     response.send(new TextMessage(`Hi there ${response.userProfile.name}. I am ${bot.name}`)));
+
 //oaugh
 require('./modules/oaugh.js')(app);
 
@@ -73,3 +95,4 @@ app.get('*', (req, res) => {res.status(404).send(require('./config/404'));});
 
 //server listen
 app.listen(8054, () => {console.log('Server is running...')});
+

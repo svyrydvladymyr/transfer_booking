@@ -20,7 +20,10 @@
     "passport": "^0.4.1",
     "passport-facebook": "^3.0.0",
     "passport-google-oauth20": "^2.0.0",
-    "transliteration.cyr": "^1.0.5"
+    "pm2": "^5.1.2",
+    "transliteration.cyr": "^1.0.5",
+    "viber-bot": "^1.0.18",
+    "winston": "^3.5.1"
   },
   "repository": {
     "type": "git",
