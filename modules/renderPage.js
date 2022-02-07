@@ -2,7 +2,7 @@ module.exports = (req, res, pageName, lang = 'ua', err = '') => {
     const DATA = require('./user').DATA;
     require('./user').clearDATA();
     if (err !== '') {        
-        DATA.errors.SERVER_ERROR = 'SERVER ERROR: 500 (Internal Server Error)';
+        DATA.errors.SERVER_ERROR = 'SERVER ERROR: 500 (Internal Server Errorjjjjj)';
         console.log('SERVER ERROR:', err);
         res.status(500).render('home', { DATA });
     } else {

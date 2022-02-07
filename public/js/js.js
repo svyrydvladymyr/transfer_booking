@@ -448,12 +448,16 @@ const selectTownMain = (el, param, clear) => {
                 $_(`#type_pr`)[0].classList.add('hide_err');
                 mainTimeInput.setAttribute("setparam", 'limit');
                 $_('#type_transfer')[0].classList.remove('err_input');   
+                peopleMax = 50;
+                peopleType = 'gr';
             } else if (element.transfer_from === fromParam && element.transfer_to === toParam && element.price_gr === '' && element.price_pr !== '') {    
                 $_(`#type_pr`)[0].selected = true;
                 $_(`#type_pr`)[0].classList.remove('hide_err');
                 $_(`#type_gr`)[0].classList.add('hide_err');
                 mainTimeInput.setAttribute("setparam", '');
                 $_('#type_transfer')[0].classList.remove('err_input');
+                peopleMax = 7;
+                peopleType = 'pr';
             } else if (element.transfer_from === fromParam && element.transfer_to === toParam && element.price_gr === ''){
                 $_(`#type_gr`)[0].classList.add('hide_err');
                 mainTimeInput.setAttribute("setparam", '');
@@ -506,18 +510,24 @@ const validationPerson = (el, max) => {
 };
 const validationEquip = (el) => {
     const priceVal = el.value;
-    const maxPerson = el.getAttribute('max');
+    const maxPerson = 3;
     (priceVal < 0) ? el.value = '' : null;
     (priceVal > maxPerson) ? el.value = maxPerson : null;
     (priceVal === '') ? el.value = '' : null;
 };
 const validationType = (el) => {
     $_('#type_transfer')[0].classList.remove('err_input');
+    $_(`.main_form_err_limit_pr`)[0].classList.add('hide_err');
+    $_(`.main_form_err_limit_gr`)[0].classList.add('hide_err');
     mainTimeInput.value = '';
     if (el.value === 'transfer_pr') {
+        peopleMax = 7;
+        peopleType = 'pr';
         mainTimeInput.setAttribute("setparam", '');  
     };
     if (el.value === 'transfer_gr') {
+        peopleMax = 50;
+        peopleType = 'gr';
         if (inputFrom.value !== '' && inputTo.value !== '') {
             const fromParam = inputFrom.getAttribute("inputmainparam");
             const toParam = inputTo.getAttribute("inputmainparam");
@@ -532,17 +542,50 @@ const validationType = (el) => {
 };
 const validationAdults = (el) => {
     checkForm();
-    const adultInp =  $_('#adults')[0];
     (adultInp.value > 0) ? adultInp.classList.remove('err_input') : adultInp.classList.add('err_input');
+    peopleCount = +adultInp.value + +childrenValue.value;
+    const peopleTypeErr = $_(`.main_form_err_limit_${peopleType}`)[0];
+
+    console.log('peopleType', peopleType);
+    console.log('peopleTypeErr', peopleTypeErr);
+    if (peopleCount > peopleMax) {
+        peopleTypeErr.classList.remove('hide_err');
+        if (childrenValue.value !== '' && childrenValue.value !== '0') {
+            adultInp.classList.add('err_input');
+            childrenValue.classList.add('err_input');
+        } else {
+            adultInp.classList.add('err_input');
+        };
+    } else {
+        peopleTypeErr.classList.add('hide_err');
+        $_(`.main_form_err_book`)[0].classList.add('hide_err');
+        adultInp.classList.remove('err_input');
+        childrenValue.classList.remove('err_input');
+    };    
 };
 const validationChildren = (el) => {
     const equipchild =  $_('.equip_child')[0];
-    const childrenValue =  $_('#children')[0];
     const equipchildInp =  $_('.equip_child #equip_child')[0];
     equipchildInp.setAttribute('max', `${childrenValue.value}`);
     (equipchildInp.value > childrenValue.value) ? equipchildInp.value = childrenValue.value : null;
     (el.value < 1) ? equipchild.style.display = 'none' : null;
     (el.value > 0) ? equipchild.style.display = 'flex' : null;
+    peopleCount = +adultInp.value + +childrenValue.value;
+    const peopleTypeErr = $_(`.main_form_err_limit_${peopleType}`)[0];
+    if (peopleCount > peopleMax) {
+        peopleTypeErr.classList.remove('hide_err');
+        if (adultInp.value !== '' && adultInp.value !== '0') {
+            adultInp.classList.add('err_input');
+            childrenValue.classList.add('err_input');
+        } else {
+            childrenValue.classList.add('err_input');
+        };
+    } else {
+        peopleTypeErr.classList.add('hide_err');
+        $_(`.main_form_err_book`)[0].classList.add('hide_err');
+        adultInp.classList.remove('err_input');
+        childrenValue.classList.remove('err_input');
+    };
 };
 
 //for back to previous tab
@@ -579,9 +622,23 @@ const checkForm = () => {
         const adultsCheck = $_('#adults')[0];
         const emailCheck = $_('#main_email')[0];
         const phoneCheck = $_('#main_phone')[0];
+        const peopleTypeErr = $_(`.main_form_err_limit_${peopleType}`)[0];
         if (elemCheck.value === '') {
             arrTrue.push(false);
             elemCheck.classList.add('err_input');
+        };
+        if (peopleCount > peopleMax) {
+            arrTrue.push(false);
+            peopleTypeErr.classList.remove('hide_err');
+            if (childrenValue.value !== '' && childrenValue.value !== '0') {
+                adultInp.classList.add('err_input');
+                childrenValue.classList.add('err_input');
+            } else {
+                adultInp.classList.add('err_input');
+            };
+        } else {
+            adultInp.classList.remove('err_input');
+            childrenValue.classList.remove('err_input');
         };
         if (adultsCheck.value <= 0) {
             arrTrue.push(false);
@@ -598,10 +655,6 @@ const checkForm = () => {
             };
         };
     });
-
-    console.log('formValid', formValid);
-    // console.log('arrTrue', arrTrue);
-
     if (arrTrue.includes(false)) {
         calkTrue = false;
         $_('.main_form_price')[0].classList.add('hide_err');
@@ -621,15 +674,11 @@ const checkForm = () => {
 const bookArr = {};
 const culculate = () => {
     checkForm();
-
-    console.log('True', calkTrue);
-
     if (calkTrue) {
         const inpFrom = inputFrom.getAttribute('inputmainparam');
         const inpTo = inputTo.getAttribute('inputmainparam');
         transfersArr.forEach(element => {
             if (element.transfer_from === inpFrom && element.transfer_to === inpTo) {
-                // console.log('route', element);
                 bookArr.transferId = element.transfer_id;
                 bookArr.transferFromName = $_('#main_from')[0].value;
                 bookArr.transferToName = $_('#main_to')[0].value;
@@ -646,7 +695,6 @@ const culculate = () => {
                 bookArr.user_email = $_('#main_email')[0].value;
                 bookArr.user_phone = $_('#main_phone')[0].value;
                 bookArr.paid = $_('#main_paid')[0].checked;
-                // console.log('bookArr', bookArr);
                 if (formValid === 'calk') {
                     $_('.main_form_price')[0].classList.remove('hide_err');
                     let culkSum = 0;
@@ -657,8 +705,6 @@ const culculate = () => {
                 if (formValid === 'book') {
                     const resInfo = $_('.book_info')[0]; 
                     const bookLang = getLang('lang');                    
-                    // console.log('resInfo', resInfo);
-                    // console.log('bookLang', bookLang);
                     const resInfoBlock = `
                         <p class="main_form_color">${bookArr.transferFromName} - ${bookArr.transferToName}</p>
                         <p>${lang[`date${bookLang}`]} - <span class="main_form_color">${bookArr.date}</span> &nbsp ${lang[`time${bookLang}`]} - <span class="main_form_color">${bookArr.time}</span></p>
@@ -677,9 +723,7 @@ const culculate = () => {
                     send(bookArr , `/order`, (result) => {
                         const resultat = JSON.parse(result);
                         if (resultat.res) {
-                            // console.log("ooooo", resultat.res);
                             if (resultat.res === 'Order created!') {
-                                // console.log("Order!");
                                 $_('#check')[0].style.display = 'none'; 
                                 $_('#booking')[0].style.display = 'none'; 
                                 $_('#received')[0].style.display = 'flex'; 
@@ -699,7 +743,7 @@ const setOrderDate = (el) => { orderdate = el.value; ordersList(1) };
 
 //for proofing or canceling order
 const proofOrder = (orderid, param) => { 
-    send({"id": `${orderid}`, 'param': `${param}`} , `/order${param}`, (result) => {
+    send({"id": `${orderid}`, 'param': `${param}`} , `/orderstatus`, (result) => {
         const resultat = JSON.parse(result);
         if (resultat.res) { ordersList(1); modal.innerHTML = '' };
     });
@@ -971,7 +1015,7 @@ const loadTownsList = () => {
                 </div>`
             });
         };
-    });
+    }, 'GET');
 };
 
 //for save transfer list position
@@ -1024,7 +1068,7 @@ const loadTransfersList = () => {
                 </div>`
             });
         };
-    });
+    }, 'GET');
 };
 
 //add to DB Towns
@@ -1048,14 +1092,15 @@ const formSend = (formID) => {
         obj = {"id" : id_town, "param" : formID};
     }
     if (trueSend) {
-        send(obj , `/${formID.toLowerCase()}`, (result) => {
+        send(obj , `/town`, (result) => {
             const resultat = JSON.parse(result);
             if (resultat.res) {
                 console.log(resultat.res);
                 showModal(`${formID}Res`);
                 $_('#id_town')[0].innerHTML = obj.id;
-                setTimeout(() => { modal.innerHTML = '' }, 3000);
+                setTimeout(() => { modal.innerHTML = '' }, 2000);
                 loadTownsList();
+                (formID === 'townDel') ? loadTransfersList() : null;
             }
             if (resultat.DUP) {
                 for (const key in obj) {
@@ -1122,11 +1167,11 @@ const formSendTransfer = (formID) => {
         trueSend = true
     };
     if (trueSend) {
-        send(obj , `/${formID.toLowerCase()}`, (result) => {
+        send(obj , `/transfer`, (result) => {
             const resultat = JSON.parse(result);
             if (resultat.res) {
                 showModal(`${formID}Res`);
-                setTimeout(() => { modal.innerHTML = '' }, 3000);
+                setTimeout(() => { modal.innerHTML = '' }, 2000);
                 loadTransfersList();
             };   
         });

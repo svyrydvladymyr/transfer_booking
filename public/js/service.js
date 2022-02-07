@@ -5,6 +5,8 @@ const modal = $_('.modal_wrap')[0];
 const inputFrom = $_('#main_from')[0];
 const inputTo = $_('#main_to')[0];
 const mainTimeInput = $_('#main_time')[0];
+const adultInp =  $_('#adults')[0];
+const childrenValue =  $_('#children')[0];
 const RegExpArr = {
     RegExpInput : new RegExp(/[^a-zA-Zа-яА-Я0-9-()_+=!?.'\":;/\,іІїЇєЄ /\n]/g),
     RegExpPhone : new RegExp(/[^0-9-()+ /\n]/g),
@@ -13,7 +15,7 @@ const RegExpArr = {
 } 
 
 let idTownPlace, tokenTown, formValid;
-let hours, minutes, hArr = [], mArr = [], hStart = 0, mStart = 0;;
+let hours, minutes, hArr = [], mArr = [], hStart = 0, mStart = 0, peopleCount = 0, peopleMax = 50, peopleType = 'gr';
 let townsFrom = {}, townsTo = {}, transfersArr = [], microbusArr = [], privatArr = [], specArr = [];
 let calkTrue = true, feedbackCalkTrue = true;
 
@@ -21,7 +23,7 @@ let calkTrue = true, feedbackCalkTrue = true;
 const redirect = way => window.location.replace(`${way}`);
 
 //logout
-const exit = () => { send({}, '/exit', (res) => { location.reload() }) };
+const exit = () => { send({}, '/exit', (res) => { location.reload() }, 'GET') };
 
 //token
 const token = length => {

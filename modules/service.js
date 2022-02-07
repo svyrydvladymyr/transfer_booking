@@ -1,6 +1,7 @@
 const Cookies = require('cookies');
 const fs = require('fs');
 const con = require('../db/connectToDB').con;
+const userDate = require('../config/user_config');
 
 //transliteration
 const translit = word => require('transliteration.cyr').transliterate(word);
@@ -91,6 +92,19 @@ const autorisationCheck = async (req, res) => {
         return (user.err || user == '') ? false : user[0]; 
     });
 };
+const userAutorisation = (req, res, next) => {
+    tableRecord(`SELECT ${userDate(req, res)} FROM users WHERE token = '${clienttoken(req, res)}'`)
+    .then((user) => {
+        req.user = user;
+        (user.err || user == '') ? res.status(400).send('') : next();
+    });
+};
+const userPermission = (req, res, next) => {
+    console.log('req.user[0]', req.user[0]);
+
+    return (req.user[0].permission !== 1) ? res.status(400).send('') : next();
+}
+// const userPermission = (req, res, next) => (req.user[0].permission !== 1) ? res.status(400).send('') : next();
 
 //logout
 const logOut = (req, res) => {
@@ -110,5 +124,7 @@ module.exports = {
     tableRecord,
     validEmail,
     autorisationCheck,
-    logOut
+    logOut,
+    userAutorisation,
+    userPermission
 }

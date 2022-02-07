@@ -502,11 +502,11 @@ body {
   color: #ffffff;
   margin: 15px auto 15px auto;
 }
-.main_form_container .main_form_wrap > p.main_form_err_calk, .main_form_container .main_form_wrap > p.main_form_err_book, .main_form_container .main_form_wrap > p.main_form_err_bookfinal {
+.main_form_container .main_form_wrap > p.main_form_err_calk, .main_form_container .main_form_wrap > p.main_form_err_book, .main_form_container .main_form_wrap > p.main_form_err_bookfinal, .main_form_container .main_form_wrap p.main_form_err_limit_gr, .main_form_container .main_form_wrap p.main_form_err_limit_pr {
   color: #ffffff;
   padding: 3px 0px;
   text-align: center;
-  margin: 15px auto 15px auto;
+  margin: 15px auto 0px auto;
   border-bottom: 2px solid #e75d5d;
 }
 .main_form_container .main_form_wrap .hide_err {
@@ -1261,6 +1261,9 @@ body {
   -webkit-box-pack: start;
       -ms-flex-pack: start;
           justify-content: flex-start;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
   padding: 10px 40px 10px 0px;
   border-radius: 0px;
   border-bottom: 1px solid #d1d1d1;

@@ -33,11 +33,11 @@
             <div class="main_form_coll sub">                
                 <div class="main_form_coll_sub">
                     <label for="adults"><%=DATA.langPack.main_form_adults %></label>
-                    <input type="number" name="adults" id="adults" min="0" max="60" value="" oninput="validationPerson(this, 60)" onchange="validationAdults(this)">
+                    <input type="number" name="adults" id="adults" min="0" max="60" value="0" oninput="validationPerson(this, 60)" onchange="validationAdults(this)">
                 </div>
                 <div class="main_form_coll_sub">
                     <label for="children"><%=DATA.langPack.main_form_children %></label>
-                    <input type="number" name="children" id="children" min="0" max="60" value="" oninput="validationPerson(this, 60), validationChildren(this)">                
+                    <input type="number" name="children" id="children" min="0" max="60" value="0" oninput="validationPerson(this, 60), validationChildren(this)">                
                 </div>
             </div>
         </div>  
@@ -58,7 +58,7 @@
             <div class="equip_block equip_child">                
                 <div class="main_form_row">   
                     <label><%=DATA.langPack.main_form_equip_child_title %></label> 
-                    <input type="number" name="equip_child" id="equip_child" min="0" max="5" value="" oninput="validationEquip(this)">                
+                    <input type="number" name="equip_child" id="equip_child" min="0" max="3" value="0" oninput="validationEquip(this)">                
                 </div>
             </div>
         </div>
@@ -73,6 +73,8 @@
         <p class="main_form_price hide_err"><%=DATA.langPack.main_form_price %> <span></span> <%=DATA.langPack.option_grn %></p>
         <p class="main_form_err_calk hide_err"><%=DATA.langPack.main_form_err_calk %></p>
         <p class="main_form_err_book hide_err"><%=DATA.langPack.main_form_err_book %></p>
+        <p class="main_form_err_limit_gr hide_err"><%=DATA.langPack.main_form_err_limit_gr %></p>
+        <p class="main_form_err_limit_pr hide_err"><%=DATA.langPack.main_form_err_limit_pr %></p>
     </div>
     <div class="main_form_wrap booking" id="booking">
         <div class="book_info"></div>

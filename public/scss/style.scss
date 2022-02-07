@@ -401,11 +401,11 @@ body {
       color: #ffffff;
       margin: 15px auto 15px auto;
     }
-    > p.main_form_err_calk, > p.main_form_err_book, > p.main_form_err_bookfinal {
+    > p.main_form_err_calk, > p.main_form_err_book, > p.main_form_err_bookfinal, p.main_form_err_limit_gr, p.main_form_err_limit_pr {
       color: #ffffff;
       padding: 3px 0px;
       text-align: center;
-      margin: 15px auto 15px auto;
+      margin: 15px auto 0px auto;
       border-bottom: 2px solid #e75d5d;
     }
     .hide_err {
@@ -1029,6 +1029,7 @@ body {
         display: flex;
         flex-wrap: wrap;
         justify-content: flex-start;
+        align-items: center;
         padding: 10px 40px 10px 0px;
         border-radius: 0px;
         border-bottom: 1px solid #d1d1d1;

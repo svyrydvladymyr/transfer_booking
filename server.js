@@ -11,9 +11,9 @@ const DB = require('./db/createDB');
 // DB.points();
 // DB.feedback();
 
-const {log, accessLog, logOut} = require('./modules/service');
+const {log, accessLog, logOut, userAutorisation, userPermission} = require('./modules/service');
 const renderPage = require('./modules/renderPage');
-const {townadd, townlist, transferadd, transferlist, variables, orders, orderslist, saveposition, orderstatus, sendfeedback, feedbacklist, sendanswer} = require('./modules/requestsDB');
+const {town, townlist, transfer, transferlist, variables, orders, orderslist, saveposition, orderstatus, sendfeedback, feedbacklist, sendanswer} = require('./modules/requestsDB');
 
 //oaugh
 require('./modules/oaugh.js')(app);
@@ -27,35 +27,29 @@ app.use(express.static(__dirname + '/public'));
 app.use(bodyParser.json());
 
 //console logs
-app.use((req, res, next) => {log(`URL-REQUEST:-(${req.method})-`, req.url); next();});
+app.use((req, res, next) => {log(`URL-REQUEST:-(${req.method})-`, req.url); next()});
 
 //system logs
 // app.use((req, res, next) => {accessLog(req, res, next)});
 
 //requests feedback
-app.use('/sendfeedback', (req, res) => {sendfeedback(req, res)});
-app.use('/feedbacklist', (req, res) => {feedbacklist(req, res)});
-app.use('/sendanswer', (req, res) => {sendanswer(req, res)});
+app.post('/sendfeedback', sendfeedback);
+app.post('/feedbacklist', userAutorisation, feedbacklist);
+app.post('/sendanswer', userAutorisation, userPermission, sendanswer);
 //requests order
-app.use('/order', (req, res) => {orders(req, res)});
-app.use('/orderslist', (req, res) => {orderslist(req, res)});
-app.use('/orderproof', (req, res) => {orderstatus(req, res)});
-app.use('/orderdel', (req, res) => {orderstatus(req, res)});
+app.post('/order', orders);
+app.post('/orderslist', userAutorisation, orderslist);
+app.post('/orderstatus', userAutorisation, userPermission, orderstatus);
 //requests variables
-app.get('/variables', (req, res) => {variables(req, res)});
+app.get('/variables', variables);
 //requests saveposition
-app.use('/saveposition', (req, res) => {saveposition(req, res)});
+app.post('/saveposition', userAutorisation, userPermission, saveposition);
 //requests towns
-app.use('/townadd', (req, res) => {townadd(req, res)});
-app.use('/townedit', (req, res) => {townadd(req, res)});
-app.use('/towndel', (req, res) => {townadd(req, res)});
-app.use('/townlist', (req, res) => {townlist(req, res)});
+app.post('/town', userAutorisation, userPermission, town);
+app.get('/townlist', userAutorisation, userPermission, townlist);
 //requests transfers
-app.use('/transferadd', (req, res) => {transferadd(req, res)});
-app.use('/transferedit', (req, res) => {transferadd(req, res)});
-app.use('/transferdel', (req, res) => {transferadd(req, res)});
-app.use('/transferlist', (req, res) => {transferlist(req, res)});
-
+app.post('/transfer', userAutorisation, userPermission, transfer);
+app.get('/transferlist', userAutorisation, userPermission, transferlist);
 
 //pages
 app.get('/home', (req, res) => {renderPage(req, res, 'home')});
@@ -66,7 +60,7 @@ app.get('/person', (req, res) => {renderPage(req, res, 'person')});
 app.get('/advantages', (req, res) => {renderPage(req, res, 'advantages')});
 
 //logout
-app.post('/exit', (req, res) => {logOut(req, res)});
+app.get('/exit', logOut);
 
 app.get('/', (req, res) => {renderPage(req, res, 'home')});
 app.get('*', (req, res) => {res.status(404).send(require('./config/404'));});

@@ -133,6 +133,8 @@ module.exports = {
     "main_form_err_calk" : "To calculate the cost of transportation, select all the required fields!",
     "main_form_err_book" : "Select all required fields for booking!",
     "main_form_err_bookfinal" : "Select all required fields for booking!",
+    "main_form_err_limit_pr" : "A maximum of 7 seats are available for private transportation!",
+    "main_form_err_limit_gr" : "A maximum of 50 seats are available for group transportation!",
     "feedback_form_err" : "To send a message, fill in all required fields!",
     "feedback_sended" : "Message sent!",
 }
