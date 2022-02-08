@@ -313,7 +313,7 @@ const showModal = function(type, obj, el) {
     if (type === 'transferTowns') {
         $_('.wrap_sub_modal')[0].innerHTML = template[type];
         const setParam =  obj.param;
-        send({} , `/townlist`, (result) => {
+        send('' , `/townlist`, (result) => {
             const resultat = JSON.parse(result);
             if (resultat.res) {
                 const tawns_list = $_('.towns_select_list')[0];
@@ -322,7 +322,7 @@ const showModal = function(type, obj, el) {
                     tawns_list.innerHTML += `<p id="${element.town_id}" onclick="selectTown(this, '${setParam}')">${element.name_uk}</p>`
                 });
             };
-        });
+        }, 'GET');
     };
     //____TOWNS
     if (type === 'townAdd') {        
@@ -545,9 +545,8 @@ const validationAdults = (el) => {
     (adultInp.value > 0) ? adultInp.classList.remove('err_input') : adultInp.classList.add('err_input');
     peopleCount = +adultInp.value + +childrenValue.value;
     const peopleTypeErr = $_(`.main_form_err_limit_${peopleType}`)[0];
-
-    console.log('peopleType', peopleType);
-    console.log('peopleTypeErr', peopleTypeErr);
+    // console.log('peopleType', peopleType);
+    // console.log('peopleTypeErr', peopleTypeErr);
     if (peopleCount > peopleMax) {
         peopleTypeErr.classList.remove('hide_err');
         if (childrenValue.value !== '' && childrenValue.value !== '0') {
