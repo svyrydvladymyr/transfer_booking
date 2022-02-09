@@ -73,9 +73,10 @@ app.post('/transfer', cookieParser, jsonParser, autorisation, permission, transf
 app.get('/transferlist', cookieParser, jsonParser, autorisation, permission, transferlist);
 
 //pages
-// app.get('/', renderPage);
+app.get('/', cookieParser, renderPage);
 app.get('/home', cookieParser, renderPage);
 app.get('/about', cookieParser, renderPage);
+app.get('/blog', cookieParser, renderPage);
 app.get('/transfer', cookieParser, renderPage);
 app.get('/contacts', cookieParser, renderPage);
 app.get('/person', cookieParser, renderPage);
@@ -83,13 +84,13 @@ app.get('/advantages', cookieParser, renderPage);
 
 //logout
 app.get('/exit', logOut);
-app.get('/$', (req, res, next) => {res.redirect('home')});
-app.get('*', (req, res) => {res.redirect('home')});
+app.get('/$', (req, res, next) => {res.redirect('/home')});
+app.get('*', (req, res) => {res.redirect('/home')});
 
 // // server listen
 app.listen(process.env.PORT || 3000, () => {
     console.log('Server is running...');
-    viberBot.setWebhook(process.env.WEBHOOK_URL).catch((err) => {
-        console.log('err', err);
-    });
+    // viberBot.setWebhook(process.env.WEBHOOK_URL).catch((err) => {
+    //     console.log('err', err);
+    // });
 });

@@ -15,6 +15,7 @@ const DATA = {
     menu : {
         home : '',
         about : '',
+        blog : '',
         transfer : '',
         contacts : '',
     },
@@ -48,6 +49,7 @@ const clearDATA = () => {
     DATA.user.date_registered = '';
     DATA.menu.home = '',
     DATA.menu.about = '',
+    DATA.menu.blog = '',
     DATA.menu.transfer = '',
     DATA.menu.contacts = '',
     DATA.permission.permissionAuthorization = 0; 
@@ -103,7 +105,7 @@ const isUser = (profile) => {
 };
 
 const getUser = async (req, res, lang = 'uk-UA', pageName) => {
-    ['home', 'about', 'transfer', 'contacts'].includes(pageName) ? DATA.menu[pageName] = 'active_menu' : DATA.menu.home = 'active_menu';
+    ['home', 'about', 'blog', 'transfer', 'contacts'].includes(pageName) ? DATA.menu[pageName] = 'active_menu' : DATA.menu.home = 'active_menu';
     await tableRecord(`SELECT * FROM users WHERE token = '${clienttoken(req, res)}'`)
     .then((user) => {
         if (user.err) { throw new Error(user.err) };

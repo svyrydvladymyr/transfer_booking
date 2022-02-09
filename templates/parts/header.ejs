@@ -23,6 +23,10 @@
         <p class="header_pages_title1"><%=DATA.langPack.header_pages_title9 %></p>
         <p class="header_pages_title2"><%=DATA.langPack.header_pages_title10 %></p>
     <% } %> 
+    <% if (DATA.permission.pageName === 'blog') { %>        
+        <p class="header_pages_title1"><%=DATA.langPack.header_pages_title11 %></p>
+        <p class="header_pages_title2"><%=DATA.langPack.header_pages_title12 %></p>
+    <% } %> 
     <% if (DATA.permission.pageName === 'home') { %>        
         <%- include("header-form-wrap.ejs") %>
     <% } %> 

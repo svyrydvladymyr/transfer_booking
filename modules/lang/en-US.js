@@ -1,6 +1,7 @@
 module.exports = {
     "home" : "Home",
     "about" : "About",
+    "blog" : "Blog",
     "transfer" : "Transfers",
     "contacts" : "Contacts",
     "adress" : "76006, Ivano-Frankivsk, Ukraine",
@@ -22,11 +23,15 @@ module.exports = {
     "header_pages_title8" : "ABOUT US",
     "header_pages_title9" : "Transfer Booking",
     "header_pages_title10" : "TRANSFER",
+    "header_pages_title11" : "Read what's new in the company",
+    "header_pages_title12" : "BLOG",
 
     "autoriz_info" : "You need to log in to enter the office!",
     "exit" : "Log out",
     "phone_verified" : "Confirm phone number",
     "provider" : "by",
+
+    "blog_main_title2" : "Latest news",
 
     "content_title1" : "Reliable, Low Cost Airport and Railway Station Transfers",
     "content_body1" : "Book a private door-to-door taxi, minivan or a shared shuttle to Bukovel resort from Ivano-Frankivsk, Lviv and other cities",
