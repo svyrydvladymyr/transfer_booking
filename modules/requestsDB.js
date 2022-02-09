@@ -163,7 +163,6 @@ const transferlist = (req, res) => {
     });
 };
 
-
 const townNames = ({req, res}) => {
     let townsFrom = {}, townsTo = {}, transfersArr = [], townsId = [];
     const lang = ['uk-UA', 'en-US', 'ru-RU'].includes(req.cookies['lang']) ? req.cookies['lang'].slice(0, 2) : 'uk';
@@ -217,7 +216,7 @@ const variables = (req, res) => {
 };
 
 const orders = (req, res) => {
-    const {transferId, transferFromName, transferToName, adult, children, sum, date, time, equip, equip_child, user_name, user_surname, user_email, user_phone, paid} = req.body;
+    const {transferId, transferFromName, transferToName, adult, children, sum, date, time, equip, equip_child, user_name, user_surname, user_email, user_phone} = req.body;
     const type = req.body.type.replace(/transfer_/gi, '');
     let userid = '';
     tableRecord(`SELECT userid FROM users WHERE token = '${clienttoken(req, res)}'`)
@@ -258,6 +257,7 @@ const orders = (req, res) => {
     })
     .then(tableRecord)
     .then((result) => {
+        console.log('dfgdfg', result);
         if (result.err) { throw new Error('error-DB-oredrs') };
         res.send({"res": 'Order created!'});        
     })

@@ -693,7 +693,7 @@ const culculate = () => {
                 bookArr.user_surname = $_('#main_surname')[0].value;
                 bookArr.user_email = $_('#main_email')[0].value;
                 bookArr.user_phone = $_('#main_phone')[0].value;
-                bookArr.paid = $_('#main_paid')[0].checked;
+                // bookArr.paid = $_('#main_paid')[0].checked;
                 if (formValid === 'calk') {
                     $_('.main_form_price')[0].classList.remove('hide_err');
                     let culkSum = 0;
