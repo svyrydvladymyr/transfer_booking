@@ -1,8 +1,9 @@
 const express = require('express');
 const app = express();
-const bodyParser = require('body-parser');
-const jsonParser = bodyParser.json();
+// const bodyParser = require('body-parser').json();
+const jsonParser = require('body-parser').json();
 const cookieParser = require('cookie-parser')();
+const TelegramApi = require('node-telegram-bot-api');
 require('dotenv').config();
 
 const DB = require('./db/createDB');
@@ -16,28 +17,22 @@ const {log, accessLog, logOut, autorisation, permission} = require('./modules/se
 const renderPage = require('./modules/renderPage');
 const {town, townlist, transfer, transferlist, variables, orders, OFlist, saveposition, orderstatus, sendfeedback, sendanswer} = require('./modules/requestsDB');
 
-
-// const ViberBot = require('viber-bot').Bot;
-// const webhookUrl = process.env.WEBHOOK_URL;
-// const bot = new ViberBot({
-// 	authToken: process.env.VIBER_TOKEN,
-// 	name: "Transfer Bookinggg",
-//     avatar: "http://viber.com/avatar.jpg"
-// });
-// app.use("/viber/webhook", bot.middleware());
-
-const viberBot = require('./modules/bot.js')
-app.use('/viber/webhook', viberBot.middleware());
-
-const TextMessage = require('viber-bot').Message.Text;
-viberBot.onTextMessage(/^hi|hello$/i, (message, response) =>
-    response.send(new TextMessage(`Hi there ${response.userProfile.name}. I am ${viberBot.name}`)));
-
-viberBot.onError(err => console.log('eee', err));
-viberBot.onSubscribe(response => console.log(`Subscribed: ${response.userProfile.name}`));
-
 //oaugh
 require('./modules/oaugh.js')(app);
+
+//TELEGRAM
+const token = process.env.TELEGRAM_TOKEN;
+const bot = new TelegramApi(token, {polling: true});
+
+bot.on('message', mess => {
+    const text = mess.text;
+    const chatId = mess.chat.id;
+    console.log('mess', mess);
+    console.log('text', text);
+    console.log('chatId', chatId);
+    bot.sendMessage(chatId, `Ти написав ${text}`);
+});
+
 
 //template engineer
 app.set('views', __dirname + '/templates'); 
