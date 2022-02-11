@@ -1,4 +1,5 @@
 const con = require('../db/connectToDB').con;
+const telegram = require('./bot');
 const {checOnTrueVal, autorisationCheck, tableRecord, token, log, readyFullDate, clienttoken} = require('../modules/service');
 
 const town = (req, res) => {
@@ -315,7 +316,12 @@ const sendfeedback = (req, res) => {
     })
     .then(tableRecord)
     .then((result) => {
-        if (result.err) { throw new Error('err-feedback') };
+        if (result.err) { 
+            
+            console.log('result.err', result.err);
+            throw new Error('err-feedback') };
+        telegram.telegramSendfeedback(feedbackComment);
+
         res.send({"res": 'Feedback sended!'});
     })
     .catch((err) => {

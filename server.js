@@ -3,8 +3,15 @@ const app = express();
 // const bodyParser = require('body-parser').json();
 const jsonParser = require('body-parser').json();
 const cookieParser = require('cookie-parser')();
-const TelegramApi = require('node-telegram-bot-api');
+
 require('dotenv').config();
+
+const telegram = require('./modules/bot');
+telegram.telegramSetMenu();
+telegram.telegramPushBTN();
+// telegram.telegramAnswerfeedback();
+
+
 
 const DB = require('./db/createDB');
 // DB.users();
@@ -19,20 +26,6 @@ const {town, townlist, transfer, transferlist, variables, orders, OFlist, savepo
 
 //oaugh
 require('./modules/oaugh.js')(app);
-
-//TELEGRAM
-const token = process.env.TELEGRAM_TOKEN;
-const bot = new TelegramApi(token, {polling: true});
-
-bot.on('message', mess => {
-    const text = mess.text;
-    const chatId = mess.chat.id;
-    console.log('mess', mess);
-    console.log('text', text);
-    console.log('chatId', chatId);
-    bot.sendMessage(chatId, `Ти написав ${text}`);
-});
-
 
 //template engineer
 app.set('views', __dirname + '/templates'); 
@@ -85,7 +78,4 @@ app.get('*', (req, res) => {res.redirect('/home')});
 // // server listen
 app.listen(process.env.PORT || 3000, () => {
     console.log('Server is running...');
-    // viberBot.setWebhook(process.env.WEBHOOK_URL).catch((err) => {
-    //     console.log('err', err);
-    // });
 });
