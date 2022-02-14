@@ -7,9 +7,10 @@ const cookieParser = require('cookie-parser')();
 require('dotenv').config();
 
 const telegram = require('./modules/bot');
+// telegram.checkID();
 telegram.telegramSetMenu();
 telegram.telegramPushBTN();
-// telegram.telegramAnswerfeedback();
+telegram.telegramAnswerfeedback();
 
 
 

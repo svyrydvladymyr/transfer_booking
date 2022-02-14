@@ -220,6 +220,8 @@ const orders = (req, res) => {
     const {transferId, transferFromName, transferToName, adult, children, sum, date, time, equip, equip_child, user_name, user_surname, user_email, user_phone} = req.body;
     const type = req.body.type.replace(/transfer_/gi, '');
     let userid = '';
+    const tokenGen = token(10);
+    let sumfin;
     tableRecord(`SELECT userid FROM users WHERE token = '${clienttoken(req, res)}'`)
     .then((user) => { 
         userid = !user.err && user != '' ? user[0].userid : '';
@@ -230,11 +232,10 @@ const orders = (req, res) => {
         if (result.err) { throw new Error('err-creating-order') };
         if (result[0] === undefined) { throw new Error('err-bad-route');
         } else {
-            let sumfin;
             if (type === 'pr') {sumfin = result[0].price_pr};
             if (type === 'gr') {sumfin = result[0].price_gr * (+adult + +children) };
             return `INSERT INTO orders (orders, user_id, transfer_id, order_from, order_to, adult, children, type, date, time, equip, equip_child, user_name, user_surname, user_email, user_tel, status, paid, sum, book_date) 
-            VALUES ('${token(10)}',
+            VALUES ('${tokenGen}',
                     '${userid}',
                     '${checOnTrueVal(transferId)}',
                     '${checOnTrueVal(transferFromName)}',
@@ -258,8 +259,27 @@ const orders = (req, res) => {
     })
     .then(tableRecord)
     .then((result) => {
-        console.log('dfgdfg', result);
         if (result.err) { throw new Error('error-DB-oredrs') };
+        const varArr = {
+            'yes': 'Так',
+            'no': 'Ні',
+            'pr': 'Приватний',
+            'gr': 'Груповий',
+            'reserv': 'Зарезервовано',
+            'del': 'Скасовано',
+            'proof': 'Підтверджено',
+        }
+        const telegramOrder = 'Order ID: ' + tokenGen + '\n' +
+            user_surname + ' ' + user_name + '\n' +
+            'Tel: ' + user_phone + '\n' +
+            'Email: ' + user_email + '\n' +
+            transferFromName + ' - ' + transferToName + '\n' +
+            date + ' ' + time + '\n' +
+            'Дорослих: ' + adult + ' Дітей: ' + children + '\n' +
+            'Спорядження: ' + varArr[`${equip}`] + ' Дитячих крісел: ' + equip_child + ' Тип: ' + varArr[`${type}`] + '\n' +
+            'Статус: ' + varArr['reserv'] + ' ' + ' Вартість: ' + sumfin + '\n' +
+            'Час бронювання: ' + readyFullDate(new Date(), '');
+        telegram.telegramSendorder(telegramOrder, tokenGen);
         res.send({"res": 'Order created!'});        
     })
     .catch((err) => {
@@ -298,11 +318,12 @@ const saveposition = (req, res) => {
 const sendfeedback = (req, res) => {
     const {feedbackName, feedbackSurname, feedbackEmail, feedbackPhone, feedbackComment} = req.body;
     let userid = '';
+    const tokenGen = token(10);
     tableRecord(`SELECT userid FROM users WHERE token = '${clienttoken(req, res)}'`)
     .then((user) => { 
         userid = !user.err && user != '' ? user[0].userid : '';
         return `INSERT INTO feedback (idfeedback, user_id, feedbackName, feedbackSurname, feedbackEmail, feedbackPhone, feedbackComment, date_create, status, answer, date_answer) 
-            VALUES ('${token(10)}',  
+            VALUES ('${tokenGen}',  
                 '${userid}',     
                 '${checOnTrueVal(feedbackName)}',
                 '${checOnTrueVal(feedbackSurname)}',
@@ -316,12 +337,14 @@ const sendfeedback = (req, res) => {
     })
     .then(tableRecord)
     .then((result) => {
-        if (result.err) { 
-            
-            console.log('result.err', result.err);
-            throw new Error('err-feedback') };
-        telegram.telegramSendfeedback(feedbackComment);
-
+        if (result.err) { throw new Error('err-feedback') };      
+        const telegramFeedback = 'Feedback ID: ' + tokenGen + '\n' + 
+            feedbackSurname + ' ' + feedbackName + '\n' + 
+            'Tel: ' + feedbackPhone + '\n' + 
+            'Email: ' + feedbackEmail + '\n' + 
+            'Date: ' + readyFullDate(new Date(), '') + '\n' + 
+            'Mess: ' + feedbackComment;       
+        telegram.telegramSendfeedback(telegramFeedback);
         res.send({"res": 'Feedback sended!'});
     })
     .catch((err) => {
