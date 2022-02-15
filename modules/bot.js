@@ -1,8 +1,6 @@
 require('dotenv').config();
-const con = require('../db/connectToDB').con;
 const {readyFullDate, tableRecord} = require('./service');
 const TelegramApi = require('node-telegram-bot-api');
-
 const token = process.env.TELEGRAM_TOKEN;
 const bot = new TelegramApi(token, {polling: true});
 
@@ -12,17 +10,11 @@ const botId = 5184949371;
 const checkID = () => { bot.on('message', mess => { console.log('mess', mess) }) };
 
 const optionsBTN = {
-    orderStatus: {
-        reply_markup: JSON.stringify({
-            inline_keyboard: [
-                [{text: 'Підтвердити', callback_data: 'pro'}, {text: 'Скасувати', callback_data: 'del'}]
-            ]
-        })
-    },
     orders: {
         reply_markup: JSON.stringify({
             keyboard: [
                 [{text: 'Показати непідтверджені замовлення'}],
+                [{text: '5 останніх замовлень'}],
                 [{text: '10 останніх замовлень'}],
                 [{text: '20 останніх замовлень'}],
                 [{text: 'МЕНЮ'}],
@@ -35,6 +27,7 @@ const optionsBTN = {
         reply_markup: JSON.stringify({
             keyboard: [
                 [{text: 'Показати відгуки без відповіді'}],
+                [{text: '5 останніх відгуків'}],
                 [{text: '10 останніх відгуків'}],
                 [{text: '20 останніх відгуків'}],
                 [{text: 'МЕНЮ'}],
@@ -53,14 +46,14 @@ const optionsBTN = {
             one_time_keyboard: true,
         }
     }
-}
+};
 
 const getOrders = (param) => {
     let sql = '';
     if (param === 'reserv') {
         sql = `SELECT * FROM orders WHERE status='reserv'`;
     };
-    if (['10', '20'].includes(param)) {
+    if (['5', '10', '20'].includes(param)) {
         sql = `SELECT * FROM orders ORDER BY id DESC LIMIT ${param}`;
     };
     tableRecord(sql)
@@ -94,7 +87,7 @@ const getOrders = (param) => {
             bot.sendMessage(userId, telegramOrder, {
                 reply_markup: JSON.stringify({
                     inline_keyboard: [
-                        [{text: 'Підтвердити', callback_data: `pro:${el.orders}`}, {text: 'Скасувати', callback_data: `del:${el.orders}`}]
+                        [{text: 'Підтвердити', callback_data: `proof`}, {text: 'Скасувати', callback_data: `del`}]
                     ]
                 })
             });
@@ -111,7 +104,7 @@ const getFeedbacks = (param) => {
     if (param === 'noanswer') {
         sql = `SELECT * FROM feedback WHERE status='noanswer'`;
     };
-    if (['10', '20'].includes(param)) {
+    if (['5', '10', '20'].includes(param)) {
         sql = `SELECT * FROM feedback ORDER BY id DESC LIMIT ${param}`;
     };
     tableRecord(sql)
@@ -128,7 +121,8 @@ const getFeedbacks = (param) => {
                 'Tel: ' + el.feedbackPhone + '\n' + 
                 'Email: ' + el.feedbackEmail + '\n' + 
                 'Date: ' + readyFullDate(el.date_create) + '\n' + 
-                'Mess: ' + el.feedbackComment;
+                'Mess: ' + el.feedbackComment + '\n' + 
+                'Answer: ' + el.answer;
             bot.sendMessage(userId, telegramFeedback);
         });
     })
@@ -138,10 +132,12 @@ const getFeedbacks = (param) => {
     });
 };
 
-const telegramSendorder = (mess, id) => { bot.sendMessage(userId, `${mess}`, {
-    reply_markup: JSON.stringify({
-        inline_keyboard: [[{text: 'Підтвердити', callback_data: `pro:${id}`}, {text: 'Скасувати', callback_data: `del:${id}`}]]
-    })});
+const telegramSendorder = (mess, id) => { 
+    bot.sendMessage(userId, `${mess}`, {
+        reply_markup: JSON.stringify({
+            inline_keyboard: [[{text: 'Підтвердити', callback_data: `proof`}, {text: 'Скасувати', callback_data: `del`}]]
+        })
+    });
 };
 const telegramSendfeedback = (text) => { bot.sendMessage(userId, `${text}`) };
 const telegramAnswerfeedback = () => {
@@ -196,9 +192,11 @@ const telegramSetMenu = () => {
                 return bot.sendMessage(userId, `${comand}`, optionsBTN[`${comandArr[comand]}`]);
             }; 
             if (comand === 'Показати відгуки без відповіді') { getFeedbacks('noanswer') };
+            if (comand === '5 останніх відгуків') { getFeedbacks('5') };
             if (comand === '10 останніх відгуків') { getFeedbacks('10') };
             if (comand === '20 останніх відгуків') { getFeedbacks('20') };
             if (comand === 'Показати непідтверджені замовлення') { getOrders('reserv') };
+            if (comand === '5 останніх замовлень') { getOrders('5') };
             if (comand === '10 останніх замовлень') { getOrders('10') };
             if (comand === '20 останніх замовлень') { getOrders('20') };
         };
@@ -207,11 +205,28 @@ const telegramSetMenu = () => {
 
 const telegramPushBTN = () => {
     bot.on('callback_query', btn => {
-        console.log('btn', btn);
-        console.log('btn', btn.data);
-
-
-
+        if (btn.from.id === userId) {
+            const text = btn.message.text;
+            const orderID = text.split("\n")[0].replace('Order ID: ', '');
+            const parameter = btn.data;
+            const statusArr = {
+                'proof': 'підтверджено',
+                'del': 'скасовано'
+            };
+            let sql = `UPDATE orders SET status='${parameter}' WHERE orders='${orderID}'`;
+            tableRecord(sql)
+            .then((result) => {
+                if (result.err) { throw new Error('err-order-answer') };
+                if (!result.err && result.affectedRows === 0) {
+                    return bot.sendMessage(userId, `Неможливо змінити статус, тому що такого замовлення не знайдено!`);
+                };
+                return bot.sendMessage(userId, `Статус замовлення змінено на "${statusArr[parameter]}"!`);
+            })
+            .catch((err) => {
+                console.log('order-telegram-error', err);
+                bot.sendMessage(userId, `Сталася помилка! Спробуйте ще раз...`);
+            });
+        };
     });
 }; 
 
