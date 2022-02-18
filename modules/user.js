@@ -28,7 +28,8 @@ const DATA = {
         phone : '',
         provider : '',
         lang : 'uk-UA',
-        date_registered : ''
+        date_registered : '',
+        year : ''
     },
     person : {
         townArr : '',
@@ -47,6 +48,7 @@ const clearDATA = () => {
     DATA.user.provider = '';
     DATA.user.lang = 'uk-UA';
     DATA.user.date_registered = '';
+    DATA.user.year = '';
     DATA.menu.home = '',
     DATA.menu.about = '',
     DATA.menu.blog = '',
@@ -121,6 +123,7 @@ const getUser = async (req, res, lang = 'uk-UA', pageName) => {
         DATA.user.surname = surname;
         DATA.user.email = email;
         DATA.user.lang = lang;
+        DATA.user.year = new Date().getFullYear();
         DATA.permission.pageName = pageName;
         DATA.langPack = require(`./lang/${lang}`);
         if (pageName === 'person') {

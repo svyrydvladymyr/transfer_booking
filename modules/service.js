@@ -68,12 +68,12 @@ const readyFullDate = (fullDate, reverse) => {
     };
 };
 
-//save logs
-const accessLog = (req, res, next) => {
-    let logs = `IP: ${req.ip}  TIME: ${new Date().toLocaleString()}  URL: ${req.url}\n`;
-    let namefile = `${new Date().getFullYear()}-${new Date().getMonth()+1}-${new Date().getDate()}`;
-    fs.appendFile(`./log/${namefile}.txt`, logs, (err) => {if (err) {console.log(err)}});
-    next();
+//save access logs
+const accessLog = (req, res, param = '') => {
+    let logs = `IP: ${req.ip}  TIME: ${new Date().toLocaleString()}  URL: ${req.url}  PRAM: ${param}\n`;
+    fs.appendFile(`./log/error_access.txt`, logs, 
+        (err) => { if (err) {console.log(err)} }
+    );
 };
 
 //get table record
@@ -91,14 +91,21 @@ const autorisation = (req, res, next) => {
     .then((user) => {
         req.user = user;
         if (user.err || user == '') { 
-            //must be logs
+            accessLog(req, res, 'autorisation');
             res.status(400).send(''); 
         } else {
             next();
         };
     });
 };
-const permission = (req, res, next) => (req.user[0].permission !== 1) ? res.status(400).send('') : next();
+const permission = (req, res, next) => {
+    if (req.user[0].permission !== 1) {
+        accessLog(req, res, 'permission');
+        res.status(400).send('');
+    } else {
+        next();
+    };    
+};
 
 //logout
 const logOut = (req, res) => {

@@ -5,7 +5,7 @@ const token = process.env.TELEGRAM_TOKEN;
 const bot = new TelegramApi(token, {polling: true});
 
 const userId = 5289170295;
-const botId = 5184949371;
+const botId = 5158730356;
 
 const checkID = () => { bot.on('message', mess => { console.log('mess', mess) }) };
 

@@ -35,9 +35,9 @@
                 <p><%=DATA.user.surname %> <%=DATA.user.name %></p>
                 <p class="provider"><%=DATA.langPack.provider %> <span><%=DATA.user.provider %></span></p>
                 <p onclick="exit()" class="exit"><%=DATA.langPack.exit %></p>
-                <% if (DATA.user.phone_verified === 'noverified') { %>
+                <!-- <% if (DATA.user.phone_verified === 'noverified') { %>
                     <p onclick="showModal('confirmPhone')" class="exit"><%=DATA.langPack.phone_verified %></p>
-                <% } %> 
+                <% } %>  -->
                 <div class="modal_wrap"></div>           
                 <% if (DATA.permission.permissionRules === '0') { %>
                     <div class="tab_person">

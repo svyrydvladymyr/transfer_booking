@@ -25,9 +25,7 @@
     "passport-google-oauth20": "^2.0.0",
     "pm2": "^5.1.2",
     "transliteration.cyr": "^1.0.5",
-    "url-parse": "^1.5.4",
-    "viber-bot": "^1.0.18",
-    "winston": "^3.5.1"
+    "url-parse": "^1.5.4"
   },
   "repository": {
     "type": "git",
