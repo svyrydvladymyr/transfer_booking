@@ -1,6 +1,5 @@
-const con = require('../db/connectToDB').con;
 const telegram = require('./bot');
-const {checOnTrueVal, autorisationCheck, tableRecord, token, log, readyFullDate, clienttoken} = require('../modules/service');
+const {checOnTrueVal, tableRecord, token, log, readyFullDate, clienttoken} = require('../modules/service');
 
 const town = (req, res) => {
     let sql;
@@ -279,7 +278,7 @@ const orders = (req, res) => {
             'Спорядження: ' + varArr[`${equip}`] + ' Дитячих крісел: ' + equip_child + ' Тип: ' + varArr[`${type}`] + '\n' +
             'Статус: ' + varArr['reserv'] + ' ' + ' Вартість: ' + sumfin + '\n' +
             'Час бронювання: ' + readyFullDate(new Date(), '');
-        telegram.telegramSendorder(telegramOrder, tokenGen);
+        // telegram.telegramSendorder(telegramOrder, tokenGen);
         res.send({"res": 'Order created!'});        
     })
     .catch((err) => {
@@ -344,7 +343,7 @@ const sendfeedback = (req, res) => {
             'Email: ' + feedbackEmail + '\n' + 
             'Date: ' + readyFullDate(new Date(), '') + '\n' + 
             'Mess: ' + feedbackComment;       
-        telegram.telegramSendfeedback(telegramFeedback);
+        // telegram.telegramSendfeedback(telegramFeedback);
         res.send({"res": 'Feedback sended!'});
     })
     .catch((err) => {

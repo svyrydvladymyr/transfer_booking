@@ -121,18 +121,34 @@ const closeModal = (el) => {
     if (valClose) { modal.innerHTML = '' }; 
 };  
 
+//wrap for modal window
+const modalWindowWrap = (type) => {
+    const sub_close = ['townAdd', 'townEdit', 'transferEdit', 'transferAdd', 'transferTowns', 'transferTimes'].includes(type) ? '' : 'onclick="closeModal(event)"';
+    const sub_noclose = ['transferTowns', 'transferTimes'].includes(type) ? '' : '<i class="fa fa-times" onclick="closeModal(event)"></i>';
+    return `<div class="modal_body" ${sub_close}>
+        <div class="modal_close">${sub_noclose}</div>
+        <div class="modal_place" id="${type}">
+            ${template[type]} 
+        </div>    
+        <div class="wrap_sub_modal"></div>    
+    </div>`;
+};
+
 //show modal window
 const showModal = function(type, obj, el) {
     console.log('type', type);
     console.log('obj', obj);
     // console.log('el', el);
-    ['townAddRes', 'townEditRes', 'townDelRes', 'transferAddRes', 'transferEditRes', 'transferDelRes',
-    'townAdd', 'townEdit', 'townDel', 'transferAdd', 'transferEdit', 'transferDel',
-    'mainformFrom', 'mainformTo', 'mainformCalendar', 'editMenuTown', 'editMenuTransfer', 
-    'orderInfo', 'confirmPhone', 'feedbackInfo'].includes(type) 
-        ? modal.innerHTML = template[type] : null;
+    ['townAdd', 'townAddRes', 'townEdit', 'townEditRes', 'townDel', 'townDelRes',
+    'transferAdd', 'transferAddRes', 'transferEdit', 'transferEditRes', 'transferDel', 'transferDelRes',         
+    'mainformFrom', 'mainformTo', 'mainformCalendar', 
+    'editMenuTown', 'editMenuTransfer',
+    'orderInfo', 'confirmPhone', 'feedbackInfo', 'newsAdd'].includes(type) 
+        ? modal.innerHTML = modalWindowWrap(type) : null;
+
+
     
-    if (type === 'confirmPhone') {
+    if (type === 'newsAdd') {
 
     }
     if (type === 'feedbackInfo') {
@@ -262,7 +278,7 @@ const showModal = function(type, obj, el) {
         }; 
     };    
     if (type === 'transferTimes') {
-        $_('.wrap_sub_modal')[0].innerHTML = template[type];
+        $_('.wrap_sub_modal')[0].innerHTML = modalWindowWrap(type);
         hours = $_('.hours')[0];
         minutes = $_('.minutes')[0];
         hArr = ['00', '01', '02', '03', '04', '05', '06', '07', '08', '09', '10', '11', '12', '13', '14', '15', '16', '17', '18', '19', '20', '21', '22', '23'];
@@ -277,7 +293,7 @@ const showModal = function(type, obj, el) {
     };
     if (type === 'mainformTimes') {        
         if (el.getAttribute("setparam") === 'limit') {
-            modal.innerHTML = template[`${type}limit`];
+            modal.innerHTML = modalWindowWrap(`${type}limit`);
             $_(`#${type}limit`)[0].children[0].innerHTML = lang[`${type}${getLang('lang')}`];
             if (inputFrom.value !== '' && inputTo.value !== '') {
                 const timeArrForm = [];
@@ -295,7 +311,7 @@ const showModal = function(type, obj, el) {
                 });
             };            
         } else {
-            modal.innerHTML = template[type];
+            modal.innerHTML = modalWindowWrap(type);
             $_(`#${type}`)[0].children[0].innerHTML = lang[`${type}${getLang('lang')}`];
             hours = $_('.hours')[0];
             minutes = $_('.minutes')[0];
@@ -311,7 +327,7 @@ const showModal = function(type, obj, el) {
         }; 
     };
     if (type === 'transferTowns') {
-        $_('.wrap_sub_modal')[0].innerHTML = template[type];
+        $_('.wrap_sub_modal')[0].innerHTML = modalWindowWrap(type);
         const setParam =  obj.param;
         send('' , `/townlist`, (result) => {
             const resultat = JSON.parse(result);

@@ -64,6 +64,7 @@
                             <p class="tab" onclick="tabs(1)">Повідомлення</p>
                             <p class="tab" onclick="tabs(2)">Міста</p>
                             <p class="tab" onclick="tabs(3)">Маршрути</p>
+                            <p class="tab" onclick="tabs(4)">Новини</p>
                         </div>
                         <div class="tab_bodys">
                             <div class="body body_active">                                
@@ -124,6 +125,10 @@
                                 <p onclick="showModal('transferAdd')" class="add_point">Додати маршрут</p>
                                 <p onclick="savePosition()" id="save_position" class="add_point" style="margin-top: 5px; display: none;">Зберегти позиції</p>
                                 <div class="transfers_list" id="sortable"></div>
+                            </div>
+                            <div class="body">
+                                <p onclick="showModal('newsAdd')" class="add_point">Додати новину</p>
+                                <div class="news_list"></div>
                             </div>
                         </div>
                     </div>                

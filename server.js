@@ -20,11 +20,11 @@ const {town, townlist, transfer, transferlist, variables, orders, OFlist, savepo
 require('./modules/oaugh.js')(app);
 
 //telegram bot
-const telegram = require('./modules/bot');
+// const telegram = require('./modules/bot');
 // telegram.checkID();
-telegram.telegramSetMenu();
-telegram.telegramPushBTN();
-telegram.telegramAnswerfeedback();
+// telegram.telegramSetMenu();
+// telegram.telegramPushBTN();
+// telegram.telegramAnswerfeedback();
 
 //template engineer
 app.set('views', __dirname + '/templates'); 
