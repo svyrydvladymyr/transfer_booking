@@ -196,6 +196,13 @@ template = {
     feedbackInfo: ``,
     confirmPhone: ``,
     newsAdd: 
-    `<p>newsAdd</p>`,
+    `<textarea name="news_title" id="news_title" maxlength="160" placeholder="Назва статті" oninput="resizeTextarea(this, '60'), validation(this, 'Input', 'news')" onkeydown="return (event.keyCode!=13);"></textarea>
+    <textarea name="news_description" id="news_description" maxlength="500" placeholder="Опис статті" oninput="resizeTextarea(this, '100'), validation(this, 'Input', 'news')" onkeydown="return (event.keyCode!=13);"></textarea>
+    <input type="file" name="news_foto" id="news_foto">
+ 
+    <div id="editor">
+        <p>Hello World!</p>
+    </div>
+    `,
 };   
 

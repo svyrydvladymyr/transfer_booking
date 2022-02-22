@@ -123,11 +123,14 @@ const closeModal = (el) => {
 
 //wrap for modal window
 const modalWindowWrap = (type) => {
-    const sub_close = ['townAdd', 'townEdit', 'transferEdit', 'transferAdd', 'transferTowns', 'transferTimes'].includes(type) ? '' : 'onclick="closeModal(event)"';
+    const sub_close = ['townAdd', 'townEdit', 'transferEdit', 'transferAdd', 'transferTowns', 'transferTimes', 'newsAdd'].includes(type) ? '' : 'onclick="closeModal(event)"';
     const sub_noclose = ['transferTowns', 'transferTimes'].includes(type) ? '' : '<i class="fa fa-times" onclick="closeModal(event)"></i>';
+    const style = {
+        'newsAdd' : 'max-width: 90%',
+    };
     return `<div class="modal_body" ${sub_close}>
         <div class="modal_close">${sub_noclose}</div>
-        <div class="modal_place" id="${type}">
+        <div class="modal_place" id="${type}" style="${style[type]}">
             ${template[type]} 
         </div>    
         <div class="wrap_sub_modal"></div>    
@@ -149,7 +152,18 @@ const showModal = function(type, obj, el) {
 
     
     if (type === 'newsAdd') {
-
+        var toolbarOptions = [
+            ['bold', 'italic', 'underline'],
+            [{ 'list': 'ordered'}, { 'list': 'bullet' }],
+            [{ 'font': [] }],
+            [{ 'align': [] }],
+          ];
+        var editor = new Quill('#editor', {
+            modules: {
+              toolbar: toolbarOptions
+            },
+            theme: 'snow'
+        });
     }
     if (type === 'feedbackInfo') {
         const bookLang = getLang('lang');
@@ -498,7 +512,7 @@ const validation = (el, type, form = '') => {
         const arrTrue = [];
         arrInp.forEach(element => { if ($_(`#${element}`)[0].value === '') { arrTrue.push(false)} });
         if (!arrTrue.includes(false)) { $_(`.feedback_form_err`)[0].classList.add('hide_err') };
-    } else if (form === 'answer') {
+    } else if (['news', 'answer'].includes(form)) {
     } else {
         if (type ==='Input') {
             $_(`.town_empty_${el.id}`)[0].style.display = 'none';
@@ -601,6 +615,15 @@ const validationChildren = (el) => {
         adultInp.classList.remove('err_input');
         childrenValue.classList.remove('err_input');
     };
+};
+const resizeTextarea = (el, h) => {
+    el.style.height = "";
+    el.style.height = el.scrollHeight + "px";
+    if (el.scrollHeight > +h) { 
+        el.style.overflow = 'auto'; 
+    } else {
+        el.style.overflow = 'hidden';
+    };  
 };
 
 //for back to previous tab
@@ -1192,5 +1215,6 @@ const formSendTransfer = (formID) => {
         });
     };
 };
+
 
 

@@ -2954,3 +2954,46 @@ iframe {
 .howitwork_container .howitwork_wrap .howitwork_row .howitwork_cell .arival:hover {
   background: #8bc34a;
 }
+
+#news_title, #news_description {
+  width: 96%;
+  height: 40px;
+  max-height: 60px;
+  min-height: 40px;
+  padding: 10px;
+  margin-bottom: 5px;
+  border: 0;
+  border-bottom: 1px solid #b7b7b7;
+  border-radius: 0px;
+  resize: none;
+  outline: 0;
+  overflow: hidden;
+  font-family: "Lato", Helvetica, Arial, sans-serif;
+}
+
+#news_description {
+  max-height: 100px;
+}
+
+#news_foto {
+  width: 96%;
+  height: 22px;
+  margin: 12px 0px;
+}
+
+#news_p {
+  width: -webkit-fit-content;
+  width: -moz-fit-content;
+  width: fit-content;
+  max-width: 100%;
+  min-width: 2px;
+  max-height: -webkit-fit-content;
+  max-height: -moz-fit-content;
+  max-height: fit-content;
+  min-height: 20px;
+  height: 20px;
+  resize: none;
+  padding: 0;
+  border: 0;
+  overflow: hidden;
+}
