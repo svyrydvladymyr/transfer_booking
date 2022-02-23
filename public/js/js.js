@@ -153,11 +153,13 @@ const showModal = function(type, obj, el) {
     
     if (type === 'newsAdd') {
         var toolbarOptions = [
-            ['bold', 'italic', 'underline'],
+            ['bold', 'italic', 'underline', 'strike'],
             [{ 'list': 'ordered'}, { 'list': 'bullet' }],
-            [{ 'font': [] }],
-            [{ 'align': [] }],
-          ];
+            [{ 'header': [1, 2, 3, 4, 5, 6, false] }],
+            [{ 'align': [] }], 
+            ['link'], 
+            ['clean'] 
+        ];
         var editor = new Quill('#editor', {
             modules: {
               toolbar: toolbarOptions
@@ -1215,6 +1217,7 @@ const formSendTransfer = (formID) => {
         });
     };
 };
+
 
 
 
