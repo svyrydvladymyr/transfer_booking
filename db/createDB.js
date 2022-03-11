@@ -95,10 +95,23 @@ const feedback = () => {
     con.query(sql, function (err, result) {if (err) throw err; console.log("Table feedback created")});
 };
 
+const blog = () => {
+    const sql = `CREATE TABLE blog (id INT AUTO_INCREMENT PRIMARY KEY,
+        id_blog VARCHAR(10) NOT NULL UNIQUE,
+        name VARCHAR(165) NOT NULL, 
+        description VARCHAR(505) NOT NULL, 
+        foto VARCHAR(250),
+        article LONGTEXT,
+        date_create DATETIME
+        )`; 
+    con.query(sql, function (err, result) {if (err) throw err; console.log("Table feedback created")});
+};
+
 module.exports = {
     users,
     transfers,
     points,
     orders,
-    feedback
+    feedback,
+    blog
 };

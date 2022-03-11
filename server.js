@@ -5,12 +5,13 @@ const cookieParser = require('cookie-parser');
 
 require('dotenv').config();
 
-// const DB = require('./db/createDB');
+const DB = require('./db/createDB');
 // DB.users();
 // DB.transfers();
 // DB.orders();
 // DB.points();
 // DB.feedback();
+// DB.blog();
 
 const {log, logOut, autorisation, permission} = require('./modules/service');
 const renderPage = require('./modules/renderPage');

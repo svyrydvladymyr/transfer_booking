@@ -197,7 +197,9 @@ const variables = (req, res) => {
         tableRecord(`SELECT transfer_id FROM transfers WHERE microbus='true' AND price_gr!='' LIMIT 3`),
         tableRecord(`SELECT transfer_id FROM transfers WHERE selection='true' AND price_pr!=''`)])
     .then(([privatRes, microbusRes, specRes]) => {
-        if (privatRes.err) { throw new Error('error-DB-privatARR') };
+        if (privatRes.err) { 
+            console.log(privatRes.err);
+            throw new Error('error-DB-privatARR') };
         if (microbusRes.err) { throw new Error('error-DB-microbusARR') };
         if (specRes.err) { throw new Error('error-DB-specArr') };
         privatRes.forEach(element => { privatArr.push(element) });
