@@ -1100,7 +1100,7 @@ body {
   font-weight: bold;
   color: #2da52d;
 }
-.user_wrap img {
+.user_wrap > img {
   width: 60px;
   border-radius: 50%;
   margin: 10px auto;
@@ -2457,4 +2457,33 @@ iframe {
   flex-wrap: wrap;
   justify-content: flex-start;
   width: 96%;
+}
+
+.modal_wrap .modal_place div.ql-container .ql-editor p {
+  height: fit-content;
+}
+
+.save_new {
+  cursor: pointer;
+  background: #8bc34a;
+  border: 0;
+  font-weight: bold;
+  width: 25%;
+  line-height: 45px;
+  color: #fff;
+  min-width: 250px;
+  margin: 5px !important;
+  font-size: 14px;
+}
+.save_new:hover {
+  background: #72a339;
+}
+.save_new:disabled {
+  cursor: no-drop;
+}
+
+.img_box {
+  outline: 1px solid red;
+  width: 100%;
+  min-height: 10px;
 }

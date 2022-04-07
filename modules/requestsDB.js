@@ -463,6 +463,23 @@ const OFlist = (req, res) => {
     });
 };
 
+const news = (req, res) => {
+
+
+    
+    
+    let sql = ``;    
+    tableRecord(sql)
+    .then((result) => {
+        if (result.err) { throw new Error('err-add-news') };
+        res.send({"res": 'News added!'});
+    })
+    .catch((err) => {
+        log('news-error', err);
+        res.status(400).send('');
+    });
+};
+
 module.exports = {
     town,
     transfer,
@@ -474,5 +491,6 @@ module.exports = {
     saveposition,
     sendfeedback,
     sendanswer,
-    OFlist    
+    OFlist,
+    news    
 }

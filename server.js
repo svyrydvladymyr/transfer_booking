@@ -1,4 +1,6 @@
 const express = require('express');
+const multer  = require('multer')
+const upload = multer({ dest: 'img/news/' })
 const app = express();
 const bodyParser = require('body-parser');
 const cookieParser = require('cookie-parser');
@@ -43,6 +45,22 @@ app.use((req, res, next) => {log(`URL-REQUEST:-(${req.method})-`, req.url); next
 
 //system logs
 // app.use((req, res, next) => {accessLog(req, res, next)});
+
+
+
+
+
+const cpUpload = upload.fields([{ name: 'mainfotonews', maxCount: 1 }, { name: 'gallerynews', maxCount: 20 }]);
+
+app.post('/fotonews', cpUpload, function (req, res, next) {
+  // req.files is an object (String -> Array) where fieldname is the key, and the value is array of files
+  //
+  // e.g.
+  //  req.files['avatar'][0] -> File
+  //  req.files['gallery'] -> Array
+  //
+  // req.body will contain the text fields, if there were any
+});
 
 //requests feedback
 app.post('/sendfeedback', sendfeedback);

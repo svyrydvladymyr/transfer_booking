@@ -1117,7 +1117,7 @@ body {
         }
       }
     }
-    img {
+    > img {
       width: 60px; 
       border-radius: 50%;
       margin: 10px auto;
@@ -2506,6 +2506,29 @@ iframe {
   width: 96%;
 }
 
+.modal_wrap .modal_place div.ql-container .ql-editor p {
+  height: fit-content;
+}
 
+.save_new {
+  cursor: pointer;
+  background: #8bc34a;
+  border: 0;
+  font-weight: bold;
+  width: 25%;
+  line-height: 45px;
+  color: #fff;
+  min-width: 250px;
+  margin: 5px!important;
+  font-size: 14px;
+  &:hover{ background: #72a339; }
+  &:disabled{ cursor: no-drop; }
+}
+
+.img_box {
+  outline: 1px solid red;
+  width: 100%;
+  min-height: 10px;
+}
 
 

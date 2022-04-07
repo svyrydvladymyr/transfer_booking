@@ -149,15 +149,6 @@ template = {
         </div>
     </div>
     <p class="main_form_send admTime"><i class='fas fa-check'></i></p>`,
-    mainformTimeslimit:
-    `<p class="mainform_title"></p> 
-    <div class="towns_select_list"></div>`,
-    mainformFrom:
-    `<p class="mainform_title"></p>
-    <div class="towns_select_list"></div>`,
-    mainformTo:
-    `<p class="mainform_title"></p>
-    <div class="towns_select_list"></div>`,
     mainformCalendar:
     `<p class="mainform_title"></p>
     <div class="calendar_wrap">
@@ -190,6 +181,15 @@ template = {
             </div>
         </div>            
     </div>`,
+    mainformTimeslimit:
+    `<p class="mainform_title"></p> 
+    <div class="towns_select_list"></div>`,
+    mainformFrom:
+    `<p class="mainform_title"></p>
+    <div class="towns_select_list"></div>`,
+    mainformTo:
+    `<p class="mainform_title"></p>
+    <div class="towns_select_list"></div>`,
     editMenuTown: ``,
     editMenuTransfer: ``,
     orderInfo: ``,
@@ -200,6 +200,9 @@ template = {
     <textarea name="news_description" id="news_description" maxlength="500" placeholder="Опис статті" oninput="resizeTextarea(this, '100'), validation(this, 'Input', 'news')" onkeydown="return (event.keyCode!=13);"></textarea>
     <input type="file" name="news_foto" id="news_foto"> 
     <div id="editor"></div>
+    <div class="img_box"></div>
+    <button class="save_new" id="save_news" onclick="saveNews('s')">Зберегти</button>
+    <button class="save_new" id="save_close_news" onclick="saveNews()">Зберегти і закрити</button>
     `,
 };   
 
