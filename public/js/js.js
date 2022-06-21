@@ -172,6 +172,14 @@ const showModal = function(type, obj, el) {
         console.log('editor_body', editor_body);
 
 
+
+        news_status = obj;
+        news_token = obj === 'edit' ? el : generate_token(6);
+
+
+
+
+
         setTimeout(() => {
 
             if (editor_body.length > 0) {
@@ -1248,69 +1256,172 @@ const formSendTransfer = (formID) => {
     };
 };
 
-//for opening news article
-const openNews = () => {
+//for creating image collection
+const imageСollection = (news_editor) => {
+    console.log('news_editor', news_editor);
 
+
+    [].forEach.call(news_editor, function(el) {
+
+        console.log(el.getElementsByTagName("img"));
+
+
+        if (el.getElementsByTagName("img").length > 0) {
+
+
+            [].forEach.call(el.getElementsByTagName("img"), function(el_img, index) {
+
+                console.log(el_img);
+                console.log(el_img.src);
+                console.log(index);
+
+
+                if (el_img.src.slice(0, 11) === 'data:image/') {
+                    console.log('dddddddddddddddddd');
+
+                    // $_('#news_gallery')[0].files[index] = el_img.src;
+
+
+                    $_('#news_foto')[0].value = el_img.src;
+
+                    // $_('#news_gallery')[0].click();
+
+                    // let reader = new FileReader();
+                    // reader.onload = function(e) {
+                    //     let url = e.target.result;
+
+
+                    //     console.log(url);
+                    // }          
+                    // reader.readAsDataURL($_('#news_gallery')[0].files[index]);
+
+                };
+            });
+        };
+    });
 };
+
+//for showing news messge
+const messageNews = (text = '', classs = 'mmm') => {
+    const news_vilid = $_('#vilid_news')[0];
+    news_vilid.innerHTML = text; 
+    news_vilid.classList.remove('vilid_news_bad');
+    news_vilid.classList.remove('vilid_news_good');
+    news_vilid.classList.add(classs);
+};
+
+//for validation file input
+const validIMG = (event) => {
+    const files = event.target.files;
+    if (!['image/jpg', 'image/jpeg', 'image/png', 'image/bmp'].includes(files[0].type)) {
+        messageNews(`Недоступний формат. Доступними є: jpg, jpeg, png`, 'vilid_news_bad');
+        $_('#news_foto')[0].value = '';
+    } else {
+        if (files[0].size > 5000000) {
+            messageNews(`Надто великий розмір. Максимально 5Mb`, 'vilid_news_bad');
+            $_('#news_foto')[0].value = '';
+        } else {
+            messageNews('');
+        };
+    };
+};
+
 //for saving news article
 const saveNews = (param) => {
-    let trueSendNews = false, valid_empty = [];
-
-
-    const news_token = generate_token(6);
-    const news_title = $_('#news_title')[0].value;
-    const news_description = $_('#news_description')[0].value;
-    const news_foto = $_('#news_foto')[0].value;
-    const news_editor = $_('.ql-editor')[0].innerHTML;
+    let trueSendNews = false, valid_empty = [], valid_fields = [];
+    const field_names = [' Назва статті', ' Опис статті', ' Фото статті'];
 
 
     const save_news = $_('#save_news')[0];
     const save_close_news = $_('#save_close_news')[0];
-    save_news.disabled = true;
-    save_close_news.disabled = true;
-    setTimeout(() => {
-        save_news.disabled = false;
-        save_close_news.disabled = false;
-    }, 3000);
+
+    
+
+    const news_title = $_('#news_title')[0].value;
+    const news_description = $_('#news_description')[0].value;
+    const news_foto = $_('#news_foto')[0].value;
+    const news_gallery = $_('#news_gallery')[0].value;
+    const news_editor = $_('.ql-editor')[0].children;
 
 
 
+
+    console.log('news_save_status', param);
+    console.log('news_status', news_status);
     console.log('news_token', news_token);
     console.log('news_title', news_title);
     console.log('news_description', news_description);
     console.log('news_foto', news_foto);
-    console.log('news_editor', news_editor);
-    
+    console.log('news_gallery', news_gallery);
 
-    [news_token, news_title, news_description, news_foto].forEach(element => {
-        if (element === '' || element === undefined) {valid_empty.push(false)}
+
+    imageСollection(news_editor);
+
+
+    [news_title, news_description, news_foto].forEach((element, index) => {
+        if (element === '' || element === undefined) {
+            valid_empty.push(false);
+            valid_fields.push(field_names[index]);
+        };
     });
-    console.log('valid_empty', valid_empty);
 
-    if (!valid_empty.includes(false)) {
-        console.log('good');
-        // trueSendNews = true;
-    }
+
+    console.log('valid_empty', valid_empty);
+    console.log('valid_fields', valid_fields);
+
+    if (!valid_empty.includes(false)) {       
+        trueSendNews = true;
+        messageNews('');        
+    } else {
+        trueSendNews = false;
+        messageNews(`Поля є обовяковими (${valid_fields} )`, 'vilid_news_bad');
+    };
  
 
+
+
     if (trueSendNews) {
-        send(obj , `/fotonews`, (result) => {
-            const resultat = JSON.parse(result);
+        save_news.disabled = true;
+        save_close_news.disabled = true;
+    
+        setTimeout(() => {
+            save_news.disabled = false;
+            save_close_news.disabled = false;
+            messageNews('');
+        }, 6000);
 
 
-            console.log("newsres", resultat);
-            if (resultat.res) {
+
+        
+        const obj = {'title' : news_title, 'description' : news_description, 'article' : ''};
 
 
 
-                // if (param === 's') {
-                //     save_news.disabled = false;
-                //     save_close_news.disabled = false;
-                // } else {
-                //     openNews();
-                // };                
-            };   
-        }, 'POST', 'multipart/form-data');
+        console.log('$_(news_foto)[0].files[0]', $_('#news_foto')[0].files[0]);
+        console.log('$_(news_gallery)[0].files', $_('#news_gallery')[0].files);
+
+        let formData = new FormData();
+        formData.append("token", `${news_token}`);
+        formData.append("obj", JSON.stringify(obj));
+        formData.append("cover", $_('#news_foto')[0].files[0]);
+
+        for(let i = 0; i < $_('#news_gallery')[0].files.length; i++) {
+            if (i < 50) { formData.append("gallery", $_('#news_gallery')[0].files[i]) };            
+        };
+
+
+        console.log('formData', formData);
+        console.log('formData', formData.get('obj'));
+        console.log('formDatafile', formData.get('cover'));
+        console.log('formDatagallery', formData.getAll('gallery'));
+
+
+        axios.post('/fotonews', formData, {headers:{"Content-type": "multipart/form-data"}})
+        .then(function (res) {                    
+            console.log('response', res);
+        })
+        .catch(function (error) { console.log(error) });
+
     };
 };
 

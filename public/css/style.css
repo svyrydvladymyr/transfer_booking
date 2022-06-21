@@ -2487,3 +2487,22 @@ iframe {
   width: 100%;
   min-height: 10px;
 }
+
+.vilid_news {
+  width: 96%;
+  line-height: 56px;
+  font-size: 14px;
+  background-color: transparent;
+  border-radius: 5px;
+  margin: 0px auto 12px !important;
+}
+
+.vilid_news_bad {
+  color: #bf1717;
+  background-color: #ffe6e6;
+}
+
+.vilid_news_good {
+  color: #045402;
+  background-color: #ddffd0;
+}

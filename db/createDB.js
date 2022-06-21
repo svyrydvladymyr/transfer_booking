@@ -98,8 +98,8 @@ const feedback = () => {
 const blog = () => {
     const sql = `CREATE TABLE blog (id INT AUTO_INCREMENT PRIMARY KEY,
         id_blog VARCHAR(10) NOT NULL UNIQUE,
-        name VARCHAR(165) NOT NULL, 
-        description VARCHAR(505) NOT NULL, 
+        name VARCHAR(265) NOT NULL, 
+        description VARCHAR(705) NOT NULL, 
         foto VARCHAR(250),
         article LONGTEXT,
         date_create DATETIME

@@ -18,6 +18,7 @@ let idTownPlace, tokenTown, formValid;
 let hours, minutes, hArr = [], mArr = [], hStart = 0, mStart = 0, peopleCount = 0, peopleMax = 50, peopleType = 'gr';
 let townsFrom = {}, townsTo = {}, transfersArr = [], microbusArr = [], privatArr = [], specArr = [];
 let calkTrue = true, feedbackCalkTrue = true;
+let news_status = '', news_token = '';
 
 //redirect page
 const redirect = way => window.location.replace(`${way}`);

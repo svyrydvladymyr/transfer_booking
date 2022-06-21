@@ -1,3 +1,5 @@
+const multer  = require('multer');
+const fs = require('fs');
 const telegram = require('./bot');
 const {checOnTrueVal, tableRecord, token, log, readyFullDate, clienttoken} = require('../modules/service');
 
@@ -464,20 +466,46 @@ const OFlist = (req, res) => {
 };
 
 const news = (req, res) => {
-
-
-    
-    
-    let sql = ``;    
-    tableRecord(sql)
-    .then((result) => {
-        if (result.err) { throw new Error('err-add-news') };
-        res.send({"res": 'News added!'});
-    })
-    .catch((err) => {
-        log('news-error', err);
-        res.status(400).send('');
+    const storage = multer.diskStorage({
+        destination: (req, file, cb) => {
+            const dir = `${__dirname}/../public/img/news/${req.body.token}`;
+            !fs.existsSync(dir) ? fs.mkdirSync(dir) : null;
+            cb(null, dir);
+        },
+        filename: (req, file, cb) => {
+            if (req.file === undefined){
+                cb(null, file.originalname);
+            }
+        }
     });
+    const fileFilter = (req, file, cb) => {
+        ['image/jpg', 'image/jpeg', 'image/png'].includes(file.mimetype) ? cb(null, true) : cb(`Bad format file: ${file.originalname}`, false);
+    };
+
+    const upload = multer({ storage, fileFilter });
+    const cpUpload = upload.fields([{ name: 'cover', maxCount: 1 }, { name: 'gallery', maxCount: 50 }]);
+
+    cpUpload(req, res, function (err) {
+        console.log('err', err);
+        // console.log('req', req);
+        console.log('file', req.files);
+        console.log('body', req.body.obj);
+
+
+
+
+    });
+    
+    // let sql = ``;    
+    // tableRecord(sql)
+    // .then((result) => {
+    //     if (result.err) { throw new Error('err-add-news') };
+    //     res.send({"res": 'News added!'});
+    // })
+    // .catch((err) => {
+    //     log('news-error', err);
+    //     res.status(400).send('');
+    // });
 };
 
 module.exports = {

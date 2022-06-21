@@ -1,9 +1,9 @@
 const express = require('express');
-const multer  = require('multer')
-const upload = multer({ dest: 'img/news/' })
 const app = express();
 const bodyParser = require('body-parser');
 const cookieParser = require('cookie-parser');
+// const multer  = require('multer');
+// const fs = require('fs');
 
 require('dotenv').config();
 
@@ -17,7 +17,7 @@ const DB = require('./db/createDB');
 
 const {log, logOut, autorisation, permission} = require('./modules/service');
 const renderPage = require('./modules/renderPage');
-const {town, townlist, transfer, transferlist, variables, orders, OFlist, saveposition, orderstatus, sendfeedback, sendanswer} = require('./modules/requestsDB');
+const {town, townlist, transfer, transferlist, variables, orders, OFlist, saveposition, orderstatus, sendfeedback, sendanswer, news} = require('./modules/requestsDB');
 
 //oaugh
 require('./modules/oaugh.js')(app);
@@ -38,6 +38,7 @@ app.use(express.static(__dirname + '/public'));
 
 //parsers
 app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({extended: true}))
 app.use(cookieParser());
 
 //console logs
@@ -46,22 +47,8 @@ app.use((req, res, next) => {log(`URL-REQUEST:-(${req.method})-`, req.url); next
 //system logs
 // app.use((req, res, next) => {accessLog(req, res, next)});
 
-
-
-
-
-const cpUpload = upload.fields([{ name: 'mainfotonews', maxCount: 1 }, { name: 'gallerynews', maxCount: 20 }]);
-
-app.post('/fotonews', cpUpload, function (req, res, next) {
-  // req.files is an object (String -> Array) where fieldname is the key, and the value is array of files
-  //
-  // e.g.
-  //  req.files['avatar'][0] -> File
-  //  req.files['gallery'] -> Array
-  //
-  // req.body will contain the text fields, if there were any
-});
-
+//requests news
+app.post('/fotonews', news);
 //requests feedback
 app.post('/sendfeedback', sendfeedback);
 app.post('/feedbacklist', autorisation, OFlist);
