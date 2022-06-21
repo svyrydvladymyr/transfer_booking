@@ -1274,6 +1274,9 @@ const imageСollection = (news_editor) => {
                 console.log(el_img);
                 console.log(el_img.src);
                 console.log(index);
+                console.log(el_img);
+                console.log(el_img.src);
+                console.log(index);
 
 
                 if (el_img.src.slice(0, 11) === 'data:image/') {
