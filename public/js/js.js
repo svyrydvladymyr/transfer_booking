@@ -1274,7 +1274,10 @@ const imageСollection = (news_editor) => {
                 console.log(el_img);
                 console.log(el_img.src);
                 console.log(index);
-                console.log('22222222222222222222222222222');
+<<<<<<< HEAD
+=======
+                console.log('11111111111111111111');
+>>>>>>> main
 
 
 
