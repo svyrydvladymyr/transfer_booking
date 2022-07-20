@@ -84,6 +84,11 @@ app.get('/$', (req, res, next) => {res.redirect('/home')});
 app.get('*', (req, res) => {res.redirect('/home')});
 
 // // server listen
-app.listen(process.env.PORT || 3000, () => {
-    console.log('Server is running...');
+app.listen(process.env.PORT || 3000, (error) => {
+    // console.log(process.env);
+    error 
+        ? console.log('ERROR...:', error) 
+        : console.log('Server is running...');
 });
+
+
