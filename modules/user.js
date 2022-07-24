@@ -1,6 +1,5 @@
-const con = require('../db/connectToDB').con;
+const con = require('./connectDB').con;
 const {log, tableRecord, clienttoken, readyFullDate} = require('./service');
-const {langList} = require('../config/config_variables');
 
 const DATA = {
     errors : {
@@ -54,9 +53,9 @@ const clearDATA = () => {
     DATA.menu.blog = '',
     DATA.menu.transfer = '',
     DATA.menu.contacts = '',
-    DATA.permission.permissionAuthorization = 0; 
-    DATA.permission.permissionRules = 0; 
-    DATA.permission.pageName = ''; 
+    DATA.permission.permissionAuthorization = 0;
+    DATA.permission.permissionRules = 0;
+    DATA.permission.pageName = '';
     DATA.person.townArr = '';
     DATA.person.routeArr = '';
     DATA.errors.errMessage = '';
@@ -70,7 +69,7 @@ const createUser = (profile) => {
         id : profile.id,
         provider : profile.provider,
         firstName: profile.name && profile.name.givenName ? profile.name.givenName : '',
-        lastName: profile.name && profile.name.familyName ? profile.name.familyName : '', 
+        lastName: profile.name && profile.name.familyName ? profile.name.familyName : '',
         email: profile.emails && profile.emails.length > 0 && profile.emails[0].value !== undefined ? profile.emails[0].value : '',
         photo: profile.photos && profile.photos.length > 0 && profile.photos[0].value !== undefined ? profile.photos[0].value : '',
         date : `${date.toISOString().slice(0,10)} ${date.getHours()}:${date.getMinutes()}`
@@ -88,7 +87,7 @@ const addUser = (profile, done) => {
                '${user.date}', 
                '${user.photo}')`;     
     con.query(sql, (error, result) => {
-        error 
+        error
             ? done(`Error creating user record: ${error}`, null) 
             : done(null, profile);
     });
@@ -101,7 +100,7 @@ const isUser = (profile) => {
         surname = '${user.lastName}', 
         email = '${user.email}',
         ava = '${user.photo}'
-    WHERE userid = '${user.id}'`, (err, result) => { 
+    WHERE userid = '${user.id}'`, (err, result) => {
         if (err) { log("error-update-user", err) };
     });
 };
@@ -127,23 +126,23 @@ const getUser = async (req, res, lang = 'uk-UA', pageName) => {
         DATA.permission.pageName = pageName;
         DATA.langPack = require(`./lang/${lang}`);
         if (pageName === 'person') {
-            DATA.user.ava = ava;        
-            DATA.user.email = email;      
-            DATA.user.phone = phone;      
-            DATA.user.phone_verified = phone_verified;      
-            DATA.user.provider = provider;  
+            DATA.user.ava = ava;
+            DATA.user.email = email;
+            DATA.user.phone = phone;
+            DATA.user.phone_verified = phone_verified;
+            DATA.user.provider = provider;
             DATA.user.date_registered = readyFullDate(date_registered, 'reverse');
             DATA.menu.home = 'active_menu'
             if (permission === 1) {
                 DATA.person.townArr = ``;
                 DATA.person.routeArr = ``;
-            };                
+            };
         };
-    }) 
+    })
     .then(() => {}, (no_user) => { DATA.permission.permissionAuthorization = '0' })
     .catch((err) => {
         log('error-user-info', err);
-        DATA.permission.permissionAuthorization = '0';  
+        DATA.permission.permissionAuthorization = '0';
     })
     .finally(() => {
         DATA.langPack = require(`./lang/${lang}`);

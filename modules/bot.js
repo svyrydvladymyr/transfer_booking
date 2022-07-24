@@ -1,8 +1,9 @@
-// require('dotenv').config();
 // const {readyFullDate, tableRecord} = require('./service');
 // const TelegramApi = require('node-telegram-bot-api');
 // const token = process.env.TELEGRAM_TOKEN;
 // const bot = new TelegramApi(token, {polling: true});
+
+// require('dotenv').config({ path: `.${process.env.NODE_ENV}.env` });
 
 // const userId = 5289170295;
 // const botId = 5158730356;

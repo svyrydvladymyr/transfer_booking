@@ -2,18 +2,14 @@ const express = require('express');
 const app = express();
 const bodyParser = require('body-parser');
 const cookieParser = require('cookie-parser');
+
+const towns = require('./modules/towns/router');
 // const multer  = require('multer');
 // const fs = require('fs');
 
-require('dotenv').config();
+require('dotenv').config({ path: `.${process.env.NODE_ENV}.env` });
 
-const DB = require('./db/createDB');
-// DB.users();
-// DB.transfers();
-// DB.orders();
-// DB.points();
-// DB.feedback();
-// DB.blog();
+// require('./modules/models/createDB').table('users');
 
 const {log, logOut, autorisation, permission} = require('./modules/service');
 const renderPage = require('./modules/renderPage');
@@ -62,8 +58,10 @@ app.get('/variables', variables);
 //requests saveposition
 app.post('/saveposition', autorisation, permission, saveposition);
 //requests towns
-app.post('/town', autorisation, permission, town);
-app.get('/townlist', autorisation, permission, townlist);
+app.use('/town', autorisation, permission, towns);
+// app.post('/town', autorisation, permission, town);
+// app.get('/townlist', autorisation, permission, townlist);
+
 //requests transfers
 app.post('/transfer', autorisation, permission, transfer);
 app.get('/transferlist', autorisation, permission, transferlist);
@@ -84,11 +82,11 @@ app.get('/$', (req, res, next) => {res.redirect('/home')});
 app.get('*', (req, res) => {res.redirect('/home')});
 
 // // server listen
-app.listen(process.env.PORT || 3000, (error) => {
-    // console.log(process.env);
-    error 
-        ? console.log('ERROR...:', error) 
-        : console.log('Server is running...');
+const PORT = process.env.PORT || 3000;
+app.listen(PORT, (error) => {
+    error
+        ? console.log('Server ERROR...:', error) 
+        : console.log(`Server is running at ${PORT} port...`);
 });
 
 

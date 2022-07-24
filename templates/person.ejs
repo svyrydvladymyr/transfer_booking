@@ -48,7 +48,7 @@
                             <p class="tab tab_user" onclick="tabs(1)"><%=DATA.langPack.feedback_title %></p>
                         </div>
                         <div class="tab_bodys">
-                            <div class="body body_active">  
+                            <div class="body body_active">
                                 <div class="orders_list" style="border-top: 0"></div>
                                 <div class="orders_pagination"></div>
                             </div>
@@ -57,9 +57,9 @@
                                 <div class="feedback_pagination"></div>
                             </div>
                         </div>
-                    </div>  
-                <% } %>           
-                <% if (DATA.permission.permissionRules === '1') { %> 
+                    </div>
+                <% } %>
+                <% if (DATA.permission.permissionRules === '1') { %>
                     <div class="tab_person">
                         <div class="tabs">
                             <p class="tab tab_active" onclick="tabs(0)">Бронювання</p>
@@ -69,7 +69,7 @@
                             <p class="tab" onclick="tabs(4)">Новини</p>
                         </div>
                         <div class="tab_bodys">
-                            <div class="body body_active">                                
+                            <div class="body body_active">
                                 <div class="orders_search">
                                     <select name="order_date" onchange="setOrderDate(this)">
                                         <option value="3" selected>За 3 місяці</option>
@@ -119,7 +119,7 @@
                                 <div class="feedback_list"></div>
                                 <div class="feedback_pagination"></div>
                             </div>
-                            <div class="body">                                
+                            <div class="body">
                                 <p onclick="showModal('townAdd')" class="add_point">Додати місто</p>
                                 <div class="tawns_list"></div>
                             </div>
@@ -133,29 +133,31 @@
                                 <div class="news_list"></div>
                             </div>
                         </div>
-                    </div>                
-                <% } %>   
-            </div> 
-        <% } %> 
+                    </div>
+                <% } %>
+            </div>
+        <% } %>
     </div>
     <%- include("./parts/footer.ejs") %>
     <%- include("./parts/script.ejs") %>
     <% if (DATA.permission.permissionAuthorization === '1') { %>
-        <% if (DATA.permission.permissionRules === '0') { %> 
-            <script>
-                ordersList(1);  
-                feedbackList(1);
-            </script>                      
-        <% } %>  
-        <% if (DATA.permission.permissionRules === '1') { %> 
+        <% if (DATA.permission.permissionRules === '0') { %>
+            <div class="tawns_list"></div>
             <script>
                 ordersList(1);
-                feedbackList(1);  
-                loadTownsList();  
-                loadTransfersList();  
-            </script>                      
-        <% } %>   
-    <% } %> 
+                feedbackList(1);
+                loadTownsList();
+            </script>
+        <% } %>
+        <% if (DATA.permission.permissionRules === '1') { %>
+            <script>
+                ordersList(1);
+                feedbackList(1);
+                loadTownsList();
+                loadTransfersList();
+            </script>
+        <% } %>
+    <% } %>
     <!-- Include the Quill library -->
     <script src="https://cdn.quilljs.com/1.3.6/quill.js"></script>
     <script src="https://cdn.quilljs.com/1.3.6/quill.min.js"></script>

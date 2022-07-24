@@ -1,11 +1,12 @@
 {
   "name": "transfer_booking",
   "version": "1.0.0",
-  "description": "Application for transfer booking",
+  "description": "Application for booking transfers",
   "main": "server.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "nodemon server.js"
+    "start": "cross-env NODE_ENV=production node server.js",
+    "dev": "cross-env NODE_ENV=development nodemon server.js"
   },
   "author": "Svyryd Volodymyr",
   "license": "ISC",
@@ -14,6 +15,7 @@
     "body-parser": "^1.19.1",
     "cookie-parser": "^1.4.6",
     "cookies": "^0.8.0",
+    "cross-env": "^7.0.3",
     "dotenv": "^16.0.0",
     "ejs": "^3.1.6",
     "express": "^4.17.1",

@@ -1,19 +1,18 @@
 const Cookies = require('cookies');
 const fs = require('fs');
-const con = require('../db/connectToDB').con;
-const userDate = require('../config/user_config');
+const con = require('./connectDB').con;
 
 //transliteration
 const translit = word => require('transliteration.cyr').transliterate(word);
-
-//client token
-const clienttoken = (req, res) => new Cookies(req, res, {"keys":['volodymyr']}).get('sessionisdd', {signed:true});
 
 //validation email
 const validEmail = text => (text.match(/^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/)) ? true : false;
 
 //chack on true values
 const checOnTrueVal = (el) => el.replace(new RegExp("[^a-zA-Zа-яА-Я0-9-()_+=!?.'\":;/\,іІїЇєЄ /\n]", "gi"), '');
+
+//client token
+const clienttoken = (req, res) => new Cookies(req, res, {"keys":['volodymyr']}).get('sessionisdd', {signed:true});
 
 //add or clear Cookies
 const addCookies = (req, res, token, param) => {
@@ -32,7 +31,7 @@ const token = length => {
 //consoleLog message
 const log = (mess, val, arrow = '') => {
     for (let i = 0; i < 25 - mess.length; i++){ arrow += '-' };
-    console.log(`--${mess}${arrow}>> `, val);   
+    console.log(`--${mess}${arrow}>> `, val);
 };
 
 //date format minutes
@@ -78,21 +77,22 @@ const accessLog = (req, res, param = '') => {
 
 //get table record
 const tableRecord = (sql) => {
-    return new Promise((resolve) => { 
-        con.query(sql, function (err, result) { 
-            err ? resolve({'err': err}) : resolve(result); 
-        }) 
+    return new Promise((resolve) => {
+        con.query(sql, function (err, result) {
+            err ? resolve({'err': err}) : resolve(result);
+        })
     });
 };
 
 //check the authenticity of the authorization
 const autorisation = (req, res, next) => {
-    tableRecord(`SELECT ${userDate(req, res)} FROM users WHERE token = '${clienttoken(req, res)}'`)
+    const userInfo = 'userid, email, phone, phone_verified, permission';
+    tableRecord(`SELECT ${userInfo} FROM users WHERE token = '${clienttoken(req, res)}'`)
     .then((user) => {
         req.user = user;
-        if (user.err || user == '') { 
+        if (user.err || user == '') {
             accessLog(req, res, 'autorisation');
-            res.status(400).send(''); 
+            res.status(400).send('');
         } else {
             next();
         };
@@ -104,13 +104,13 @@ const permission = (req, res, next) => {
         res.status(400).send('');
     } else {
         next();
-    };    
+    };
 };
 
 //logout
 const logOut = (req, res) => {
     addCookies(req, res, '', '-1');
-    res.redirect('/'); 
+    res.redirect('/');
 };
 
 module.exports = {

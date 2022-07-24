@@ -1081,7 +1081,7 @@ const loadVariablesList = () => {
 
 //load towns list
 const loadTownsList = () => {
-    send({} , `/townlist`, (result) => {
+    send({} , `/town/townlist`, (result) => {
         const resultat = JSON.parse(result);
         if (resultat.res) {
             const tawns_list = $_('.tawns_list')[0];

@@ -99,7 +99,7 @@ const transfer = (req, res) => {
     tableRecord(sql)
     .then((result) => {
         if (result.err) { throw new Error(`err-${req.body.param}`) };
-        res.send({"res": `${req.body.param}`});               
+        res.send({"res": `${req.body.param}`});
     })
     .catch((err) => {
         log('transfers-error', err);
@@ -199,7 +199,7 @@ const variables = (req, res) => {
         tableRecord(`SELECT transfer_id FROM transfers WHERE microbus='true' AND price_gr!='' LIMIT 3`),
         tableRecord(`SELECT transfer_id FROM transfers WHERE selection='true' AND price_pr!=''`)])
     .then(([privatRes, microbusRes, specRes]) => {
-        if (privatRes.err) { 
+        if (privatRes.err) {
             console.log(privatRes.err);
             throw new Error('error-DB-privatARR') };
         if (microbusRes.err) { throw new Error('error-DB-microbusARR') };
