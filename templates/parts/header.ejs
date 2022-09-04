@@ -1,0 +1,38 @@
+<div class="header headerAdd<%=DATA.permission.pageName %>">
+    <% if (DATA.permission.pageName === 'home') { %>
+        <%- include("social.ejs") %>
+    <% } %>
+    <%- include("menu.ejs") %>
+    <% if (DATA.permission.pageName === 'privacy-policy') { %>
+        <p class="header_pages_title1"><%=DATA.langPack.privacy_policy_text %></p>
+        <p class="header_pages_title2"><%=DATA.langPack.privacy_policy %></p>
+    <% } %>
+    <% if (DATA.permission.pageName === 'advantages') { %>
+        <p class="header_pages_title1"><%=DATA.langPack.header_pages_title1 %></p>
+        <p class="header_pages_title2"><%=DATA.langPack.header_pages_title2 %></p>
+    <% } %>
+    <% if (DATA.permission.pageName === 'person') { %>
+        <p class="header_pages_title1"><%=DATA.langPack.header_pages_title3 %></p>
+        <p class="header_pages_title2"><%=DATA.langPack.header_pages_title4 %></p>
+    <% } %>
+    <% if (DATA.permission.pageName === 'contacts') { %>
+        <p class="header_pages_title1"><%=DATA.langPack.header_pages_title5 %></p>
+        <p class="header_pages_title2"><%=DATA.langPack.header_pages_title6 %></p>
+    <% } %>
+    <% if (DATA.permission.pageName === 'about') { %>
+        <p class="header_pages_title1"><%=DATA.langPack.header_pages_title7 %></p>
+        <p class="header_pages_title2"><%=DATA.langPack.header_pages_title8 %></p>
+    <% } %>
+    <% if (DATA.permission.pageName === 'transfer') { %>
+        <p class="header_pages_title1"><%=DATA.langPack.header_pages_title9 %></p>
+        <p class="header_pages_title2"><%=DATA.langPack.header_pages_title10 %></p>
+    <% } %>
+    <% if (DATA.permission.pageName === 'blog') { %>
+        <p class="header_pages_title1"><%=DATA.langPack.header_pages_title11 %></p>
+        <p class="header_pages_title2"><%=DATA.langPack.header_pages_title12 %></p>
+    <% } %>
+    <% if (DATA.permission.pageName === 'home') { %>
+        <%- include("header-form-wrap.ejs") %>
+    <% } %>
+    <button onclick="toTopFn()" id="toTop" title="Go to top"><i class='fas fa-angle-up'></i></button>
+</div>

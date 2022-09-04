@@ -1,0 +1,50 @@
+<!DOCTYPE HTML>
+<html lang="en">
+<head>
+    <%- include("./parts/head.ejs") %>
+</head>
+<body>
+    <%- include("./parts/header.ejs") %>
+    <div class="main_body">
+        <div class="content_container advantages">
+            <p class="advantages_title1"><%=DATA.langPack.advantages_main_title1 %></p>
+            <p class="advantages_title2"><%=DATA.langPack.advantages_main_title2 %></p>
+            <p class="line"><span></span></p>
+            <div>
+                <div><i class='fas fa-edit'></i></div>
+                <div>
+                    <p class="title"><%=DATA.langPack.advantages_title1 %></p>
+                    <span></span>
+                    <p><%=DATA.langPack.advantages_body1 %></p>
+                </div>
+            </div>
+            <div>
+                <div><b>15+</b></div>
+                <div>
+                    <p class="title"><%=DATA.langPack.advantages_title2 %></p>
+                    <span></span>
+                    <p><%=DATA.langPack.advantages_body2 %></p>
+                </div>
+            </div>
+            <div>
+                <div><i class='far fa-credit-card'></i></div>
+                <div>
+                    <p class="title"><%=DATA.langPack.advantages_title3 %></p>
+                    <span></span>
+                    <p><%=DATA.langPack.advantages_body3 %></p>
+                </div>
+            </div>
+            <div>
+                <div><i class='fas fa-headset'></i></div>
+                <div>
+                    <p class="title"><%=DATA.langPack.advantages_title4 %></p>
+                    <span></span>
+                    <p><%=DATA.langPack.advantages_body4 %></p>
+                </div>
+            </div>        
+        </div>
+    </div>
+    <%- include("./parts/footer_info.ejs") %>
+    <%- include("./parts/footer.ejs") %>
+    <%- include("./parts/script.ejs") %>
+</body>

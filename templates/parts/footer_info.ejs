@@ -1,0 +1,90 @@
+<div class="footer_container">
+    <div class="footer_wrap">
+        <div class="footer_box">
+            <img src="../img/logo_footer.png" alt="transfer-booking">
+            <p class="info"><%=DATA.langPack.footer_info_text %></p>
+        </div>
+        <div class="footer_box">
+            <p><%=DATA.langPack.footer_info_header_blog %></p>
+            <p class="line"></p>
+            <div></div>
+        </div>
+        <div class="footer_box">
+            <p><%=DATA.langPack.footer_info_header_people %></p>
+            <p class="line"></p>
+            <div class="feedback_container">
+                <div class="feedback_wrap">
+                    <div class="feedback_block">
+                        <p><%=DATA.langPack.feedback1 %></p>
+                        <p><span></span><%=DATA.langPack.feedback_name1 %></p>
+                    </div>
+                    <div class="feedback_block">
+                        <p><%=DATA.langPack.feedback2 %></p>
+                        <p><span></span><%=DATA.langPack.feedback_name2 %></p>
+                    </div>
+                    <div class="feedback_block">
+                        <p><%=DATA.langPack.feedback3 %></p>
+                        <p><span></span><%=DATA.langPack.feedback_name3 %></p>
+                    </div>
+                    <div class="feedback_block">
+                        <p><%=DATA.langPack.feedback4 %></p>
+                        <p><span></span><%=DATA.langPack.feedback_name4 %></p>
+                    </div>
+                    <div class="feedback_block">
+                        <p><%=DATA.langPack.feedback5 %></p>
+                        <p><span></span><%=DATA.langPack.feedback_name5 %></p>
+                    </div>
+                    <div class="feedback_block">
+                        <p><%=DATA.langPack.feedback6 %></p>
+                        <p><span></span><%=DATA.langPack.feedback_name6 %></p>
+                    </div>
+                    <div class="feedback_block">
+                        <p><%=DATA.langPack.feedback7 %></p>
+                        <p><span></span><%=DATA.langPack.feedback_name7 %></p>
+                    </div>
+                    <div class="feedback_block">
+                        <p><%=DATA.langPack.feedback8 %></p>
+                        <p><span></span><%=DATA.langPack.feedback_name8 %></p>
+                    </div>
+                </div>
+                <div class="feedback_points"></div>
+            </div>
+        </div>
+        <div class="footer_box">
+            <p><%=DATA.langPack.footer_info_header_contact %></p>
+            <p class="line"></p>
+            <div class="feedback_form" style="width: 100%; padding: 0;">
+                <div class="feedback_form_wrap feedbak_inp_info" style="margin: 0;">
+                    <% if (DATA.permission.permissionAuthorization === '0') { %>
+                        <input type="text" name="feedback_name" id="feedback_name" class="feedback_name" maxlength="50" autocomplete="nope" placeholder="<%=DATA.langPack.feedback_form_name %>" oninput="validation(this, 'Name', 'feedback')">
+                    <% } %> 
+                    <% if (DATA.permission.permissionAuthorization === '1') { %>
+                        <input type="text" class="inp_readonly" value="<%=DATA.user.name %>" name="feedback_name" id="feedback_name" autocomplete="nope" placeholder="<%=DATA.langPack.feedback_form_name %>" readonly />
+                    <% } %> 
+                    <% if (DATA.permission.permissionAuthorization === '0') { %>
+                        <input type="text" name="feedback_surname" id="feedback_surname" class="feedback_surname" maxlength="50" autocomplete="nope" placeholder="<%=DATA.langPack.feedback_form_surname %>" oninput="validation(this, 'Name', 'feedback')">
+                    <% } %> 
+                    <% if (DATA.permission.permissionAuthorization === '1') { %>
+                        <input type="text" class="inp_readonly" value="<%=DATA.user.surname %>" name="feedback_surname" id="feedback_surname" autocomplete="nope" placeholder="<%=DATA.langPack.feedback_form_surname %>" readonly />
+                    <% } %> 
+                    <% if (DATA.permission.permissionAuthorization === '0') { %>
+                        <input type="email" name="feedback_email" id="feedback_email" class="feedback_email" maxlength="110" autocomplete="nope" placeholder="<%=DATA.langPack.feedback_form_email %>" oninput="validation(this, 'Email', 'feedback')">
+                    <% } %> 
+                    <% if (DATA.permission.permissionAuthorization === '1') { %>
+                        <% if ((DATA.user.email === '') || (DATA.user.email === null) || (DATA.user.email === undefined)) { %>
+                            <input type="email" name="feedback_email" id="feedback_email" class="feedback_email" maxlength="110" autocomplete="nope" placeholder="<%=DATA.langPack.feedback_form_email %>" oninput="validation(this, 'Email', 'feedback')">
+                        <% } %> 
+                        <% if ((DATA.user.email !== '') && (DATA.user.email !== null) && (DATA.user.email !== undefined)) { %>
+                            <input type="email" class="inp_readonly" value="<%=DATA.user.email %>" name="feedback_email" id="feedback_email" autocomplete="nope" placeholder="<%=DATA.langPack.feedback_form_email %>" readonly />
+                        <% } %>  
+                    <% } %>                   
+                    <input type="tel" name="feedback_phone" id="feedback_phone" maxlength="20" autocomplete="nope" placeholder="<%=DATA.langPack.feedback_form_tel %>" oninput="validation(this, 'Phone', 'feedback')">
+                    <textarea name="feedback_comment" id="feedback_comment" autocomplete="nope" maxlength="300" placeholder="<%=DATA.langPack.feedback_form_message %>" oninput="validation(this, 'Input', 'feedback')"></textarea>
+                    <p class="feedback_form_err hide_err"><%=DATA.langPack.feedback_form_err %></p>
+                    <p class="feedback_sended hide_err"><%=DATA.langPack.feedback_sended %></p>
+                    <p class="send" onclick="sendFeedback()"><i class='far fa-paper-plane'></i></p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

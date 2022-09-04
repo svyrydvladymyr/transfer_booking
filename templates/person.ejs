@@ -1,0 +1,165 @@
+<!DOCTYPE HTML>
+<html lang="en">
+<head>
+    <%- include("./parts/head.ejs") %>
+    <link rel="stylesheet" href="//code.jquery.com/ui/1.13.1/themes/base/jquery-ui.css">
+    <!-- Include Quill stylesheet -->
+    <link href="https://cdn.quilljs.com/1.3.6/quill.snow.css" rel="stylesheet">
+</head>
+<body>
+    <% if (DATA.permission.permissionAuthorization === '1') { %>
+        <script>
+            let numb = 30, orderstat = '', orderdate = '3'; 
+            let feedback_numb = 30, feedback_stat = '', feedback_date = '3'; 
+        </script>
+        <script src="https://code.jquery.com/jquery-3.6.0.js"></script>
+        <script src="https://code.jquery.com/ui/1.13.1/jquery-ui.js"></script>
+        <script>
+            $( function() { $( "#sortable" ).sortable({
+                update: function() { $_('#save_position')[0].style.display = 'block' }
+            })});
+        </script>
+    <% } %> 
+    <%- include("./parts/header.ejs") %>    
+    <div class="main_body">
+        <% if (DATA.permission.permissionAuthorization === '0') { %>        
+            <div class="no_user">
+                <p><%=DATA.langPack.autoriz_info %></p>
+                <div>
+                    <a href="/google"><img src="img/google.png" alt="google" title="GOOGLE"></a>
+                    <a href="/facebook"><img src="img/facebook.png" alt="facebook" title="FACEBOOK"></a>
+                </div>
+            </div>
+        <% } %>        
+        <% if (DATA.permission.permissionAuthorization === '1') { %>
+            <div class="user_wrap">
+                <img src="<%=DATA.user.ava %>">
+                <p><%=DATA.user.surname %> <%=DATA.user.name %></p>
+                <p class="provider"><%=DATA.langPack.provider %> <span><%=DATA.user.provider %></span></p>
+                <p onclick="exit()" class="exit"><%=DATA.langPack.exit %></p>
+                <!-- <% if (DATA.user.phone_verified === 'noverified') { %>
+                    <p onclick="showModal('confirmPhone')" class="exit"><%=DATA.langPack.phone_verified %></p>
+                <% } %>  -->
+                <div class="modal_wrap"></div>           
+                <% if (DATA.permission.permissionRules === '0') { %>
+                    <div class="tab_person">
+                        <div class="tabs">
+                            <p class="tab tab_user tab_active" onclick="tabs(0)"><%=DATA.langPack.orders_title %></p>
+                            <p class="tab tab_user" onclick="tabs(1)"><%=DATA.langPack.feedback_title %></p>
+                        </div>
+                        <div class="tab_bodys">
+                            <div class="body body_active">
+                                <div class="orders_list" style="border-top: 0"></div>
+                                <div class="orders_pagination"></div>
+                            </div>
+                            <div class="body">
+                                <div class="feedback_list" style="border-top: 0"></div>
+                                <div class="feedback_pagination"></div>
+                            </div>
+                        </div>
+                    </div>
+                <% } %>
+                <% if (DATA.permission.permissionRules === '1') { %>
+                    <div class="tab_person">
+                        <div class="tabs">
+                            <p class="tab tab_active" onclick="tabs(0)">Бронювання</p>
+                            <p class="tab" onclick="tabs(1)">Повідомлення</p>
+                            <p class="tab" onclick="tabs(2)">Міста</p>
+                            <p class="tab" onclick="tabs(3)">Маршрути</p>
+                            <p class="tab" onclick="tabs(4)">Новини</p>
+                        </div>
+                        <div class="tab_bodys">
+                            <div class="body body_active">
+                                <div class="orders_search">
+                                    <select name="order_date" onchange="setOrderDate(this)">
+                                        <option value="3" selected>За 3 місяці</option>
+                                        <option value="6">За 6 місяців</option>
+                                        <option value="12">За 1 рік</option>
+                                        <option value="">За весь час</option>
+                                    </select>
+                                    <select name="order_status" onchange="setOrderStatus(this)">
+                                        <option value="" selected>Всі</option>
+                                        <option value="reserv">Зарезервовано</option>
+                                        <option value="proof">Підтверджено</option>
+                                        <option value="del">Видалено</option>
+                                    </select>
+                                    <select name="order_number" onchange="setOrderNumb(this)">
+                                        <option value="30" selected>30</option>
+                                        <option value="50">50</option>
+                                        <option value="100">100</option>
+                                        <option value="1">1</option>
+                                        <option value="2">2</option>
+                                        <option value="3">3</option>
+                                    </select>
+                                </div>
+                                <div class="orders_list"></div>
+                                <div class="orders_pagination"></div>
+                            </div>
+                            <div class="body">
+                                <div class="feedback_search">
+                                    <select name="feedback_date" onchange="setFeedbackDate(this)">
+                                        <option value="3" selected>За 3 місяці</option>
+                                        <option value="6">За 6 місяців</option>
+                                        <option value="12">За 1 рік</option>
+                                        <option value="">За весь час</option>
+                                    </select>
+                                    <select name="feedback_status" onchange="setFeedbackStatus(this)">
+                                        <option value="" selected>Всі</option>
+                                        <option value="answer">З відповіддю</option>
+                                        <option value="noanswer">Без відповіді</option>
+                                    </select>
+                                    <select name="feedback_number" onchange="setFeedbackNumb(this)">
+                                        <option value="30" selected>30</option>
+                                        <option value="50">50</option>
+                                        <option value="100">100</option>
+                                        <option value="2">2</option>
+                                        <option value="5">5</option>
+                                    </select>
+                                </div>
+                                <div class="feedback_list"></div>
+                                <div class="feedback_pagination"></div>
+                            </div>
+                            <div class="body">
+                                <p onclick="showModal('townAdd')" class="add_point">Додати місто</p>
+                                <div class="tawns_list"></div>
+                            </div>
+                            <div class="body">
+                                <p onclick="showModal('transferAdd')" class="add_point">Додати маршрут</p>
+                                <p onclick="savePosition()" id="save_position" class="add_point" style="margin-top: 5px; display: none;">Зберегти позиції</p>
+                                <div class="transfers_list" id="sortable"></div>
+                            </div>
+                            <div class="body">
+                                <p onclick="showModal('newsAdd', 'add')" class="add_point">Додати новину</p>
+                                <div class="news_list"></div>
+                            </div>
+                        </div>
+                    </div>
+                <% } %>
+            </div>
+        <% } %>
+    </div>
+    <%- include("./parts/footer.ejs") %>
+    <%- include("./parts/script.ejs") %>
+    <% if (DATA.permission.permissionAuthorization === '1') { %>
+        <% if (DATA.permission.permissionRules === '0') { %>
+            <div class="tawns_list"></div>
+            <script>
+                ordersList(1);
+                feedbackList(1);
+                loadTownsList();
+            </script>
+        <% } %>
+        <% if (DATA.permission.permissionRules === '1') { %>
+            <script>
+                ordersList(1);
+                feedbackList(1);
+                loadTownsList();
+                loadTransfersList();
+            </script>
+        <% } %>
+    <% } %>
+    <!-- Include the Quill library -->
+    <script src="https://cdn.quilljs.com/1.3.6/quill.js"></script>
+    <script src="https://cdn.quilljs.com/1.3.6/quill.min.js"></script>
+    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+</body>

@@ -1,0 +1,36 @@
+<div class="form_container">
+    <div class="form_wrap">
+        <div class="info_container" style="opacity: 0;">
+            <div class="info_wrap">
+                <h1><%=DATA.langPack.header_info_title %></h1>
+                <p><%=DATA.langPack.header_info_body %></p>
+                <a href="/advantages"><%=DATA.langPack.header_info_readmore %></a>
+            </div>
+        </div>
+        <div class="tabs_container" style="opacity: 0;">
+            <div class="tabs_wrap">
+                <div class="tabs">
+                    <p class="tab tab_active" onclick="tabs(0)"><%=DATA.langPack.header_tab_booking %></p>
+                    <% if (DATA.permission.permissionAuthorization === '0') { %>        
+                        <p class="tab" onclick="tabs(1)"><%=DATA.langPack.header_tab_person %></p>
+                    <% } %>    
+                    <% if (DATA.permission.permissionAuthorization === '1') { %>        
+                        <p class="tab" style="text-transform: capitalize;" onclick="window.location.href = '/person'"><%=DATA.user.surname %> <%=DATA.user.name %></p>
+                    <% } %>                       
+                </div>
+                <div class="tab_bodys">
+                    <div class="body body_active">
+                        <%- include("main_form.ejs") %>
+                    </div>
+                    <div class="body">
+                        <p><%=DATA.langPack.autoriz_info %></p>
+                        <div>
+                            <a href="/google"><img src="img/google.png" alt="google" title="GOOGLE"></a>
+                            <a href="/facebook"><img src="img/facebook.png" alt="facebook" title="FACEBOOK"></a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
