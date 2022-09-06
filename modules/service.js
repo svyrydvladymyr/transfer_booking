@@ -122,8 +122,8 @@ const logOut = (req, res) => {
 };
 
 const catch_err = (err, res, code) => {
-    log('ERROR:', err.name);
-    log('ERROR:', err.message);
+    log('ERROR:', err);
+    // log('ERROR:', err.message);
     res.status(code).send('');
 }
 

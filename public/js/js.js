@@ -1151,7 +1151,7 @@ const loadTransfersList = () => {
 
 //add to DB Towns
 const formSend = (formID) => {
-    let obj = {}, trueSend = true; metod = 'POST';
+    let obj = {}, trueSend = true, metod = 'POST';
     if ((formID === 'townAdd') || (formID === 'townEdit')) {
         const id_town = $_(`#${formID} > #id_town`)[0].innerHTML;
         const uk_town = $_(`#${formID} > #uk`)[0].value.replace(RegExpArr.RegExpInput , "");
@@ -1174,7 +1174,10 @@ const formSend = (formID) => {
         metod = "DELETE"
     }
     if (trueSend) {
-        send(obj , `/town`, (result) => {
+
+        console.log('obj', obj);
+
+        send(obj, `/town`, (result) => {
             const resultat = JSON.parse(result);
             if (resultat.res) {
                 console.log(resultat.res);
@@ -1199,7 +1202,7 @@ const formSend = (formID) => {
 
 //add to DB Transfers
 const formSendTransfer = (formID) => {
-    let obj = {}, trueSend;
+    let obj = {}, trueSend, metod = 'POST';
     if ((formID === 'transferAdd') || (formID === 'transferEdit')) {
         const transfer_id = $_(`#${formID}`)[0].paramid;
         const transfer_from = $_(`#${formID} > #from`)[0].inputparam;
@@ -1243,20 +1246,27 @@ const formSendTransfer = (formID) => {
             trueSend = false;
         };
     };
+    if (formID === 'transferEdit') {
+        metod = "PUT";
+    };
     if (formID === 'transferDel') {
         const id_transfer = $_(`#${formID} > #id_transfer`)[0].paramid;
         obj = {"id" : id_transfer, "param" : formID};
-        trueSend = true
+        trueSend = true;
+        metod = "DELETE";
     };
     if (trueSend) {
-        send(obj , `/transfer`, (result) => {
+
+        console.log('obj', obj);
+
+        send(obj, `/transfers`, (result) => {
             const resultat = JSON.parse(result);
             if (resultat.res) {
                 showModal(`${formID}Res`);
                 setTimeout(() => { modal.innerHTML = '' }, 2000);
                 loadTransfersList();
-            };   
-        });
+            };
+        }, metod);
     };
 };
 

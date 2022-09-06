@@ -51,6 +51,8 @@ const transfer = (req, res) => {
     const timeArr = {'time1' : '', 'time2' : '', 'time3' : '', 'time4' : '', 'time5' : '', 'time6' : '', 'time7' : '', 'time8' : '', 'time9' : '', 'time10' : ''};
     let sql;
     if (req.body.param !== 'transferDel') { req.body.times.forEach((element, index) => { timeArr[`time${index + 1}`] = element.replace(new RegExp("[^0-9:]", "gi"), '')})};    
+    
+    
     if (req.body.param === 'transferAdd') {
         sql = `INSERT INTO transfers (transfer_id, transfer_from, transfer_to, price_pr, price_gr, time1, time2, time3, time4, time5, time6, time7, time8, time9, time10, selection, privat, microbus) 
         VALUES ('${token(10)}',
