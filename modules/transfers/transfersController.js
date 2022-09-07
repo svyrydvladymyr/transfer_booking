@@ -3,9 +3,6 @@ const transfersService = require('./transfersService');
 
 class transfersController {
     async transfer(req, res) {
-
-        console.log('req.body', req.body);
-
         const methods = {
             GET: 'list',
             POST: 'create',

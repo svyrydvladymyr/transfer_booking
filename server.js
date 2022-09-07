@@ -4,7 +4,6 @@ const bodyParser = require('body-parser');
 const cookieParser = require('cookie-parser');
 require('dotenv').config({ path: `.${process.env.NODE_ENV}.env` });
 
-
 //routers
 const towns = require('./modules/towns/routers');
 const transfers = require('./modules/transfers/routers');
@@ -51,23 +50,20 @@ app.post('/fotonews', news);
 app.post('/sendfeedback', sendfeedback);
 app.post('/feedbacklist', autorisation, OFlist);
 app.post('/sendanswer', autorisation, permission, sendanswer);
-//requests order
-app.post('/order', orders);
-app.post('/orderslist', autorisation, OFlist);
-app.post('/orderstatus', autorisation, permission, orderstatus);
+
 //requests variables
 app.get('/variables', variables);
 //requests saveposition
 app.post('/saveposition', autorisation, permission, saveposition);
-//requests towns
+//requests
 app.use('/town', autorisation, permission, towns);
-// app.post('/town', autorisation, permission, town);
-// app.get('/townlist', autorisation, permission, townlist);
-
-//requests transfers
 app.use('/transfers', autorisation, permission, transfers);
-// app.post('/transfer', autorisation, permission, transfer);
-app.get('/transferlist', autorisation, permission, transferlist);
+
+//requests order
+app.post('/order', orders);
+app.post('/orderslist', autorisation, OFlist);
+app.post('/orderstatus', autorisation, permission, orderstatus);
+
 
 //pages
 app.get('/', renderPage);

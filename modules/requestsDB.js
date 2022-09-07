@@ -1,7 +1,7 @@
 const multer  = require('multer');
 const fs = require('fs');
 const telegram = require('./bot');
-const {checOnTrueVal, tableRecord, token, log, readyFullDate, clienttoken} = require('../modules/service');
+const {checOnTrueVal, tableRecord, token, log, query, readyFullDate, clienttoken} = require('../modules/service');
 
 // const town = (req, res) => {
 //     let sql;
@@ -47,67 +47,65 @@ const {checOnTrueVal, tableRecord, token, log, readyFullDate, clienttoken} = req
 //     });
 // };
 
-const transfer = (req, res) => {
-    const timeArr = {'time1' : '', 'time2' : '', 'time3' : '', 'time4' : '', 'time5' : '', 'time6' : '', 'time7' : '', 'time8' : '', 'time9' : '', 'time10' : ''};
-    let sql;
-    if (req.body.param !== 'transferDel') { req.body.times.forEach((element, index) => { timeArr[`time${index + 1}`] = element.replace(new RegExp("[^0-9:]", "gi"), '')})};    
-    
-    
-    if (req.body.param === 'transferAdd') {
-        sql = `INSERT INTO transfers (transfer_id, transfer_from, transfer_to, price_pr, price_gr, time1, time2, time3, time4, time5, time6, time7, time8, time9, time10, selection, privat, microbus) 
-        VALUES ('${token(10)}',
-                '${checOnTrueVal(req.body.from)}', 
-                '${checOnTrueVal(req.body.to)}', 
-                '${req.body.pr.replace(new RegExp("[^0-9]", "gi"), '')}', 
-                '${req.body.gr.replace(new RegExp("[^0-9]", "gi"), '')}',
-                '${timeArr.time1}',
-                '${timeArr.time2}',
-                '${timeArr.time3}',
-                '${timeArr.time4}',
-                '${timeArr.time5}',
-                '${timeArr.time6}',
-                '${timeArr.time7}',
-                '${timeArr.time8}',
-                '${timeArr.time9}',
-                '${timeArr.time10}',
-                '${req.body.select === true ? true : false}', 
-                '${req.body.privat === true ? true : false}', 
-                '${req.body.microbus === true ? true : false}')`; 
-    };
-    if (req.body.param === 'transferEdit') {
-        sql = `UPDATE transfers 
-        SET transfer_from='${checOnTrueVal(req.body.from)}', 
-            transfer_to='${checOnTrueVal(req.body.to)}',  
-            price_pr='${req.body.pr.replace(new RegExp("[^0-9]", "gi"), '')}',  
-            price_gr='${req.body.gr.replace(new RegExp("[^0-9]", "gi"), '')}',  
-            time1='${timeArr.time1}',  
-            time2='${timeArr.time2}',  
-            time3='${timeArr.time3}',  
-            time4='${timeArr.time4}',  
-            time5='${timeArr.time5}',  
-            time6='${timeArr.time6}',  
-            time7='${timeArr.time7}',  
-            time8='${timeArr.time8}',  
-            time9='${timeArr.time9}',  
-            time10='${timeArr.time10}',  
-            selection='${req.body.select === true ? true : false}',
-            privat='${req.body.privat === true ? true : false}',
-            microbus='${req.body.microbus === true ? true : false}'
-        WHERE transfer_id='${checOnTrueVal(req.body.id)}'`; 
-    };
-    if (req.body.param === 'transferDel') {
-        sql = `DELETE FROM transfers WHERE transfer_id='${checOnTrueVal(req.body.id)}'`; 
-    };
-    tableRecord(sql)
-    .then((result) => {
-        if (result.err) { throw new Error(`err-${req.body.param}`) };
-        res.send({"res": `${req.body.param}`});
-    })
-    .catch((err) => {
-        log('transfers-error', err);
-        res.status(400).send('');
-    });
-};
+// const transfer = (req, res) => {
+//     const timeArr = {'time1' : '', 'time2' : '', 'time3' : '', 'time4' : '', 'time5' : '', 'time6' : '', 'time7' : '', 'time8' : '', 'time9' : '', 'time10' : ''};
+//     let sql;
+//     if (req.body.param !== 'transferDel') { req.body.times.forEach((element, index) => { timeArr[`time${index + 1}`] = element.replace(new RegExp("[^0-9:]", "gi"), '')})};    
+    // if (req.body.param === 'transferAdd') {
+    //     sql = `INSERT INTO transfers (transfer_id, transfer_from, transfer_to, price_pr, price_gr, time1, time2, time3, time4, time5, time6, time7, time8, time9, time10, selection, privat, microbus) 
+    //     VALUES ('${token(10)}',
+    //             '${checOnTrueVal(req.body.from)}', 
+    //             '${checOnTrueVal(req.body.to)}', 
+    //             '${req.body.pr.replace(new RegExp("[^0-9]", "gi"), '')}', 
+    //             '${req.body.gr.replace(new RegExp("[^0-9]", "gi"), '')}',
+    //             '${timeArr.time1}',
+    //             '${timeArr.time2}',
+    //             '${timeArr.time3}',
+    //             '${timeArr.time4}',
+    //             '${timeArr.time5}',
+    //             '${timeArr.time6}',
+    //             '${timeArr.time7}',
+    //             '${timeArr.time8}',
+    //             '${timeArr.time9}',
+    //             '${timeArr.time10}',
+    //             '${req.body.select === true ? true : false}', 
+    //             '${req.body.privat === true ? true : false}', 
+    //             '${req.body.microbus === true ? true : false}')`; 
+    // };
+    // if (req.body.param === 'transferEdit') {
+    //     sql = `UPDATE transfers 
+    //     SET transfer_from='${checOnTrueVal(req.body.from)}', 
+    //         transfer_to='${checOnTrueVal(req.body.to)}',  
+    //         price_pr='${req.body.pr.replace(new RegExp("[^0-9]", "gi"), '')}',  
+    //         price_gr='${req.body.gr.replace(new RegExp("[^0-9]", "gi"), '')}',  
+    //         time1='${timeArr.time1}',  
+    //         time2='${timeArr.time2}',  
+    //         time3='${timeArr.time3}',  
+    //         time4='${timeArr.time4}',  
+    //         time5='${timeArr.time5}',  
+    //         time6='${timeArr.time6}',  
+    //         time7='${timeArr.time7}',  
+    //         time8='${timeArr.time8}',  
+    //         time9='${timeArr.time9}',  
+    //         time10='${timeArr.time10}',  
+    //         selection='${req.body.select === true ? true : false}',
+    //         privat='${req.body.privat === true ? true : false}',
+    //         microbus='${req.body.microbus === true ? true : false}'
+    //     WHERE transfer_id='${checOnTrueVal(req.body.id)}'`; 
+    // };
+//     if (req.body.param === 'transferDel') {
+//         sql = `DELETE FROM transfers WHERE transfer_id='${checOnTrueVal(req.body.id)}'`; 
+//     };
+//     tableRecord(sql)
+//     .then((result) => {
+//         if (result.err) { throw new Error(`err-${req.body.param}`) };
+//         res.send({"res": `${req.body.param}`});
+//     })
+//     .catch((err) => {
+//         log('transfers-error', err);
+//         res.status(400).send('');
+//     });
+// };
 
 // const townlist = (req, res) => {
 //     tableRecord(`SELECT * FROM points`)
@@ -121,51 +119,97 @@ const transfer = (req, res) => {
 //     });
 // };
 
-const transferlist = (req, res) => {
-    const townsArr = {};
-    tableRecord(`SELECT town_id, name_uk FROM points`)
-    .then((result) => {
-        if (result.err) { throw new Error('error-get-town-list') };
-        result.forEach(element => { townsArr[`${element.town_id}`] = element.name_uk });
-        return `SELECT * FROM transfers`;
-    })
-    .then(tableRecord)
-    .then((result) => {
-        if (result.err) { throw new Error('error-get-transfer-list') };
-        const resArr = []; 
-        result.forEach(element => {
-            const resEl = {
-                'id': element.id,
-                'transfer_id': element.transfer_id,
-                'transfer_from': townsArr[element.transfer_from],
-                'transfer_from_id': element.transfer_from,
-                'transfer_to': townsArr[element.transfer_to],                
-                'transfer_to_id': element.transfer_to,                
-                'price_pr': element.price_pr,                
-                'price_gr': element.price_gr,                
-                'time1': element.time1,                
-                'time2': element.time2,                
-                'time3': element.time3,                
-                'time4': element.time4,                
-                'time5': element.time5,                
-                'time6': element.time6,                
-                'time7': element.time7,                
-                'time8': element.time8,                
-                'time9': element.time9,                
-                'time10': element.time10,                
-                'selection': element.selection === 'true' ? true : false,                
-                'privat': element.privat === 'true' ? true : false,                
-                'microbus': element.microbus === 'true' ? true : false,                
-            };
-            resArr.push(resEl);
-        });
-        res.send({"res": resArr});
-    })
-    .catch((err) => {
-        log('transfers-list-error', err);
-        res.status(400).send('');
-    });
-};
+// const transferlist = (req, res) => {
+//     const townsArr = {};
+//     const resArr = [];
+//     Promise.all([
+//         query(`SELECT town_id, name_uk FROM points`),
+//         query(`SELECT * FROM transfers`)
+//     ])
+//     .then(([town_names, transfers]) => {
+//         if (town_names.err) { throw new Error(town_names.err) };
+//         if (transfers.err) { throw new Error(transfers.err) };
+//         town_names.forEach(element => {
+//             townsArr[`${element.town_id}`] = element.name_uk;
+//         });
+//         transfers.forEach(element => {
+//             const resEl = {
+//                 'id': element.id,
+//                 'transfer_id': element.transfer_id,
+//                 'transfer_from': townsArr[element.transfer_from],
+//                 'transfer_from_id': element.transfer_from,
+//                 'transfer_to': townsArr[element.transfer_to],
+//                 'transfer_to_id': element.transfer_to,
+//                 'price_pr': element.price_pr,
+//                 'price_gr': element.price_gr,
+//                 'time1': element.time1,
+//                 'time2': element.time2,
+//                 'time3': element.time3,
+//                 'time4': element.time4,
+//                 'time5': element.time5,
+//                 'time6': element.time6,
+//                 'time7': element.time7,
+//                 'time8': element.time8,
+//                 'time9': element.time9,
+//                 'time10': element.time10,
+//                 'selection': element.selection === 'true' ? true : false,
+//                 'privat': element.privat === 'true' ? true : false,
+//                 'microbus': element.microbus === 'true' ? true : false,
+//             };
+//             resArr.push(resEl);
+//         });
+//         res.send({"res": resArr});
+
+//     })
+//     .catch((err) => {
+//         log('variables-list-error', err);
+//         res.status(400).send('');
+//     });
+
+
+    // tableRecord(`SELECT town_id, name_uk FROM points`)
+    // .then((result) => {
+    //     if (result.err) { throw new Error('error-get-town-list') };
+    //     result.forEach(element => { townsArr[`${element.town_id}`] = element.name_uk });
+    //     return `SELECT * FROM transfers`;
+    // })
+    // .then(tableRecord)
+    // .then((result) => {
+    //     if (result.err) { throw new Error('error-get-transfer-list') };
+    //     const resArr = []; 
+    //     result.forEach(element => {
+    //         const resEl = {
+    //             'id': element.id,
+    //             'transfer_id': element.transfer_id,
+    //             'transfer_from': townsArr[element.transfer_from],
+    //             'transfer_from_id': element.transfer_from,
+    //             'transfer_to': townsArr[element.transfer_to],
+    //             'transfer_to_id': element.transfer_to,
+    //             'price_pr': element.price_pr,
+    //             'price_gr': element.price_gr,
+    //             'time1': element.time1,
+    //             'time2': element.time2,
+    //             'time3': element.time3,
+    //             'time4': element.time4,
+    //             'time5': element.time5,
+    //             'time6': element.time6,
+    //             'time7': element.time7,
+    //             'time8': element.time8,
+    //             'time9': element.time9,
+    //             'time10': element.time10,
+    //             'selection': element.selection === 'true' ? true : false,
+    //             'privat': element.privat === 'true' ? true : false,
+    //             'microbus': element.microbus === 'true' ? true : false,
+    //         };
+    //         resArr.push(resEl);
+    //     });
+    //     res.send({"res": resArr});
+    // })
+    // .catch((err) => {
+    //     log('transfers-list-error', err);
+    //     res.status(400).send('');
+    // });
+// };
 
 const townNames = ({req, res}) => {
     let townsFrom = {}, townsTo = {}, transfersArr = [], townsId = [];
@@ -516,9 +560,9 @@ const news = (req, res) => {
 
 module.exports = {
     // town,
-    transfer,
+    // transfer,
     // townlist,
-    transferlist,
+    // transferlist,
     variables,
     orders,    
     orderstatus,

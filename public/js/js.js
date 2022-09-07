@@ -1111,13 +1111,13 @@ const savePosition = () => {
 
 //load transferі list
 const loadTransfersList = () => {
-    send({} , `/transferlist`, (result) => {
+    send({} , `/transfers/transferlist`, (result) => {
         const resultat = JSON.parse(result);
         if (resultat.res) {
             // console.log('res', resultat.res);
             const transfers_list = $_('.transfers_list')[0];
             transfers_list.innerHTML = '';
-            resultat.res.forEach(element => {        
+            resultat.res.forEach(element => {
                 transfers_list.innerHTML += `
                 <div class="transfer" id="${element.id}">
                     <p>${element.transfer_from} - ${element.transfer_to}</p>
@@ -1256,9 +1256,6 @@ const formSendTransfer = (formID) => {
         metod = "DELETE";
     };
     if (trueSend) {
-
-        console.log('obj', obj);
-
         send(obj, `/transfers`, (result) => {
             const resultat = JSON.parse(result);
             if (resultat.res) {
