@@ -1,6 +1,6 @@
 const Cookies = require('cookies');
 const fs = require('fs');
-const con = require('./connectDB').con;
+const con = require('./db-models/connectDB').con;
 
 //transliteration
 const translit = word => require('transliteration.cyr').transliterate(word);

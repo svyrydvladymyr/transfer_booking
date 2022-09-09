@@ -287,7 +287,10 @@ const orders = (req, res) => {
         } else {
             if (type === 'pr') {sumfin = result[0].price_pr};
             if (type === 'gr') {sumfin = result[0].price_gr * (+adult + +children) };
-            return `INSERT INTO orders (orders, user_id, transfer_id, order_from, order_to, adult, children, type, date, time, equip, equip_child, user_name, user_surname, user_email, user_tel, status, paid, sum, book_date) 
+            return `INSERT INTO orders (
+                orders, user_id, transfer_id, order_from, order_to, 
+                adult, children, type, date, time, equip, equip_child, user_name, 
+                user_surname, user_email, user_tel, status, paid, sum, book_date) 
             VALUES ('${tokenGen}',
                     '${userid}',
                     '${checOnTrueVal(transferId)}',

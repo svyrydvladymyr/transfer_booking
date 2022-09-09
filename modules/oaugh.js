@@ -1,8 +1,15 @@
 require('dotenv').config({ path: `.${process.env.NODE_ENV}.env` });
 
-const con = require('./connectDB').con;
+const con = require('./db-models/connectDB').con;
 const renderPage = require('./renderPage');
 const Users = require('./user');
+const cookies = require('./service').addCookies;
+const token = require('./service').token;
+const passport = require('passport');
+const Strategy = {
+    google: require('passport-google-oauth20').Strategy,
+    facebook: require('passport-facebook').Strategy
+};
 
 const StrategyConfig = {
     google: {
@@ -22,11 +29,6 @@ const StrategyConfig = {
 };
 
 module.exports = (app) => {
-    const passport = require('passport');
-    const Strategy = {
-        google: require('passport-google-oauth20').Strategy,
-        facebook: require('passport-facebook').Strategy
-    };
     passport.serializeUser(function(user, done) {done(null, user)});
     passport.deserializeUser(function(obj, done) {done(null, obj)});
     app.use(passport.initialize());
@@ -52,13 +54,13 @@ module.exports = (app) => {
                 (err, user, info) => {
                     if (err) renderPage(req, res, 'home', err);
                     if (!err) {
-                        const tokenId = require('./service').token(20);
-                        con.query(`UPDATE users SET token = '${tokenId}' WHERE userid = '${user.id}'`, (error, result) => {
+                        const token_id = token(20);
+                        con.query(`UPDATE users SET token = '${token_id}' WHERE userid = '${user.id}'`, (error, result) => {
                             if (error) {
-                                require('./service').addCookies(req, res, '', '-1');
-                                renderPage(req, res, 'main', `Token update error: ${error}`);
+                                cookies(req, res, '', '-1');
+                                renderPage(req, res, 'home', `Token update error: ${error}`);
                             } else {
-                                require('./service').addCookies(req, res, tokenId, '');
+                                cookies(req, res, token_id, '');
                                 res.redirect('/person');
                             };
                         });

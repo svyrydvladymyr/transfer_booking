@@ -1,4 +1,4 @@
-const con = require('./connectDB').con;
+const con = require('./db-models/connectDB').con;
 const {log, tableRecord, clienttoken, readyFullDate} = require('./service');
 
 const DATA = {
