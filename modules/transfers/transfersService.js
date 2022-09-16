@@ -1,7 +1,6 @@
 const {token, query, checOnTrueVal} = require('../service');
 
 class transfersService {
-    query_res = '';
     time_string = '';
 
     async createTimeArr(body) {
@@ -12,15 +11,6 @@ class transfersService {
             this.time_string += `time${i}, `;
         }
         return time_arr;
-    }
-
-    async query(sql, mess) {
-        await query(sql)
-            .then((result) => {
-                if (result.err) { throw new Error(result.err) };
-                if (!result.err) { this.query_res = {"res": `Transfeer ${mess}!`} };
-            })
-        return this.query_res;
     }
 
     async create(body) {
@@ -54,7 +44,8 @@ class transfersService {
                     '${body.select === true ? true : false}',
                     '${body.privat === true ? true : false}',
                     '${body.microbus === true ? true : false}')`;
-        return await this.query(sql, 'created');
+        return await query(sql)
+            .then(() => "Transfer added!");
     }
 
     async update(body) {
@@ -66,7 +57,7 @@ class transfersService {
                 price_pr='${body.pr.replace(new RegExp("[^0-9]", "gi"), '')}',
                 price_gr='${body.gr.replace(new RegExp("[^0-9]", "gi"), '')}',
                 time1='${time_arr.time1}',
-                time2='${time_arr.time2}',
+                time2f='${time_arr.time2}',
                 time3='${time_arr.time3}',
                 time4='${time_arr.time4}',
                 time5='${time_arr.time5}',
@@ -79,27 +70,27 @@ class transfersService {
                 privat='${body.privat === true ? true : false}',
                 microbus='${body.microbus === true ? true : false}'
             WHERE transfer_id='${checOnTrueVal(body.id)}'`;
-        return await this.query(sql, 'updated');
+        return await query(sql)
+            .then(() => "Transfer updated!");
     }
 
     async delete(body) {
         const sql = `DELETE FROM transfers WHERE transfer_id='${checOnTrueVal(body.id)}'`;
-        return await this.query(sql, 'deleted');
+        return await query(sql)
+            .then(() => "Transfer deleted!");
     }
 
     async list(body) {
         const townsArr = {};
-        await Promise.all([
+        return await Promise.all([
             query(`SELECT town_id, name_uk FROM points`),
             query(`SELECT * FROM transfers`)
         ])
         .then(async([town_names, transfers]) => {
-            if (town_names.err) { throw new Error(town_names.err) };
-            if (transfers.err) { throw new Error(transfers.err) };
             town_names.forEach(element => {
                 townsArr[`${element.town_id}`] = element.name_uk;
             });
-            this.query_res = transfers.map(element => {
+            return await transfers.map(element => {
                 return {
                     'id': element.id,
                     'transfer_id': element.transfer_id,
@@ -124,8 +115,7 @@ class transfersService {
                     'microbus': element.microbus === 'true' ? true : false,
                 };
             });
-        })
-        return {"res": this.query_res};
+        });
     }
 }
 

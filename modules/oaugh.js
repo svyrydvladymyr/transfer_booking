@@ -1,10 +1,11 @@
 require('dotenv').config({ path: `.${process.env.NODE_ENV}.env` });
 
 const con = require('./db-models/connectDB').con;
-const renderPage = require('./renderPage');
+const renderPage = require('./render-pages');
 const Users = require('./user');
 const cookies = require('./service').addCookies;
 const token = require('./service').token;
+
 const passport = require('passport');
 const Strategy = {
     google: require('passport-google-oauth20').Strategy,

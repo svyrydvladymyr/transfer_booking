@@ -1,5 +1,5 @@
 const con = require('./db-models/connectDB').con;
-const {log, tableRecord, clienttoken, readyFullDate} = require('./service');
+const {log, query, clienttoken, readyFullDate} = require('./service');
 
 const DATA = {
     errors : {
@@ -53,8 +53,8 @@ const clearDATA = () => {
     DATA.menu.blog = '',
     DATA.menu.transfer = '',
     DATA.menu.contacts = '',
-    DATA.permission.permissionAuthorization = 0;
-    DATA.permission.permissionRules = 0;
+    DATA.permission.permissionAuthorization = '0';
+    DATA.permission.permissionRules = '0';
     DATA.permission.pageName = '';
     DATA.person.townArr = '';
     DATA.person.routeArr = '';
@@ -78,17 +78,17 @@ const createUser = (profile) => {
 
 const addUser = (profile, done) => {
     const user = createUser(profile);
-    const sql = `INSERT INTO users (userid, name, surname, provider, email, date_registered, ava) 
-               VALUES ('${user.id}', 
-               '${user.firstName}', 
-               '${user.lastName}', 
+    const sql = `INSERT INTO users (userid, name, surname, provider, email, date_registered, ava)
+               VALUES ('${user.id}',
+               '${user.firstName}',
+               '${user.lastName}',
                '${user.provider}',
-               '${user.email}', 
-               '${user.date}', 
-               '${user.photo}')`;     
+               '${user.email}',
+               '${user.date}',
+               '${user.photo}')`;
     con.query(sql, (error, result) => {
         error
-            ? done(`Error creating user record: ${error}`, null) 
+            ? done(`Error creating user record: ${error}`, null)
             : done(null, profile);
     });
 };
@@ -106,48 +106,46 @@ const isUser = (profile) => {
 };
 
 const getUser = async (req, res, lang = 'uk-UA', pageName) => {
+    clearDATA();
     ['home', 'about', 'blog', 'transfer', 'contacts'].includes(pageName) ? DATA.menu[pageName] = 'active_menu' : DATA.menu.home = 'active_menu';
-    await tableRecord(`SELECT * FROM users WHERE token = '${clienttoken(req, res)}'`)
-    .then((user) => {
-        if (user.err) { throw new Error(user.err) };
-        if (user.err || user == '') { throw new Error('user-not-authorized') };
-        const {userid, name, surname, ava, email, phone, phone_verified, provider, permission, date_registered} = user[0];
-        //permission
-        DATA.permission.permissionRules = `${permission}`;
-        DATA.permission.permissionAuthorization = '1';
-        //user
-        DATA.user.id = userid;
-        DATA.user.ava = ava;
-        DATA.user.name = name;
-        DATA.user.surname = surname;
-        DATA.user.email = email;
-        DATA.user.lang = lang;
-        DATA.user.year = new Date().getFullYear();
-        DATA.permission.pageName = pageName;
-        DATA.langPack = require(`./lang/${lang}`);
-        if (pageName === 'person') {
+    DATA.langPack = require(`./lang/${lang}`);
+    DATA.permission.pageName = pageName;
+    await query(`SELECT * FROM users WHERE token = '${clienttoken(req, res)}'`)
+        .then((user) => {
+            if (!user[0]) return;
+
+            const {userid, name, surname, ava, email, phone, phone_verified, provider, permission, date_registered} = user[0];
+            //permission
+            DATA.permission.permissionRules = `${permission}`;
+            DATA.permission.permissionAuthorization = '1';
+            //user
+            DATA.user.id = userid;
             DATA.user.ava = ava;
+            DATA.user.name = name;
+            DATA.user.surname = surname;
             DATA.user.email = email;
-            DATA.user.phone = phone;
-            DATA.user.phone_verified = phone_verified;
-            DATA.user.provider = provider;
-            DATA.user.date_registered = readyFullDate(date_registered, 'reverse');
-            DATA.menu.home = 'active_menu'
-            if (permission === 1) {
-                DATA.person.townArr = ``;
-                DATA.person.routeArr = ``;
+            DATA.user.lang = lang;
+            DATA.user.year = new Date().getFullYear();
+            DATA.permission.pageName = pageName;
+            DATA.langPack = require(`./lang/${lang}`);
+            if (pageName === 'person') {
+                DATA.user.ava = ava;
+                DATA.user.email = email;
+                DATA.user.phone = phone;
+                DATA.user.phone_verified = phone_verified;
+                DATA.user.provider = provider;
+                DATA.user.date_registered = readyFullDate(date_registered, 'reverse');
+                DATA.menu.home = 'active_menu'
+                if (permission === 1) {
+                    DATA.person.townArr = ``;
+                    DATA.person.routeArr = ``;
+                };
             };
-        };
-    })
-    .then(() => {}, (no_user) => { DATA.permission.permissionAuthorization = '0' })
-    .catch((err) => {
-        log('error-user-info', err);
-        DATA.permission.permissionAuthorization = '0';
-    })
-    .finally(() => {
-        DATA.langPack = require(`./lang/${lang}`);
-        DATA.permission.pageName = pageName;
-    });
+        })
+        .catch((err) => {
+            log('ERROR:-user-info', err);
+        });
+    return DATA;
 };
 
 module.exports = {

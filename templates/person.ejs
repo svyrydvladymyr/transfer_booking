@@ -142,11 +142,11 @@
     <%- include("./parts/script.ejs") %>
     <% if (DATA.permission.permissionAuthorization === '1') { %>
         <% if (DATA.permission.permissionRules === '0') { %>
-            <div class="tawns_list"></div>
+            <!-- <div class="tawns_list"></div> -->
             <script>
                 ordersList(1);
                 feedbackList(1);
-                loadTownsList();
+                // loadTownsList();
             </script>
         <% } %>
         <% if (DATA.permission.permissionRules === '1') { %>

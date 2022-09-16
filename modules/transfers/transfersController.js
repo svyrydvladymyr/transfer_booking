@@ -1,5 +1,5 @@
-const catch_err = require('../service').catch_err;
 const transfersService = require('./transfersService');
+const cosole_log = require('../service').log;
 
 class transfersController {
     async transfer(req, res) {
@@ -11,9 +11,10 @@ class transfersController {
         };
         try {
             const query_res = await transfersService[methods[req.method]](req.body);
-            res.send(query_res);
+            res.send({"res": query_res});
         } catch (error) {
-            catch_err(error, res, 400);
+            cosole_log('ERROR:', error);
+            res.status(400).send('400 (Bad Request)');
         };
     };
 }

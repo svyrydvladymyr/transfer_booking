@@ -9,7 +9,7 @@ const translit = word => require('transliteration.cyr').transliterate(word);
 const validEmail = text => (text.match(/^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/)) ? true : false;
 
 //chack on true values
-const checOnTrueVal = (el) => el.replace(new RegExp("[^a-zA-Zа-яА-Я0-9-()_+=!?.'\":;/\,іІїЇєЄ /\n]", "gi"), '');
+const checOnTrueVal = (el) => el.replace(new RegExp("[^a-zA-Zа-яА-Я0-9-()_+=!?.:;/\,іІїЇєЄ /\n]", "gi"), '');
 
 //client token
 const clienttoken = (req, res) => new Cookies(req, res, {"keys":['volodymyr']}).get('sessionisdd', {signed:true});
@@ -30,35 +30,40 @@ const token = length => {
 
 //consoleLog message
 const log = (mess, val, arrow = '') => {
-    for (let i = 0; i < 25 - mess.length; i++){ arrow += '-' };
-    console.log(`--${mess}${arrow}>> `, val);
+    // for (let i = 0; i < 25 - mess.length; i++){ arrow += '-' };
+    let i = 0;
+    do {
+        arrow += '-'
+        i++
+    } while (i < 25 - mess.length);
+    console.log(`--${mess}-${arrow}>> `, val);
 };
 
 //date format minutes
 const readyMin = function(fullDate){
     const createDate = new Date(fullDate);
     return finDay = ((createDate.getMinutes() >= 1) && (createDate.getMinutes() <= 9)) ? "0" + createDate.getMinutes() : createDate.getMinutes();
-};  
+};
 
 //date format day
 const readyDay = function(fullDate){
     const createDate = new Date(fullDate);
     return ((createDate.getDate() >= 1) && (createDate.getDate() <= 9)) ? "0" + createDate.getDate() : createDate.getDate();
-};  
+};
 
 //date format month
-const readyMonth = function(fullDate){    
+const readyMonth = function(fullDate){
     const createDate = new Date(fullDate);
-    return ((createDate.getMonth() >= 0) && (createDate.getMonth() <= 8)) ? "0" + (createDate.getMonth() + 1) : createDate.getMonth() + 1;          
-}; 
+    return ((createDate.getMonth() >= 0) && (createDate.getMonth() <= 8)) ? "0" + (createDate.getMonth() + 1) : createDate.getMonth() + 1;
+};
 
 //ready full date
 const readyFullDate = (fullDate, reverse) => {
     const dateFull = new Date(fullDate);
     const DATE = new Date();
     if (reverse === 'reverse'){
-        return ((fullDate === '') || (fullDate === undefined)) 
-            ? readyDay(DATE) + "-" + readyMonth(DATE) + "-" + DATE.getFullYear() + ' ' + DATE.getHours() + ":" + readyMin(DATE) 
+        return ((fullDate === '') || (fullDate === undefined))
+            ? readyDay(DATE) + "-" + readyMonth(DATE) + "-" + DATE.getFullYear() + ' ' + DATE.getHours() + ":" + readyMin(DATE)
             : readyDay(dateFull) + "-" + readyMonth(dateFull) + "-" + dateFull.getFullYear() + ' ' + dateFull.getHours() + ":" + readyMin(dateFull);
     } else {
         return ((fullDate === '') || (fullDate === undefined))
@@ -69,8 +74,8 @@ const readyFullDate = (fullDate, reverse) => {
 
 //save access logs
 const accessLog = (req, res, param = '') => {
-    let logs = `IP: ${req.ip}  TIME: ${new Date().toLocaleString()}  URL: ${req.url}  PRAM: ${param}\n`;
-    fs.appendFile(`./log/error_access.txt`, logs, 
+    let logs = `IP: ${req.ip}  TIME: ${new Date().toLocaleString()}  URL: ${req.url}  PARAM: ${param}\n`;
+    fs.appendFile(`./log/error_access.txt`, logs,
         (err) => { if (err) {console.log(err)} }
     );
 };
@@ -83,10 +88,19 @@ const tableRecord = (sql) => {
         })
     });
 };
+// const query = (sql) => {
+//     return new Promise((resolve) => {
+//         con.query(sql, function (err, result) {
+//             err ? resolve({'err': err}) : resolve(result);
+//         })
+//     });
+// };
 const query = (sql) => {
-    return new Promise((resolve) => {
-        con.query(sql, function (err, result) {
-            err ? resolve({'err': err}) : resolve(result);
+    return new Promise((resolve, reject) => {
+        con.query(sql, function (error, result) {
+            error
+                ? reject(error)
+                : resolve(result);
         })
     });
 };
@@ -95,21 +109,22 @@ const query = (sql) => {
 //check the authenticity of the authorization
 const autorisation = (req, res, next) => {
     const userInfo = 'userid, email, phone, phone_verified, permission';
-    tableRecord(`SELECT ${userInfo} FROM users WHERE token = '${clienttoken(req, res)}'`)
-    .then((user) => {
-        req.user = user;
-        if (user.err || user == '') {
-            accessLog(req, res, 'autorisation');
-            res.status(400).send('');
-        } else {
-            next();
-        };
-    });
+    query(`SELECT ${userInfo} FROM users WHERE token = '${clienttoken(req, res)}'`)
+        .then((user) => {
+            req.user = user;
+            if (!user[0]) {
+                accessLog(req, res, 'autorisation');
+                res.redirect('/home');
+            } else {
+                next();
+            };
+        }
+    );
 };
 const permission = (req, res, next) => {
     if (req.user[0].permission !== 1) {
         accessLog(req, res, 'permission');
-        res.status(400).send('');
+        res.redirect('/home');
     } else {
         next();
     };
@@ -120,12 +135,6 @@ const logOut = (req, res) => {
     addCookies(req, res, '', '-1');
     res.redirect('/');
 };
-
-const catch_err = (err, res, code) => {
-    log('ERROR:', err);
-    // log('ERROR:', err.message);
-    res.status(code).send('');
-}
 
 module.exports = {
     translit,
@@ -141,6 +150,5 @@ module.exports = {
     logOut,
     autorisation,
     permission,
-    catch_err,
     query
 }

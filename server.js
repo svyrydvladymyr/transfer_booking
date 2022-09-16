@@ -7,14 +7,15 @@ require('dotenv').config({ path: `.${process.env.NODE_ENV}.env` });
 //routers
 const towns = require('./modules/towns/routers');
 const transfers = require('./modules/transfers/routers');
+
 // const multer  = require('multer');
 // const fs = require('fs');
 
 // require('./modules/db-models/createDB').table('users');
 
 const {log, logOut, autorisation, permission} = require('./modules/service');
-const renderPage = require('./modules/renderPage');
-const {transferlist, variables, orders, OFlist, saveposition, orderstatus, sendfeedback, sendanswer, news} = require('./modules/requestsDB');
+const renderPage = require('./modules/render-pages');
+const {variables, orders, OFlist, saveposition, orderstatus, sendfeedback, sendanswer, news} = require('./modules/requestsDB');
 
 //oaugh
 require('./modules/oaugh.js')(app);
@@ -58,6 +59,8 @@ app.post('/saveposition', autorisation, permission, saveposition);
 //requests
 app.use('/town', autorisation, permission, towns);
 app.use('/transfers', autorisation, permission, transfers);
+
+
 
 //requests order
 app.post('/order', orders);

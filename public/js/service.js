@@ -8,7 +8,7 @@ const mainTimeInput = $_('#main_time')[0];
 const adultInp =  $_('#adults')[0];
 const childrenValue =  $_('#children')[0];
 const RegExpArr = {
-    RegExpInput : new RegExp(/[^a-zA-Zа-яА-Я0-9-()_+=!?.'\":;/\,іІїЇєЄ /\n]/g),
+    RegExpInput : new RegExp(/[^a-zA-Zа-яА-Я0-9-()_+=!?.:;/\,іІїЇєЄ /\n]/g),
     RegExpPhone : new RegExp(/[^0-9-()+ /\n]/g),
     RegExpName : new RegExp(/[^a-zA-Zа-яА-Я-іІїЇєЄ /\n]/g),
     RegExpEmail : new RegExp(/[^a-zA-Z0-9.&@-_]/g)
