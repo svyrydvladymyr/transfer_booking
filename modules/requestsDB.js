@@ -357,19 +357,19 @@ const orderstatus = (req, res) => {
     });
 };
 
-const saveposition = (req, res) => {
-    let sqlvalarr = [];
-    for (const [key, value] of Object.entries(req.body)) { sqlvalarr.push(`WHEN id = ${key} THEN ${value}`) };
-    tableRecord(`UPDATE transfers SET id = CASE ${sqlvalarr.join(' ')} END`)
-    .then((result) => {
-        if (result.err) { throw new Error('error-DB-saveposition') };
-        res.send({"res": 'Position saved!'});
-    })
-    .catch((err) => {
-        log('save_position-list-error', err);
-        res.status(400).send('SERVER ERROR: 400 (Bad Request)');
-    });
-};
+// const saveposition = (req, res) => {
+//     let sqlvalarr = [];
+//     for (const [key, value] of Object.entries(req.body)) { sqlvalarr.push(`WHEN id = ${key} THEN ${value}`) };
+//     tableRecord(`UPDATE transfers SET id = CASE ${sqlvalarr.join(' ')} END`)
+//     .then((result) => {
+//         if (result.err) { throw new Error('error-DB-saveposition') };
+//         res.send({"res": 'Position saved!'});
+//     })
+//     .catch((err) => {
+//         log('save_position-list-error', err);
+//         res.status(400).send('SERVER ERROR: 400 (Bad Request)');
+//     });
+// };
 
 const sendfeedback = (req, res) => {
     const {feedbackName, feedbackSurname, feedbackEmail, feedbackPhone, feedbackComment} = req.body;
@@ -569,7 +569,7 @@ module.exports = {
     variables,
     orders,    
     orderstatus,
-    saveposition,
+    // saveposition,
     sendfeedback,
     sendanswer,
     OFlist,

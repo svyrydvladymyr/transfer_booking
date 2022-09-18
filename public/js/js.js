@@ -383,7 +383,7 @@ const showModal = function(type, obj, el) {
     if (type === 'transferTowns') {
         $_('.wrap_sub_modal')[0].innerHTML = modalWindowWrap(type);
         const setParam =  obj.param;
-        send('' , `/town/townlist`, (result) => {
+        send('' , `/towns/list`, (result) => {
             const resultat = JSON.parse(result);
             if (resultat.res) {
                 const tawns_list = $_('.towns_select_list')[0];
@@ -798,7 +798,7 @@ const culculate = () => {
                     $_('#booking')[0].style.display = 'flex'; 
                 };
                 if (formValid === 'bookfinal') {
-                    send(bookArr , `/order`, (result) => {
+                    send(bookArr , `/orders/order`, (result) => {
                         const resultat = JSON.parse(result);
                         if (resultat.res) {
                             if (resultat.res === 'Order created!') {
@@ -1081,7 +1081,7 @@ const loadVariablesList = () => {
 
 //load towns list
 const loadTownsList = () => {
-    send({} , `/town/townlist`, (result) => {
+    send({} , `/towns/list`, (result) => {
         const resultat = JSON.parse(result);
         if (resultat.res) {
             const tawns_list = $_('.tawns_list')[0];
@@ -1099,19 +1099,21 @@ const loadTownsList = () => {
 //for save transfer list position
 const savePosition = () => {
     const sortWrap = $_('#sortable')[0].children, sortArr = {}; 
-    for (var i = 0; i < sortWrap.length; ++i) { sortArr[`${sortWrap[i].id}`] = `${i+1}${token(4)}` };
-    send(sortArr , `/saveposition`, (result) => {
+    for (var i = 0; i < sortWrap.length; ++i) { 
+        sortArr[`${sortWrap[i].id}`] = `${i+1}${token(4)}`;
+    };
+    send(sortArr , `/transfers/saveposition`, (result) => {
         const resultat = JSON.parse(result);
         if (resultat.res) {
             $_('#save_position')[0].style.display = 'none';
             loadTransfersList(); 
         };
-    });
+    }, 'POST');
 };
 
 //load transferі list
 const loadTransfersList = () => {
-    send({} , `/transfers/transferlist`, (result) => {
+    send({} , `/transfers/list`, (result) => {
         const resultat = JSON.parse(result);
         if (resultat.res) {
             // console.log('res', resultat.res);
@@ -1121,14 +1123,18 @@ const loadTransfersList = () => {
                 transfers_list.innerHTML += `
                 <div class="transfer" id="${element.id}">
                     <p>${element.transfer_from} - ${element.transfer_to}</p>
-                    <span><p class="sel${element.selection}">обрані</p><p class="pr${element.privat}">приватні</p><p class="micro${element.microbus}">мікроавтобус</p></span>
-                    <i class='fas fa-ellipsis-h' onclick="showModal('editMenuTransfer', 
-                    {'id' : '${element.transfer_id}', 
-                    'from' : '${element.transfer_from}', 
-                    'from_id' : '${element.transfer_from_id}', 
-                    'to' : '${element.transfer_to}', 
-                    'to_id' : '${element.transfer_to_id}', 
-                    'pricepr' : '${element.price_pr}', 
+                    <span>
+                        <p class="sel${element.selection}">обрані</p>
+                        <p class="pr${element.privat}">приватні</p>
+                        <p class="micro${element.microbus}">мікроавтобус</p>
+                    </span>
+                    <i class='fas fa-ellipsis-h' onclick="showModal('editMenuTransfer',
+                    {'id' : '${element.transfer_id}',
+                    'from' : '${element.transfer_from}',
+                    'from_id' : '${element.transfer_from_id}',
+                    'to' : '${element.transfer_to}',
+                    'to_id' : '${element.transfer_to_id}',
+                    'pricepr' : '${element.price_pr}',
                     'pricegr' : '${element.price_gr}',
                     'time1' : '${element.time1}',
                     'time2' : '${element.time2}',
@@ -1151,7 +1157,7 @@ const loadTransfersList = () => {
 
 //add to DB Towns
 const formSend = (formID) => {
-    let obj = {}, trueSend = true, metod = 'POST';
+    let obj = {}, trueSend = true, metod = 'POST', url = 'create';
     if ((formID === 'townAdd') || (formID === 'townEdit')) {
         const id_town = $_(`#${formID} > #id_town`)[0].innerHTML;
         const uk_town = $_(`#${formID} > #uk`)[0].value.replace(RegExpArr.RegExpInput , "");
@@ -1166,18 +1172,20 @@ const formSend = (formID) => {
         });
     };
     if (formID === 'townEdit') {
-        metod = "PUT"
+        metod = "PUT";
+        url = 'update';
     }
     if (formID === 'townDel') {
         const id_town = $_(`#${formID} > #id_town`)[0].innerHTML;
         obj = {"id" : id_town, "param" : formID};
-        metod = "DELETE"
+        metod = "DELETE";
+        url = 'delete';
     }
     if (trueSend) {
 
         console.log('obj', obj);
 
-        send(obj, `/town`, (result) => {
+        send(obj, `/towns/${url}`, (result) => {
             const resultat = JSON.parse(result);
             if (resultat.res) {
                 console.log(resultat.res);
@@ -1202,7 +1210,7 @@ const formSend = (formID) => {
 
 //add to DB Transfers
 const formSendTransfer = (formID) => {
-    let obj = {}, trueSend, metod = 'POST';
+    let obj = {}, trueSend, metod = 'POST', url = 'create';
     if ((formID === 'transferAdd') || (formID === 'transferEdit')) {
         const transfer_id = $_(`#${formID}`)[0].paramid;
         const transfer_from = $_(`#${formID} > #from`)[0].inputparam;
@@ -1248,15 +1256,17 @@ const formSendTransfer = (formID) => {
     };
     if (formID === 'transferEdit') {
         metod = "PUT";
+        url = 'update'
     };
     if (formID === 'transferDel') {
         const id_transfer = $_(`#${formID} > #id_transfer`)[0].paramid;
         obj = {"id" : id_transfer, "param" : formID};
         trueSend = true;
         metod = "DELETE";
+        url = 'delete'
     };
     if (trueSend) {
-        send(obj, `/transfers`, (result) => {
+        send(obj, `/transfers/${url}`, (result) => {
             const resultat = JSON.parse(result);
             if (resultat.res) {
                 showModal(`${formID}Res`);

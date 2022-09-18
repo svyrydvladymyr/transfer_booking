@@ -3,14 +3,8 @@ const cosole_log = require('../service').log;
 
 class transfersController {
     async transfer(req, res) {
-        const methods = {
-            GET: 'list',
-            POST: 'create',
-            PUT: 'update',
-            DELETE: 'delete'
-        };
         try {
-            const query_res = await transfersService[methods[req.method]](req.body);
+            const query_res = await transfersService[req.url.replaceAll('/', '')](req.body);
             res.send({"res": query_res});
         } catch (error) {
             cosole_log('ERROR:', error);
