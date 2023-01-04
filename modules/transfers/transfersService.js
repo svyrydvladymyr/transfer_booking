@@ -57,7 +57,7 @@ class transfersService {
                 price_pr='${body.pr.replace(new RegExp("[^0-9]", "gi"), '')}',
                 price_gr='${body.gr.replace(new RegExp("[^0-9]", "gi"), '')}',
                 time1='${time_arr.time1}',
-                time2f='${time_arr.time2}',
+                time2='${time_arr.time2}',
                 time3='${time_arr.time3}',
                 time4='${time_arr.time4}',
                 time5='${time_arr.time5}',
@@ -116,6 +116,15 @@ class transfersService {
                 };
             });
         });
+    }
+
+    async saveposition(body) {
+        const set_of_query = Object.entries(body).map((value, key) => {
+            return `WHEN id = ${Object.keys(body)[key]} THEN ${Object.values(body)[key]}`;
+        });
+        const sql = `UPDATE transfers SET id = CASE ${set_of_query.join(' ')} END`;
+        return await query(sql)
+            .then((result) => 'Position saved!');
     }
 }
 

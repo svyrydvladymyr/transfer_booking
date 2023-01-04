@@ -7,11 +7,13 @@ require('dotenv').config({ path: `.${process.env.NODE_ENV}.env` });
 //routers
 const towns = require('./modules/towns/routers');
 const transfers = require('./modules/transfers/routers');
+const orderss = require('./modules/orders/routers');
 
 // const multer  = require('multer');
 // const fs = require('fs');
 
-// require('./modules/db-models/createDB').table('users');
+// const tables = require('./modules/db-models/createDB');
+// tables.table('users');
 
 const {log, logOut, autorisation, permission} = require('./modules/service');
 const renderPage = require('./modules/render-pages');
@@ -26,9 +28,9 @@ oaugh.autorisation(app, 'facebook');
 //telegram bot
 // const telegram = require('./modules/bot');
 // telegram.checkID();
-// telegram.telegramSetMenu();
-// telegram.telegramPushBTN();
-// telegram.telegramAnswerfeedback();
+telegram.telegramSetMenu();
+telegram.telegramPushBTN();
+telegram.telegramAnswerfeedback();
 
 //template engineer
 app.set('views', __dirname + '/templates');
@@ -57,11 +59,11 @@ app.post('/sendanswer', autorisation, permission, sendanswer);
 
 //requests variables
 app.get('/variables', variables);
-//requests saveposition
-app.post('/saveposition', autorisation, permission, saveposition);
+
 //requests
-app.use('/town', autorisation, permission, towns);
+app.use('/towns', autorisation, permission, towns);
 app.use('/transfers', autorisation, permission, transfers);
+app.use('/orders', autorisation, permission, orderss);
 
 
 
