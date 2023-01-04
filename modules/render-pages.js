@@ -1,29 +1,35 @@
-module.exports = (req, res) => {
-    const cosole_log = require('./service').log;
-    // const DATA = require('./user').DATA;
-    const Url = require('url-parse');
-    const pathname = Url(req.url, true).pathname;
-    const userData = require('./user').getUser;
+const Url = require('url-parse');
+const user = require('./user').users;
+const log = require('./service').log;
+const lang_list = ['uk-UA', 'en-GB', 'ru-RU'];
+const pages_list = ['home', 'about', 'advantages', 'blog', 'contacts', 'person', 'privacy-policy', 'transfer'];
 
-    const lang = ['uk-UA', 'en-GB', 'ru-RU'].includes(req.cookies['lang']) ? req.cookies['lang'] : 'uk-UA';
+class Pages{
+    async userData(req, res) {
+        const lang = lang_list.includes(req.cookies ? req.cookies['lang'] : undefined)
+            ? req.cookies['lang']
+            : 'uk-UA';
+        const pathname = Url(req.url, true).pathname;
+        const pagename = (pages_list.includes(pathname.replace('/', '')))
+            ? pathname.replace('/', '')
+            : 'home';
 
-    const pagename = (pathname === '/') ? 'home' : pathname.replace('/', '');
+        console.log('lang', lang);
+        console.log('pagename', pagename);
 
-    console.log('pagename', pagename);
+        await user.getUser(req, res, lang, pagename)
+            // .then(() => require('./user').DATA)
+            .then((DATA) => {
+                // console.log('gggg', DATA);
+                console.log('gggg', DATA.permission.permissionAuthorization);
 
-    userData(req, res, lang, pagename)
-        // .then(() => require('./user').DATA)
-        .then((DATA) => {
-            // console.log('gggg', DATA);
-            console.log('gggg', DATA.permission.permissionAuthorization);
+                res.render(pagename, { DATA });
+            })
+            .catch((error) => {
+                log('ERROR:', error);
+                res.status(500).send('500 (Internal Server Error)');
+            })
+    };
+}
 
-
-
-            res.render(pagename, { DATA });
-        })
-        .catch((error) => {
-            cosole_log('ERROR:', error);
-            res.status(500).send('500 (Internal Server Error)');
-        })
-
-};
+module.exports = new Pages();

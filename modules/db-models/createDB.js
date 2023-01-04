@@ -87,10 +87,13 @@ const tables = {
 class CreteTables {
     constructor(con){ this.con = con }
     table(table_name) {
-        this.con.query(tables[table_name], function (error, result) {
-            if (error) console.log(`ERROR: ${error.sqlMessage}`);
-            if (!error) console.log(`Table ${table_name} created`);
-        });
+        this.con.query( tables[table_name],
+            function (error, result) {
+                error
+                    ? console.log(`ERROR: ${error.sqlMessage}`)
+                    : console.log(`Table ${table_name} created`);
+            }
+        );
     };
 };
 

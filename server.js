@@ -18,14 +18,17 @@ const renderPage = require('./modules/render-pages');
 const {variables, orders, OFlist, saveposition, orderstatus, sendfeedback, sendanswer, news} = require('./modules/requestsDB');
 
 //oaugh
-require('./modules/oaugh.js')(app);
+const oaugh = require('./modules/oaugh.js');
+oaugh.initialize(app);
+oaugh.autorisation(app, 'google');
+oaugh.autorisation(app, 'facebook');
 
 //telegram bot
-const telegram = require('./modules/bot');
+// const telegram = require('./modules/bot');
 // telegram.checkID();
-telegram.telegramSetMenu();
-telegram.telegramPushBTN();
-telegram.telegramAnswerfeedback();
+// telegram.telegramSetMenu();
+// telegram.telegramPushBTN();
+// telegram.telegramAnswerfeedback();
 
 //template engineer
 app.set('views', __dirname + '/templates');
@@ -69,15 +72,15 @@ app.post('/orderstatus', autorisation, permission, orderstatus);
 
 
 //pages
-app.get('/', renderPage);
-app.get('/home', renderPage);
-app.get('/about', renderPage);
-app.get('/blog', renderPage);
-app.get('/transfer', renderPage);
-app.get('/contacts', renderPage);
-app.get('/person', renderPage);
-app.get('/advantages', renderPage);
-app.get('/privacy-policy', renderPage);
+app.get('/', renderPage.userData);
+app.get('/home', renderPage.userData);
+app.get('/about', renderPage.userData);
+app.get('/blog', renderPage.userData);
+app.get('/transfer', renderPage.userData);
+app.get('/contacts', renderPage.userData);
+app.get('/person', renderPage.userData);
+app.get('/advantages', renderPage.userData);
+app.get('/privacy-policy', renderPage.userData);
 
 //logout
 app.get('/exit', logOut);

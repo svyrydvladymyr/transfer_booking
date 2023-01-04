@@ -1,73 +1,82 @@
 require('dotenv').config({ path: `.${process.env.NODE_ENV}.env` });
 
-const con = require('./db-models/connectDB').con;
-const renderPage = require('./render-pages');
-const Users = require('./user');
-const cookies = require('./service').addCookies;
-const token = require('./service').token;
+const user = require('./user').users;
+const {token, query, addCookies, log} = require('./service');
 
-const passport = require('passport');
-const Strategy = {
-    google: require('passport-google-oauth20').Strategy,
-    facebook: require('passport-facebook').Strategy
-};
+class Oaugh{
+    passport = require('passport');
+    config = {
+        google: {
+            clientID: process.env.GoogleID,
+            clientSecret: process.env.GoogleSecret,
+            callbackURL: process.env.GoogleCallbackURL,
+            profileFields: ['id', 'displayName', 'name', 'gender', 'profileUrl', 'emails', 'picture.type(large)'],
+            scope: {scope: ['https://www.googleapis.com/auth/userinfo.profile', 'https://www.googleapis.com/auth/userinfo.email']},
+        },
+        facebook: {
+            clientID: process.env.FacebookID,
+            clientSecret: process.env.FacebookSecret,
+            callbackURL: process.env.FacebookCallbackURL,
+            profileFields: ['id', 'displayName', 'name', 'gender', 'profileUrl', 'emails', 'picture.type(large)'],
+            scope: {scope: ['email']},
+        }
+    };
 
-const StrategyConfig = {
-    google: {
-        clientID: process.env.GoogleID,
-        clientSecret: process.env.GoogleSecret,
-        callbackURL: process.env.GoogleCallbackURL,
-        profileFields: ['id', 'displayName', 'name', 'gender', 'profileUrl', 'emails', 'picture.type(large)'],
-        scope: {scope: ['https://www.googleapis.com/auth/userinfo.profile', 'https://www.googleapis.com/auth/userinfo.email']},
-    },
-    facebook: {
-        clientID: process.env.FacebookID,
-        clientSecret: process.env.FacebookSecret,
-        callbackURL: process.env.FacebookCallbackURL,
-        profileFields: ['id', 'displayName', 'name', 'gender', 'profileUrl', 'emails', 'picture.type(large)'],
-        scope: {scope: ['email']},
-    }
-};
+    initialize(app){
+        this.passport.serializeUser(function(user, done) {done(null, user)});
+        this.passport.deserializeUser(function(obj, done) {done(null, obj)});
+        app.use(this.passport.initialize());
+    };
 
-module.exports = (app) => {
-    passport.serializeUser(function(user, done) {done(null, user)});
-    passport.deserializeUser(function(obj, done) {done(null, obj)});
-    app.use(passport.initialize());
-    ['google', 'facebook'].forEach(url => {
-        passport.use(
-            new Strategy[url](StrategyConfig[url],
+    autorisation(app, type) {
+        const Strategy = {
+            google: require('passport-google-oauth20').Strategy,
+            facebook: require('passport-facebook').Strategy
+        };
+        this.passport.use(
+            new Strategy[type](this.config[type],
             (accessToken, refreshToken, profile, done) => {process.nextTick( async () => {
-                con.query(`SELECT * FROM users WHERE userid = '${profile.id}'`, (error, result) => {
-                    if (error) {
+                const sql = `SELECT * FROM users WHERE userid = '${profile.id}'`;
+                await query(sql)
+                    .then(async (result) => {
+                        if (result && result.length === 0) {
+                            await user.addUser(profile, done);
+                        } else if (result[0].userid === profile.id){
+                            await user.isUser(profile);
+                            return done(null, profile);
+                        };
+                    })
+                    .catch(() => {
                         done(`Problem with created user: ${error}`, null);
-                    } else if (result && result.length === 0) {
-                        Users.addUser(profile, done);
-                    } else if (result[0].userid === profile.id){
-                        Users.isUser(profile);
-                        return done(null, profile);
-                    };
-                });
+                    })
             })})
         );
-        app.get(`/${url}`, passport.authenticate(`${url}`, StrategyConfig[url].scope ));
-        app.get(`/${url}callback`, (req, res, next) => {
-            passport.authenticate(`${url}`,
-                (err, user, info) => {
-                    if (err) renderPage(req, res, 'home', err);
-                    if (!err) {
+        app.get(`/${type}`, this.passport.authenticate(`${type}`, this.config[type].scope ));
+        app.get(`/${type}callback`, (req, res, next) => {
+            this.passport.authenticate(`${type}`,
+                async (error, user, info) => {
+                    if (error === null) {
                         const token_id = token(20);
-                        con.query(`UPDATE users SET token = '${token_id}' WHERE userid = '${user.id}'`, (error, result) => {
-                            if (error) {
-                                cookies(req, res, '', '-1');
-                                renderPage(req, res, 'home', `Token update error: ${error}`);
-                            } else {
-                                cookies(req, res, token_id, '');
+                        const sql = `UPDATE users SET token = '${token_id}' WHERE userid = '${user.id}'`;
+                        await query(sql)
+                            .then(() => {
+                                addCookies(req, res, token_id, '');
                                 res.redirect('/person');
-                            };
-                        });
+                            })
+                            .catch(error => {
+                                log('ERROR update user', error);
+                                addCookies(req, res, '', '-1');
+                                res.redirect('/home');
+                            })
+                    } else {
+                        log('ERROR get user', error);
+                        res.redirect('/home');
                     };
                 }
             )(req, res, next);
         });
-    });
-}
+    };
+};
+
+
+module.exports = new Oaugh();

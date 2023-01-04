@@ -3,7 +3,7 @@ const fs = require('fs');
 const con = require('./db-models/connectDB').con;
 
 //transliteration
-const translit = word => require('transliteration.cyr').transliterate(word);
+const translit = length => require('transliteration.cyr').transliterate(length);
 
 //validation email
 const validEmail = text => (text.match(/^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/)) ? true : false;
