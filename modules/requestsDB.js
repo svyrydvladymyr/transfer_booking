@@ -1,6 +1,6 @@
 const multer  = require('multer');
 const fs = require('fs');
-const telegram = require('./bot');
+const telegram = require('./bot___');
 const {checOnTrueVal, tableRecord, token, log, query, readyFullDate, clienttoken} = require('../modules/service');
 
 // const town = (req, res) => {
@@ -397,9 +397,9 @@ const sendfeedback = (req, res) => {
         const telegramFeedback = 'Feedback ID: ' + tokenGen + '\n' + 
             feedbackSurname + ' ' + feedbackName + '\n' + 
             'Tel: ' + feedbackPhone + '\n' + 
-            'Email: ' + feedbackEmail + '\n' + 
+            'Email: ' + feedbackEmail + '\n' +
             'Date: ' + readyFullDate(new Date(), '') + '\n' + 
-            'Mess: ' + feedbackComment;       
+            'Mess: ' + feedbackComment;
         telegram.telegramSendfeedback(telegramFeedback);
         res.send({"res": 'Feedback sended!'});
     })
