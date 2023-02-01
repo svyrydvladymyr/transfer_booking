@@ -1,12 +1,14 @@
 require('dotenv').config({ path: `.${process.env.NODE_ENV}.env` });
 
 const {readyFullDate, tableRecord, query} = require('./service');
+
+
 const TelegramApi = require('node-telegram-bot-api');
 const token = process.env.TELEGRAM_TOKEN;
 const bot = new TelegramApi(token, {polling: true});
 
-const userId = process.env.USER_ID;
-const botId = process.env.BOT_ID;
+const userId = +process.env.USER_ID;
+const botId = +process.env.BOT_ID;
 
 const optionsBTN = {
     orders: {
@@ -50,7 +52,7 @@ const optionsBTN = {
 class TelegramBot {
     checkID() {
         bot.on('message', mess => {
-            console.log('mess', mess);
+            console.log('--TELEGRAM_USER_ID-->>', mess);
         });
     }
 
@@ -105,9 +107,6 @@ class TelegramBot {
         });
     };
 
-
-
-
     getFeedbacks(param) {
         let sql = '';
         if (param === 'noanswer') {
@@ -141,9 +140,6 @@ class TelegramBot {
         });
     };
 
-
-
-
     telegramSendorder(mess, id) {
         bot.sendMessage(userId, `${mess}`, {
             reply_markup: JSON.stringify({
@@ -151,6 +147,7 @@ class TelegramBot {
             })
         });
     };
+
     telegramSendfeedback(text) { bot.sendMessage(userId, `${text}`) };
 
     telegramAnswerfeedback() {
@@ -179,7 +176,7 @@ class TelegramBot {
             };
         });
     };
-    
+
     telegramSetMenu() {
         bot.setMyCommands([
             {command: '/menu', description: 'Головне меню'},
@@ -188,47 +185,58 @@ class TelegramBot {
         ]);
         bot.on('message', mess => {
             const comand = `${mess.text}`;
-    
-    console.log(mess.from.id);
-    console.log(userId);
-    console.log(comand);
-    
+
+            console.log("userId from mess:--", mess.from.id);
+            console.log("userId:--", userId);
+            console.log("comand:--", comand);
+
             if (mess.from.id === userId) {
+                console.log('ooooooo');
+
                 if (comand.includes('/')) {
-    
-    
+
                     console.log('gggggg');
-                    if (['/menu', '/feedbacks', '/orders'].includes(comand)) {
-                        const menu = comand.replace('/', '');
-    
-    
-                        console.log(menu);
-    
-    
+
+                    const menu = comand.replace('/', '');
+
+                    console.log(menu);
+
+                    const comand_arr = {
+                        feedbacks : 'feedbacks',
+                        orders : 'orders',
+                        menu : 'menu',
+                        Відгуки : 'feedbacks',
+                        Замовлення : 'orders',
+                        МЕНЮ : 'menu'
+                    };
+                    const menu_arr =['menu', 'feedbacks', 'orders', 'Відгуки', 'Замовлення', 'МЕНЮ']
+
+                    if (menu_arr.includes(menu)) {
+
                         return bot.sendMessage(userId, `${menu}`, optionsBTN[menu]);
                     }
                     return bot.sendMessage(userId, `Такої команди не існує!`);
                 };
-                if (['Відгуки', 'Замовлення', 'МЕНЮ'].includes(`${comand}`)) {
-                    const comandArr = {
-                        'Відгуки' : 'feedbacks',
-                        'Замовлення' : 'orders',
-                        'МЕНЮ' : 'menu'
-                    };
-                    return bot.sendMessage(userId, `${comand}`, optionsBTN[`${comandArr[comand]}`]);
-                }; 
-                if (comand === 'Показати відгуки без відповіді') { getFeedbacks('noanswer') };
-                if (comand === '5 останніх відгуків') { getFeedbacks('5') };
-                if (comand === '10 останніх відгуків') { getFeedbacks('10') };
-                if (comand === '20 останніх відгуків') { getFeedbacks('20') };
+                // if (['Відгуки', 'Замовлення', 'МЕНЮ'].includes(`${comand}`)) {
+                //     const comandArr = {
+                //         'Відгуки' : 'feedbacks',
+                //         'Замовлення' : 'orders',
+                //         'МЕНЮ' : 'menu'
+                //     };
+                //     return bot.sendMessage(userId, `${comand}`, optionsBTN[`${comandArr[comand]}`]);
+                // };
+                if (comand === 'Показати відгуки без відповіді') { this.getFeedbacks('noanswer') };
+                if (comand === '5 останніх відгуків') { this.getFeedbacks('5') };
+                if (comand === '10 останніх відгуків') { this.getFeedbacks('10') };
+                if (comand === '20 останніх відгуків') { this.getFeedbacks('20') };
                 if (comand === 'Показати непідтверджені замовлення') { getOrders('reserv') };
-                if (comand === '5 останніх замовлень') { getOrders('5') };
-                if (comand === '10 останніх замовлень') { getOrders('10') };
-                if (comand === '20 останніх замовлень') { getOrders('20') };
+                if (comand === '5 останніх замовлень') { this.getOrders('5') };
+                if (comand === '10 останніх замовлень') { this.getOrders('10') };
+                if (comand === '20 останніх замовлень') { this.getOrders('20') };
             };
         });
     };
-    
+
     telegramPushBTN() {
         bot.on('callback_query', btn => {
             if (btn.from.id === userId) {
