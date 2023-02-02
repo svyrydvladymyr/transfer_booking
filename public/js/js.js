@@ -86,16 +86,16 @@ const setTime = (value) => {
 //for selecting time
 const selectTime = (type, arrow) => {
     if (type === 'hour') {
-        if (arrow === 'up') {            
+        if (arrow === 'up') {
             hStart++
             if (hStart === 24) {hStart = 0}
             hours.innerHTML = hArr[hStart];
         };
-        if (arrow === 'down') {            
+        if (arrow === 'down') {
             hStart--
             if (hStart === -1) {hStart = 23}
             hours.innerHTML = hArr[hStart];
-        };       
+        };
     };
     if (type === 'minute') {
         if (arrow === 'up') {
@@ -107,33 +107,36 @@ const selectTime = (type, arrow) => {
             mStart--
             if (mStart === -1) {mStart = 12}
             minutes.innerHTML = mArr[mStart];
-        };  
+        };
     };
 };
 
 //close modal window
 const closeSubModal = () => { $_('.wrap_sub_modal')[0].innerHTML = '' };
-const closeModal = (el) => { 
+const closeModalX = () => {modal.innerHTML = ''};
+const closeModal = (el) => {
     let valClose = true;
-    el.path.forEach(element => {
-        if (element.classList && element.classList.contains('modal_place')) { valClose = false };
-    });
-    if (valClose) { modal.innerHTML = '' }; 
-};  
+    for (let element of el.target.children) {
+        if (element.classList && element.classList.contains('modal_place')) {
+            valClose = false;
+        };
+    };
+    if (!valClose) { modal.innerHTML = '' };
+};
 
 //wrap for modal window
 const modalWindowWrap = (type) => {
     const sub_close = ['townAdd', 'townEdit', 'transferEdit', 'transferAdd', 'transferTowns', 'transferTimes', 'newsAdd'].includes(type) ? '' : 'onclick="closeModal(event)"';
-    const sub_noclose = ['transferTowns', 'transferTimes'].includes(type) ? '' : '<i class="fa fa-times" onclick="closeModal(event)"></i>';
+    const sub_noclose = ['transferTowns', 'transferTimes'].includes(type) ? '' : '<i class="fa fa-times" onclick="closeModalX()"></i>';
     const style = {
         'newsAdd' : 'max-width: 90%',
     };
     return `<div class="modal_body" ${sub_close}>
         <div class="modal_close">${sub_noclose}</div>
         <div class="modal_place" id="${type}" style="${style[type]}">
-            ${template[type]} 
-        </div>    
-        <div class="wrap_sub_modal"></div>    
+            ${template[type]}
+        </div>
+        <div class="wrap_sub_modal"></div>
     </div>`;
 };
 
@@ -143,14 +146,13 @@ const showModal = function(type, obj, el) {
     console.log('obj', obj);
     // console.log('el', el);
     ['townAdd', 'townAddRes', 'townEdit', 'townEditRes', 'townDel', 'townDelRes',
-    'transferAdd', 'transferAddRes', 'transferEdit', 'transferEditRes', 'transferDel', 'transferDelRes',         
-    'mainformFrom', 'mainformTo', 'mainformCalendar', 
+    'transferAdd', 'transferAddRes', 'transferEdit', 'transferEditRes', 'transferDel', 'transferDelRes',
+    'mainformFrom', 'mainformTo', 'mainformCalendar',
     'editMenuTown', 'editMenuTransfer',
-    'orderInfo', 'confirmPhone', 'feedbackInfo', 'newsAdd'].includes(type) 
+    'orderInfo', 'confirmPhone', 'feedbackInfo', 'newsAdd'].includes(type)
         ? modal.innerHTML = modalWindowWrap(type) : null;
 
 
-    
     if (type === 'newsAdd') {
         var toolbarOptions = [
             ['bold', 'italic', 'underline', 'strike'],
@@ -199,7 +201,7 @@ const showModal = function(type, obj, el) {
                 };
             } else {
                 setTimeout(() => {
-                
+
 
                 }, 2000);
             }; 
@@ -242,21 +244,21 @@ const showModal = function(type, obj, el) {
             ${proof}
             ${del}
         `;
-    };        
+    };
     if (type === 'editMenuTown') {
         $_(`#${type}`)[0].innerHTML = `
             <p class="edit_menu" onclick="showModal('townEdit', {'id' : '${obj.id}', 'uk' : '${obj.uk}', 'en' : '${obj.en}', 'ru' : '${obj.ru}'})">Редагувати <i class='far fa-edit'></i></p>
             <p class="edit_menu" onclick="showModal('townDel', {'id' : '${obj.id}'})">Видалити <i class='far fa-trash-alt'></i></p>`;
-    };        
+    };
     if (type === 'editMenuTransfer') {
         $_(`#${type}`)[0].innerHTML = `
-        <p class="edit_menu" onclick="showModal('transferEdit', 
-            {'id' : '${obj.id}', 
-            'from' : '${obj.from}', 
-            'from_id' : '${obj.from_id}', 
-            'to' : '${obj.to}', 
-            'to_id' : '${obj.to_id}', 
-            'pricepr' : '${obj.pricepr}', 
+        <p class="edit_menu" onclick="showModal('transferEdit',
+            {'id' : '${obj.id}',
+            'from' : '${obj.from}',
+            'from_id' : '${obj.from_id}',
+            'to' : '${obj.to}',
+            'to_id' : '${obj.to_id}',
+            'pricepr' : '${obj.pricepr}',
             'pricegr' : '${obj.pricegr}',
             'time1' : '${obj.time1}',
             'time2' : '${obj.time2}',
@@ -744,7 +746,7 @@ const checkForm = () => {
         $_('.main_form_price')[0].classList.add('hide_err');
         if (formValid !== undefined && formValid !== '') {
             $_(`.main_form_err_${formValid}`)[0].classList.add('hide_err');
-        };            
+        };
     };
 };
 
@@ -781,8 +783,8 @@ const culculate = () => {
                     $_('.main_form_price > span')[0].innerHTML = culkSum;
                 };
                 if (formValid === 'book') {
-                    const resInfo = $_('.book_info')[0]; 
-                    const bookLang = getLang('lang');                    
+                    const resInfo = $_('.book_info')[0];
+                    const bookLang = getLang('lang');
                     const resInfoBlock = `
                         <p class="main_form_color">${bookArr.transferFromName} - ${bookArr.transferToName}</p>
                         <p>${lang[`date${bookLang}`]} - <span class="main_form_color">${bookArr.date}</span> &nbsp ${lang[`time${bookLang}`]} - <span class="main_form_color">${bookArr.time}</span></p>
@@ -794,11 +796,11 @@ const culculate = () => {
                         <p>${lang[`sum${bookLang}`]} - <span class="main_form_color">${bookArr.sum}</span> </p>
                     `;
                     resInfo.innerHTML = resInfoBlock;
-                    $_('#check')[0].style.display = 'none'; 
-                    $_('#booking')[0].style.display = 'flex'; 
+                    $_('#check')[0].style.display = 'none';
+                    $_('#booking')[0].style.display = 'flex';
                 };
                 if (formValid === 'bookfinal') {
-                    send(bookArr , `/orders/order`, (result) => {
+                    send(bookArr , `/order`, (result) => {
                         const resultat = JSON.parse(result);
                         if (resultat.res) {
                             if (resultat.res === 'Order created!') {
@@ -1272,6 +1274,11 @@ const formSendTransfer = (formID) => {
                 showModal(`${formID}Res`);
                 setTimeout(() => { modal.innerHTML = '' }, 2000);
                 loadTransfersList();
+            };
+            if (resultat.DUP) {
+
+                console.log('Transfer duplicated!');
+
             };
         }, metod);
     };

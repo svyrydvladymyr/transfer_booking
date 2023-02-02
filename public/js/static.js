@@ -12,20 +12,20 @@ const showContainers = () => {
             heightBlok = header_node.offsetHeight + content_cont.offsetHeight;
             heightBlok2 = header_node.offsetHeight + content_cont.offsetHeight + (option_cont.offsetHeight / 1.5);
             heightBlok3 = header_node.offsetHeight + content_cont.offsetHeight + option_cont.offsetHeight + (call_cont.offsetHeight / 1.5);
-            (document.documentElement.scrollTop + window.screen.height > heightBlok) 
+            (document.documentElement.scrollTop + window.screen.height > heightBlok)
                 ? content_cont.style.opacity = '1'
                 : content_cont.style.opacity = '0';
-            (document.documentElement.scrollTop + window.screen.height > heightBlok2) 
+            (document.documentElement.scrollTop + window.screen.height > heightBlok2)
                 ? option_cont.style.opacity = '1'
                 : option_cont.style.opacity = '0';
-            (document.documentElement.scrollTop + window.screen.height > heightBlok3) 
+            (document.documentElement.scrollTop + window.screen.height > heightBlok3)
                 ? call_cont.style.opacity = '1'
                 : call_cont.style.opacity = '0';
         } else {
             content_cont.style.opacity = '1'
             option_cont.style.opacity = '1'
             call_cont.style.opacity = '1'
-        };      
+        };
     };
 };
 
@@ -37,10 +37,10 @@ const menuOnScroll = () => {
     const socialValue = social !== undefined ? social.clientHeight : 0;
     toTop.style.display = (document.body.scrollTop > 200 || document.documentElement.scrollTop > 200) ? "block" : "none";
     if (body.offsetWidth > 1280) {
-        (document.body.scrollTop > socialValue || document.documentElement.scrollTop > socialValue) 
-            ? menu.classList.add('menu_scroll') 
+        (document.body.scrollTop > socialValue || document.documentElement.scrollTop > socialValue)
+            ? menu.classList.add('menu_scroll')
             : menu.classList.remove('menu_scroll');
-    }; 
+    };
     if (body.offsetWidth <= 1280) {
         if (mobileMenu.classList.contains('menu_container_wrap_mobile_active')) {
             mobileMenu.classList.remove("menu_container_wrap_mobile_active");

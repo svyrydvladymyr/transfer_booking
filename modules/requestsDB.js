@@ -1,6 +1,6 @@
 const multer  = require('multer');
 const fs = require('fs');
-const telegram = require('./bot___');
+const telegram = require('./bot');
 const {checOnTrueVal, tableRecord, token, log, query, readyFullDate, clienttoken} = require('../modules/service');
 
 // const town = (req, res) => {

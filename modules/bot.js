@@ -52,7 +52,7 @@ const optionsBTN = {
 class TelegramBot {
     checkID() {
         bot.on('message', mess => {
-            console.log('--TELEGRAM_USER_ID-->>', mess);
+            console.log('--TELEGRAM_USER_ID-->>', mess.from.id);
         });
     }
 
@@ -148,7 +148,9 @@ class TelegramBot {
         });
     };
 
-    telegramSendfeedback(text) { bot.sendMessage(userId, `${text}`) };
+    telegramSendfeedback(text) {
+        bot.sendMessage(userId, `${text}`)
+    };
 
     telegramAnswerfeedback() {
         bot.on('message', mess => {
@@ -178,61 +180,57 @@ class TelegramBot {
     };
 
     telegramSetMenu() {
-        bot.setMyCommands([
-            {command: '/menu', description: 'Головне меню'},
-            {command: '/orders', description: 'Меню замовлень'},
-            {command: '/feedbacks', description: 'Меню відгуків'}
-        ]);
         bot.on('message', mess => {
             const comand = `${mess.text}`;
-
-            console.log("userId from mess:--", mess.from.id);
-            console.log("userId:--", userId);
-            console.log("comand:--", comand);
-
+            // console.log("userId from mess:--", mess.from.id);
+            // console.log("userId:--", userId);
+            // console.log("comand:--", comand);
+            if (mess.from.id !== userId) {
+                bot.setMyCommands([{command: '/start', description: 'start'}]);
+                return bot.sendMessage(mess.from.id, `Приватний БОТ!`);
+            }
             if (mess.from.id === userId) {
-                console.log('ooooooo');
-
-                if (comand.includes('/')) {
-
-                    console.log('gggggg');
-
-                    const menu = comand.replace('/', '');
-
-                    console.log(menu);
-
-                    const comand_arr = {
-                        feedbacks : 'feedbacks',
-                        orders : 'orders',
-                        menu : 'menu',
-                        Відгуки : 'feedbacks',
-                        Замовлення : 'orders',
-                        МЕНЮ : 'menu'
-                    };
-                    const menu_arr =['menu', 'feedbacks', 'orders', 'Відгуки', 'Замовлення', 'МЕНЮ']
-
-                    if (menu_arr.includes(menu)) {
-
-                        return bot.sendMessage(userId, `${menu}`, optionsBTN[menu]);
-                    }
-                    return bot.sendMessage(userId, `Такої команди не існує!`);
+                bot.setMyCommands([
+                    {command: '/menu', description: 'Головне меню'},
+                    {command: '/orders', description: 'Меню замовлень'},
+                    {command: '/feedbacks', description: 'Меню відгуків'}
+                ]);
+                const comand_menu = comand.replace('/', '');
+                const submenu_obj_feedbacks = {
+                    'Показати відгуки без відповіді' : 'noanswer',
+                    '5 останніх відгуків' : '5',
+                    '10 останніх відгуків' : '10',
+                    '20 останніх відгуків' : '20'
                 };
-                // if (['Відгуки', 'Замовлення', 'МЕНЮ'].includes(`${comand}`)) {
-                //     const comandArr = {
-                //         'Відгуки' : 'feedbacks',
-                //         'Замовлення' : 'orders',
-                //         'МЕНЮ' : 'menu'
-                //     };
-                //     return bot.sendMessage(userId, `${comand}`, optionsBTN[`${comandArr[comand]}`]);
-                // };
-                if (comand === 'Показати відгуки без відповіді') { this.getFeedbacks('noanswer') };
-                if (comand === '5 останніх відгуків') { this.getFeedbacks('5') };
-                if (comand === '10 останніх відгуків') { this.getFeedbacks('10') };
-                if (comand === '20 останніх відгуків') { this.getFeedbacks('20') };
-                if (comand === 'Показати непідтверджені замовлення') { getOrders('reserv') };
-                if (comand === '5 останніх замовлень') { this.getOrders('5') };
-                if (comand === '10 останніх замовлень') { this.getOrders('10') };
-                if (comand === '20 останніх замовлень') { this.getOrders('20') };
+                const submenu_obj_orders = {
+                    'Показати непідтверджені замовлення' : 'reserv',
+                    '5 останніх замовлень' : '5',
+                    '10 останніх замовлень' : '10',
+                    '20 останніх замовлень' : '20'
+                };
+                const menu_obj = {
+                    'feedbacks' : 'feedbacks',
+                    'orders' : 'orders',
+                    'menu' : 'menu',
+                    'Відгуки' : 'feedbacks',
+                    'Замовлення' : 'orders',
+                    'МЕНЮ' : 'menu'
+                };
+                const submenu_arr_feedbacks = Object.keys(submenu_obj_feedbacks);
+                const submenu_arr_orders = Object.keys(submenu_obj_orders);
+                const menu_arr = Object.keys(menu_obj);
+                if (submenu_arr_feedbacks.includes(comand_menu)) {
+                    this.getFeedbacks(`${submenu_obj_feedbacks[comand_menu]}`);
+                };
+                if (submenu_arr_orders.includes(comand_menu)) {
+                    this.getOrders(`${submenu_obj_orders[comand_menu]}`);
+                };
+                if (menu_arr.includes(comand_menu)) {
+                    return bot.sendMessage(userId, `${menu_obj[comand_menu]}`, optionsBTN[menu_obj[comand_menu]]);
+                };
+                if (![...submenu_arr_feedbacks, ...submenu_arr_orders, ...menu_arr].includes(comand_menu) && mess.reply_to_message === undefined) {
+                    return bot.sendMessage(userId, `Такої команди не існує!`);
+                }
             };
         });
     };

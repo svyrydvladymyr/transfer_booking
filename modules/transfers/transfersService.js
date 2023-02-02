@@ -7,9 +7,11 @@ class transfersService {
         const time_arr = {};
         this.time_string = '';
         for (let i = 1; i <= 10; i++) {
-            time_arr[`time${i}`] = body[i] ? body[i].replace(new RegExp("[^0-9:]", "gi"), '') : '';
+            time_arr[`time${i}`] = body.times[i-1] !== undefined
+                ? body.times[i-1].replace(new RegExp("[^0-9:]", "gi"), '')
+                : '';
             this.time_string += `time${i}, `;
-        }
+        };
         return time_arr;
     }
 
