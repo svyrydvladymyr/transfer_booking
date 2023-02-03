@@ -37,7 +37,8 @@ const tables = {
         time10 VARCHAR(6),
         selection VARCHAR(10),
         privat VARCHAR(10),
-        microbus VARCHAR(10)
+        microbus VARCHAR(10),
+        CONSTRAINT UNIQUE_Field UNIQUE (transfer_from,transfer_to)
         )`,
     orders: `CREATE TABLE orders (id INT AUTO_INCREMENT PRIMARY KEY,
         orders VARCHAR(10) NOT NULL,
@@ -81,7 +82,9 @@ const tables = {
         foto VARCHAR(250),
         article LONGTEXT,
         date_create DATETIME
-        )`
+        )`,
+    unique_field: `ALTER TABLE transfers
+    ADD CONSTRAINT UNIQUE_Fields UNIQUE (transfer_from,transfer_to);`
 };
 
 class CreteTables {

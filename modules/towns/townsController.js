@@ -4,7 +4,7 @@ const cosole_log = require('../service').log;
 class TownsController {
     async town(req, res) {
         try {
-            const query_res = await townsService[req.url.replaceAll('/', '')](await townsService.checkValue(req.body));
+            const query_res = await townsService[`${req.url.replace('/', '')}`](await townsService.checkValue(req.body));
             res.send({"res": query_res});
         } catch (error) {
             cosole_log('ERROR:', error);

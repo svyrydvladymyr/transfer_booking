@@ -7,7 +7,7 @@ require('dotenv').config({ path: `.${process.env.NODE_ENV}.env` });
 //routers
 const towns = require('./modules/towns/routers');
 const transfers = require('./modules/transfers/routers');
-const orderss = require('./modules/orders/routers');
+// const orderss = require('./modules/orders/routers');
 
 // const multer  = require('multer');
 // const fs = require('fs');
@@ -63,7 +63,7 @@ app.get('/variables', variables);
 //requests
 app.use('/towns', autorisation, permission, towns);
 app.use('/transfers', autorisation, permission, transfers);
-app.use('/orders', autorisation, permission, orderss);
+// app.use('/orders', autorisation, permission, orderss);
 
 
 

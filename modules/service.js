@@ -74,9 +74,9 @@ const readyFullDate = (fullDate, reverse) => {
 
 //save access logs
 const accessLog = (req, res, param = '') => {
-    let logs = `IP: ${req.ip}  TIME: ${new Date().toLocaleString()}  URL: ${req.url}  PARAM: ${param}\n`;
-    fs.appendFile(`./log/error_access.txt`, logs,
-        (err) => { if (err) {console.log(err)} }
+    let access_log = `IP: ${req.ip}  TIME: ${new Date().toLocaleString()}  URL: ${req.url}  PARAM: ${param}\n`;
+    fs.appendFile(`./log/error_access.txt`, access_log,
+        error => error ? console.log(error) : null
     );
 };
 

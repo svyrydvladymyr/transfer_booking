@@ -2,7 +2,7 @@ require('dotenv').config({ path: `.${process.env.NODE_ENV}.env` });
 
 const {readyFullDate, tableRecord, query} = require('./service');
 
-
+const fs = require('fs');
 const TelegramApi = require('node-telegram-bot-api');
 const token = process.env.TELEGRAM_TOKEN;
 const bot = new TelegramApi(token, {polling: true});
@@ -52,8 +52,15 @@ const optionsBTN = {
 class TelegramBot {
     checkID() {
         bot.on('message', mess => {
-            console.log('--TELEGRAM_USER_ID-->>', mess.from.id);
+            if (mess.from.id !== userId) {
+                const telegram_id = `--TELEGRAM_USER_ID-->> TIME: ${new Date().toLocaleString()} - ID: ${mess.from.id}\n`;
+                console.log(telegram_id);
+                fs.appendFile(`./log/telegram_log.txt`, telegram_id,
+                    error => error ? console.log(error) : null
+                );
+            };
         });
+        bot.on("polling_error", console.log);
     }
 
     getOrders(param) {

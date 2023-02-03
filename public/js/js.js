@@ -33,7 +33,7 @@ const renderCalendar = (year) => {
 };
 const selectDate = (date) => {
     const inputPlace = $_(`#main_date`)[0];
-    inputPlace.value = date;    
+    inputPlace.value = date;
     inputPlace.classList.remove('err_input');
     modal.innerHTML = '';
     checkForm();
@@ -45,7 +45,7 @@ const plusTime = (element, type) => {
     const translateBodyChild = translateBody.children;
     const plusTransBody = document.createElement("div");
     plusTransBody.setAttribute('class', 'add');
-    plusTransBody.innerHTML = `<p class="time_label">Відправлення</p> 
+    plusTransBody.innerHTML = `<p class="time_label">Відправлення</p>
                                <input type="text" name="translate" class="time" autocomplete="off" placeholder="Час перевезення..." onfocus="showModal('transferTimes', {}, this)" readonly>
                                <i class='fas fa-plus' onclick="plusTime(this, 'plus')"></i>`;
     class classLists { constructor(){}
@@ -54,7 +54,7 @@ const plusTime = (element, type) => {
             element.setAttribute('onclick', `plusTime(this, '${second}')`);
         };
     };
-    const classStyle = new classLists(); 
+    const classStyle = new classLists();
     if (type === 'plus') {
         classStyle.style(element, 'plus', 'minus');
         if (translateBodyChild.length < 10) { translateBody.appendChild(plusTransBody) };
@@ -70,12 +70,12 @@ const plusTime = (element, type) => {
     };
 };
 
-//for show times form 
+//for show times form
 const showTimeList = (el) => {
     $_('.add_time')[0].style.display = el.value === '' ? 'none' : 'table';
 };
 
-//for set times to main form 
+//for set times to main form
 const setTime = (value) => {
     mainTimeInput.value = value;
     modal.innerHTML = '';
@@ -158,10 +158,10 @@ const showModal = function(type, obj, el) {
             ['bold', 'italic', 'underline', 'strike'],
             [{ 'list': 'ordered'}, { 'list': 'bullet' }],
             [{ 'header': [1, 2, 3, 4, 5, 6, false] }],
-            [{ 'align': [] }], 
-            ['image'], 
-            ['link'], 
-            ['clean'] 
+            [{ 'align': [] }],
+            ['image'],
+            ['link'],
+            ['clean']
         ];
         var editor = new Quill('#editor', {
             modules: {
@@ -189,8 +189,8 @@ const showModal = function(type, obj, el) {
 
                     console.log('gggg', editor_body[i]);
 
-                    const item = `${editor_body[i].innerHTML.replace(/&lt;/g, "<").replace(/&gt;/g, ">")}`;  
-                    const sample = editor_body[i].innerHTML.slice(0, 12);  
+                    const item = `${editor_body[i].innerHTML.replace(/&lt;/g, "<").replace(/&gt;/g, ">")}`;
+                    const sample = editor_body[i].innerHTML.slice(0, 12);
 
                     console.log('item', item);
                     console.log('sample', sample);
@@ -204,7 +204,7 @@ const showModal = function(type, obj, el) {
 
 
                 }, 2000);
-            }; 
+            };
         }, 2000);
     };
     if (type === 'feedbackInfo') {
@@ -273,11 +273,11 @@ const showModal = function(type, obj, el) {
             'select' : '${obj.select}',
             'privat' : '${obj.privat}',
             'microbus' : '${obj.microbus}'})">Редагувати <i class='far fa-edit'></i></p>
-        <p class="edit_menu" onclick="showModal('transferDel', 
-            {'id' : '${obj.id}', 
-            'from' : '${obj.from}', 
+        <p class="edit_menu" onclick="showModal('transferDel',
+            {'id' : '${obj.id}',
+            'from' : '${obj.from}',
             'to' : '${obj.to}'})">Видалити <i class='far fa-trash-alt'></i></p>`;
-    };        
+    };
     if (type === 'mainformCalendar') {
         $_(`#${type}`)[0].children[0].innerHTML = lang[`${type}${getLang('lang')}`];
         let yearVal = 1, dateField = $_(`.date_year > h1`)[0];
@@ -286,35 +286,35 @@ const showModal = function(type, obj, el) {
             (yearVal <= 1) ? yearVal = 1 : yearVal--;
             dateField.innerHTML = (new Date().getFullYear() -1) + yearVal;
             renderCalendar((new Date().getFullYear() -1) + yearVal);
-        });          
+        });
         document.querySelector(".next_year").addEventListener("click", () => {
             (yearVal > 15) ? yearVal = 15 : yearVal++;
             dateField.innerHTML = (new Date().getFullYear() -1) + yearVal;
             renderCalendar((new Date().getFullYear() -1) + yearVal);
-        });    
+        });
         document.querySelector(".prev").addEventListener("click", () => {
             date.setMonth(date.getMonth() - 1);
             renderCalendar((new Date().getFullYear() -1) + yearVal);
-        });          
+        });
         document.querySelector(".next").addEventListener("click", () => {
             date.setMonth(date.getMonth() + 1);
             renderCalendar((new Date().getFullYear() -1) + yearVal);
         });
         renderCalendar((new Date().getFullYear() -1) + yearVal);
     };
-    if (type === 'mainformFrom' || type === 'mainformTo') { 
+    if (type === 'mainformFrom' || type === 'mainformTo') {
         $_(`#${type}`)[0].children[0].innerHTML = lang[`${type}${getLang('lang')}`];
         const tawns_list = $_('.towns_select_list')[0];
         let objTowns = {}, inpValue, param1, param2;
         if (type === 'mainformFrom') { objTowns = townsFrom; inpValue = inputTo; param1 = 'to'; param2 = 'from'; };
         if (type === 'mainformTo') { objTowns = townsTo; inpValue = inputFrom; param1 = 'from'; param2 = 'to'; };
-        tawns_list.innerHTML = '';  
-        if ((inputFrom.value !== '') && (inputTo.value !== '')) {             
+        tawns_list.innerHTML = '';
+        if ((inputFrom.value !== '') && (inputTo.value !== '')) {
             for (const [key, value] of Object.entries(objTowns)) {
                 tawns_list.innerHTML += `<p id="${key}" onclick="selectTownMain(this, 'main_${param2}', 'clear')">${value}</p>`;
             };
         } else {
-            if (inpValue.value === '') {                  
+            if (inpValue.value === '') {
                 for (const [key, value] of Object.entries(objTowns)) {
                     tawns_list.innerHTML += `<p id="${key}" onclick="selectTownMain(this, 'main_${param2}')">${value}</p>`;
                 };
@@ -331,8 +331,8 @@ const showModal = function(type, obj, el) {
                     };
                 });
             };
-        }; 
-    };    
+        };
+    };
     if (type === 'transferTimes') {
         $_('.wrap_sub_modal')[0].innerHTML = modalWindowWrap(type);
         hours = $_('.hours')[0];
@@ -345,9 +345,9 @@ const showModal = function(type, obj, el) {
             closeSubModal();
             // mainTimeInput.classList.remove('err_input');
             // checkForm();
-        });   
+        });
     };
-    if (type === 'mainformTimes') {        
+    if (type === 'mainformTimes') {
         if (el.getAttribute("setparam") === 'limit') {
             modal.innerHTML = modalWindowWrap(`${type}limit`);
             $_(`#${type}limit`)[0].children[0].innerHTML = lang[`${type}${getLang('lang')}`];
@@ -358,14 +358,14 @@ const showModal = function(type, obj, el) {
                 transfersArr.forEach(element => {
                     if (element.transfer_from === fromParam && element.transfer_to === toParam && element.price_gr !== '') {
                         for (let i = 0; i < 10; i++) {
-                            if (element[`time${i+1}`] !== '') { timeArrForm.push(element[`time${i+1}`])};                            
+                            if (element[`time${i+1}`] !== '') { timeArrForm.push(element[`time${i+1}`])};
                         };
                     };
                 });
                 timeArrForm.forEach(element => {
-                    $_('#mainformTimeslimit > .towns_select_list')[0].innerHTML += `<p onclick="setTime('${element}')">${element}</p>`;                    
+                    $_('#mainformTimeslimit > .towns_select_list')[0].innerHTML += `<p onclick="setTime('${element}')">${element}</p>`;
                 });
-            };            
+            };
         } else {
             modal.innerHTML = modalWindowWrap(type);
             $_(`#${type}`)[0].children[0].innerHTML = lang[`${type}${getLang('lang')}`];
@@ -379,8 +379,8 @@ const showModal = function(type, obj, el) {
                 modal.innerHTML = '';
                 mainTimeInput.classList.remove('err_input');
                 checkForm();
-            }); 
-        }; 
+            });
+        };
     };
     if (type === 'transferTowns') {
         $_('.wrap_sub_modal')[0].innerHTML = modalWindowWrap(type);
@@ -390,14 +390,14 @@ const showModal = function(type, obj, el) {
             if (resultat.res) {
                 const tawns_list = $_('.towns_select_list')[0];
                 tawns_list.innerHTML = '';
-                resultat.res.forEach(element => {        
+                resultat.res.forEach(element => {
                     tawns_list.innerHTML += `<p id="${element.town_id}" onclick="selectTown(this, '${setParam}')">${element.name_uk}</p>`
                 });
             };
         }, 'GET');
     };
     //____TOWNS
-    if (type === 'townAdd') {        
+    if (type === 'townAdd') {
         idTownPlace = $_('#id_town')[0];
         tokenTown = generate_token(6);
     };
@@ -405,10 +405,10 @@ const showModal = function(type, obj, el) {
         $_(`#${type} > #id_town`)[0].innerHTML = obj.id;
         $_(`#${type} > #uk`)[0].value = obj.uk;
         $_(`#${type} > #en`)[0].value = obj.en;
-        $_(`#${type} > #ru`)[0].value = obj.ru; 
+        $_(`#${type} > #ru`)[0].value = obj.ru;
     };
-    if (type === 'townDel') { 
-        $_(`#${type} > #id_town`)[0].innerHTML = obj.id 
+    if (type === 'townDel') {
+        $_(`#${type} > #id_town`)[0].innerHTML = obj.id
     };
     //____TRANSFERS
     if (type === 'transferEdit') {
@@ -421,30 +421,30 @@ const showModal = function(type, obj, el) {
         $_(`#${type} > #to`)[0].value = obj.to;
         $_(`#${type} #gr`)[0].value = obj.pricegr;
         $_(`#${type} #pr`)[0].value = obj.pricepr;
-        $_(`#${type} > #selection`)[0].checked = obj.select === 'true' ? true : false;        
-        $_(`#${type} > #privat`)[0].checked = obj.privat === 'true' ? true : false;        
-        $_(`#${type} > #microbus`)[0].checked = obj.microbus === 'true' ? true : false;        
+        $_(`#${type} > #selection`)[0].checked = obj.select === 'true' ? true : false;
+        $_(`#${type} > #privat`)[0].checked = obj.privat === 'true' ? true : false;
+        $_(`#${type} > #microbus`)[0].checked = obj.microbus === 'true' ? true : false;
         if (timeList.length > 0) {
             const translateBody = $_('.add_time')[0];
             translateBody.style.display = 'block';
-            translateBody.innerHTML = '';            
+            translateBody.innerHTML = '';
             for (let i = 0; i < timeList.length; i++) {
                 let timeAction = 'minus';
                 if (i === timeList.length - 1) { timeAction = 'plus' };
                 const plusTransBody = document.createElement("div");
                 plusTransBody.setAttribute('class', 'add');
-                plusTransBody.innerHTML = `<p class="time_label">Відправлення</p> 
+                plusTransBody.innerHTML = `<p class="time_label">Відправлення</p>
                                            <input type="text" name="translate" class="time" value="${timeList[i]}" autocomplete="off" placeholder="Час перевезення..." onfocus="showModal('transferTimes', {}, this)">
                                            <i class='fas fa-${timeAction}' onclick="plusTime(this, '${timeAction}')"></i>`;
-                translateBody.appendChild(plusTransBody); 
+                translateBody.appendChild(plusTransBody);
             };
-        };        
+        };
         $_('.add_time')[0].style.display = $_(`#${type} #gr`)[0].value !== '' ? 'table' : 'none'
     };
     if (type === 'transferDel') {
         $_(`#${type} > #id_transfer`)[0].paramid = `${obj.id}`;
         $_(`#${type} > #id_transfer`)[0].innerHTML = `${obj.from} - ${obj.to}`;
-    }; 
+    };
 };
 
 //for send to main page and set route to main form
@@ -478,6 +478,7 @@ const setToMainForm = (transfid, type, obj) => {
 const selectTown = (el, param) => {
     $_(`.transfer_dup_to`)[0].style.display = 'none';
     $_(`.transfer_empty_to`)[0].style.display = 'none';
+    $_(`.transfer_duplicated`)[0].style.display = 'none';
     $_('.wrap_sub_modal')[0].innerHTML = '';
     const inputPlace = $_(`#${param}`)[0];
     const inputPlaceTO = $_(`#to`)[0];
@@ -519,10 +520,10 @@ const selectTownMain = (el, param, clear) => {
                 $_(`#type_gr`)[0].classList.remove('hide_err');
                 $_(`#type_pr`)[0].classList.add('hide_err');
                 mainTimeInput.setAttribute("setparam", 'limit');
-                $_('#type_transfer')[0].classList.remove('err_input');   
+                $_('#type_transfer')[0].classList.remove('err_input');
                 peopleMax = 50;
                 peopleType = 'gr';
-            } else if (element.transfer_from === fromParam && element.transfer_to === toParam && element.price_gr === '' && element.price_pr !== '') {    
+            } else if (element.transfer_from === fromParam && element.transfer_to === toParam && element.price_gr === '' && element.price_pr !== '') {
                 $_(`#type_pr`)[0].selected = true;
                 $_(`#type_pr`)[0].classList.remove('hide_err');
                 $_(`#type_gr`)[0].classList.add('hide_err');
@@ -562,11 +563,11 @@ const validation = (el, type, form = '') => {
         } else {
             el.classList.remove('err_input');
             checkForm();
-        }; 
+        };
     };
 };
 const validationPrice = (el) => {
-    $_(`.transfer_price_empt`)[0].style.display = 'none'; 
+    $_(`.transfer_price_empt`)[0].style.display = 'none';
     const priceVal = el.value, errMess = $_(`.transfer_price_${el.id}`)[0];
     errMess.style.display = (priceVal < 1 || priceVal > 50000) ? 'block' : 'none';
     (priceVal < 0) ? el.value = '' : null;
@@ -595,7 +596,7 @@ const validationType = (el) => {
     if (el.value === 'transfer_pr') {
         peopleMax = 7;
         peopleType = 'pr';
-        mainTimeInput.setAttribute("setparam", '');  
+        mainTimeInput.setAttribute("setparam", '');
     };
     if (el.value === 'transfer_gr') {
         peopleMax = 50;
@@ -605,7 +606,7 @@ const validationType = (el) => {
             const toParam = inputTo.getAttribute("inputmainparam");
             transfersArr.forEach(element => {
                 if (element.transfer_from === fromParam && element.transfer_to === toParam && element.price_gr !== '') {
-                    mainTimeInput.setAttribute("setparam", 'limit');              
+                    mainTimeInput.setAttribute("setparam", 'limit');
                 };
             });
         };
@@ -632,7 +633,7 @@ const validationAdults = (el) => {
         $_(`.main_form_err_book`)[0].classList.add('hide_err');
         adultInp.classList.remove('err_input');
         childrenValue.classList.remove('err_input');
-    };    
+    };
 };
 const validationChildren = (el) => {
     const equipchild =  $_('.equip_child')[0];
@@ -661,17 +662,17 @@ const validationChildren = (el) => {
 const resizeTextarea = (el, h) => {
     el.style.height = "";
     el.style.height = el.scrollHeight + "px";
-    if (el.scrollHeight > +h) { 
-        el.style.overflow = 'auto'; 
+    if (el.scrollHeight > +h) {
+        el.style.overflow = 'auto';
     } else {
         el.style.overflow = 'hidden';
-    };  
+    };
 };
 
 //for back to previous tab
 const mainFormBack = () => {
-    $_('#check')[0].style.display = 'flex'; 
-    $_('#booking')[0].style.display = 'none'; 
+    $_('#check')[0].style.display = 'flex';
+    $_('#booking')[0].style.display = 'none';
 };
 
 //for check form
@@ -724,7 +725,7 @@ const checkForm = () => {
             arrTrue.push(false);
             adultsCheck.classList.add('err_input');
         };
-        if (formValid === 'bookfinal') { 
+        if (formValid === 'bookfinal') {
             if (emailCheck.value !== '' && !validEmail(emailCheck.value)) {
                 arrTrue.push(false);
                 emailCheck.classList.add('err_input');
@@ -740,7 +741,7 @@ const checkForm = () => {
         $_('.main_form_price')[0].classList.add('hide_err');
         if (formValid !== undefined && formValid !== '') {
             $_(`.main_form_err_${formValid}`)[0].classList.remove('hide_err');
-        };            
+        };
     } else {
         calkTrue = true;
         $_('.main_form_price')[0].classList.add('hide_err');
@@ -804,12 +805,12 @@ const culculate = () => {
                         const resultat = JSON.parse(result);
                         if (resultat.res) {
                             if (resultat.res === 'Order created!') {
-                                $_('#check')[0].style.display = 'none'; 
-                                $_('#booking')[0].style.display = 'none'; 
-                                $_('#received')[0].style.display = 'flex'; 
+                                $_('#check')[0].style.display = 'none';
+                                $_('#booking')[0].style.display = 'none';
+                                $_('#received')[0].style.display = 'flex';
                             };
-                        };   
-                    });                    
+                        };
+                    });
                 };
             };
         });
@@ -822,7 +823,7 @@ const setOrderStatus = (el) => { orderstat = el.value; ordersList(1) };
 const setOrderDate = (el) => { orderdate = el.value; ordersList(1) };
 
 //for proofing or canceling order
-const proofOrder = (orderid, param) => { 
+const proofOrder = (orderid, param) => {
     send({"id": `${orderid}`, 'param': `${param}`} , `/orderstatus`, (result) => {
         const resultat = JSON.parse(result);
         if (resultat.res) { ordersList(1); modal.innerHTML = '' };
@@ -845,14 +846,14 @@ const ordersList = (page = 1) => {
             orders_list.innerHTML = '';
             orders_pagination.innerHTML = '';
             if (pagin_page > 1) {
-                for (let i = 1; i <= pagin_page; i++) { orders_pagination.innerHTML += `<p onclick="ordersList(${i})">${i}</p>` };            
+                for (let i = 1; i <= pagin_page; i++) { orders_pagination.innerHTML += `<p onclick="ordersList(${i})">${i}</p>` };
                 present_pagination[page-1].style.color = '#fff';
                 present_pagination[page-1].style.backgroundColor = 'rgb(139 195 74)';
-                present_pagination[page-1].removeAttribute("onclick");  
-            };           
-            resultat.res.list.forEach(element => {      
+                present_pagination[page-1].removeAttribute("onclick");
+            };
+            resultat.res.list.forEach(element => {
                 orders_list.innerHTML += `
-                <div class="order" onclick="showModal('orderInfo', 
+                <div class="order" onclick="showModal('orderInfo',
                 {'orders' : '${element.orders}',
                 'from' : '${element.order_from}',
                 'to' : '${element.order_to}',
@@ -907,10 +908,10 @@ const checkFeedback = () => {
     });
     if (arrTrue.includes(false)) {
         feedbackCalkTrue = false;
-        $_(`.feedback_form_err`)[0].classList.remove('hide_err');           
+        $_(`.feedback_form_err`)[0].classList.remove('hide_err');
     } else {
         feedbackCalkTrue = true;
-        $_(`.feedback_form_err`)[0].classList.add('hide_err');          
+        $_(`.feedback_form_err`)[0].classList.add('hide_err');
     };
 };
 
@@ -930,15 +931,15 @@ const sendFeedback = () => {
                 if (resultat.res === 'Feedback sended!') {
                     if ($_('.feedback_name')[0]) {$_('.feedback_name')[0].value = ''};
                     if ($_('.feedback_surname')[0]) {$_('.feedback_surname')[0].value = ''};
-                    if ($_('.feedback_email')[0]) {$_('.feedback_email')[0].value = ''};                    
-                    if ($_('#feedback_phone')[0]) {$_('#feedback_phone')[0].value = ''};                    
+                    if ($_('.feedback_email')[0]) {$_('.feedback_email')[0].value = ''};
+                    if ($_('#feedback_phone')[0]) {$_('#feedback_phone')[0].value = ''};
                     $_('#feedback_comment')[0].value = '';
-                    $_(`.feedback_sended`)[0].classList.remove('hide_err');  
+                    $_(`.feedback_sended`)[0].classList.remove('hide_err');
                     setTimeout(() => {
-                        $_(`.feedback_sended`)[0].classList.add('hide_err');  
+                        $_(`.feedback_sended`)[0].classList.add('hide_err');
                     }, 5000);
                 };
-            };   
+            };
         });
     };
 };
@@ -948,8 +949,8 @@ const setFeedbackNumb = (el) => { feedback_numb = el.value; feedbackList(1) };
 const setFeedbackStatus = (el) => { feedback_stat = el.value; feedbackList(1) };
 const setFeedbackDate = (el) => { feedback_date = el.value; feedbackList(1) };
 
-//for sending feedback answer 
-const saveAnswer = (feedbackid) => { 
+//for sending feedback answer
+const saveAnswer = (feedbackid) => {
     const answer_mess = $_('#feedback_answer')[0].value;
     send({"id": `${feedbackid}`, 'answer': `${answer_mess}`}, `/sendanswer`, (result) => {
         const resultat = JSON.parse(result);
@@ -973,15 +974,15 @@ const feedbackList = (page = 1) => {
             feedback_list.innerHTML = '';
             feedback_pagination.innerHTML = '';
             if (pagin_page > 1) {
-                for (let i = 1; i <= pagin_page; i++) { feedback_pagination.innerHTML += `<p onclick="feedbackList(${i})">${i}</p>` };            
+                for (let i = 1; i <= pagin_page; i++) { feedback_pagination.innerHTML += `<p onclick="feedbackList(${i})">${i}</p>` };
                 present_pagination[page-1].style.color = '#fff';
                 present_pagination[page-1].style.backgroundColor = 'rgb(139 195 74)';
-                present_pagination[page-1].removeAttribute("onclick");  
-            }; 
-            resultat.res.list.forEach(element => {    
-                let settings = '', answer = '', answerdate = '';            
+                present_pagination[page-1].removeAttribute("onclick");
+            };
+            resultat.res.list.forEach(element => {
+                let settings = '', answer = '', answerdate = '';
                 if (element.settings === 'true') {
-                    settings = `<i class='fas fa-edit' onclick="showModal('feedbackInfo', 
+                    settings = `<i class='fas fa-edit' onclick="showModal('feedbackInfo',
                     {'idfeedback' : '${element.idfeedback}',
                     'feedbackComment' : '${element.feedbackComment}',
                     'user_name' : '${element.feedbackName} ${element.feedbackSurname}',
@@ -1029,15 +1030,15 @@ const loadVariablesList = () => {
                     transfersArr.forEach(transf => {
                         if (transf.transfer_id === priv.transfer_id) {
                             privatWrap.innerHTML += `
-                            <p onclick="setToMainForm('${transf.transfer_id}', 'pr', 
-                                {'from': '${townsFrom[transf.transfer_from]}', 
+                            <p onclick="setToMainForm('${transf.transfer_id}', 'pr',
+                                {'from': '${townsFrom[transf.transfer_from]}',
                                 'to': '${townsTo[transf.transfer_to]}',
                                 'fromid': '${transf.transfer_from}',
                                 'toid': '${transf.transfer_to}'})">
                                 <i class='fas fa-arrow-alt-circle-right'></i>${townsFrom[transf.transfer_from]} - ${townsTo[transf.transfer_to]}</p>
                             <p class="price"><span>${lang[`from${langName}`]}</span>${transf.price_pr}<span>${lang[`sum_type${langName}`]}</span></p>`
-                        };            
-                    });        
+                        };
+                    });
                 });
             };
             if (microbusWrap !== undefined) {
@@ -1046,15 +1047,15 @@ const loadVariablesList = () => {
                     transfersArr.forEach(transf => {
                         if (transf.transfer_id === micro.transfer_id) {
                             microbusWrap.innerHTML += `
-                            <p onclick="setToMainForm('${transf.transfer_id}', 'gr', 
-                                {'from': '${townsFrom[transf.transfer_from]}', 
+                            <p onclick="setToMainForm('${transf.transfer_id}', 'gr',
+                                {'from': '${townsFrom[transf.transfer_from]}',
                                 'to': '${townsTo[transf.transfer_to]}',
                                 'fromid': '${transf.transfer_from}',
                                 'toid': '${transf.transfer_to}'})">
                                 <i class='fas fa-arrow-alt-circle-right'></i>${townsFrom[transf.transfer_from]} - ${townsTo[transf.transfer_to]}</p>
                             <p class="price"><span>${lang[`from${langName}`]}</span>${transf.price_gr}<span>${lang[`sum_type${langName}`]}</span></p>`
-                        };            
-                    });        
+                        };
+                    });
                 });
             };
             if (specialWrap !== undefined) {
@@ -1066,15 +1067,15 @@ const loadVariablesList = () => {
                             <div>
                                 <p><i class='fas fa-arrow-alt-circle-right'></i>${townsFrom[transf.transfer_from]} - ${townsTo[transf.transfer_to]}</p>
                                 <p class="price"><span>${lang[`from${langName}`]}</span>${transf.price_pr}<span>${lang[`sum_type${langName}`]}</span></p>
-                                <p class="special_btn" onclick="sendToMainForm('${transf.transfer_id}', 'pr', 
-                                    {'from': '${townsFrom[transf.transfer_from]}', 
+                                <p class="special_btn" onclick="sendToMainForm('${transf.transfer_id}', 'pr',
+                                    {'from': '${townsFrom[transf.transfer_from]}',
                                     'to': '${townsTo[transf.transfer_to]}',
                                     'fromid': '${transf.transfer_from}',
                                     'toid': '${transf.transfer_to}'}
                                 )">${lang[`book${langName}`]}</p>
                             </div>`
-                        };            
-                    });        
+                        };
+                    });
                 });
             };
         };
@@ -1088,7 +1089,7 @@ const loadTownsList = () => {
         if (resultat.res) {
             const tawns_list = $_('.tawns_list')[0];
             tawns_list.innerHTML = '';
-            resultat.res.forEach(element => {        
+            resultat.res.forEach(element => {
                 tawns_list.innerHTML += `
                 <div class="town"><p>${element.name_uk}</p>
                 <i class='fas fa-ellipsis-h' onclick="showModal('editMenuTown', {'id' : '${element.town_id}', 'uk' : '${element.name_uk}', 'en' : '${element.name_en}', 'ru' : '${element.name_ru}'})"></i>
@@ -1100,15 +1101,15 @@ const loadTownsList = () => {
 
 //for save transfer list position
 const savePosition = () => {
-    const sortWrap = $_('#sortable')[0].children, sortArr = {}; 
-    for (var i = 0; i < sortWrap.length; ++i) { 
+    const sortWrap = $_('#sortable')[0].children, sortArr = {};
+    for (var i = 0; i < sortWrap.length; ++i) {
         sortArr[`${sortWrap[i].id}`] = `${i+1}${token(4)}`;
     };
     send(sortArr , `/transfers/saveposition`, (result) => {
         const resultat = JSON.parse(result);
         if (resultat.res) {
             $_('#save_position')[0].style.display = 'none';
-            loadTransfersList(); 
+            loadTransfersList();
         };
     }, 'POST');
 };
@@ -1166,9 +1167,9 @@ const formSend = (formID) => {
         const en_town = $_(`#${formID} > #en`)[0].value.replace(RegExpArr.RegExpInput , "");
         const ru_town = $_(`#${formID} > #ru`)[0].value.replace(RegExpArr.RegExpInput , "");
         obj = {"id" : id_town, "uk" : uk_town, "en" : en_town, "ru" : ru_town, "param" : formID};
-        ["uk", "en", "ru"].forEach(element => {  
+        ["uk", "en", "ru"].forEach(element => {
             if ($_(`#${formID} > #${element}`)[0].value === '') {
-                $_(`.town_empty_${element}`)[0].style.display = 'block'; 
+                $_(`.town_empty_${element}`)[0].style.display = 'block';
                 trueSend = false;
             };
         });
@@ -1224,11 +1225,11 @@ const formSendTransfer = (formID) => {
         const microbus = $_(`#${formID} > #microbus`)[0].checked;
         const transfer_times = [];
         $_('.time').forEach(element => { if (element.value !== '') { transfer_times.push(element.value)}});
-        obj = {"id" : transfer_id, "from" : transfer_from, "to" : transfer_to, "gr" : transfer_gr, "pr" : transfer_pr, 
+        obj = {"id" : transfer_id, "from" : transfer_from, "to" : transfer_to, "gr" : transfer_gr, "pr" : transfer_pr,
                "select" : transfer_select, "privat" : privat, "microbus" : microbus, "times" : transfer_times, "param" : formID};
         if (transfer_from !== '' && transfer_from !== undefined && transfer_to !== '' && transfer_to !== undefined) {
             if (transfer_from === transfer_to) {
-                $_(`.transfer_dup_to`)[0].style.display = 'block'; 
+                $_(`.transfer_dup_to`)[0].style.display = 'block';
                 trueSend = false;
             } else {
                 if ((transfer_gr !== '' || transfer_pr !== '')) {
@@ -1241,18 +1242,18 @@ const formSendTransfer = (formID) => {
                             if ((transfer_pr !== '' &&  (transfer_pr >= 1 && transfer_pr <= 50000)) && (transfer_gr !== '' && (transfer_gr >= 1 && transfer_gr <= 50000))) {
                                 trueSend = true;
                             } else {
-                                $_(`.transfer_price_empt`)[0].style.display = 'block'; 
+                                $_(`.transfer_price_empt`)[0].style.display = 'block';
                                 trueSend = false;
                             };
                         };
                     };
                 } else {
-                    $_(`.transfer_price_empt`)[0].style.display = 'block'; 
+                    $_(`.transfer_price_empt`)[0].style.display = 'block';
                     trueSend = false;
                 };
             };
         } else {
-            $_(`.transfer_empty_to`)[0].style.display = 'block'; 
+            $_(`.transfer_empty_to`)[0].style.display = 'block';
             trueSend = false;
         };
     };
@@ -1278,7 +1279,7 @@ const formSendTransfer = (formID) => {
             if (resultat.DUP) {
 
                 console.log('Transfer duplicated!');
-
+                $_(`.transfer_duplicated`)[0].style.display = 'block';
             };
         }, metod);
     };
@@ -1325,7 +1326,7 @@ const imageСollection = (news_editor) => {
 
 
                     //     console.log(url);
-                    // }          
+                    // }
                     // reader.readAsDataURL($_('#news_gallery')[0].files[index]);
 
                 };
@@ -1337,7 +1338,7 @@ const imageСollection = (news_editor) => {
 //for showing news messge
 const messageNews = (text = '', classs = 'mmm') => {
     const news_vilid = $_('#vilid_news')[0];
-    news_vilid.innerHTML = text; 
+    news_vilid.innerHTML = text;
     news_vilid.classList.remove('vilid_news_bad');
     news_vilid.classList.remove('vilid_news_good');
     news_vilid.classList.add(classs);
@@ -1368,7 +1369,7 @@ const saveNews = (param) => {
     const save_news = $_('#save_news')[0];
     const save_close_news = $_('#save_close_news')[0];
 
-    
+
 
     const news_title = $_('#news_title')[0].value;
     const news_description = $_('#news_description')[0].value;
@@ -1402,21 +1403,21 @@ const saveNews = (param) => {
     console.log('valid_empty', valid_empty);
     console.log('valid_fields', valid_fields);
 
-    if (!valid_empty.includes(false)) {       
+    if (!valid_empty.includes(false)) {
         trueSendNews = true;
-        messageNews('');        
+        messageNews('');
     } else {
         trueSendNews = false;
         messageNews(`Поля є обовяковими (${valid_fields} )`, 'vilid_news_bad');
     };
- 
+
 
 
 
     if (trueSendNews) {
         save_news.disabled = true;
         save_close_news.disabled = true;
-    
+
         setTimeout(() => {
             save_news.disabled = false;
             save_close_news.disabled = false;
@@ -1425,7 +1426,7 @@ const saveNews = (param) => {
 
 
 
-        
+
         const obj = {'title' : news_title, 'description' : news_description, 'article' : ''};
 
 
@@ -1439,7 +1440,7 @@ const saveNews = (param) => {
         formData.append("cover", $_('#news_foto')[0].files[0]);
 
         for(let i = 0; i < $_('#news_gallery')[0].files.length; i++) {
-            if (i < 50) { formData.append("gallery", $_('#news_gallery')[0].files[i]) };            
+            if (i < 50) { formData.append("gallery", $_('#news_gallery')[0].files[i]) };
         };
 
 
@@ -1450,7 +1451,7 @@ const saveNews = (param) => {
 
 
         axios.post('/fotonews', formData, {headers:{"Content-type": "multipart/form-data"}})
-        .then(function (res) {                    
+        .then(function (res) {
             console.log('response', res);
         })
         .catch(function (error) { console.log(error) });

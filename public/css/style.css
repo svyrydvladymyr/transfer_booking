@@ -1551,7 +1551,7 @@ body {
   width: 90%;
   max-width: 300px;
 }
-.modal_wrap .modal_place .town_dup_uk, .modal_wrap .modal_place .town_dup_en, .modal_wrap .modal_place .town_dup_ru, .modal_wrap .modal_place .transfer_dup_to, .modal_wrap .modal_place .transfer_price_gr, .modal_wrap .modal_place .transfer_price_pr, .modal_wrap .modal_place .transfer_price_empt {
+.modal_wrap .modal_place .town_dup_uk, .modal_wrap .modal_place .town_dup_en, .modal_wrap .modal_place .town_dup_ru, .modal_wrap .modal_place .transfer_dup_to, .modal_wrap .modal_place .transfer_price_gr, .modal_wrap .modal_place .transfer_price_pr, .modal_wrap .modal_place .transfer_price_empt, .modal_wrap .modal_place .transfer_duplicated {
   display: none;
   color: #bd1717;
   font-size: 11px;
