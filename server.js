@@ -26,11 +26,14 @@ oaugh.autorisation(app, 'google');
 oaugh.autorisation(app, 'facebook');
 
 //telegram bot
-const telegram = require('./modules/bot');
-telegram.checkID();
-telegram.telegramSetMenu();
-telegram.telegramPushBTN();
-telegram.telegramAnswerfeedback();
+// const telegram = require('./modules/bot');
+// telegram.checkID();
+// telegram.telegramSetMenu();
+// telegram.telegramPushBTN();
+// telegram.telegramAnswerfeedback();
+const telegram = require('./modules/bot/botController');
+telegram.botCreating();
+
 
 //template engineer
 app.set('views', __dirname + '/templates');

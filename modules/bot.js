@@ -3,9 +3,9 @@ require('dotenv').config({ path: `.${process.env.NODE_ENV}.env` });
 const {readyFullDate, tableRecord, query} = require('./service');
 
 const fs = require('fs');
-const TelegramApi = require('node-telegram-bot-api');
-const token = process.env.TELEGRAM_TOKEN;
-const bot = new TelegramApi(token, {polling: true});
+// const TelegramApi = require('node-telegram-bot-api');
+// const token = process.env.TELEGRAM_TOKEN;
+// const bot = new TelegramApi(token, {polling: true});
 
 const userId = +process.env.USER_ID;
 const botId = +process.env.BOT_ID;
@@ -71,47 +71,49 @@ class TelegramBot {
         if (['5', '10', '20'].includes(param)) {
             sql = `SELECT * FROM orders ORDER BY id DESC LIMIT ${param}`;
         };
-        tableRecord(sql)
-        .then((result) => {
-            if (result.err) { throw new Error('err-order-list') };
-            if (!result.err && result.length === 0) {
-                if (param === 'reserv') {
-                    return bot.sendMessage(userId, `Не підтверджених замовлень немає!`);
+        query(sql)
+            .then((result) => {
+                if (result.length === 0) {
+                    if (param === 'reserv') {
+                        return bot.sendMessage(userId, `Не підтверджених замовлень немає!`);
+                    };
+                    if (['5', '10', '20'].includes(param)) {
+                        return bot.sendMessage(userId, `Замовлень ще немає!`);
+                    };
                 };
-            };
-            result.forEach(el => {
-                const varArr = {
-                    'yes': 'Так',
-                    'no': 'Ні',
-                    'pr': 'Приватний',
-                    'gr': 'Груповий',
-                    'reserv': 'Зарезервовано',
-                    'del': 'Скасовано',
-                    'proof': 'Підтверджено',
-                }
-                const telegramOrder = 'Order ID: ' + el.orders + '\n' +
-                    el.user_surname + ' ' + el.user_name + '\n' +
-                    'Tel: ' + el.user_tel + '\n' +
-                    'Email: ' + el.user_email + '\n' +
-                    el.order_from + ' - ' + el.order_to + '\n' +
-                    el.date + ' ' + el.time + '\n' +
-                    'Дорослих: ' + el.adult + ' Дітей: ' + el.children + '\n' +
-                    'Спорядження: ' + varArr[`${el.equip}`] + ' Дитячих крісел: ' + el.equip_child + ' Тип: ' + varArr[`${el.type}`] + '\n' +
-                    'Статус: ' + varArr[`${el.status}`] + ' ' + ' Вартість: ' + el.sum + '\n' +
-                    'Час бронювання: ' + el.book_date;
-                bot.sendMessage(userId, telegramOrder, {
-                    reply_markup: JSON.stringify({
-                        inline_keyboard: [
-                            [{text: 'Підтвердити', callback_data: `proof`}, {text: 'Скасувати', callback_data: `del`}]
-                        ]
-                    })
-                });
+                result.forEach(el => {
+                    const varArr = {
+                        'yes': 'Так',
+                        'no': 'Ні',
+                        'pr': 'Приватний',
+                        'gr': 'Груповий',
+                        'reserv': 'Зарезервовано',
+                        'del': 'Скасовано',
+                        'proof': 'Підтверджено',
+                    }
+                    const telegramOrder = 'Order ID: ' + el.orders + '\n' +
+                        el.user_surname + ' ' + el.user_name + '\n' +
+                        'Tel: ' + el.user_tel + '\n' +
+                        'Email: ' + el.user_email + '\n' +
+                        el.order_from + ' - ' + el.order_to + '\n' +
+                        el.date + ' ' + el.time + '\n' +
+                        'Дорослих: ' + el.adult + ' Дітей: ' + el.children + '\n' +
+                        'Спорядження: ' + varArr[`${el.equip}`] + ' Дитячих крісел: ' + el.equip_child + ' Тип: ' + varArr[`${el.type}`] + '\n' +
+                        'Статус: ' + varArr[`${el.status}`] + ' ' + ' Вартість: ' + el.sum + '\n' +
+                        'Час бронювання: ' + el.book_date;
+                    bot.sendMessage(userId, telegramOrder, {
+                        reply_markup: JSON.stringify({
+                            inline_keyboard: [
+                                [{text: 'Підтвердити', callback_data: `proof`}, {text: 'Скасувати', callback_data: `del`}]
+                            ]
+                        })
+                    });
+                })
+            })
+            .catch((error) => {
+                console.log('order-telegram-error', error);
+                bot.sendMessage(userId, `Сталася помилка! Спробуйте ще раз...`);
             });
-        })
-        .catch((err) => {
-            console.log('order-telegram-error', err);
-            bot.sendMessage(userId, `Сталася помилка! Спробуйте ще раз...`);
-        });
     };
 
     getFeedbacks(param) {
@@ -122,29 +124,31 @@ class TelegramBot {
         if (['5', '10', '20'].includes(param)) {
             sql = `SELECT * FROM feedback ORDER BY id DESC LIMIT ${param}`;
         };
-        tableRecord(sql)
-        .then((result) => {
-            if (result.err) { throw new Error('err-feedback-list') };
-            if (!result.err && result.length === 0) {
-                if (param === 'noanswer') {
-                    return bot.sendMessage(userId, `Вдгуків без відповіді немає!`);
+        query(sql)
+            .then((result) => {
+                if (result.length === 0) {
+                    if (param === 'noanswer') {
+                        return bot.sendMessage(userId, `Вдгуків без відповіді немає!`);
+                    };
+                    if (['5', '10', '20'].includes(param)) {
+                        return bot.sendMessage(userId, `Вдгуків ще немає!`);
+                    };
                 };
-            };
-            result.forEach(el => {
-                const telegramFeedback = 'Feedback ID: ' + el.idfeedback + '\n' +
-                    el.feedbackSurname + ' ' + el.feedbackName + '\n' +
-                    'Tel: ' + el.feedbackPhone + '\n' +
-                    'Email: ' + el.feedbackEmail + '\n' +
-                    'Date: ' + readyFullDate(el.date_create) + '\n' +
-                    'Mess: ' + el.feedbackComment + '\n' +
-                    'Answer: ' + el.answer;
-                bot.sendMessage(userId, telegramFeedback);
+                result.forEach(el => {
+                    const telegramFeedback = 'Feedback ID: ' + el.idfeedback + '\n' +
+                        el.feedbackSurname + ' ' + el.feedbackName + '\n' +
+                        'Tel: ' + el.feedbackPhone + '\n' +
+                        'Email: ' + el.feedbackEmail + '\n' +
+                        'Date: ' + readyFullDate(el.date_create) + '\n' +
+                        'Mess: ' + el.feedbackComment + '\n' +
+                        'Answer: ' + el.answer;
+                    bot.sendMessage(userId, telegramFeedback);
+                });
+            })
+            .catch((error) => {
+                console.log('feedback-telegram-error', error);
+                bot.sendMessage(userId, `Сталася помилка! Спробуйте ще раз...`);
             });
-        })
-        .catch((err) => {
-            console.log('feedback-telegram-error', err);
-            bot.sendMessage(userId, `Сталася помилка! Спробуйте ще раз...`);
-        });
     };
 
     telegramSendorder(mess, id) {
@@ -168,18 +172,16 @@ class TelegramBot {
                         const text = reply.text.split("\n")[0].replace('Feedback ID: ', '');
                         const answer_text = mess.text;
                         let sql = `UPDATE feedback SET status='answer', answer='${answer_text}', date_answer='${readyFullDate(new Date(reply.date * 1000))}' WHERE idfeedback='${text}'`;
-                        tableRecord(sql)
-                        .then((result) => {
-                            if (result.err) { throw new Error('err-feedback-answer') };
-                            if (!result.err && result.affectedRows === 0) {
-                                return bot.sendMessage(userId, `Неможливо зберегти відповідь на відгук, тому що такого відгуку не знайдено!`);
-                            };
-                            return bot.sendMessage(userId, `Відповідь на відгук добавлено!`);
-                        })
-                        .catch((err) => {
-                            console.log('answer-telegram-error', err);
-                            bot.sendMessage(userId, `Сталася помилка! Спробуйте ще раз...`);
-                        });
+                        query(sql)
+                            .then((result) => {
+                                return (result.affectedRows === 0)
+                                    ? bot.sendMessage(userId, `Неможливо зберегти відповідь на відгук, тому що такого відгуку не знайдено!`)
+                                    : bot.sendMessage(userId, `Відповідь на відгук добавлено!`);
+                            })
+                            .catch((err) => {
+                                console.log('answer-telegram-error', err);
+                                bot.sendMessage(userId, `Сталася помилка! Спробуйте ще раз...`);
+                            });
                     };
                 };
             };
@@ -253,18 +255,16 @@ class TelegramBot {
                     'del': 'скасовано'
                 };
                 let sql = `UPDATE orders SET status='${parameter}' WHERE orders='${orderID}'`;
-                tableRecord(sql)
-                .then((result) => {
-                    if (result.err) { throw new Error('err-order-answer') };
-                    if (!result.err && result.affectedRows === 0) {
-                        return bot.sendMessage(userId, `Неможливо змінити статус, тому що такого замовлення не знайдено!`);
-                    };
-                    return bot.sendMessage(userId, `Статус замовлення змінено на "${statusArr[parameter]}"!`);
-                })
-                .catch((err) => {
-                    console.log('order-telegram-error', err);
-                    bot.sendMessage(userId, `Сталася помилка! Спробуйте ще раз...`);
-                });
+                query(sql)
+                    .then((result) => {
+                        return (result.affectedRows === 0)
+                            ? bot.sendMessage(userId, `Неможливо змінити статус, тому що такого замовлення не знайдено!`)
+                            : bot.sendMessage(userId, `Статус замовлення змінено на "${statusArr[parameter]}"!`);
+                    })
+                    .catch((error) => {
+                        console.log('order-telegram-error', error);
+                        bot.sendMessage(userId, `Сталася помилка! Спробуйте ще раз...`);
+                    });
             };
         });
     };

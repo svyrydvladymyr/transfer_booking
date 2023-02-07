@@ -1,24 +1,25 @@
 const multer  = require('multer');
 const fs = require('fs');
-const telegram = require('./bot');
+// const telegram = require('./bot');
 const {checOnTrueVal, tableRecord, token, log, query, readyFullDate, clienttoken} = require('../modules/service');
+const telegram = require('./bot/botController');
 
 // const town = (req, res) => {
 //     let sql;
 //     if (req.body.param === 'townAdd') {
-//         sql = `INSERT INTO points (town_id, name_uk, name_en, name_ru) 
-//         VALUES ('${checOnTrueVal(req.body.id)}', 
-//                 '${checOnTrueVal(req.body.uk)}', 
-//                 '${checOnTrueVal(req.body.en)}', 
-//                 '${checOnTrueVal(req.body.ru)}')`; 
+//         sql = `INSERT INTO points (town_id, name_uk, name_en, name_ru)
+//         VALUES ('${checOnTrueVal(req.body.id)}',
+//                 '${checOnTrueVal(req.body.uk)}',
+//                 '${checOnTrueVal(req.body.en)}',
+//                 '${checOnTrueVal(req.body.ru)}')`;
 //     };
 //     if (req.body.param === 'townEdit') {
-//         sql = `UPDATE points 
-//         SET name_uk='${checOnTrueVal(req.body.uk)}', name_en='${checOnTrueVal(req.body.en)}', name_ru='${checOnTrueVal(req.body.ru)}' 
-//         WHERE town_id='${checOnTrueVal(req.body.id)}'`; 
+//         sql = `UPDATE points
+//         SET name_uk='${checOnTrueVal(req.body.uk)}', name_en='${checOnTrueVal(req.body.en)}', name_ru='${checOnTrueVal(req.body.ru)}'
+//         WHERE town_id='${checOnTrueVal(req.body.id)}'`;
 //     };
 //     if (req.body.param === 'townDel') {
-//         sql = `DELETE FROM points WHERE town_id='${checOnTrueVal(req.body.id)}'`; 
+//         sql = `DELETE FROM points WHERE town_id='${checOnTrueVal(req.body.id)}'`;
 //     };
 //     tableRecord(sql)
 //     .then((result) => {
@@ -28,18 +29,18 @@ const {checOnTrueVal, tableRecord, token, log, query, readyFullDate, clienttoken
 //                 if (result.err.sqlMessage.includes(arr[i])) {
 //                     res.send({"DUP": arr[i]}); break;
 //                 };
-//             };                
+//             };
 //         };
-//         if (result.err && result.err.code !== 'ER_DUP_ENTRY') { throw new Error(`err-${req.body.param}`) };             
+//         if (result.err && result.err.code !== 'ER_DUP_ENTRY') { throw new Error(`err-${req.body.param}`) };
 //         if (req.body.param !== 'townDel') { res.send({"res": `${req.body.param}`}) };
 //         if (req.body.param === 'townDel') {
-//             sql = `DELETE FROM transfers WHERE transfer_from='${checOnTrueVal(req.body.id)}' OR transfer_to='${checOnTrueVal(req.body.id)}'`; 
+//             sql = `DELETE FROM transfers WHERE transfer_from='${checOnTrueVal(req.body.id)}' OR transfer_to='${checOnTrueVal(req.body.id)}'`;
 //             tableRecord(sql)
 //             .then((result) => {
 //                 if (result.err) { throw new Error(`err-${req.body.param}`) };
-//                 res.send({"res": `${req.body.param}`});  
+//                 res.send({"res": `${req.body.param}`});
 //             });
-//         };               
+//         };
 //     })
 //     .catch((err) => {
 //         log('towns-err', err);
@@ -50,13 +51,13 @@ const {checOnTrueVal, tableRecord, token, log, query, readyFullDate, clienttoken
 // const transfer = (req, res) => {
 //     const timeArr = {'time1' : '', 'time2' : '', 'time3' : '', 'time4' : '', 'time5' : '', 'time6' : '', 'time7' : '', 'time8' : '', 'time9' : '', 'time10' : ''};
 //     let sql;
-//     if (req.body.param !== 'transferDel') { req.body.times.forEach((element, index) => { timeArr[`time${index + 1}`] = element.replace(new RegExp("[^0-9:]", "gi"), '')})};    
+//     if (req.body.param !== 'transferDel') { req.body.times.forEach((element, index) => { timeArr[`time${index + 1}`] = element.replace(new RegExp("[^0-9:]", "gi"), '')})};
     // if (req.body.param === 'transferAdd') {
-    //     sql = `INSERT INTO transfers (transfer_id, transfer_from, transfer_to, price_pr, price_gr, time1, time2, time3, time4, time5, time6, time7, time8, time9, time10, selection, privat, microbus) 
+    //     sql = `INSERT INTO transfers (transfer_id, transfer_from, transfer_to, price_pr, price_gr, time1, time2, time3, time4, time5, time6, time7, time8, time9, time10, selection, privat, microbus)
     //     VALUES ('${token(10)}',
-    //             '${checOnTrueVal(req.body.from)}', 
-    //             '${checOnTrueVal(req.body.to)}', 
-    //             '${req.body.pr.replace(new RegExp("[^0-9]", "gi"), '')}', 
+    //             '${checOnTrueVal(req.body.from)}',
+    //             '${checOnTrueVal(req.body.to)}',
+    //             '${req.body.pr.replace(new RegExp("[^0-9]", "gi"), '')}',
     //             '${req.body.gr.replace(new RegExp("[^0-9]", "gi"), '')}',
     //             '${timeArr.time1}',
     //             '${timeArr.time2}',
@@ -68,33 +69,33 @@ const {checOnTrueVal, tableRecord, token, log, query, readyFullDate, clienttoken
     //             '${timeArr.time8}',
     //             '${timeArr.time9}',
     //             '${timeArr.time10}',
-    //             '${req.body.select === true ? true : false}', 
-    //             '${req.body.privat === true ? true : false}', 
-    //             '${req.body.microbus === true ? true : false}')`; 
+    //             '${req.body.select === true ? true : false}',
+    //             '${req.body.privat === true ? true : false}',
+    //             '${req.body.microbus === true ? true : false}')`;
     // };
     // if (req.body.param === 'transferEdit') {
-    //     sql = `UPDATE transfers 
-    //     SET transfer_from='${checOnTrueVal(req.body.from)}', 
-    //         transfer_to='${checOnTrueVal(req.body.to)}',  
-    //         price_pr='${req.body.pr.replace(new RegExp("[^0-9]", "gi"), '')}',  
-    //         price_gr='${req.body.gr.replace(new RegExp("[^0-9]", "gi"), '')}',  
-    //         time1='${timeArr.time1}',  
-    //         time2='${timeArr.time2}',  
-    //         time3='${timeArr.time3}',  
-    //         time4='${timeArr.time4}',  
-    //         time5='${timeArr.time5}',  
-    //         time6='${timeArr.time6}',  
-    //         time7='${timeArr.time7}',  
-    //         time8='${timeArr.time8}',  
-    //         time9='${timeArr.time9}',  
-    //         time10='${timeArr.time10}',  
+    //     sql = `UPDATE transfers
+    //     SET transfer_from='${checOnTrueVal(req.body.from)}',
+    //         transfer_to='${checOnTrueVal(req.body.to)}',
+    //         price_pr='${req.body.pr.replace(new RegExp("[^0-9]", "gi"), '')}',
+    //         price_gr='${req.body.gr.replace(new RegExp("[^0-9]", "gi"), '')}',
+    //         time1='${timeArr.time1}',
+    //         time2='${timeArr.time2}',
+    //         time3='${timeArr.time3}',
+    //         time4='${timeArr.time4}',
+    //         time5='${timeArr.time5}',
+    //         time6='${timeArr.time6}',
+    //         time7='${timeArr.time7}',
+    //         time8='${timeArr.time8}',
+    //         time9='${timeArr.time9}',
+    //         time10='${timeArr.time10}',
     //         selection='${req.body.select === true ? true : false}',
     //         privat='${req.body.privat === true ? true : false}',
     //         microbus='${req.body.microbus === true ? true : false}'
-    //     WHERE transfer_id='${checOnTrueVal(req.body.id)}'`; 
+    //     WHERE transfer_id='${checOnTrueVal(req.body.id)}'`;
     // };
 //     if (req.body.param === 'transferDel') {
-//         sql = `DELETE FROM transfers WHERE transfer_id='${checOnTrueVal(req.body.id)}'`; 
+//         sql = `DELETE FROM transfers WHERE transfer_id='${checOnTrueVal(req.body.id)}'`;
 //     };
 //     tableRecord(sql)
 //     .then((result) => {
@@ -176,7 +177,7 @@ const {checOnTrueVal, tableRecord, token, log, query, readyFullDate, clienttoken
     // .then(tableRecord)
     // .then((result) => {
     //     if (result.err) { throw new Error('error-get-transfer-list') };
-    //     const resArr = []; 
+    //     const resArr = [];
     //     result.forEach(element => {
     //         const resEl = {
     //             'id': element.id,
@@ -214,11 +215,11 @@ const {checOnTrueVal, tableRecord, token, log, query, readyFullDate, clienttoken
 const townNames = ({req, res}) => {
     let townsFrom = {}, townsTo = {}, transfersArr = [], townsId = [];
     const lang = ['uk-UA', 'en-US', 'ru-RU'].includes(req.cookies['lang']) ? req.cookies['lang'].slice(0, 2) : 'uk';
-    return new Promise((resolve) => { 
+    return new Promise((resolve) => {
         Promise.all([
-            tableRecord(`SELECT town_id, name_${lang} FROM points`), 
-            tableRecord(`SELECT transfer_from FROM transfers GROUP BY transfer_from`), 
-            tableRecord(`SELECT transfer_to FROM transfers GROUP BY transfer_to`), 
+            tableRecord(`SELECT town_id, name_${lang} FROM points`),
+            tableRecord(`SELECT transfer_from FROM transfers GROUP BY transfer_from`),
+            tableRecord(`SELECT transfer_to FROM transfers GROUP BY transfer_to`),
             tableRecord(`SELECT * FROM transfers`)])
         .then( ([townIdRes, townsFromRes, townsToRes, transfersArrRes]) => {
             if (townIdRes.err) { throw new Error('error-DB-townsID') };
@@ -226,8 +227,8 @@ const townNames = ({req, res}) => {
             if (townsToRes.err) { throw new Error('error-DB-transferTO') };
             if (transfersArrRes.err) { throw new Error('error-DB-transfersARR') };
             townIdRes.forEach(element => { townsId[`${element.town_id}`] = element[`name_${lang}`] });
-            townsFromRes.forEach(element => { townsFrom[`${element.transfer_from}`] = townsId[element.transfer_from] });   
-            townsToRes.forEach(element => { townsTo[`${element.transfer_to}`] = townsId[element.transfer_to] });   
+            townsFromRes.forEach(element => { townsFrom[`${element.transfer_from}`] = townsId[element.transfer_from] });
+            townsToRes.forEach(element => { townsTo[`${element.transfer_to}`] = townsId[element.transfer_to] });
             transfersArrRes.forEach(element => { transfersArr.push(element) });
             resolve({townsFrom, townsTo, transfersArr});
         })
@@ -248,10 +249,10 @@ async function variables (req, res) {
         if (privatRes.err) {
             console.log("vvvvvvvvvvvvprivatRes", privatRes.err);
             throw new Error('error-DB-privatARR') };
-        if (microbusRes.err) { 
+        if (microbusRes.err) {
             console.log("vvvvvvvvvvvvmicrobusRes", microbusRes.err);
             throw new Error('error-DB-microbusARR') };
-        if (specRes.err) { 
+        if (specRes.err) {
             console.log("vvvvvvvvvvvvspecRes", specRes.err);
             throw new Error('error-DB-specArr') };
         privatRes.forEach(element => { privatArr.push(element) });
@@ -276,7 +277,7 @@ const orders = (req, res) => {
     const tokenGen = token(10);
     let sumfin;
     tableRecord(`SELECT userid FROM users WHERE token = '${clienttoken(req, res)}'`)
-    .then((user) => { 
+    .then((user) => {
         userid = !user.err && user != '' ? user[0].userid : '';
         return `SELECT price_${type} FROM transfers WHERE transfer_id='${transferId}'`
     })
@@ -288,27 +289,27 @@ const orders = (req, res) => {
             if (type === 'pr') {sumfin = result[0].price_pr};
             if (type === 'gr') {sumfin = result[0].price_gr * (+adult + +children) };
             return `INSERT INTO orders (
-                orders, user_id, transfer_id, order_from, order_to, 
-                adult, children, type, date, time, equip, equip_child, user_name, 
-                user_surname, user_email, user_tel, status, paid, sum, book_date) 
+                orders, user_id, transfer_id, order_from, order_to,
+                adult, children, type, date, time, equip, equip_child, user_name,
+                user_surname, user_email, user_tel, status, paid, sum, book_date)
             VALUES ('${tokenGen}',
                     '${userid}',
                     '${checOnTrueVal(transferId)}',
                     '${checOnTrueVal(transferFromName)}',
                     '${checOnTrueVal(transferToName)}',
-                    '${adult}', 
-                    '${children}', 
-                    '${type}', 
-                    '${date.replace(new RegExp("[^0-9]//", "gi"), "")}', 
-                    '${time.replace(new RegExp("[^0-9]:", "gi"), "")}', 
-                    '${equip.replace(new RegExp("[^a-z]", "gi"), "")}', 
-                    '${equip_child}',            
+                    '${adult}',
+                    '${children}',
+                    '${type}',
+                    '${date.replace(new RegExp("[^0-9]//", "gi"), "")}',
+                    '${time.replace(new RegExp("[^0-9]:", "gi"), "")}',
+                    '${equip.replace(new RegExp("[^a-z]", "gi"), "")}',
+                    '${equip_child}',
                     '${checOnTrueVal(user_name)}',
                     '${checOnTrueVal(user_surname)}',
-                    '${user_email.replace(new RegExp("[^a-zA-Z0-9.&@-_]", "gi"), "")}', 
-                    '${user_phone.replace(new RegExp("[^0-9+]", "gi"), "")}', 
-                    'reserv', 
-                    'no', 
+                    '${user_email.replace(new RegExp("[^a-zA-Z0-9.&@-_]", "gi"), "")}',
+                    '${user_phone.replace(new RegExp("[^0-9+]", "gi"), "")}',
+                    'reserv',
+                    'no',
                     '${sumfin}',
                     '${readyFullDate(new Date(), '')}')`;
         };
@@ -335,8 +336,9 @@ const orders = (req, res) => {
             'Спорядження: ' + varArr[`${equip}`] + ' Дитячих крісел: ' + equip_child + ' Тип: ' + varArr[`${type}`] + '\n' +
             'Статус: ' + varArr['reserv'] + ' ' + ' Вартість: ' + sumfin + '\n' +
             'Час бронювання: ' + readyFullDate(new Date(), '');
-        telegram.telegramSendorder(telegramOrder, tokenGen);
-        res.send({"res": 'Order created!'});        
+        telegram.botMessage(telegramOrder, 'order');
+        // telegram.telegramSendorder(telegramOrder);
+        res.send({"res": 'Order created!'});
     })
     .catch((err) => {
         log('orders-error', err);
@@ -376,15 +378,15 @@ const sendfeedback = (req, res) => {
     let userid = '';
     const tokenGen = token(10);
     tableRecord(`SELECT userid FROM users WHERE token = '${clienttoken(req, res)}'`)
-    .then((user) => { 
+    .then((user) => {
         userid = !user.err && user != '' ? user[0].userid : '';
-        return `INSERT INTO feedback (idfeedback, user_id, feedbackName, feedbackSurname, feedbackEmail, feedbackPhone, feedbackComment, date_create, status, answer, date_answer) 
-            VALUES ('${tokenGen}',  
-                '${userid}',     
+        return `INSERT INTO feedback (idfeedback, user_id, feedbackName, feedbackSurname, feedbackEmail, feedbackPhone, feedbackComment, date_create, status, answer, date_answer)
+            VALUES ('${tokenGen}',
+                '${userid}',
                 '${checOnTrueVal(feedbackName)}',
                 '${checOnTrueVal(feedbackSurname)}',
-                '${feedbackEmail.replace(new RegExp("[^a-zA-Z0-9.&@-_]", "gi"), "")}', 
-                '${feedbackPhone.replace(new RegExp("[^0-9+]", "gi"), "")}', 
+                '${feedbackEmail.replace(new RegExp("[^a-zA-Z0-9.&@-_]", "gi"), "")}',
+                '${feedbackPhone.replace(new RegExp("[^0-9+]", "gi"), "")}',
                 '${checOnTrueVal(feedbackComment)}',
                 '${readyFullDate(new Date(), '')}',
                 'noanswer',
@@ -393,14 +395,15 @@ const sendfeedback = (req, res) => {
     })
     .then(tableRecord)
     .then((result) => {
-        if (result.err) { throw new Error('err-feedback') };      
-        const telegramFeedback = 'Feedback ID: ' + tokenGen + '\n' + 
-            feedbackSurname + ' ' + feedbackName + '\n' + 
-            'Tel: ' + feedbackPhone + '\n' + 
+        if (result.err) { throw new Error('err-feedback') };
+        const telegramFeedback = 'Feedback ID: ' + tokenGen + '\n' +
+            feedbackSurname + ' ' + feedbackName + '\n' +
+            'Tel: ' + feedbackPhone + '\n' +
             'Email: ' + feedbackEmail + '\n' +
-            'Date: ' + readyFullDate(new Date(), '') + '\n' + 
+            'Date: ' + readyFullDate(new Date(), '') + '\n' +
             'Mess: ' + feedbackComment;
-        telegram.telegramSendfeedback(telegramFeedback);
+        telegram.botMessage(telegramFeedback, 'feedback');
+        // telegram.telegramSendfeedback(telegramFeedback);
         res.send({"res": 'Feedback sended!'});
     })
     .catch((err) => {
@@ -423,16 +426,16 @@ const sendanswer = (req, res) => {
 };
 
 const OFlist = (req, res) => {
-    const originalUrl = req.originalUrl; 
+    const originalUrl = req.originalUrl;
     const url = originalUrl !== undefined ? originalUrl.replace('/', '') : '';
     let user_info = req.user[0], page = req.body.page, limit = req.body.numb;
     let townsFrom = {}, townsTo = {}, transfersArr = [],  resultat = {};
     let page_start = (page -1) * limit, table = '', date_field = '', sql = '', countsql = '';
     let phone_res, count_records;
     if (user_info.phone_verified === 'verified') { phone_res = user_info.phone.slice(user_info.phone.length - 10, user_info.phone.length) };
-    if (url === 'orderslist') { 
+    if (url === 'orderslist') {
         townNames({req, res})
-        .then((towns) => { 
+        .then((towns) => {
             townsFrom = towns.townsFrom;
             townsTo = towns.townsTo;
             transfersArr = towns.transfersArr
@@ -442,7 +445,7 @@ const OFlist = (req, res) => {
         email_field = 'user_email';
         phome_field = 'user_tel';
     };
-    if (url === 'feedbacklist') { 
+    if (url === 'feedbacklist') {
         table = 'feedback';
         date_field = 'date_create';
         email_field = 'feedbackEmail';
@@ -459,7 +462,7 @@ const OFlist = (req, res) => {
             date_now.setMonth(date_now.getMonth() - +date);
             const next_date = readyFullDate(date_now, '');
             datesql = `${date_field}>'${next_date}' AND ${date_field}<'${present_date}'`;
-        };               
+        };
         if (status !== '' && date !== '') {
             statussql = `AND status='${status}' `;
         };
@@ -470,39 +473,39 @@ const OFlist = (req, res) => {
         countsql = `SELECT COUNT(*) FROM ${table}${where}${datesql}${statussql}`;
         sql = `SELECT * FROM ${table}${where}${datesql}${statussql} ORDER BY id DESC LIMIT ${page_start}, ${limit}`;
     } else {
-        countsql = (user_info.phone_verified === 'verified')  
+        countsql = (user_info.phone_verified === 'verified')
             ? `SELECT COUNT(*) FROM ${table} WHERE user_id='${user_info.userid}' OR ${email_field}='${user_info.email}' OR ${phome_field}='${phone_res}' OR ${phome_field}='+38${phone_res}'`
             : `SELECT COUNT(*) FROM ${table} WHERE user_id='${user_info.userid}' OR ${email_field}='${user_info.email}'`;
-        sql = (user_info.phone_verified === 'verified')  
-            ? `SELECT * FROM ${table} 
-                WHERE user_id='${user_info.userid}' OR ${email_field}='${user_info.email}' OR ${phome_field}='${phone_res}' OR ${phome_field}='+38${phone_res}' 
+        sql = (user_info.phone_verified === 'verified')
+            ? `SELECT * FROM ${table}
+                WHERE user_id='${user_info.userid}' OR ${email_field}='${user_info.email}' OR ${phome_field}='${phone_res}' OR ${phome_field}='+38${phone_res}'
                 ORDER BY id DESC LIMIT ${page_start}, ${limit}`
-            : `SELECT * FROM ${table} 
-                WHERE user_id='${user_info.userid}' OR ${email_field}='${user_info.email}' 
+            : `SELECT * FROM ${table}
+                WHERE user_id='${user_info.userid}' OR ${email_field}='${user_info.email}'
                 ORDER BY id DESC LIMIT ${page_start}, ${limit}`;
     };
     tableRecord(sql)
     .then((result) => {
         if (result.err) { throw new Error(`err-get-${table}`) };
-        result.forEach(element => { 
-            if (url === 'orderslist') { 
+        result.forEach(element => {
+            if (url === 'orderslist') {
                 transfersArr.forEach(el => {
                     if (el.transfer_id === element.transfer_id) {
                         element.order_from = townsFrom[el.transfer_from];
                         element.order_to = townsTo[el.transfer_to];
-                    };                
-                });         
-                element.proof = element.status;   
+                    };
+                });
+                element.proof = element.status;
             };
-            if (url === 'feedbacklist') { 
+            if (url === 'feedbacklist') {
                 element.date_answer = readyFullDate(element.date_answer, '');
                 element.date_create = readyFullDate(element.date_create, '');
-            };   
-            element.settings = 'false';        
+            };
+            element.settings = 'false';
             if (user_info.permission === 1) {
                 element.settings = 'true';
-            };           
-        });  
+            };
+        });
         resultat = result;
         return countsql;
     })
@@ -548,8 +551,8 @@ const news = (req, res) => {
 
 
     });
-    
-    // let sql = ``;    
+
+    // let sql = ``;
     // tableRecord(sql)
     // .then((result) => {
     //     if (result.err) { throw new Error('err-add-news') };
@@ -567,11 +570,11 @@ module.exports = {
     // townlist,
     // transferlist,
     variables,
-    orders,    
+    orders,
     orderstatus,
     // saveposition,
     sendfeedback,
     sendanswer,
     OFlist,
-    news    
+    news
 }
