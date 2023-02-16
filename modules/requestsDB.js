@@ -336,7 +336,7 @@ const orders = (req, res) => {
             'Спорядження: ' + varArr[`${equip}`] + ' Дитячих крісел: ' + equip_child + ' Тип: ' + varArr[`${type}`] + '\n' +
             'Статус: ' + varArr['reserv'] + ' ' + ' Вартість: ' + sumfin + '\n' +
             'Час бронювання: ' + readyFullDate(new Date(), '');
-        telegram.botMessage(telegramOrder, 'order');
+        telegram.botMessage(telegramOrder, 'orders');
         // telegram.telegramSendorder(telegramOrder);
         res.send({"res": 'Order created!'});
     })

@@ -7,7 +7,7 @@ class TownsController {
             const query_res = await townsService[`${req.url.replace('/', '')}`](await townsService.checkValue(req.body));
             res.send({"res": query_res});
         } catch (error) {
-            cosole_log('ERROR:', error);
+            cosole_log('ERROR:', error.code === "ER_DUP_ENTRY" ? error.message : error);
             if (error.code === 'ER_DUP_ENTRY') {
                 const duplicateTowns = await townsService.duplicateTowns(error, req.body);
                 res.send(duplicateTowns);

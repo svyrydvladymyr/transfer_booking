@@ -100,4 +100,4 @@ class CreteTables {
     };
 };
 
-module.exports = new CreteTables(require('../connectDB').con);
+module.exports = new CreteTables(require('./connectDB').con);

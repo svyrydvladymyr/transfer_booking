@@ -7,7 +7,7 @@ class transfersController {
             const query_res = await transfersService[`${req.url.replace('/', '')}`](req.body);
             res.send({"res": query_res});
         } catch (error) {
-            cosole_log('ERROR:', error);
+            cosole_log('ERROR:', error.code === "ER_DUP_ENTRY" ? error.message : error);
             if (error.code === 'ER_DUP_ENTRY') {
                 res.send({"DUP": "Transfer duplicated!"});
                 return

@@ -40,15 +40,13 @@ class TownsService {
     }
 
     async delete(body) {
-        const sql = `DELETE FROM points WHERE town_id='${body.id}'`;
+        const sql = `DELETE a.*, b.*
+            FROM points a
+            LEFT JOIN transfers b
+            ON a.town_id = b.transfer_from OR a.town_id = b.transfer_to
+            WHERE a.town_id='${body.id}'`;
         return await query(sql)
-            .then(async (result) => {
-                const sql = `DELETE FROM transfers
-                    WHERE transfer_from='${body.id}'
-                    OR transfer_to='${body.id}'`;
-                return await query(sql)
-                    .then(() => "Town deleted!");
-            })
+            .then(() => "Town deleted!");
     }
 
     async list() {

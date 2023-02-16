@@ -10,14 +10,20 @@ const botId = +process.env.BOT_ID;
 
 class BotController {
     botCreating() {
+        bot.on('', mess => {
+            console.log('gggggg', mess);
+        });
         bot.on('message', async mess => {
-            (mess.from.id !== userId)
-                ? await botService.unauthorizedUser(mess, bot)
-                : (mess.from.id === userId)
-                    && (
-                        await botService.setMenu(mess, bot, userId),
-                        await botService.feedbackAnswer(mess, bot, userId, botId)
-                    );
+            try {
+                (mess.from.id === userId)
+                    ? ( await botService.setMenu(mess, bot, userId),
+                        await botService.feedbackAnswer(mess, bot, userId, botId))
+                    : (mess.from.id === userId)
+                        && await botService.unauthorizedUser(mess, bot);
+            } catch (error) {
+                console.log('Telegram-error:', error);
+                bot.sendMessage(userId, `Сталася помилка! Спробуйте ще раз...`);
+            };
         });
         bot.on('callback_query', async btn => {
             (btn.from.id === userId)
