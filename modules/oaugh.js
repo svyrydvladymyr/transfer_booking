@@ -28,13 +28,14 @@ class Oaugh{
         app.use(this.passport.initialize());
     };
 
-    autorisation(app, type) {
+    autorisation(app, strategy_type) {
         const Strategy = {
             google: require('passport-google-oauth20').Strategy,
             facebook: require('passport-facebook').Strategy
         };
         this.passport.use(
-            new Strategy[type](this.config[type],
+            new Strategy[strategy_type](
+                this.config[strategy_type],
                 (accessToken, refreshToken, profile, done) => {
                     process.nextTick( async () => {
                         const sql = `SELECT * FROM users WHERE userid = '${profile.id}'`;
@@ -55,30 +56,32 @@ class Oaugh{
                 }
             )
         );
-        app.get(`/${type}`, this.passport.authenticate(`${type}`, this.config[type].scope ));
-        app.get(`/${type}callback`, (req, res, next) => {
-            this.passport.authenticate(`${type}`,
-                async (error, user, info) => {
-                    if (error === null) {
-                        const token_id = token(20);
-                        const sql = `UPDATE users SET token = '${token_id}' WHERE userid = '${user.id}'`;
-                        await query(sql)
-                            .then(() => {
-                                addCookies(req, res, token_id, '');
-                                res.redirect('/person');
-                            })
-                            .catch(error => {
-                                log('ERROR update user', error);
-                                addCookies(req, res, '', '-1');
-                                res.redirect('/home');
-                            })
-                    } else {
-                        log('ERROR get user', error);
-                        res.redirect('/home');
-                    };
-                }
-            )(req, res, next);
-        });
+        app.get(`/${strategy_type}`, this.passport.authenticate(`${strategy_type}`, this.config[strategy_type].scope ));
+        app.get(`/${strategy_type}callback`,
+            (req, res, next) => {
+                this.passport.authenticate(`${strategy_type}`,
+                    async (error, user, info) => {
+                        if (error === null) {
+                            const token_id = token(20);
+                            const sql = `UPDATE users SET token = '${token_id}' WHERE userid = '${user.id}'`;
+                            await query(sql)
+                                .then(() => {
+                                    addCookies(req, res, token_id, '');
+                                    res.redirect('/person');
+                                })
+                                .catch(error => {
+                                    log('ERROR update user', error);
+                                    addCookies(req, res, '', '-1');
+                                    res.redirect('/home');
+                                })
+                        } else {
+                            log('ERROR get user', error);
+                            res.redirect('/home');
+                        };
+                    }
+                )(req, res, next);
+            }
+        );
     };
 };
 
