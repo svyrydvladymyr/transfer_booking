@@ -9,9 +9,7 @@ const towns = require('./modules/towns/routers');
 const transfers = require('./modules/transfers/routers');
 // const orderss = require('./modules/orders/routers');
 
-// const multer  = require('multer');
-// const fs = require('fs');
-
+// creating DB tables
 // const tables = require('./modules/db-models/createDB');
 // tables.table('blog');
 

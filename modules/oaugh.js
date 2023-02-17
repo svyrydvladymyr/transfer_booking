@@ -35,21 +35,25 @@ class Oaugh{
         };
         this.passport.use(
             new Strategy[type](this.config[type],
-            (accessToken, refreshToken, profile, done) => {process.nextTick( async () => {
-                const sql = `SELECT * FROM users WHERE userid = '${profile.id}'`;
-                await query(sql)
-                    .then(async (result) => {
-                        if (result && result.length === 0) {
-                            await user.addUser(profile, done);
-                        } else if (result[0].userid === profile.id){
-                            await user.isUser(profile);
-                            return done(null, profile);
-                        };
-                    })
-                    .catch(() => {
-                        done(`Problem with created user: ${error}`, null);
-                    })
-            })})
+                (accessToken, refreshToken, profile, done) => {
+                    process.nextTick( async () => {
+                        const sql = `SELECT * FROM users WHERE userid = '${profile.id}'`;
+                        await query(sql)
+                            .then(async (result) => {
+                                if (result && result.length === 0) {
+                                    await user.addUser(profile, done);
+                                } else if (result[0].userid === profile.id){
+                                    await user.isUser(profile);
+                                    return done(null, profile);
+                                };
+                            })
+                            .catch(() => {
+                                done(`Problem with created user: ${error}`, null);
+                            })
+                        }
+                    )
+                }
+            )
         );
         app.get(`/${type}`, this.passport.authenticate(`${type}`, this.config[type].scope ));
         app.get(`/${type}callback`, (req, res, next) => {
