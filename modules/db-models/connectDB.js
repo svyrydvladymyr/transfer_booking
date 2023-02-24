@@ -3,7 +3,7 @@ require('dotenv').config({ path: `.${process.env.NODE_ENV}.env` });
 const mysql = require("mysql");
 const con = mysql.createConnection({
     driver: "mysql",
-    host: "localhost",
+    host: "127.0.0.1" || "localhost",
     user: process.env.UserDB,
     password: process.env.PassDB,
     charset: "utf8",
@@ -13,6 +13,14 @@ const con = mysql.createConnection({
     database: process.env.NameDB
 });
 
-con.connect((err) => {if (err) { console.log("Error connecting to DB:", err) }});
-setInterval(function () { con.query("SELECT 1") }, 20000);
+con.connect( error =>
+        error
+            ? console.log("\u001b[31mError connecting to DB:\u001b[0m", error)
+            : console.log("\u001b[36mThe connection to the database is established!\u001b[0m")
+    );
+
+setInterval(function () {
+        con.query("SELECT 1") }, 20000
+    );
+
 module.exports = { con };

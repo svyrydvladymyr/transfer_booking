@@ -93,8 +93,8 @@ app.get('*', (req, res) => {res.redirect('/home')});
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, (error) => {
     error
-        ? console.log('Server ERROR...:', error)
-        : console.log(`Server is running at ${PORT} port...`);
+        ? console.log('\u001b[31mServer ERROR:\u001b[0m', error)
+        : console.log(`\u001b[36mServer is running at \u001b[33m${PORT}\u001b[0m \u001b[36mport!\u001b[0m` );
 });
 
 

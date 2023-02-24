@@ -174,9 +174,11 @@ body {
 .header .social_wrap .info i, .header .menu_wrap .info i, .header .form_wrap .info i {
   margin: 0px 7px;
   font-size: 18px;
+  color: #231718;
 }
 .header .social_wrap .info a, .header .menu_wrap .info a, .header .form_wrap .info a {
   text-decoration-line: none;
+  color: #231718;
 }
 .header .social_wrap .info a:hover, .header .menu_wrap .info a:hover, .header .form_wrap .info a:hover {
   text-decoration-line: underline;
@@ -296,10 +298,11 @@ body {
   text-align: center;
   text-transform: uppercase;
   text-decoration-line: none;
-  border: 2px solid #fff;
+  border: 2px solid #6ba917;
   padding: 12px 15px;
   border-radius: 2px;
   transition: 0.4s;
+  background: #6ba917;
 }
 .header .form_wrap .info_container .info_wrap a:hover {
   background: #fff;
@@ -842,6 +845,7 @@ body {
   -ms-flex-wrap: wrap;
   flex-wrap: wrap;
   justify-content: center;
+  flex-direction: column;
   border-bottom: 1px solid #cfcfcf;
   padding: 15px;
 }
@@ -851,17 +855,22 @@ body {
   font-size: 16px;
   font-weight: bold;
   padding: 0px 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 .wrap_special p i {
   font-size: 13px;
   margin: 0px 10px 0px 0px;
   color: #ee9e07;
+  display: none;
 }
 .wrap_special p.price {
   margin: 0px;
   color: #3b5c2e;
   font-size: 15px;
-  padding: 0px 10px;
+  padding: 5px 10px;
+  flex-direction: row;
 }
 .wrap_special p.price span:first-child {
   font-size: 11px;
@@ -875,7 +884,10 @@ body {
   margin: 0px;
   color: #6ba917;
   font-size: 15px;
-  padding: 0px 12px;
+  padding: 12px;
+  display: flex;
+  justify-content: center;
+  text-decoration-line: underline;
 }
 .wrap_special p.special_btn:hover {
   text-decoration-line: underline;

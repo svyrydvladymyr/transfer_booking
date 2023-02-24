@@ -166,9 +166,11 @@ body {
             i {
               margin: 0px 7px;
               font-size: 18px;
+              color: #231718;
             }
             a {
               text-decoration-line: none;
+              color: #231718;
               &:hover { text-decoration-line: underline }
             }
         }
@@ -283,10 +285,11 @@ body {
               text-align: center;
               text-transform: uppercase;
               text-decoration-line: none;
-              border: 2px solid #fff;
+              border: 2px solid #6ba917;
               padding: 12px 15px;
               border-radius: 2px;
               transition: 0.4s;
+              background: #6ba917;
               &:hover {
                 background: #fff;
                 color: #3e3f40;
@@ -855,6 +858,7 @@ body {
     -ms-flex-wrap: wrap;
     flex-wrap: wrap;
     justify-content: center;
+    flex-direction: column;
     border-bottom: 1px solid #cfcfcf;
     padding: 15px;
   }
@@ -864,17 +868,22 @@ body {
     font-size: 16px;
     font-weight: bold;
     padding: 0px 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
     i {
       font-size: 13px;
       margin: 0px 10px 0px 0px;
-      color: #ee9e07
+      color: #ee9e07;
+      display: none;
     }
   }
   p.price {
     margin: 0px;
     color: #3b5c2e;
     font-size: 15px;
-    padding: 0px 10px;
+    padding: 5px 10px;
+    flex-direction: row;
     span:first-child {
       font-size: 11px;
       margin: 0px 4px 0px 0px;
@@ -888,7 +897,10 @@ body {
     margin: 0px;
     color: #6ba917;
     font-size: 15px;
-    padding: 0px 12px;
+    padding: 12px;
+    display: flex;
+    justify-content: center;
+    text-decoration-line: underline;
     &:hover {
       text-decoration-line: underline;
       color: #ee9e07;

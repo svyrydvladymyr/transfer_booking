@@ -1065,7 +1065,11 @@ const loadVariablesList = () => {
                         if (transf.transfer_id === spec.transfer_id) {
                             specialWrap.innerHTML += `
                             <div>
-                                <p><i class='fas fa-arrow-alt-circle-right'></i>${townsFrom[transf.transfer_from]} - ${townsTo[transf.transfer_to]}</p>
+                                <p><i class='fas fa-arrow-alt-circle-right'></i>
+                                    <span>${townsFrom[transf.transfer_from]}</span>
+                                    <span>&nbsp-&nbsp</span>
+                                    <span>${townsTo[transf.transfer_to]}</span>
+                                </p>
                                 <p class="price"><span>${lang[`from${langName}`]}</span>${transf.price_pr}<span>${lang[`sum_type${langName}`]}</span></p>
                                 <p class="special_btn" onclick="sendToMainForm('${transf.transfer_id}', 'pr',
                                     {'from': '${townsFrom[transf.transfer_from]}',

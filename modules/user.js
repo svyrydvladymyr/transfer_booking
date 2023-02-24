@@ -116,9 +116,14 @@ class Users {
             : DATA.menu.home = 'active_menu';
         DATA.langPack = require(`./lang/${lang}`);
         DATA.permission.pageName = pageName;
+
+        // console.log('token', clienttoken(req, res));
+
         const sql = `SELECT * FROM users WHERE token = '${clienttoken(req, res)}'`;
         await query(sql)
             .then((user) => {
+                // console.log('user', user);
+
                 if (!user[0]) return;
                 const {userid, name, surname, ava, email, phone, phone_verified, provider, permission, date_registered} = user[0];
                 //permission

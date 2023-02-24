@@ -566,3 +566,26 @@
 .user_wrap .feedback_search input, .user_wrap .feedback_search select {
     width: 200px;
 }
+
+.header .form_wrap .info_container .info_wrap p {
+    color: #231718;
+}
+.header .form_wrap .info_container .info_wrap h1 {
+    color: #231718;
+}
+
+.wrap_special p {
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.wrap_special p.price {
+    padding: 10px;
+    flex-direction: row;
+}
+
+.wrap_special p i {
+    display: none;
+}
