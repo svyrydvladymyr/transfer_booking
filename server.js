@@ -82,8 +82,6 @@ app.get('/person', renderPage.userData);
 app.get('/advantages', renderPage.userData);
 app.get('/privacy-policy', renderPage.userData);
 
-//logout
-app.get('/exit', logOut);
 
 //redirect to home page
 app.get('/$', (req, res, next) => {res.redirect('/home')});

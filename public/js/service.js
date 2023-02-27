@@ -24,7 +24,7 @@ let news_status = '', news_token = '';
 const redirect = way => window.location.replace(`${way}`);
 
 //logout
-const exit = () => { send({}, '/exit', (res) => { location.reload() }, 'GET') };
+const exit = () => { send({}, '/exit', (res) => { location.reload() }, 'POST') };
 
 //token
 const token = length => {
