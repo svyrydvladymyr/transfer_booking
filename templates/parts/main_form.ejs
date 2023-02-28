@@ -30,40 +30,40 @@
                     <option value="transfer_gr" id="type_gr"><%=DATA.langPack.main_form_type_gr %></option>
                 </select>
             </div>
-            <div class="main_form_coll sub">                
+            <div class="main_form_coll sub">
                 <div class="main_form_coll_sub">
                     <label for="adults"><%=DATA.langPack.main_form_adults %></label>
                     <input type="number" name="adults" id="adults" min="0" max="60" value="0" oninput="validationPerson(this, 60)" onchange="validationAdults(this)">
                 </div>
                 <div class="main_form_coll_sub">
                     <label for="children"><%=DATA.langPack.main_form_children %></label>
-                    <input type="number" name="children" id="children" min="0" max="60" value="0" oninput="validationPerson(this, 60), validationChildren(this)">                
+                    <input type="number" name="children" id="children" min="0" max="60" value="0" oninput="validationPerson(this, 60), validationChildren(this)">
                 </div>
             </div>
-        </div>  
+        </div>
         <div class="equip_wrap">
             <div class="equip_block  equip">
-                <label><%=DATA.langPack.main_form_equip_title %></label> 
+                <label><%=DATA.langPack.main_form_equip_title %></label>
                 <div class="main_form_row">
-                    <div class="main_form_coll">     
-                        <input type="radio" id="yes" name="equip" value="yes">           
+                    <div class="main_form_coll">
+                        <input type="radio" id="yes" name="equip" value="yes">
                         <label for="yes"><%=DATA.langPack.main_form_equip_yes %></label><br>
                     </div>
                     <div class="main_form_coll">
                         <input type="radio" id="no" name="equip" value="no" checked>
-                        <label for="no"><%=DATA.langPack.main_form_equip_no %></label>            
+                        <label for="no"><%=DATA.langPack.main_form_equip_no %></label>
                     </div>
                 </div>
             </div>
-            <div class="equip_block equip_child">                
-                <div class="main_form_row">   
-                    <label><%=DATA.langPack.main_form_equip_child_title %></label> 
-                    <input type="number" name="equip_child" id="equip_child" min="0" max="3" value="0" oninput="validationEquip(this)">                
+            <div class="equip_block equip_child">
+                <div class="main_form_row">
+                    <label><%=DATA.langPack.main_form_equip_child_title %></label>
+                    <input type="number" name="equip_child" id="equip_child" min="0" max="3" value="0" oninput="validationEquip(this)">
                 </div>
             </div>
         </div>
-        <div class="main_form_row btn">              
-            <div class="main_form_coll">     
+        <div class="main_form_row btn">
+            <div class="main_form_coll">
                 <p class="main_form_btn" onclick="formValid = 'calk', culculate()"><%=DATA.langPack.main_form_btn_calk %></p>
             </div>
             <div class="main_form_coll">
@@ -83,21 +83,21 @@
                 <% if (DATA.permission.permissionAuthorization === '0') { %>
                     <label for="main_name"><%=DATA.langPack.feedback_form_name %></label>
                     <input type="text" name="name" id="main_name" maxlength="30" value="" autocomplete="off" oninput="validation(this, 'Name')">
-                <% } %> 
+                <% } %>
                 <% if (DATA.permission.permissionAuthorization === '1') { %>
                     <label for="main_name"><%=DATA.langPack.feedback_form_name %></label>
                     <input type="text" name="name" id="main_name" class="main_inp_readonly" value="<%=DATA.user.name %>" readonly>
-                <% } %> 
+                <% } %>
             </div>
-            <div class="main_form_coll">         
+            <div class="main_form_coll">
                 <% if (DATA.permission.permissionAuthorization === '0') { %>
                     <label for="main_surname"><%=DATA.langPack.feedback_form_surname %></label>
                     <input type="text" name="surname" id="main_surname" maxlength="30" value="" autocomplete="off" oninput="validation(this, 'Name')">
-                <% } %> 
+                <% } %>
                 <% if (DATA.permission.permissionAuthorization === '1') { %>
                     <label for="main_surname"><%=DATA.langPack.feedback_form_surname %></label>
                     <input type="text" name="surname" id="main_surname" class="main_inp_readonly" value="<%=DATA.user.surname %>" readonly>
-                <% } %> 
+                <% } %>
             </div>
         </div>
         <div class="main_form_row">
@@ -105,35 +105,35 @@
                 <% if (DATA.permission.permissionAuthorization === '0') { %>
                     <label for="main_email"><%=DATA.langPack.feedback_form_email %></label>
                     <input type="email" name="email" id="main_email" maxlength="110" value="" autocomplete="off" oninput="validation(this, 'Email')">
-                <% } %>         
+                <% } %>
                 <% if (DATA.permission.permissionAuthorization === '1') { %>
                     <% if ((DATA.user.email === '') || (DATA.user.email === null) || (DATA.user.email === undefined)) { %>
                         <label for="main_email"><%=DATA.langPack.feedback_form_email %></label>
                         <input type="email" name="email" id="main_email" maxlength="110" value="" autocomplete="off" oninput="validation(this, 'Email')">
-                    <% } %> 
+                    <% } %>
                     <% if ((DATA.user.email !== '') && (DATA.user.email !== null) && (DATA.user.email !== undefined)) { %>
                         <label for="main_email"><%=DATA.langPack.feedback_form_email %></label>
                         <input type="email" name="email" id="main_email" class="main_inp_readonly" maxlength="110" value="<%=DATA.user.email %>" readonly>
-                    <% } %>                 
-                <% } %> 
+                    <% } %>
+                <% } %>
             </div>
             <div class="main_form_coll">
                 <label for="main_phone"><%=DATA.langPack.feedback_form_tel %></label>
                 <input type="phone" name="phone" id="main_phone" maxlength="20" value="" autocomplete="off" oninput="validation(this, 'Phone')">
             </div>
         </div>
-        <!-- <div class="main_form_row paid">   
-            <label for="main_paid" style="padding: 5px;"><%=DATA.langPack.main_form_paid %></label>    
-            <input type="checkbox" name="main_paid" id="main_paid">   
+        <!-- <div class="main_form_row paid">
+            <label for="main_paid" style="padding: 5px;"><%=DATA.langPack.main_form_paid %></label>
+            <input type="checkbox" name="main_paid" id="main_paid">
         </div> -->
-        <div class="main_form_row btn">              
-            <div class="main_form_coll">     
+        <div class="main_form_row btn">
+            <div class="main_form_coll">
                 <p class="main_form_btn" onclick="mainFormBack()"><%=DATA.langPack.main_form_btn_back %></p>
             </div>
             <div class="main_form_coll">
                 <p class="main_form_btn" onclick="formValid = 'bookfinal', culculate()"><%=DATA.langPack.main_form_btn_res %></p>
             </div>
-        </div>        
+        </div>
         <p class="main_form_err_bookfinal hide_err"><%=DATA.langPack.main_form_err_bookfinal %></p>
     </div>
     <div class="main_form_wrap received"  id="received">

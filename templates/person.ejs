@@ -9,8 +9,8 @@
 <body>
     <% if (DATA.permission.permissionAuthorization === '1') { %>
         <script>
-            let numb = 30, orderstat = '', orderdate = '3'; 
-            let feedback_numb = 30, feedback_stat = '', feedback_date = '3'; 
+            let numb = 30, orderstat = '', orderdate = '3';
+            let feedback_numb = 30, feedback_stat = '', feedback_date = '3';
         </script>
         <script src="https://code.jquery.com/jquery-3.6.0.js"></script>
         <script src="https://code.jquery.com/ui/1.13.1/jquery-ui.js"></script>
@@ -19,10 +19,10 @@
                 update: function() { $_('#save_position')[0].style.display = 'block' }
             })});
         </script>
-    <% } %> 
-    <%- include("./parts/header.ejs") %>    
+    <% } %>
+    <%- include("./parts/header.ejs") %>
     <div class="main_body">
-        <% if (DATA.permission.permissionAuthorization === '0') { %>        
+        <% if (DATA.permission.permissionAuthorization === '0') { %>
             <div class="no_user">
                 <p><%=DATA.langPack.autoriz_info %></p>
                 <div>
@@ -30,7 +30,7 @@
                     <a href="/facebook"><img src="img/facebook.png" alt="facebook" title="FACEBOOK"></a>
                 </div>
             </div>
-        <% } %>        
+        <% } %>
         <% if (DATA.permission.permissionAuthorization === '1') { %>
             <div class="user_wrap">
                 <img src="<%=DATA.user.ava %>">
@@ -40,7 +40,7 @@
                 <!-- <% if (DATA.user.phone_verified === 'noverified') { %>
                     <p onclick="showModal('confirmPhone')" class="exit"><%=DATA.langPack.phone_verified %></p>
                 <% } %>  -->
-                <div class="modal_wrap"></div>           
+                <div class="modal_wrap"></div>
                 <% if (DATA.permission.permissionRules === '0') { %>
                     <div class="tab_person">
                         <div class="tabs">

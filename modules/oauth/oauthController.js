@@ -1,9 +1,9 @@
 require('dotenv').config({ path: `.${process.env.NODE_ENV}.env` });
 
-const user = require('./user').users;
-const {token, query, addCookies, log, logOut} = require('./service');
+const oauthService = require('./oauthService');
+const query = require('../service').query;
 
-class Oaugh{
+class OauthController{
     passport = require('passport');
     passsport_name = {
         google: 'google-oauth20',
@@ -41,15 +41,11 @@ class Oaugh{
         });
         app.use(this.passport.initialize());
         app.use(this.passport.session());
-        app.post('/exit', logOut);
+        app.post('/exit', oauthService.logOut);
     };
 
     create(strategy_type) {
         const Strategy = require(`passport-${this.passsport_name[strategy_type]}`).Strategy;
-        // const Strategy = {
-        //     google: require('passport-google-oauth20').Strategy,
-        //     facebook: require('passport-facebook').Strategy
-        // };
         this.passport.use( new Strategy(this.config[strategy_type],
             async (accessToken, refreshToken, profile, done) => {
                 process.nextTick( async () => {
@@ -57,14 +53,13 @@ class Oaugh{
                     await query(sql)
                         .then(async (result) => {
                             if (result && result.length === 0) {
-                                await user.addUser(profile, done);
+                                await oauthService.addUser(profile, done);
                             } else if (result[0].userid === profile.id){
-                                await user.isUser(profile);
-                                return done(null, profile);
+                                await oauthService.isUser(profile, done);
                             };
                         })
                         .catch((error) => {
-                            done(`Problem with created user: ${error}`, null);
+                            done(error, null);
                         })
                     }
                 )
@@ -73,32 +68,6 @@ class Oaugh{
     }
 
     autorisation(app, strategy_type) {
-        // const Strategy = {
-        //     google: require('passport-google-oauth20').Strategy,
-        //     facebook: require('passport-facebook').Strategy
-        // };
-        // this.passport.use(
-        //     new Strategy[strategy_type](this.config[strategy_type],
-        //         async (accessToken, refreshToken, profile, done) => {
-        //             process.nextTick( async () => {
-        //                 const sql = `SELECT * FROM users WHERE userid = '${profile.id}'`;
-        //                 await query(sql)
-        //                     .then(async (result) => {
-        //                         if (result && result.length === 0) {
-        //                             await user.addUser(profile, done);
-        //                         } else if (result[0].userid === profile.id){
-        //                             await user.isUser(profile);
-        //                             return done(null, profile);
-        //                         };
-        //                     })
-        //                     .catch((error) => {
-        //                         done(`Problem with created user: ${error}`, null);
-        //                     })
-        //                 }
-        //             )
-        //         }
-        //     )
-        // );
         this.create(strategy_type);
         app.get(`/${strategy_type}`,
             this.passport.authenticate(`${strategy_type}`, this.config[strategy_type].scope )
@@ -107,26 +76,10 @@ class Oaugh{
             (req, res, next) => {
                 this.passport.authenticate(`${strategy_type}`, { failureRedirect: '/person', failureMessage: true },
                     async (error, user, info) => {
-
-                        // console.log(error);
-                        // console.log(user);
-                        // console.log(info);
-
                         if (error === null) {
-                            const token_id = token(20);
-                            const sql = `UPDATE users SET token = '${token_id}' WHERE userid = '${user.id}'`;
-                            await query(sql)
-                                .then(() => {
-                                    addCookies(req, res, token_id, '');
-                                    res.redirect('/person');
-                                })
-                                .catch(error => {
-                                    log('ERROR update user', error);
-                                    addCookies(req, res, '', '-1');
-                                    res.redirect('/home');
-                                })
+                            await oauthService.updateToken(req, res, user.id);
                         } else {
-                            log('ERROR get user', error);
+                            console.log('Oauth ERROR:', error);
                             res.redirect('/home');
                         };
                     }
@@ -137,4 +90,4 @@ class Oaugh{
 };
 
 
-module.exports = new Oaugh();
+module.exports = new OauthController();

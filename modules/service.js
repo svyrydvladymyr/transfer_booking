@@ -1,22 +1,31 @@
+require('dotenv').config({ path: `.${process.env.NODE_ENV}.env` });
 const Cookies = require('cookies');
 const fs = require('fs');
 const con = require('./db-models/connectDB').con;
+
 
 //transliteration
 const translit = length => require('transliteration.cyr').transliterate(length);
 
 //validation email
-const validEmail = text => (text.match(/^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/)) ? true : false;
+const validEmail = text => {
+    return (text.match(/^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/))
+        ? true
+        : false;
+};
 
 //chack on true values
 const checOnTrueVal = (el) => el.replace(new RegExp("[^a-zA-Zа-яА-Я0-9-()_+=!?.:;/\,іІїЇєЄ /\n]", "gi"), '');
 
 //client token
-const clienttoken = (req, res) => new Cookies(req, res, {"keys":['volodymyr']}).get('sessionisdd', {signed:true});
+const clienttoken = (req, res) => {
+    return new Cookies(req, res, {"keys":[process.env.COOKIES_KEY]})
+        .get('sessionisdd', {signed:true});
+};
 
 //add or clear Cookies
 const addCookies = (req, res, token, param) => {
-    const cookies = new Cookies(req, res, {"keys":['volodymyr']});
+    const cookies = new Cookies(req, res, {"keys":[process.env.COOKIES_KEY]});
     cookies.set('sessionisdd', `${token}`, {maxAge: `${param}`, path: '/', signed:true});
 };
 
@@ -130,12 +139,6 @@ const permission = (req, res, next) => {
     };
 };
 
-//logout
-const logOut = (req, res) => {
-    addCookies(req, res, '', '-1');
-    res.redirect('/');
-};
-
 module.exports = {
     translit,
     token,
@@ -147,7 +150,6 @@ module.exports = {
     accessLog,
     tableRecord,
     validEmail,
-    logOut,
     autorisation,
     permission,
     query

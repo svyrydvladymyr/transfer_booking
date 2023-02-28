@@ -5,6 +5,7 @@ const cookieParser = require('cookie-parser');
 require('dotenv').config({ path: `.${process.env.NODE_ENV}.env` });
 
 //routers
+const renderPage = require('./modules/pages/pagesController');
 const towns = require('./modules/towns/routers');
 const transfers = require('./modules/transfers/routers');
 // const orderss = require('./modules/orders/routers');
@@ -13,12 +14,12 @@ const transfers = require('./modules/transfers/routers');
 // const tables = require('./modules/db-models/createDB');
 // tables.table('blog');
 
-const {log, logOut, autorisation, permission} = require('./modules/service');
-const renderPage = require('./modules/render-pages');
-const {variables, orders, OFlist, saveposition, orderstatus, sendfeedback, sendanswer, news} = require('./modules/requestsDB');
+const {log, autorisation, permission} = require('./modules/service');
+
+const {variables, orders, OFlist, orderstatus, sendfeedback, sendanswer, news} = require('./modules/requestsDB');
 
 //oaugh
-const oaugh = require('./modules/oaugh.js');
+const oaugh = require('./modules/oauth/oauthController.js');
 oaugh.initialize(app);
 oaugh.autorisation(app, 'google');
 oaugh.autorisation(app, 'facebook');
