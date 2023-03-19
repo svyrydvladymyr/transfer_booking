@@ -14,7 +14,7 @@ const transfers = require('./modules/transfers/routers');
 // const tables = require('./modules/db-models/createDB');
 // tables.table('blog');
 
-const {log, autorisation, permission} = require('./modules/service');
+const {autorisation, permission} = require('./modules/service');
 
 const {variables, orders, OFlist, orderstatus, sendfeedback, sendanswer, news} = require('./modules/requestsDB');
 
@@ -41,10 +41,7 @@ app.use(bodyParser.urlencoded({extended: true}))
 app.use(cookieParser());
 
 //console logs
-app.use((req, res, next) => {log(`URL-REQUEST:-(${req.method})-`, req.url); next()});
-
-//system logs
-// app.use((req, res, next) => {accessLog(req, res, next)});
+app.use((req, res, next) => {console.log(`-URL-REQUEST:-(${req.method})--->`, req.url); next()});
 
 //requests news
 app.post('/fotonews', news);

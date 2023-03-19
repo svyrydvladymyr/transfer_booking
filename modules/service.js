@@ -1,5 +1,6 @@
 require('dotenv').config({ path: `.${process.env.NODE_ENV}.env` });
 const Cookies = require('cookies');
+const CryptoJS = require("crypto-js");
 const fs = require('fs');
 const con = require('./db-models/connectDB').con;
 
@@ -17,23 +18,13 @@ const validEmail = text => {
 //chack on true values
 const checOnTrueVal = (el) => el.replace(new RegExp("[^a-zA-Zа-яА-Я0-9-()_+=!?.:;/\,іІїЇєЄ /\n]", "gi"), '');
 
-//client token
-const clienttoken = (req, res) => {
-    return new Cookies(req, res, {"keys":[process.env.COOKIES_KEY]})
-        .get('sessionisdd', {signed:true});
-};
-
-//add or clear Cookies
-const addCookies = (req, res, token, param) => {
-    const cookies = new Cookies(req, res, {"keys":[process.env.COOKIES_KEY]});
-    cookies.set('sessionisdd', `${token}`, {maxAge: `${param}`, path: '/', signed:true});
-};
-
 //generate token
 const token = length => {
     let result = '';
     const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
-    for ( var i = 0; i < length; i++ ) {result += characters.charAt(Math.floor(Math.random() * characters.length))}
+    for ( let i = 0; i < length; i++ ) {
+        result += characters.charAt(Math.floor(Math.random() * characters.length))
+    };
     return result;
 };
 
@@ -115,7 +106,30 @@ const query = (sql) => {
 };
 
 
-//check the authenticity of the authorization
+const clienttoken = (req, res) => {
+    const cookies_token = new Cookies(req, res, {"keys":[process.env.COOKIES_KEY]})
+        .get('sessionisdd', {signed:true});
+    let bytes  = CryptoJS.AES.decrypt(cookies_token, process.env.COOKIES_KEY);
+    let original_token = bytes.toString(CryptoJS.enc.Utf8);
+    return original_token;
+};
+
+const addCookies = (req, res, token, param) => {
+    const cipher_token = CryptoJS.AES.encrypt(token, process.env.COOKIES_KEY).toString();
+    const cookies = new Cookies(req, res, {"keys":[process.env.COOKIES_KEY]});
+    cookies.set(
+        'sessionisdd',
+        `${cipher_token}`,
+        {
+            maxAge : `${param}`,
+            path : '/',
+            signed : true,
+            sameSite : true,
+            secure : process.env.NODE_ENV === "production" ? true : false
+        }
+    );
+};
+
 const autorisation = (req, res, next) => {
     const userInfo = 'userid, email, phone, phone_verified, permission';
     query(`SELECT ${userInfo} FROM users WHERE token = '${clienttoken(req, res)}'`)
@@ -130,6 +144,7 @@ const autorisation = (req, res, next) => {
         }
     );
 };
+
 const permission = (req, res, next) => {
     if (req.user[0].permission !== 1) {
         accessLog(req, res, 'permission');
@@ -139,18 +154,21 @@ const permission = (req, res, next) => {
     };
 };
 
+
+
+
 module.exports = {
     translit,
     token,
     log,
-    clienttoken,
-    addCookies,
     readyFullDate,
     checOnTrueVal,
     accessLog,
     tableRecord,
     validEmail,
+    query,
     autorisation,
     permission,
-    query
+    clienttoken,
+    addCookies
 }

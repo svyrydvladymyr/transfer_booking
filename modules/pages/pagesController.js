@@ -3,6 +3,9 @@ const pagesService = require('./pagesService');
 const lang_list = ['uk-UA', 'en-GB', 'ru-RU'];
 const pages_list = ['home', 'about', 'advantages', 'blog', 'contacts', 'person', 'privacy-policy', 'transfer'];
 
+
+
+
 class PagesController{
     async userData(req, res) {
         const lang = lang_list.includes(req.cookies ? req.cookies['lang'] : undefined)
