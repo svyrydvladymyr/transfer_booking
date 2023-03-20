@@ -109,7 +109,7 @@ const query = (sql) => {
 const clienttoken = (req, res) => {
     const cookies_token = new Cookies(req, res, {"keys":[process.env.COOKIES_KEY]})
         .get('sessionisdd', {signed:true});
-    let bytes  = CryptoJS.AES.decrypt(cookies_token, process.env.COOKIES_KEY);
+    let bytes  = CryptoJS.AES.decrypt((cookies_token === undefined) ? 'token' : cookies_token, process.env.COOKIES_KEY);
     let original_token = bytes.toString(CryptoJS.enc.Utf8);
     return original_token;
 };
@@ -137,7 +137,8 @@ const autorisation = (req, res, next) => {
             req.user = user;
             if (!user[0]) {
                 accessLog(req, res, 'autorisation');
-                res.redirect('/home');
+                // res.redirect('/home');
+                res.status(400).send();
             } else {
                 next();
             };
@@ -148,7 +149,8 @@ const autorisation = (req, res, next) => {
 const permission = (req, res, next) => {
     if (req.user[0].permission !== 1) {
         accessLog(req, res, 'permission');
-        res.redirect('/home');
+        // res.redirect('/home');
+        res.status(400).send();
     } else {
         next();
     };

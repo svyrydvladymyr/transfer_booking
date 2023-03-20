@@ -55,8 +55,8 @@ app.post('/sendanswer', autorisation, permission, sendanswer);
 app.get('/variables', variables);
 
 //requests
-app.use('/towns', autorisation, permission, towns);
-app.use('/transfers', autorisation, permission, transfers);
+app.use('/towns', towns);
+app.use('/transfers', transfers);
 // app.use('/orders', autorisation, permission, orderss);
 
 

@@ -1011,7 +1011,7 @@ const feedbackList = (page = 1) => {
 
 //load variables list
 const loadVariablesList = () => {
-    send('', `/variables`, (result) => {
+    send('', `/towns/variables`, (result) => {
         const resultat = JSON.parse(result);
         if (resultat.res) {
             townsFrom = resultat.res.townsFrom;

@@ -11,7 +11,8 @@
 }
 
 .header > .header_pages_title2 {
-    font-size: min(max(18px, 6vw), 36px);
+    font-size: min(max(30px, 7vw), 50px);
+    padding: 0px 14px;
 }
 .advantages > .advantages_title2 {
     font-size: 40px;

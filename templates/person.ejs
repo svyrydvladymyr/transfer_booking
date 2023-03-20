@@ -41,24 +41,6 @@
                     <p onclick="showModal('confirmPhone')" class="exit"><%=DATA.langPack.phone_verified %></p>
                 <% } %>  -->
                 <div class="modal_wrap"></div>
-                <% if (DATA.permission.permissionRules === '0') { %>
-                    <div class="tab_person">
-                        <div class="tabs">
-                            <p class="tab tab_user tab_active" onclick="tabs(0)"><%=DATA.langPack.orders_title %></p>
-                            <p class="tab tab_user" onclick="tabs(1)"><%=DATA.langPack.feedback_title %></p>
-                        </div>
-                        <div class="tab_bodys">
-                            <div class="body body_active">
-                                <div class="orders_list" style="border-top: 0"></div>
-                                <div class="orders_pagination"></div>
-                            </div>
-                            <div class="body">
-                                <div class="feedback_list" style="border-top: 0"></div>
-                                <div class="feedback_pagination"></div>
-                            </div>
-                        </div>
-                    </div>
-                <% } %>
                 <% if (DATA.permission.permissionRules === '1') { %>
                     <div class="tab_person">
                         <div class="tabs">
@@ -134,6 +116,23 @@
                             </div>
                         </div>
                     </div>
+                <% } else { %>
+                    <div class="tab_person">
+                        <div class="tabs">
+                            <p class="tab tab_user tab_active" onclick="tabs(0)"><%=DATA.langPack.orders_title %></p>
+                            <p class="tab tab_user" onclick="tabs(1)"><%=DATA.langPack.feedback_title %></p>
+                        </div>
+                        <div class="tab_bodys">
+                            <div class="body body_active">
+                                <div class="orders_list" style="border-top: 0"></div>
+                                <div class="orders_pagination"></div>
+                            </div>
+                            <div class="body">
+                                <div class="feedback_list" style="border-top: 0"></div>
+                                <div class="feedback_pagination"></div>
+                            </div>
+                        </div>
+                    </div>
                 <% } %>
             </div>
         <% } %>
@@ -141,20 +140,18 @@
     <%- include("./parts/footer.ejs") %>
     <%- include("./parts/script.ejs") %>
     <% if (DATA.permission.permissionAuthorization === '1') { %>
-        <% if (DATA.permission.permissionRules === '0') { %>
-            <!-- <div class="tawns_list"></div> -->
-            <script>
-                ordersList(1);
-                feedbackList(1);
-                // loadTownsList();
-            </script>
-        <% } %>
         <% if (DATA.permission.permissionRules === '1') { %>
             <script>
                 ordersList(1);
                 feedbackList(1);
                 loadTownsList();
                 loadTransfersList();
+            </script>
+        <% } else { %>
+            <script>
+                ordersList(1);
+                feedbackList(1);
+                // loadTownsList();
             </script>
         <% } %>
     <% } %>
