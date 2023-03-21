@@ -1014,19 +1014,16 @@ const loadVariablesList = () => {
     send('', `/towns/variables`, (result) => {
         const resultat = JSON.parse(result);
         if (resultat.res) {
-            townsFrom = resultat.res.townsFrom;
-            townsTo = resultat.res.townsTo;
-            transfersArr = resultat.res.transfersArr;
-            privatArr = resultat.res.privatArr;
-            microbusArr = resultat.res.microbusArr;
-            specArr = resultat.res.specArr;
+            townsFrom = resultat.res.towns_from;
+            townsTo = resultat.res.towns_to;
+            transfersArr = resultat.res.transfers_arr;
             const langName = getLang('lang');
             const privatWrap = $_('.wrap_prevat')[0];
             const microbusWrap = $_('.wrap_microbus')[0];
             const specialWrap = $_('.wrap_special')[0];
             if (privatWrap !== undefined) {
                 privatWrap.innerHTML = '';
-                privatArr.forEach(priv => {
+                resultat.res.privat.forEach(priv => {
                     transfersArr.forEach(transf => {
                         if (transf.transfer_id === priv.transfer_id) {
                             privatWrap.innerHTML += `
@@ -1043,7 +1040,7 @@ const loadVariablesList = () => {
             };
             if (microbusWrap !== undefined) {
                 microbusWrap.innerHTML = '';
-                microbusArr.forEach(micro => {
+                resultat.res.microbus.forEach(micro => {
                     transfersArr.forEach(transf => {
                         if (transf.transfer_id === micro.transfer_id) {
                             microbusWrap.innerHTML += `
@@ -1060,7 +1057,7 @@ const loadVariablesList = () => {
             };
             if (specialWrap !== undefined) {
                 specialWrap.innerHTML = '';
-                specArr.forEach(spec => {
+                resultat.res.spec.forEach(spec => {
                     transfersArr.forEach(transf => {
                         if (transf.transfer_id === spec.transfer_id) {
                             specialWrap.innerHTML += `

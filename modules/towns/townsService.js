@@ -56,77 +56,35 @@ class TownsService {
     }
 
     async townNames(req, res) {
-        const townsFrom = {}, townsTo = {}, transfersArr = [], townsId = [];
         const lang = ['uk-UA', 'en-US', 'ru-RU'].includes(req.cookies ? req.cookies['lang'] : undefined)
             ? req.cookies['lang'].slice(0, 2)
             : 'uk';
-        const townIdRes = await query(`SELECT town_id, name_${lang} FROM points`);
-        const townsFromRes = await query(`SELECT transfer_from FROM transfers GROUP BY transfer_from`);
-        const townsToRes = await query(`SELECT transfer_to FROM transfers GROUP BY transfer_to`);
-        const transfersArrRes = await query(`SELECT * FROM transfers`);
-        townIdRes.forEach(element => { townsId[`${element.town_id}`] = element[`name_${lang}`] });
-        townsFromRes.forEach(element => { townsFrom[`${element.transfer_from}`] = townsId[element.transfer_from] });
-        townsToRes.forEach(element => { townsTo[`${element.transfer_to}`] = townsId[element.transfer_to] });
-        transfersArrRes.forEach(element => { transfersArr.push(element) });
-        return {townsFrom, townsTo, transfersArr};
-
-        // return new Promise((resolve) => {
-        //     Promise.all([
-        //         query(`SELECT town_id, name_${lang} FROM pointss`),
-        //         query(`SELECT transfer_from FROM transfers GROUP BY transfer_from`),
-        //         query(`SELECT transfer_to FROM transfers GROUP BY transfer_to`),
-        //         query(`SELECT * FROM transfers`)])
-        //     .then( ([townIdRes, townsFromRes, townsToRes, transfersArrRes]) => {
-        //         // if (townIdRes.err) { throw new Error('error-DB-townsID') };
-        //         // if (townsFromRes.err) { throw new Error('error-DB-transferFROM') };
-        //         // if (townsToRes.err) { throw new Error('error-DB-transferTO') };
-        //         // if (transfersArrRes.err) { throw new Error('error-DB-transfersARR') };
-        //         townIdRes.forEach(element => { townsId[`${element.town_id}`] = element[`name_${lang}`] });
-        //         townsFromRes.forEach(element => { townsFrom[`${element.transfer_from}`] = townsId[element.transfer_from] });
-        //         townsToRes.forEach(element => { townsTo[`${element.transfer_to}`] = townsId[element.transfer_to] });
-        //         transfersArrRes.forEach(element => { transfersArr.push(element) });
-        //         resolve({townsFrom, townsTo, transfersArr});
-        //     })
-        //     .catch((err) => {
-        //         console.log('tawnnames-list-error', err);
-
-        //     });
-        // });
+        const town_id_res = await query(`SELECT town_id, name_${lang} FROM points`);
+        const towns_from_res = await query(`SELECT transfer_from FROM transfers GROUP BY transfer_from`);
+        const towns_to_res = await query(`SELECT transfer_to FROM transfers GROUP BY transfer_to`);
+        const transfers_arr_res = await query(`SELECT * FROM transfers`);
+        const towns_from = {}, towns_to = {}, transfers_arr = [], town_id = [];
+        town_id_res.forEach(element => {
+            town_id[`${element.town_id}`] = element[`name_${lang}`] }
+        );
+        towns_from_res.forEach(element => {
+            towns_from[`${element.transfer_from}`] = town_id[element.transfer_from] }
+        );
+        towns_to_res.forEach(element => {
+            towns_to[`${element.transfer_to}`] = town_id[element.transfer_to] }
+        );
+        transfers_arr_res.forEach(element => {
+            transfers_arr.push(element) }
+        );
+        return {towns_from, towns_to, transfers_arr};
     };
 
     async variables(body, req, res) {
-        const {townsFrom, townsTo, transfersArr} = await this.townNames(req, res);
-        const microbusArr = [], specArr = [];
-
-        const privatRes = await query(`SELECT transfer_id FROM transfers WHERE privat='true' AND price_pr!='' LIMIT 3`);
-        const microbusRes = await query(`SELECT transfer_id FROM transfers WHERE microbus='true' AND price_gr!='' LIMIT 3`);
-        const specRes = await query(`SELECT transfer_id FROM transfers WHERE selection='true' AND price_pr!=''`);
-
-
-
-        const privatArr = privatRes.map(element => element );
-        microbusRes.forEach(element => { microbusArr.push(element) });
-        specRes.forEach(element => { specArr.push(element) });
-
-
-        console.log('privatRes', privatRes);
-        console.log('microbusRes', microbusRes);
-        console.log('specRes', specRes);
-
-        console.log('privatArr', privatArr);
-        // console.log('microbusRes', microbusRes);
-        // console.log('specRes', specRes);
-        // await Promise.all([
-        //     query(`SELECT transfer_id FROM transferss WHERE privat='true' AND price_pr!='' LIMIT 3`),
-        //     query(`SELECT transfer_id FROM transfers WHERE microbus='true' AND price_gr!='' LIMIT 3`),
-        //     query(`SELECT transfer_id FROM transfers WHERE selection='true' AND price_pr!=''`)])
-        // .then(([privatRes, microbusRes, specRes]) => {
-        //     privatRes.forEach(element => { privatArr.push(element) });
-        //     microbusRes.forEach(element => { microbusArr.push(element) });
-        //     specRes.forEach(element => { specArr.push(element) });
-        // })
-
-        return {townsFrom, townsTo, transfersArr, privatArr, microbusArr, specArr}
+        const {towns_from, towns_to, transfers_arr} = await this.townNames(req, res);
+        const privat = await query(`SELECT transfer_id FROM transfers WHERE privat='true' AND price_pr!='' LIMIT 3`);
+        const microbus = await query(`SELECT transfer_id FROM transfers WHERE microbus='true' AND price_gr!='' LIMIT 3`);
+        const spec = await query(`SELECT transfer_id FROM transfers WHERE selection='true' AND price_pr!=''`);
+        return {towns_from, towns_to, transfers_arr, privat, microbus, spec}
     }
 }
 

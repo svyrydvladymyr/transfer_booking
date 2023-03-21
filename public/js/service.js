@@ -12,11 +12,11 @@ const RegExpArr = {
     RegExpPhone : new RegExp(/[^0-9-()+ /\n]/g),
     RegExpName : new RegExp(/[^a-zA-Zа-яА-Я-іІїЇєЄ /\n]/g),
     RegExpEmail : new RegExp(/[^a-zA-Z0-9.&@-_]/g)
-} 
+}
 
 let idTownPlace, tokenTown, formValid;
 let hours, minutes, hArr = [], mArr = [], hStart = 0, mStart = 0, peopleCount = 0, peopleMax = 50, peopleType = 'gr';
-let townsFrom = {}, townsTo = {}, transfersArr = [], microbusArr = [], privatArr = [], specArr = [];
+let townsFrom = {}, townsTo = {}, transfersArr = [];
 let calkTrue = true, feedbackCalkTrue = true;
 let news_status = '', news_token = '';
 
@@ -37,7 +37,7 @@ const token = length => {
 //token
 const generate_token = (length) => {
     const a = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890".split("");
-    const b = [];  
+    const b = [];
     for (let i = 0; i < length; i++) {
         let j = (Math.random() * (a.length-1)).toFixed(0);
         b[i] = a[j];
@@ -69,15 +69,15 @@ const getLang = (name) => {
 const readyDay = function(fullDate){
     const createDate = new Date(fullDate);
     return ((createDate.getDate() >= 1) && (createDate.getDate() <= 9)) ? "0" + createDate.getDate() : createDate.getDate();
-};  
+};
 
 //date format month
-const readyMonth = function(fullDate){    
+const readyMonth = function(fullDate){
     const createDate = new Date(fullDate);
-    return ((createDate.getMonth() >= 0) && (createDate.getMonth() <= 8)) ? "0" + (createDate.getMonth() + 1) : createDate.getMonth() + 1;          
-}; 
+    return ((createDate.getMonth() >= 0) && (createDate.getMonth() <= 8)) ? "0" + (createDate.getMonth() + 1) : createDate.getMonth() + 1;
+};
 
-//for send AJAX  
+//for send AJAX
 const send = (obj, url, fun, req = 'POST', type = 'application/json') => {
     xmlhttp = new XMLHttpRequest();
     xmlhttp.onload = function() {
@@ -92,8 +92,8 @@ const send = (obj, url, fun, req = 'POST', type = 'application/json') => {
 //transliteration
 var a = {"Ё":"YO","Й":"I","Ц":"TS","У":"U","К":"K","Е":"E","Н":"N","Г":"G","Ш":"SH","Щ":"SCH","З":"Z","Х":"H","Ъ":"'","ё":"yo","й":"i","ц":"ts","у":"u","к":"k","е":"e","н":"n","г":"g","ш":"sh","щ":"sch","з":"z","х":"h","ъ":"'","Ф":"F","Ы":"I","В":"V","А":"a","П":"P","Р":"R","О":"O","Л":"L","Д":"D","Ж":"ZH","Э":"E","ф":"f","ы":"i","в":"v","а":"a","п":"p","р":"r","о":"o","л":"l","д":"d","ж":"zh","э":"e","Я":"Ya","Ч":"CH","С":"S","М":"M","И":"I","Т":"T","Ь":"'","Б":"B","Ю":"YU","я":"ya","ч":"ch","с":"s","м":"m","и":"i","т":"t","ь":"'","б":"b","ю":"yu"};
 const transliterate = (word) => {
-    return word.split('').map(function (char) { 
-        return a[char] || char; 
+    return word.split('').map(function (char) {
+        return a[char] || char;
     }).join("");
 };
 
