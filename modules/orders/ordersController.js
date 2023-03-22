@@ -3,8 +3,15 @@ const cosole_log = require('../service').log;
 
 class OrdersController {
     async order(req, res) {
+
+        console.log('req.url.replaceAll()', req.url.replaceAll('/', ''));
+
+
         try {
-            const query_res = await ordersService[req.url.replaceAll('/', '')](req.body);
+            const query_res = await ordersService[req.url.replaceAll('/', '')](req, res);
+
+            console.log('query_res', query_res);
+
             res.send({"res": query_res});
         } catch (error) {
             cosole_log(error);

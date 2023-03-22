@@ -240,125 +240,124 @@ const townNames = ({req, res}) => {
     });
 };
 
-async function variables (req, res) {
-    let privatArr = [], microbusArr = [], specArr = [];
-    await Promise.all([
-        tableRecord(`SELECT transfer_id FROM transfers WHERE privat='true' AND price_pr!='' LIMIT 3`),
-        tableRecord(`SELECT transfer_id FROM transfers WHERE microbus='true' AND price_gr!='' LIMIT 3`),
-        tableRecord(`SELECT transfer_id FROM transfers WHERE selection='true' AND price_pr!=''`)])
-    .then(([privatRes, microbusRes, specRes]) => {
-        if (privatRes.err) {
-            console.log("vvvvvvvvvvvvprivatRes", privatRes.err);
-            throw new Error('error-DB-privatARR') };
-        if (microbusRes.err) {
-            console.log("vvvvvvvvvvvvmicrobusRes", microbusRes.err);
-            throw new Error('error-DB-microbusARR') };
-        if (specRes.err) {
-            console.log("vvvvvvvvvvvvspecRes", specRes.err);
-            throw new Error('error-DB-specArr') };
-        privatRes.forEach(element => { privatArr.push(element) });
-        microbusRes.forEach(element => { microbusArr.push(element) });
-        specRes.forEach(element => { specArr.push(element) });
-        return {req, res};
-    })
-    .then(townNames)
-    .then(({townsFrom, townsTo, transfersArr}) => {
-        res.send({"res": {townsFrom, townsTo, transfersArr, privatArr, microbusArr, specArr}});
-    })
-    .catch((err) => {
-        log('variables-list-error', err);
-        res.status(400).send('');
-    });
-};
+// async function variables (req, res) {
+//     let privatArr = [], microbusArr = [], specArr = [];
+//     await Promise.all([
+//         tableRecord(`SELECT transfer_id FROM transfers WHERE privat='true' AND price_pr!='' LIMIT 3`),
+//         tableRecord(`SELECT transfer_id FROM transfers WHERE microbus='true' AND price_gr!='' LIMIT 3`),
+//         tableRecord(`SELECT transfer_id FROM transfers WHERE selection='true' AND price_pr!=''`)])
+//     .then(([privatRes, microbusRes, specRes]) => {
+//         if (privatRes.err) {
+//             console.log("vvvvvvvvvvvvprivatRes", privatRes.err);
+//             throw new Error('error-DB-privatARR') };
+//         if (microbusRes.err) {
+//             console.log("vvvvvvvvvvvvmicrobusRes", microbusRes.err);
+//             throw new Error('error-DB-microbusARR') };
+//         if (specRes.err) {
+//             console.log("vvvvvvvvvvvvspecRes", specRes.err);
+//             throw new Error('error-DB-specArr') };
+//         privatRes.forEach(element => { privatArr.push(element) });
+//         microbusRes.forEach(element => { microbusArr.push(element) });
+//         specRes.forEach(element => { specArr.push(element) });
+//         return {req, res};
+//     })
+//     .then(townNames)
+//     .then(({townsFrom, townsTo, transfersArr}) => {
+//         res.send({"res": {townsFrom, townsTo, transfersArr, privatArr, microbusArr, specArr}});
+//     })
+//     .catch((err) => {
+//         log('variables-list-error', err);
+//         res.status(400).send('');
+//     });
+// };
 
-const orders = (req, res) => {
-    const {transferId, transferFromName, transferToName, adult, children, sum, date, time, equip, equip_child, user_name, user_surname, user_email, user_phone} = req.body;
-    const type = req.body.type.replace(/transfer_/gi, '');
-    let userid = '';
-    const tokenGen = token(10);
-    let sumfin;
-    tableRecord(`SELECT userid FROM users WHERE token = '${clienttoken(req, res)}'`)
-    .then((user) => {
-        userid = !user.err && user != '' ? user[0].userid : '';
-        return `SELECT price_${type} FROM transfers WHERE transfer_id='${transferId}'`
-    })
-    .then(tableRecord)
-    .then((result) => {
-        if (result.err) { throw new Error('err-creating-order') };
-        if (result[0] === undefined) { throw new Error('err-bad-route');
-        } else {
-            if (type === 'pr') {sumfin = result[0].price_pr};
-            if (type === 'gr') {sumfin = result[0].price_gr * (+adult + +children) };
-            return `INSERT INTO orders (
-                orders, user_id, transfer_id, order_from, order_to,
-                adult, children, type, date, time, equip, equip_child, user_name,
-                user_surname, user_email, user_tel, status, paid, sum, book_date)
-            VALUES ('${tokenGen}',
-                    '${userid}',
-                    '${checOnTrueVal(transferId)}',
-                    '${checOnTrueVal(transferFromName)}',
-                    '${checOnTrueVal(transferToName)}',
-                    '${adult}',
-                    '${children}',
-                    '${type}',
-                    '${date.replace(new RegExp("[^0-9]//", "gi"), "")}',
-                    '${time.replace(new RegExp("[^0-9]:", "gi"), "")}',
-                    '${equip.replace(new RegExp("[^a-z]", "gi"), "")}',
-                    '${equip_child}',
-                    '${checOnTrueVal(user_name)}',
-                    '${checOnTrueVal(user_surname)}',
-                    '${user_email.replace(new RegExp("[^a-zA-Z0-9.&@-_]", "gi"), "")}',
-                    '${user_phone.replace(new RegExp("[^0-9+]", "gi"), "")}',
-                    'reserv',
-                    'no',
-                    '${sumfin}',
-                    '${readyFullDate(new Date(), '')}')`;
-        };
-    })
-    .then(tableRecord)
-    .then((result) => {
-        if (result.err) { throw new Error('error-DB-oredrs') };
-        const varArr = {
-            'yes': 'Так',
-            'no': 'Ні',
-            'pr': 'Приватний',
-            'gr': 'Груповий',
-            'reserv': 'Зарезервовано',
-            'del': 'Скасовано',
-            'proof': 'Підтверджено',
-        }
-        const telegramOrder = 'Order ID: ' + tokenGen + '\n' +
-            user_surname + ' ' + user_name + '\n' +
-            'Tel: ' + user_phone + '\n' +
-            'Email: ' + user_email + '\n' +
-            transferFromName + ' - ' + transferToName + '\n' +
-            date + ' ' + time + '\n' +
-            'Дорослих: ' + adult + ' Дітей: ' + children + '\n' +
-            'Спорядження: ' + varArr[`${equip}`] + ' Дитячих крісел: ' + equip_child + ' Тип: ' + varArr[`${type}`] + '\n' +
-            'Статус: ' + varArr['reserv'] + ' ' + ' Вартість: ' + sumfin + '\n' +
-            'Час бронювання: ' + readyFullDate(new Date(), '');
-        telegram.botMessage(telegramOrder, 'orders');
-        // telegram.telegramSendorder(telegramOrder);
-        res.send({"res": 'Order created!'});
-    })
-    .catch((err) => {
-        log('orders-error', err);
-        res.status(400).send('');
-    });
-};
+// const orders = (req, res) => {
+//     const {transferId, transferFromName, transferToName, adult, children, sum, date, time, equip, equip_child, user_name, user_surname, user_email, user_phone} = req.body;
+//     const type = req.body.type.replace(/transfer_/gi, '');
+//     let userid = '';
+//     const tokenGen = token(10);
+//     let sumfin;
+//     tableRecord(`SELECT userid FROM users WHERE token = '${clienttoken(req, res)}'`)
+//     .then((user) => {
+//         userid = !user.err && user != '' ? user[0].userid : '';
+//         return `SELECT price_${type} FROM transfers WHERE transfer_id='${transferId}'`
+//     })
+//     .then(tableRecord)
+//     .then((result) => {
+//         if (result.err) { throw new Error('err-creating-order') };
+//         if (result[0] === undefined) { throw new Error('err-bad-route');
+//         } else {
+//             if (type === 'pr') {sumfin = result[0].price_pr};
+//             if (type === 'gr') {sumfin = result[0].price_gr * (+adult + +children) };
+//             return `INSERT INTO orders (
+//                 orders, user_id, transfer_id, order_from, order_to,
+//                 adult, children, type, date, time, equip, equip_child, user_name,
+//                 user_surname, user_email, user_tel, status, paid, sum, book_date)
+//             VALUES ('${tokenGen}',
+//                     '${userid}',
+//                     '${checOnTrueVal(transferId)}',
+//                     '${checOnTrueVal(transferFromName)}',
+//                     '${checOnTrueVal(transferToName)}',
+//                     '${adult}',
+//                     '${children}',
+//                     '${type}',
+//                     '${date.replace(new RegExp("[^0-9]//", "gi"), "")}',
+//                     '${time.replace(new RegExp("[^0-9]:", "gi"), "")}',
+//                     '${equip.replace(new RegExp("[^a-z]", "gi"), "")}',
+//                     '${equip_child}',
+//                     '${checOnTrueVal(user_name)}',
+//                     '${checOnTrueVal(user_surname)}',
+//                     '${user_email.replace(new RegExp("[^a-zA-Z0-9.&@-_]", "gi"), "")}',
+//                     '${user_phone.replace(new RegExp("[^0-9+]", "gi"), "")}',
+//                     'reserv',
+//                     'no',
+//                     '${sumfin}',
+//                     '${readyFullDate(new Date(), '')}')`;
+//         };
+//     })
+//     .then(tableRecord)
+//     .then((result) => {
+//         if (result.err) { throw new Error('error-DB-oredrs') };
+//         const varArr = {
+//             'yes': 'Так',
+//             'no': 'Ні',
+//             'pr': 'Приватний',
+//             'gr': 'Груповий',
+//             'reserv': 'Зарезервовано',
+//             'del': 'Скасовано',
+//             'proof': 'Підтверджено',
+//         }
+//         const telegramOrder = 'Order ID: ' + tokenGen + '\n' +
+//             user_surname + ' ' + user_name + '\n' +
+//             'Tel: ' + user_phone + '\n' +
+//             'Email: ' + user_email + '\n' +
+//             transferFromName + ' - ' + transferToName + '\n' +
+//             date + ' ' + time + '\n' +
+//             'Дорослих: ' + adult + ' Дітей: ' + children + '\n' +
+//             'Спорядження: ' + varArr[`${equip}`] + ' Дитячих крісел: ' + equip_child + ' Тип: ' + varArr[`${type}`] + '\n' +
+//             'Статус: ' + varArr['reserv'] + ' ' + ' Вартість: ' + sumfin + '\n' +
+//             'Час бронювання: ' + readyFullDate(new Date(), '');
+//         telegram.botMessage(telegramOrder, 'orders');
+//         res.send({"res": 'Order created!'});
+//     })
+//     .catch((err) => {
+//         log('orders-error', err);
+//         res.status(400).send('');
+//     });
+// };
 
-const orderstatus = (req, res) => {
-    let status = (req.body.param === 'proof' || req.body.param === 'del') ? req.body.param : 'reserv';
-    tableRecord(`UPDATE orders SET status='${status}' WHERE orders='${req.body.id}'`)
-    .then((result) => {
-        if (result.err) { throw new Error('err-orderstatus') };
-        res.send({"res": 'Status saved!'});
-    })
-    .catch((err) => {
-        log('order-status-list-error', err);
-        res.status(400).send('');
-    });
-};
+// const orderstatus = (req, res) => {
+//     let status = (req.body.param === 'proof' || req.body.param === 'del') ? req.body.param : 'reserv';
+//     tableRecord(`UPDATE orders SET status='${status}' WHERE orders='${req.body.id}'`)
+//     .then((result) => {
+//         if (result.err) { throw new Error('err-orderstatus') };
+//         res.send({"res": 'Status saved!'});
+//     })
+//     .catch((err) => {
+//         log('order-status-list-error', err);
+//         res.status(400).send('');
+//     });
+// };
 
 // const saveposition = (req, res) => {
 //     let sqlvalarr = [];
@@ -570,9 +569,9 @@ module.exports = {
     // transfer,
     // townlist,
     // transferlist,
-    variables,
-    orders,
-    orderstatus,
+    // variables,
+    // orders,
+    // orderstatus,
     // saveposition,
     sendfeedback,
     sendanswer,

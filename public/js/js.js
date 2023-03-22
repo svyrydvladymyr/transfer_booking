@@ -801,7 +801,7 @@ const culculate = () => {
                     $_('#booking')[0].style.display = 'flex';
                 };
                 if (formValid === 'bookfinal') {
-                    send(bookArr , `/order`, (result) => {
+                    send(bookArr , `/order/order`, (result) => {
                         const resultat = JSON.parse(result);
                         if (resultat.res) {
                             if (resultat.res === 'Order created!') {
@@ -810,7 +810,7 @@ const culculate = () => {
                                 $_('#received')[0].style.display = 'flex';
                             };
                         };
-                    });
+                    }, 'POST');
                 };
             };
         });
@@ -824,10 +824,10 @@ const setOrderDate = (el) => { orderdate = el.value; ordersList(1) };
 
 //for proofing or canceling order
 const proofOrder = (orderid, param) => {
-    send({"id": `${orderid}`, 'param': `${param}`} , `/orderstatus`, (result) => {
+    send({"id": `${orderid}`, 'param': `${param}`} , `/order/orderstatus`, (result) => {
         const resultat = JSON.parse(result);
         if (resultat.res) { ordersList(1); modal.innerHTML = '' };
-    });
+    }, 'POST');
 };
 
 //load towns list

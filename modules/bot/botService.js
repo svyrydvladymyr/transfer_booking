@@ -134,7 +134,7 @@ class BotService {
                 bot.sendMessage(
                     userId,
                     el.replace(/  /g, ''),
-                    ['5', '10', '20'].includes(menu_list.submenu[comand_menu]) ? menu_list.submenu.btn[type] : {}
+                    ['5', '10', '20', 'reserv'].includes(menu_list.submenu[comand_menu]) ? menu_list.submenu.btn[type] : {}
                 );
             });
         };

@@ -4,11 +4,11 @@ const bodyParser = require('body-parser');
 const cookieParser = require('cookie-parser');
 require('dotenv').config({ path: `.${process.env.NODE_ENV}.env` });
 
-//routers
+//routs
 const renderPage = require('./modules/pages/pagesController');
 const towns = require('./modules/towns/routers');
 const transfers = require('./modules/transfers/routers');
-// const orderss = require('./modules/orders/routers');
+const orders = require('./modules/orders/routers');
 
 // creating DB tables
 // const tables = require('./modules/db-models/createDB');
@@ -16,7 +16,7 @@ const transfers = require('./modules/transfers/routers');
 
 const {autorisation, permission} = require('./modules/service');
 
-const {variables, orders, OFlist, orderstatus, sendfeedback, sendanswer, news} = require('./modules/requestsDB');
+const {OFlist, sendfeedback, sendanswer, news} = require('./modules/requestsDB');
 
 //oaugh
 const oaugh = require('./modules/oauth/oauthController.js');
@@ -51,22 +51,19 @@ app.post('/sendfeedback', sendfeedback);
 app.post('/feedbacklist', autorisation, OFlist);
 app.post('/sendanswer', autorisation, permission, sendanswer);
 
-//requests variables
-app.get('/variables', variables);
-
-//requests
+//routs
 app.use('/towns', towns);
 app.use('/transfers', transfers);
-// app.use('/orders', autorisation, permission, orderss);
+app.use('/order', orders);
 
 
 
 
 
 //requests order
-app.post('/order', orders);
+// app.post('/order', orders);
 app.post('/orderslist', autorisation, OFlist);
-app.post('/orderstatus', autorisation, permission, orderstatus);
+// app.post('/orderstatus', autorisation, permission, orderstatus);
 
 
 //pages
