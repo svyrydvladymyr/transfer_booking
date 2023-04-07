@@ -6,20 +6,19 @@ const con = require('./db-models/connectDB').con;
 
 
 //transliteration
-const translit = length => require('transliteration.cyr').transliterate(length);
+const translit = (length) =>
+    require('transliteration.cyr').transliterate(length);
 
 //validation email
-const validEmail = text => {
-    return (text.match(/^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/))
-        ? true
-        : false;
-};
+const validEmail = (text) =>
+    (text.match(/^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/)) ? true : false;
 
 //chack on true values
-const checOnTrueVal = (el) => el.replace(new RegExp("[^a-zA-Zа-яА-Я0-9-()_+=!?.:;/\,іІїЇєЄ /\n]", "gi"), '');
+const checOnTrueVal = (el) =>
+    el.replace(new RegExp("[^a-zA-Zа-яА-Я0-9-()_+=!?.:;/\,іІїЇєЄ /\n]", "gi"), '');
 
 //generate token
-const token = length => {
+const token = (length) => {
     let result = '';
     const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
     for ( let i = 0; i < length; i++ ) {
@@ -30,7 +29,6 @@ const token = length => {
 
 //consoleLog message
 const log = (mess, val, arrow = '') => {
-    // for (let i = 0; i < 25 - mess.length; i++){ arrow += '-' };
     let i = 0;
     do {
         arrow += '-'
@@ -81,21 +79,7 @@ const accessLog = (req, res, param = '') => {
 };
 
 //get table record
-const tableRecord = (sql) => {
-    return new Promise((resolve) => {
-        con.query(sql, function (err, result) {
-            err ? resolve({'err': err}) : resolve(result);
-        })
-    });
-};
-// const query = (sql) => {
-//     return new Promise((resolve) => {
-//         con.query(sql, function (err, result) {
-//             err ? resolve({'err': err}) : resolve(result);
-//         })
-//     });
-// };
-const query = (sql) => {
+const query = async (sql) => {
     return new Promise((resolve, reject) => {
         con.query(sql, function (error, result) {
             error
@@ -104,7 +88,6 @@ const query = (sql) => {
         })
     });
 };
-
 
 const clienttoken = (req, res) => {
     const cookies_token = new Cookies(req, res, {"keys":[process.env.COOKIES_KEY]})
@@ -166,7 +149,6 @@ module.exports = {
     readyFullDate,
     checOnTrueVal,
     accessLog,
-    tableRecord,
     validEmail,
     query,
     autorisation,

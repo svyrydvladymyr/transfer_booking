@@ -198,17 +198,13 @@ template = {
     feedbackInfo: ``,
     confirmPhone: ``,
     newsAdd:
-        `
-        <p class="vilid_news" id="vilid_news"></p>
+        `<p class="vilid_news" id="vilid_news"></p>
         <textarea name="news_title" id="news_title" maxlength="260" placeholder="Назва статті" oninput="resizeTextarea(this, '60'), validation(this, 'Input', 'news')" onkeydown="return (event.keyCode!=13);"></textarea>
         <textarea name="news_description" id="news_description" maxlength="700" placeholder="Опис статті" oninput="resizeTextarea(this, '100'), validation(this, 'Input', 'news')" onkeydown="return (event.keyCode!=13);"></textarea>
         <input type="file" name="news_foto" id="news_foto" accept=".jpg, .jpeg, .png, .bmp" onchange="validIMG(event)">
         <div id="editor"></div>
-        <div class="img_box">
-            <input type="file" name="news_gallery" id="news_gallery" accept=".jpg, .jpeg, .png, .bmp" onchange="validIMG(event)" multiple>
-        </div>
-        <button class="save_new" id="save_news" onclick="saveNews('s')">Зберегти</button>
-        <button class="save_new" id="save_close_news" onclick="saveNews()">Зберегти і закрити</button>
+        <button class="save_new" id="save_news" onclick="saveNews('save')">Зберегти</button>
+        <button class="save_new" id="save_close_news" onclick="saveNews('saveclose')">Зберегти і закрити</button>
         `,
 };
 

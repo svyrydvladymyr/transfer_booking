@@ -59,6 +59,7 @@ class TownsService {
         const lang = ['uk-UA', 'en-US', 'ru-RU'].includes(req.cookies ? req.cookies['lang'] : undefined)
             ? req.cookies['lang'].slice(0, 2)
             : 'uk';
+        const transfers_arr = await query(`SELECT * FROM transfers`);
         const town_id_res = await query(`SELECT town_id, name_${lang} FROM points`);
         const towns_from_res = await query(`SELECT transfer_from FROM transfers GROUP BY transfer_from`);
         const towns_to_res = await query(`SELECT transfer_to FROM transfers GROUP BY transfer_to`);
@@ -74,12 +75,11 @@ class TownsService {
         towns_to_res.forEach((element) => {
             towns_to[`${element.transfer_to}`] = town_id[element.transfer_to];
         });
-        return { towns_from, towns_to };
+        return { towns_from, towns_to, transfers_arr };
     };
 
     async variables(body, req, res) {
-        const { towns_from, towns_to } = await this.townNames(req, res);
-        const transfers_arr = await query(`SELECT * FROM transfers`);
+        const { towns_from, towns_to, transfers_arr } = await this.townNames(req, res);
         const privat = await query(`SELECT transfer_id FROM transfers WHERE privat='true' AND price_pr!='' LIMIT 3`);
         const microbus = await query(`SELECT transfer_id FROM transfers WHERE microbus='true' AND price_gr!='' LIMIT 3`);
         const spec = await query(`SELECT transfer_id FROM transfers WHERE selection='true' AND price_pr!=''`);

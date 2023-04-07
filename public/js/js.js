@@ -835,7 +835,7 @@ const ordersList = (page = 1) => {
     let param = [];
     ['reserv', 'proof', 'del'].includes(orderstat) ? param.push({"status": orderstat}) : param.push({"status": ''});
     ['3', '6', '12', ''].includes(orderdate) ? param.push({"date": orderdate}) : param.push({"date": ''});
-    send({page, param, 'numb' : numb} , `/orderslist`, (result) => {
+    send({page, param, 'numb' : numb} , `/order/list`, (result) => {
         const resultat = JSON.parse(result);
         if (resultat.res) {
             const bookLang = getLang('lang');
@@ -882,7 +882,7 @@ const ordersList = (page = 1) => {
                 </div>`
             });
         };
-    });
+    }, "POST");
 };
 
 //for check feedback form
@@ -925,7 +925,7 @@ const sendFeedback = () => {
         feedbackArr.feedbackEmail = $_('#feedback_email')[0].value;
         feedbackArr.feedbackPhone = $_('#feedback_phone')[0].value;
         feedbackArr.feedbackComment = $_('#feedback_comment')[0].value;
-        send(feedbackArr , `/sendfeedback`, (result) => {
+        send(feedbackArr , `/feedback/feedback`, (result) => {
             const resultat = JSON.parse(result);
             if (resultat.res) {
                 if (resultat.res === 'Feedback sended!') {
@@ -940,7 +940,7 @@ const sendFeedback = () => {
                     }, 5000);
                 };
             };
-        });
+        }, "POST");
     };
 };
 
@@ -952,10 +952,10 @@ const setFeedbackDate = (el) => { feedback_date = el.value; feedbackList(1) };
 //for sending feedback answer
 const saveAnswer = (feedbackid) => {
     const answer_mess = $_('#feedback_answer')[0].value;
-    send({"id": `${feedbackid}`, 'answer': `${answer_mess}`}, `/sendanswer`, (result) => {
+    send({"id": `${feedbackid}`, 'answer': `${answer_mess}`}, `/feedback/answer`, (result) => {
         const resultat = JSON.parse(result);
         if (resultat.res) { feedbackList(1); modal.innerHTML = '' };
-    });
+    }, "POST");
 };
 
 //for show feedback list
@@ -963,7 +963,7 @@ const feedbackList = (page = 1) => {
     let param = [];
     ['answer', 'noanswer'].includes(feedback_stat) ? param.push({"status": feedback_stat}) : param.push({"status": ''});
     ['3', '6', '12', ''].includes(feedback_date) ? param.push({"date": feedback_date}) : param.push({"date": ''});
-    send({page, param, 'numb' : feedback_numb} , `/feedbacklist`, (result) => {
+    send({page, param, 'numb' : feedback_numb} , `/feedback/list`, (result) => {
         const resultat = JSON.parse(result);
         if (resultat.res) {
             const bookLang = getLang('lang');
@@ -1006,7 +1006,7 @@ const feedbackList = (page = 1) => {
                 </div>`
             });
         };
-    });
+    }, "POST");
 };
 
 //load variables list
@@ -1278,13 +1278,16 @@ const formSendTransfer = (formID) => {
                 loadTransfersList();
             };
             if (resultat.DUP) {
-
                 console.log('Transfer duplicated!');
                 $_(`.transfer_duplicated`)[0].style.display = 'block';
             };
         }, metod);
     };
 };
+
+
+
+
 
 //for creating image collection
 const imageСollection = (news_editor) => {
@@ -1375,7 +1378,6 @@ const saveNews = (param) => {
     const news_title = $_('#news_title')[0].value;
     const news_description = $_('#news_description')[0].value;
     const news_foto = $_('#news_foto')[0].value;
-    const news_gallery = $_('#news_gallery')[0].value;
     const news_editor = $_('.ql-editor')[0].children;
 
 
@@ -1387,7 +1389,6 @@ const saveNews = (param) => {
     console.log('news_title', news_title);
     console.log('news_description', news_description);
     console.log('news_foto', news_foto);
-    console.log('news_gallery', news_gallery);
 
 
     imageСollection(news_editor);
@@ -1423,35 +1424,35 @@ const saveNews = (param) => {
             save_news.disabled = false;
             save_close_news.disabled = false;
             messageNews('');
-        }, 6000);
+        }, 5000);
 
 
 
 
-        const obj = {'title' : news_title, 'description' : news_description, 'article' : ''};
+        const obj = {
+            token: news_token,
+            title: news_title,
+            description: news_description,
+            article: "",
+        };
 
 
 
-        console.log('$_(news_foto)[0].files[0]', $_('#news_foto')[0].files[0]);
-        console.log('$_(news_gallery)[0].files', $_('#news_gallery')[0].files);
+        console.log('foto', $_('#news_foto')[0].files[0]);
 
         let formData = new FormData();
-        formData.append("token", `${news_token}`);
         formData.append("obj", JSON.stringify(obj));
         formData.append("cover", $_('#news_foto')[0].files[0]);
 
-        for(let i = 0; i < $_('#news_gallery')[0].files.length; i++) {
-            if (i < 50) { formData.append("gallery", $_('#news_gallery')[0].files[i]) };
-        };
+
 
 
         console.log('formData', formData);
         console.log('formData', formData.get('obj'));
         console.log('formDatafile', formData.get('cover'));
-        console.log('formDatagallery', formData.getAll('gallery'));
 
 
-        axios.post('/fotonews', formData, {headers:{"Content-type": "multipart/form-data"}})
+        axios.post('/news/create', formData, {headers:{"Content-type": "multipart/form-data"}})
         .then(function (res) {
             console.log('response', res);
         })
