@@ -103,7 +103,7 @@ class OredersServise {
         let sql = '', countsql = '';
         const user = req.user[0];
         const page = (req.body.page && !isNaN(req.body.page)) ? req.body.page : 1;
-        const limit = (req.body.numb && ['100', '50', '30', '1', '2', '3'].includes(req.body.numb)) ? req.body.numb : 30;
+        const limit = (req.body.numb && ['100', '50', '30', '2', '5'].includes(req.body.numb)) ? req.body.numb : 30;
         const start_page = (page -1) * limit;
         if (user.permission === 1) {
             let where = '', statussql = '', datesql = '';
