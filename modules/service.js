@@ -14,8 +14,11 @@ const validEmail = (text) =>
     (text.match(/^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/)) ? true : false;
 
 //chack on true values
-const checOnTrueVal = (el) =>
-    el.replace(new RegExp("[^a-zA-Zа-яА-Я0-9-()_+=!?.:;/\,іІїЇєЄ /\n]", "gi"), '');
+const checOnTrueVal = (el, type) => {
+    return (type === 'news')
+        ? el.replace(new RegExp("[^a-zA-Zа-яА-Я0-9-()_+=!?.:;'\"/\,іІїЇєЄ<> /\n]", "gi"), '')
+        : el.replace(new RegExp("[^a-zA-Zа-яА-Я0-9-()_+=!?.:;/\,іІїЇєЄ /\n]", "gi"), '');
+};
 
 //generate token
 const token = (length) => {

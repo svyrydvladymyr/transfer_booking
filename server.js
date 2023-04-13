@@ -34,8 +34,10 @@ app.set("view engine", "ejs");
 app.use(express.static(__dirname + "/public"));
 
 //parsers
-app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({ extended: true }));
+// app.use(bodyParser.json());
+// app.use(bodyParser.urlencoded({ extended: true }));
+app.use(bodyParser.json({limit: "20mb"}));
+app.use(bodyParser.urlencoded({limit: "20mb", extended: true, parameterLimit:20000}));
 app.use(cookieParser());
 
 //console logs

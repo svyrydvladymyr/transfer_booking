@@ -79,9 +79,10 @@ const tables = {
         id_blog VARCHAR(10) NOT NULL UNIQUE,
         name VARCHAR(265) NOT NULL,
         description VARCHAR(705) NOT NULL,
-        foto VARCHAR(250),
-        article LONGTEXT,
-        date_create DATETIME
+        foto VARCHAR(250) DEFAULT 'cover.jpg',
+        article MEDIUMTEXT,
+        date_create DATETIME,
+        date_update DATETIME
         )`,
     unique_field: `ALTER TABLE transfers
     ADD CONSTRAINT UNIQUE_Fields UNIQUE (transfer_from,transfer_to);`

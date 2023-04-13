@@ -126,10 +126,11 @@ const closeModal = (el) => {
 
 //wrap for modal window
 const modalWindowWrap = (type) => {
-    const sub_close = ['townAdd', 'townEdit', 'transferEdit', 'transferAdd', 'transferTowns', 'transferTimes', 'newsAdd'].includes(type) ? '' : 'onclick="closeModal(event)"';
+    const sub_close = ['townAdd', 'townEdit', 'transferEdit', 'transferAdd', 'transferTowns', 'transferTimes', 'newsAdd', 'newsEdit'].includes(type) ? '' : 'onclick="closeModal(event)"';
     const sub_noclose = ['transferTowns', 'transferTimes'].includes(type) ? '' : '<i class="fa fa-times" onclick="closeModalX()"></i>';
     const style = {
-        'newsAdd' : 'max-width: 90%',
+        newsAdd: "max-width: 90%",
+        newsEdit: "max-width: 90%",
     };
     return `<div class="modal_body" ${sub_close}>
         <div class="modal_close">${sub_noclose}</div>
@@ -149,11 +150,11 @@ const showModal = function(type, obj, el) {
     'transferAdd', 'transferAddRes', 'transferEdit', 'transferEditRes', 'transferDel', 'transferDelRes',
     'mainformFrom', 'mainformTo', 'mainformCalendar',
     'editMenuTown', 'editMenuTransfer',
-    'orderInfo', 'confirmPhone', 'feedbackInfo', 'newsAdd'].includes(type)
+    'orderInfo', 'confirmPhone', 'feedbackInfo', 'newsAdd', 'newsEdit'].includes(type)
         ? modal.innerHTML = modalWindowWrap(type) : null;
 
 
-    if (type === 'newsAdd') {
+    if (type === 'newsEdit' || type === 'newsAdd') {
         var toolbarOptions = [
             ['bold', 'italic', 'underline', 'strike'],
             [{ 'list': 'ordered'}, { 'list': 'bullet' }],
@@ -173,40 +174,30 @@ const showModal = function(type, obj, el) {
         const editor_body = $_('.ql-editor > p');
         console.log('editor_body', editor_body);
 
-
-
         news_status = obj;
         news_token = obj === 'edit' ? el : generate_token(6);
 
 
+        if (type === 'newsEdit' ) {
+            send({ id: el }, `/news/open/${news_token}`, (result) => {
+                const resultat = JSON.parse(result);
 
+                console.log('resultat', resultat);
 
-
-        setTimeout(() => {
-
-            if (editor_body.length > 0) {
-                for (var i = 0; i < editor_body.length; ++i) {
-
-                    console.log('gggg', editor_body[i]);
-
-                    const item = `${editor_body[i].innerHTML.replace(/&lt;/g, "<").replace(/&gt;/g, ">")}`;
-                    const sample = editor_body[i].innerHTML.slice(0, 12);
-
-                    console.log('item', item);
-                    console.log('sample', sample);
-
-                    if (sample === '&lt;img src=') {
-                        editor_body[i].innerHTML = `${item}`;
-                    };
+                const editior = $_('.ql-editor')[0];
+                if (resultat.res) {
+                    $_('#news_title')[0].value = resultat.res.title;
+                    $_('#news_description')[0].value = resultat.res.description;
+                    $_('#foto_is')[0].innerHTML = `<img onerror="this.src='/img/nofoto.png'" src="/img/news/${resultat.res.token}/cover.jpg" />`;
+                    $_('#foto_is_text')[0].innerHTML = `Головне фото статті.`;
+                    [...resultat.res.article].forEach(element => {
+                        editior.innerHTML += element;
+                    });
                 };
-            } else {
-                setTimeout(() => {
-
-
-                }, 2000);
-            };
-        }, 2000);
+            }, 'GET');
+        };
     };
+
     if (type === 'feedbackInfo') {
         const bookLang = getLang('lang');
         let answer = '';
@@ -1373,12 +1364,19 @@ const saveNews = (param) => {
     const save_news = $_('#save_news')[0];
     const save_close_news = $_('#save_close_news')[0];
 
-
+    // $_('.ql-editor')[0].innerHTML = '';
+    // $_('.ql-editor')[0].innerHTML += '<p>ooooooooooooooo</p>'
+    // $_('.ql-editor')[0].innerHTML += '<p>ooooooooooooooo</p>'
+    // $_('.ql-editor')[0].innerHTML += '<p>ooooooooooooooo</p>'
+    // $_('.ql-editor')[0].innerHTML += `<img src="http://127.0.0.1:8054/img/news/${news_token}/option_minibus.png" />`
+    // $_('.ql-editor')[0].innerHTML += '<p>ttttttttttttttt tttttttttttttt</p>'
+    // $_('.ql-editor')[0].innerHTML += '<p>tttttttttttttttt</p>'
 
     const news_title = $_('#news_title')[0].value;
     const news_description = $_('#news_description')[0].value;
     const news_foto = $_('#news_foto')[0].value;
     const news_editor = $_('.ql-editor')[0].children;
+    // const news_body = `${news_editor.replace(RegExpArr[`RegExpNews`] , "")}`;;
 
 
 
@@ -1389,12 +1387,12 @@ const saveNews = (param) => {
     console.log('news_title', news_title);
     console.log('news_description', news_description);
     console.log('news_foto', news_foto);
+    console.log('news_editor', news_editor);
 
 
-    imageСollection(news_editor);
 
-
-    [news_title, news_description, news_foto].forEach((element, index) => {
+    const valid_arr = (news_status === 'create') ? [news_title, news_description, news_foto] : [news_title, news_description];
+    valid_arr.forEach((element, index) => {
         if (element === '' || element === undefined) {
             valid_empty.push(false);
             valid_fields.push(field_names[index]);
@@ -1413,6 +1411,10 @@ const saveNews = (param) => {
         messageNews(`Поля є обовяковими (${valid_fields} )`, 'vilid_news_bad');
     };
 
+    // imageСollection(news_editor)
+
+
+
 
 
 
@@ -1426,14 +1428,39 @@ const saveNews = (param) => {
             messageNews('');
         }, 5000);
 
+        const img_arr = $_('.ql-editor')[0].getElementsByTagName('img');
+        console.log('img_arr', img_arr);
 
+        const img_base64 = {};
+        const img_base64_names = [];
+        const img_https_names = [];
+        [...img_arr].forEach(function(element) {
+            console.log(element);
+            console.log(element.src);
+            if (element.src.includes('base64')) {
+                const img_token = generate_token(9)
+                img_base64[img_token] = element.src;
+                img_base64_names.push(img_token);
+                // element.src = img_token;
+            };
+            if (element.src.includes('http')) {
+                img_https_names.push(element.src);
+            };
+        });
+
+        console.log('img_base64', img_base64);
+        console.log('img_https_names', img_https_names);
+
+        const article = [...news_editor].map((element) => element.outerHTML).join("\n");
+        console.log('article', article);
 
 
         const obj = {
             token: news_token,
             title: news_title,
             description: news_description,
-            article: "",
+            article: article,
+            foto: img_base64_names
         };
 
 
@@ -1451,20 +1478,43 @@ const saveNews = (param) => {
         console.log('formData', formData.get('obj'));
         console.log('formDatafile', formData.get('cover'));
 
-
+        let article_saved = false, foto_saved = false;
         axios.post('/news/create', formData, {headers:{"Content-type": "multipart/form-data"}})
         .then(function (res) {
             console.log('response', res);
+
+            if (res.status === 200) {
+                article_saved = true;
+                const obj = {
+                    token: news_token,
+                    fotobase: img_base64,
+                    httpnames: img_https_names
+                }
+                send(obj, `/news/fotos`, (result, status) => {
+                    console.log('response_fotos', result);
+                    console.log('response_fotos', status);
+
+                    if (res.status === 200) {foto_saved = true};
+                    if (article_saved && foto_saved) {
+                        closeModalX();
+                        if (param === 'save') {
+                            showModal('newsEdit', 'edit', news_token);
+                        };
+                    };
+
+                    // setTimeout(() => {
+                    //     $_('.ql-editor')[0].innerHTML += `<img src="http://127.0.0.1:8054/img/news/${news_token}/${img_base64_names[0]}.jpg" />`
+                    // }, 1000)
+
+                }, 'POST');
+            }
         })
         .catch(function (error) { console.log(error) });
 
     };
 };
 
-//for saving news article
-const saveAndCloseNews = () => {
 
-}
 
 
 

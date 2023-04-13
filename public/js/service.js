@@ -9,6 +9,7 @@ const adultInp =  $_('#adults')[0];
 const childrenValue =  $_('#children')[0];
 const RegExpArr = {
     RegExpInput : new RegExp(/[^a-zA-Zа-яА-Я0-9-()_+=!?.:;/\,іІїЇєЄ /\n]/g),
+    RegExpNews : new RegExp(/[^a-zA-Zа-яА-Я0-9-()_+=!?.:;'"/\,іІїЇєЄ<> /\n]/g),
     RegExpPhone : new RegExp(/[^0-9-()+ /\n]/g),
     RegExpName : new RegExp(/[^a-zA-Zа-яА-Я-іІїЇєЄ /\n]/g),
     RegExpEmail : new RegExp(/[^a-zA-Z0-9.&@-_]/g)
@@ -82,7 +83,7 @@ const send = (obj, url, fun, req = 'POST', type = 'application/json') => {
     xmlhttp = new XMLHttpRequest();
     xmlhttp.onload = function() {
         if (this.readyState == 4 && this.status == 200) {
-            fun(this.responseText);
+            fun(this.responseText, this.status);
         }};
     xmlhttp.open(req, url, true);
     xmlhttp.setRequestHeader("Content-type", type);
