@@ -1,5 +1,5 @@
 const telegram = require('../bot/botController');
-const {query, checOnTrueVal, readyFullDate, token, clienttoken} = require('../service');
+const {query, validValue, readyFullDate, token, clienttoken} = require('../service');
 
 class FeedbacksServise {
     async feedback(req, res) {
@@ -18,11 +18,11 @@ class FeedbacksServise {
             feedbackEmail, feedbackPhone, feedbackComment, date_create)
         VALUES ('${tokenGen}',
                 '${userid}',
-                '${checOnTrueVal(feedbackName)}',
-                '${checOnTrueVal(feedbackSurname)}',
-                '${feedbackEmail.replace(new RegExp("[^a-zA-Z0-9.&@-_]", "gi"), "")}',
-                '${feedbackPhone.replace(new RegExp("[^0-9+]", "gi"), "")}',
-                '${checOnTrueVal(feedbackComment)}',
+                '${await validValue(feedbackName)}',
+                '${await validValue(feedbackSurname)}',
+                '${await validValue(feedbackEmail, 'email')}',
+                '${await validValue(feedbackPhone, 'phone')}',
+                '${await validValue(feedbackComment)}',
                 '${readyFullDate(new Date(), '')}')`;
         return await query(sql)
         .then((result) => {
@@ -40,7 +40,7 @@ class FeedbacksServise {
     async answer(req, res) {
         let sql = `UPDATE feedback
             SET status='answer',
-                answer='${checOnTrueVal(req.body.answer)}',
+                answer='${await validValue(req.body.answer)}',
                 date_answer='${readyFullDate(new Date(), '')}'
             WHERE idfeedback='${req.body.id}'`;
         return await query(sql).then((result) => 'Answer added!')

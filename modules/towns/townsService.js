@@ -1,4 +1,4 @@
-const {query, checOnTrueVal} = require('../service');
+const {query, validValue} = require('../service');
 
 class TownsService {
     async duplicateTowns(error, body) {
@@ -12,10 +12,10 @@ class TownsService {
 
     async checkValue(body, req, res) {
         return body.uk ? {
-            "id": checOnTrueVal(body.id),
-            "uk": checOnTrueVal(body.uk),
-            "en": checOnTrueVal(body.en),
-            "ru": checOnTrueVal(body.ru)
+            "id": await validValue(body.id),
+            "uk": await validValue(body.uk),
+            "en": await validValue(body.en),
+            "ru": await validValue(body.ru)
         } : {req, res};
     }
 

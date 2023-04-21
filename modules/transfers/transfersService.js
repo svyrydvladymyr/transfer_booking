@@ -1,4 +1,4 @@
-const {token, query, checOnTrueVal} = require('../service');
+const {token, query, validValue} = require('../service');
 
 class transfersService {
     time_string = '';
@@ -29,8 +29,8 @@ class transfersService {
                 privat,
                 microbus)
             VALUES ('${token(10)}',
-                    '${checOnTrueVal(body.from)}',
-                    '${checOnTrueVal(body.to)}',
+                    '${await validValue(body.from)}',
+                    '${await validValue(body.to)}',
                     '${body.pr.replace(new RegExp("[^0-9]", "gi"), '')}',
                     '${body.gr.replace(new RegExp("[^0-9]", "gi"), '')}',
                     '${time_arr.time1}',
@@ -54,8 +54,8 @@ class transfersService {
         const time_arr = await this.createTimeArr(body);
         const sql = `
             UPDATE transfers
-            SET transfer_from='${checOnTrueVal(body.from)}',
-                transfer_to='${checOnTrueVal(body.to)}',
+            SET transfer_from='${await validValue(body.from)}',
+                transfer_to='${await validValue(body.to)}',
                 price_pr='${body.pr.replace(new RegExp("[^0-9]", "gi"), '')}',
                 price_gr='${body.gr.replace(new RegExp("[^0-9]", "gi"), '')}',
                 time1='${time_arr.time1}',
@@ -71,13 +71,13 @@ class transfersService {
                 selection='${body.select === true ? true : false}',
                 privat='${body.privat === true ? true : false}',
                 microbus='${body.microbus === true ? true : false}'
-            WHERE transfer_id='${checOnTrueVal(body.id)}'`;
+            WHERE transfer_id='${await validValue(body.id)}'`;
         return await query(sql)
             .then(() => "Transfer updated!");
     }
 
     async delete(body) {
-        const sql = `DELETE FROM transfers WHERE transfer_id='${checOnTrueVal(body.id)}'`;
+        const sql = `DELETE FROM transfers WHERE transfer_id='${await validValue(body.id)}'`;
         return await query(sql)
             .then(() => "Transfer deleted!");
     }

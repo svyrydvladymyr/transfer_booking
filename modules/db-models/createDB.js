@@ -76,10 +76,10 @@ const tables = {
         date_answer DATETIME
         )`,
     blog: `CREATE TABLE blog (id INT AUTO_INCREMENT PRIMARY KEY,
-        id_blog VARCHAR(10) NOT NULL UNIQUE,
-        name VARCHAR(265) NOT NULL,
+        id_blog VARCHAR(10) NOT NULL,
+        title VARCHAR(265) NOT NULL,
         description VARCHAR(705) NOT NULL,
-        foto VARCHAR(250) DEFAULT 'cover.jpg',
+        cover VARCHAR(250) DEFAULT '/img/nofoto.png',
         article MEDIUMTEXT,
         date_create DATETIME,
         date_update DATETIME

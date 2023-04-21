@@ -1,5 +1,5 @@
 const telegram = require('../bot/botController');
-const {query, checOnTrueVal, readyFullDate, token, clienttoken} = require('../service');
+const {query, validValue, readyFullDate, token, clienttoken} = require('../service');
 const townsService = require('../towns/townsService');
 
 class OredersServise {
@@ -43,7 +43,7 @@ class OredersServise {
             user_surname, user_email, user_tel, status, paid, sum, book_date)
         VALUES ('${tokenGen}',
                 '${userid}',
-                '${checOnTrueVal(transferId)}',
+                '${await validValue(transferId)}',
                 '${transfer.from}',
                 '${transfer.to}',
                 '${adult}',
@@ -53,10 +53,10 @@ class OredersServise {
                 '${time.replace(new RegExp("[^0-9]:", "gi"), "")}',
                 '${equip.replace(new RegExp("[^a-z]", "gi"), "")}',
                 '${equip_child}',
-                '${checOnTrueVal(user_name)}',
-                '${checOnTrueVal(user_surname)}',
-                '${user_email.replace(new RegExp("[^a-zA-Z0-9.&@-_]", "gi"), "")}',
-                '${user_phone.replace(new RegExp("[^0-9+]", "gi"), "")}',
+                '${await validValue(user_name)}',
+                '${await validValue(user_surname)}',
+                '${await validValue(user_email, 'email')}',
+                '${await validValue(user_phone, 'phone')}',
                 'reserv',
                 'no',
                 '${transfer.price}',

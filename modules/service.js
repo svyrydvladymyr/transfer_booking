@@ -10,14 +10,33 @@ const translit = (length) =>
     require('transliteration.cyr').transliterate(length);
 
 //validation email
-const validEmail = (text) =>
-    (text.match(/^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/)) ? true : false;
+// const validEmail = (text) =>
+//     (text.match(/^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/)) ? true : false;
 
-//chack on true values
-const checOnTrueVal = (el, type) => {
-    return (type === 'news')
-        ? el.replace(new RegExp("[^a-zA-Zа-яА-Я0-9-()_+=!?.:;'\"/\,іІїЇєЄ<> /\n]", "gi"), '')
-        : el.replace(new RegExp("[^a-zA-Zа-яА-Я0-9-()_+=!?.:;/\,іІїЇєЄ /\n]", "gi"), '');
+//validation base64
+// const validBase = (string) => {
+//     const B64_REGEX = /^data:.*;base64,([0-9a-zA-Z+\/]{4})*(([0-9a-zA-Z+\/]{2}==)|([0-9a-zA-Z+\/]{3}=))?$/i;
+//     return B64_REGEX.test(string)
+// }
+
+//chack on true values - validation
+const validValue = async (el, type) => {
+    // (type === 'news')
+    //     ? el.replace(new RegExp("[^a-zA-Zа-яА-Я0-9-()_+=!?.:;'\"/\,іІїЇєЄ<> /\n]", "gi"), '')
+    //     : el.replace(new RegExp("[^a-zA-Zа-яА-Я0-9-()_+=!?.:;/\,іІїЇєЄ /\n]", "gi"), '');
+
+    switch (type) {
+        case 'emailtest':
+            return (el.match(/^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/)) ? true : false;
+        case 'news':
+            return el.replace(new RegExp("[^a-zA-Zа-яА-Я0-9-()_+=!?.:;'\"/\,іІїЇєЄ<> /\n]", "gi"), '');
+        case 'email':
+            return el.replace(new RegExp("[^a-zA-Z0-9.&@-_]", "gi"), "");
+        case 'phone':
+            return el.replace(new RegExp("[^0-9+]", "gi"), "");
+        default:
+            return el.replace(new RegExp("[^a-zA-Zа-яА-Я0-9-()_+=!?.:;/\,іІїЇєЄ /\n]", "gi"), '');
+    }
 };
 
 //generate token
@@ -150,9 +169,8 @@ module.exports = {
     token,
     log,
     readyFullDate,
-    checOnTrueVal,
+    validValue,
     accessLog,
-    validEmail,
     query,
     autorisation,
     permission,

@@ -199,26 +199,52 @@ template = {
     confirmPhone: ``,
     newsAdd:
         `<p class="vilid_news" id="vilid_news"></p>
-        <textarea name="news_title" id="news_title" maxlength="260" placeholder="Назва статті" oninput="resizeTextarea(this, '60'), validation(this, 'Input', 'news')" onkeydown="return (event.keyCode!=13);"></textarea>
-        <textarea name="news_description" id="news_description" maxlength="700" placeholder="Опис статті" oninput="resizeTextarea(this, '100'), validation(this, 'Input', 'news')" onkeydown="return (event.keyCode!=13);"></textarea>
-        <input type="file" name="news_foto" id="news_foto" accept=".jpg, .jpeg, .png, .bmp" onchange="validIMG(event)">
+        <div class="main_info_wrap">
+            <div class="main_foto">
+                <div id="foto_load">
+                    <label for="news_foto" id="news_foto_label"></label>
+                    <input type="file" name="news_foto" id="news_foto" accept=".jpg, .jpeg, .png, .bmp" onchange="validIMG(event)" hidden />
+                </div>
+                <button class="clear_cover" id="clear_cover" onclick="clearCoverImg()">Очистити</button>
+            </div>
+            <div class="main_info">
+                <textarea name="news_title" id="news_title" maxlength="260" placeholder="Назва статті" oninput="resizeTextarea(this, '60'), validation(this, 'Input', 'news')" onkeydown="return (event.keyCode!=13);"></textarea>
+                <textarea name="news_description" id="news_description" maxlength="700" placeholder="Опис статті" oninput="resizeTextarea(this, '100'), validation(this, 'Input', 'news')" onkeydown="return (event.keyCode!=13);"></textarea>
+            </div>
+        </div>
+        <div class="news_create"><p id="news_create"></p><p id="news_update"></p></div>
         <div id="editor"></div>
         <button class="save_new" id="save_news" onclick="saveNews('save')">Зберегти</button>
         <button class="save_new" id="save_close_news" onclick="saveNews('saveclose')">Зберегти і закрити</button>
         `,
     newsEdit:
         `<p class="vilid_news" id="vilid_news"></p>
-        <textarea name="news_title" id="news_title" maxlength="260" placeholder="Назва статті" oninput="resizeTextarea(this, '60'), validation(this, 'Input', 'news')" onkeydown="return (event.keyCode!=13);"></textarea>
-        <textarea name="news_description" id="news_description" maxlength="700" placeholder="Опис статті" oninput="resizeTextarea(this, '100'), validation(this, 'Input', 'news')" onkeydown="return (event.keyCode!=13);"></textarea>
-        <div class="foto_is">
-            <div id="foto_is"></div>
-            <p id="foto_is_text"></p>
+        <div class="main_info_wrap">
+            <div class="main_foto">
+                <div id="foto_load">
+                    <label for="news_foto" id="news_foto_label"></label>
+                    <input type="file" name="news_foto" id="news_foto" accept=".jpg, .jpeg, .png, .bmp" onchange="validIMG(event)" hidden />
+                </div>
+                <button class="clear_cover" id="clear_cover" onclick="clearCoverImg()">Очистити</button>
+            </div>
+            <div class="main_info">
+                <textarea name="news_title" id="news_title" maxlength="260" placeholder="Назва статті" oninput="resizeTextarea(this, '60'), validation(this, 'Input', 'news')" onkeydown="return (event.keyCode!=13);"></textarea>
+                <textarea name="news_description" id="news_description" maxlength="700" placeholder="Опис статті" oninput="resizeTextarea(this, '100'), validation(this, 'Input', 'news')" onkeydown="return (event.keyCode!=13);"></textarea>
+            </div>
         </div>
-        <input type="file" name="news_foto" id="news_foto" accept=".jpg, .jpeg, .png, .bmp" onchange="validIMG(event)">
+        <div class="news_create"><p id="news_create"></p><p id="news_update"></p></div>
         <div id="editor"></div>
         <button class="save_new" id="save_news" onclick="saveNews('save')">Зберегти</button>
         <button class="save_new" id="save_close_news" onclick="saveNews('saveclose')">Зберегти і закрити</button>
         `,
+    newsDel:
+        `<p id="id_news"></p>
+        <p class="del_info" style="color:#991818;">Підтвердіть видалення новини!</p>
+        <p class="form_send" onclick="formDeleteNews()">Видалити остаточно!</p>`,
+    newsEditRes:
+        `<p class="res_mess">Новину збережено!</p>`,
+    transferDelRes:
+        `<p class="res_mess">Маршрут видалено із списку!</p>`,
 };
 
 
