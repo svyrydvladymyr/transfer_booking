@@ -1,5 +1,6 @@
 require("dotenv").config({ path: `.${process.env.NODE_ENV}.env` });
 
+const {errorLog} = require('../service');
 const botService = require("./botService");
 const TelegramApi = require("node-telegram-bot-api");
 const token = process.env.TELEGRAM_TOKEN;
@@ -17,16 +18,20 @@ class BotController {
             try {
                 mess.from.id === userId
                     ? (await botService.setMenu(mess, bot, userId), await botService.feedbackAnswer(mess, bot, userId, botId))
-                    : mess.from.id === userId && (await botService.unauthorizedUser(mess, bot));
+                    : mess.from.id !== userId && (await botService.unauthorizedUser(mess, bot));
             } catch (error) {
                 console.log("Telegram-error:", error);
+                errorLog(error, 'telegram');
                 bot.sendMessage(userId, `Сталася помилка! Спробуйте ще раз...`);
             }
         });
         bot.on("callback_query", async (btn) => {
             btn.from.id === userId && (await botService.subButton(btn, bot, userId));
         });
-        bot.on("polling_error", console.log);
+        bot.on("polling_error", (error) => {
+            console.log(error);
+            errorLog(error, 'telegram');
+        });
     }
 
     async botMessage(message, params) {

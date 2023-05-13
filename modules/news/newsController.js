@@ -1,21 +1,47 @@
 const newsService = require('./newsService');
-const cosole_log = require('../service').log;
+const errorLog = require('../service').errorLog;
+const pagesService = require('../pages/pagesService');
+const lang_list = ['uk-UA', 'en-GB', 'ru-RU'];
 
 class NewsController {
     async news(req, res) {
         try {
+            const alias = req.params["newsalias"];
+            const url = req.url.split('/')[1].replace("/", "");
+            const route = ['create', 'edit'].includes(url) ? 'save' : alias ? 'open' : url;
 
-            console.log('req.url', req.url.split('/')[1].replace("/", ""));
+            console.log('alias', alias);
+            console.log('url', url);
+            console.log('route', route);
 
-            const query_res = await newsService[req.url.split('/')[1].replace("/", "")](req, res);
+            if (route === '') {
+                await pagesService.getUser(req, res, 'blog')
+                .then((DATA) => {
+                    res.render('blog', { DATA });
+                });
+            } else {
+                const query_res = await newsService[route](req, res, url, alias);
 
-            console.log('query_res', query_res);
+                console.log('query_res', query_res);
 
-            res.status(200).send({ res: query_res });
+                (route === 'open' && alias)
+                    ? await pagesService.getUser(req, res, 'blog')
+                        .then((DATA) => {
+                            DATA.news = query_res;
+                            res.render('blog', { DATA });
+                        })
+                    : res.status(200).send({ res: query_res });
+            };
         } catch (error) {
-            cosole_log(error);
-            res.status(400).send("400 (Bad Request)");
-        }
+            errorLog(error, 'error', 'news', req);
+            if (error.toString().includes('Foto error:')) {
+                res.status(201).send({ error: 'Foto not saved!' });
+            } else if (error.toString().includes('Page not found')) {
+                res.redirect("/blog")
+            } else {
+                res.status(400).send("400 (Bad Request)");
+            };
+        };
     }
 }
 

@@ -1,5 +1,5 @@
 const transfersService = require("./transfersService");
-const cosole_log = require("../service").log;
+const errorLog = require('../service').errorLog;
 
 class transfersController {
     async transfer(req, res) {
@@ -7,7 +7,7 @@ class transfersController {
             const query_res = await transfersService[`${req.url.replace("/", "")}`](req.body);
             res.send({ res: query_res });
         } catch (error) {
-            cosole_log("ERROR:", error.code === "ER_DUP_ENTRY" ? error.message : error);
+            errorLog(error, 'error', 'transfers', req);
             if (error.code === "ER_DUP_ENTRY") {
                 res.send({ DUP: "Transfer duplicated!" });
                 return;

@@ -77,9 +77,10 @@ const tables = {
         )`,
     blog: `CREATE TABLE blog (id INT AUTO_INCREMENT PRIMARY KEY,
         id_blog VARCHAR(10) NOT NULL,
+        alias VARCHAR(265) NOT NULL,
         title VARCHAR(265) NOT NULL,
         description VARCHAR(705) NOT NULL,
-        cover VARCHAR(250) DEFAULT '/img/nofoto.png',
+        cover VARCHAR(250) DEFAULT 'none',
         article MEDIUMTEXT,
         date_create DATETIME,
         date_update DATETIME

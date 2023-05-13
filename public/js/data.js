@@ -198,7 +198,8 @@ template = {
     feedbackInfo: ``,
     confirmPhone: ``,
     newsAdd:
-        `<p class="vilid_news" id="vilid_news"></p>
+        `<div id="load_cover"><img src="../img/loading.gif"></div>
+        <p class="vilid_news" id="vilid_news"></p>
         <div class="main_info_wrap">
             <div class="main_foto">
                 <div id="foto_load">
@@ -206,6 +207,7 @@ template = {
                     <input type="file" name="news_foto" id="news_foto" accept=".jpg, .jpeg, .png, .bmp" onchange="validIMG(event)" hidden />
                 </div>
                 <button class="clear_cover" id="clear_cover" onclick="clearCoverImg()">Очистити</button>
+                <button class="remove_cover" id="remove_cover" onclick="removeCoverImg()">Видалити</button>
             </div>
             <div class="main_info">
                 <textarea name="news_title" id="news_title" maxlength="260" placeholder="Назва статті" oninput="resizeTextarea(this, '60'), validation(this, 'Input', 'news')" onkeydown="return (event.keyCode!=13);"></textarea>
@@ -213,12 +215,14 @@ template = {
             </div>
         </div>
         <div class="news_create"><p id="news_create"></p><p id="news_update"></p></div>
+        <div class="news_create"><p id="news_alias"></p></div>
         <div id="editor"></div>
         <button class="save_new" id="save_news" onclick="saveNews('save')">Зберегти</button>
         <button class="save_new" id="save_close_news" onclick="saveNews('saveclose')">Зберегти і закрити</button>
         `,
     newsEdit:
-        `<p class="vilid_news" id="vilid_news"></p>
+        `<div id="load_cover"><img src="../img/loading.gif"></div>
+        <p class="vilid_news" id="vilid_news"></p>
         <div class="main_info_wrap">
             <div class="main_foto">
                 <div id="foto_load">
@@ -226,6 +230,7 @@ template = {
                     <input type="file" name="news_foto" id="news_foto" accept=".jpg, .jpeg, .png, .bmp" onchange="validIMG(event)" hidden />
                 </div>
                 <button class="clear_cover" id="clear_cover" onclick="clearCoverImg()">Очистити</button>
+                <button class="remove_cover" id="remove_cover" onclick="removeCoverImg()">Видалити</button>
             </div>
             <div class="main_info">
                 <textarea name="news_title" id="news_title" maxlength="260" placeholder="Назва статті" oninput="resizeTextarea(this, '60'), validation(this, 'Input', 'news')" onkeydown="return (event.keyCode!=13);"></textarea>
@@ -233,6 +238,7 @@ template = {
             </div>
         </div>
         <div class="news_create"><p id="news_create"></p><p id="news_update"></p></div>
+        <div class="news_create"><p id="news_alias"></p></div>
         <div id="editor"></div>
         <button class="save_new" id="save_news" onclick="saveNews('save')">Зберегти</button>
         <button class="save_new" id="save_close_news" onclick="saveNews('saveclose')">Зберегти і закрити</button>
@@ -243,8 +249,10 @@ template = {
         <p class="form_send" onclick="formDeleteNews()">Видалити остаточно!</p>`,
     newsEditRes:
         `<p class="res_mess">Новину збережено!</p>`,
-    transferDelRes:
-        `<p class="res_mess">Маршрут видалено із списку!</p>`,
+    newsDelRes:
+        `<p class="res_mess">Новину видалено!</p>`,
+    newsDelResBad:
+        `<p class="res_mess">Виникла помилка під час видалення статті. Спробуйте ще раз.</p>`,
 };
 
 

@@ -19,7 +19,7 @@ let idTownPlace, tokenTown, formValid;
 let hours, minutes, hArr = [], mArr = [], hStart = 0, mStart = 0, peopleCount = 0, peopleMax = 50, peopleType = 'gr';
 let townsFrom = {}, townsTo = {}, transfersArr = [];
 let calkTrue = true, feedbackCalkTrue = true;
-let news_status = '', news_token = '', news_foto = `/img/nofoto.png`, news_foto_is = 'none';
+let news_status = '', news_token = '', news_foto = "", temp_foto = "";
 
 //redirect page
 const redirect = way => window.location.replace(`${way}`);

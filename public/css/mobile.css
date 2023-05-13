@@ -590,3 +590,7 @@
 .wrap_special p i {
     display: none;
 }
+
+.user_wrap .tab_person .tawns_list .town .news_body .news_info, .user_wrap .tab_person .tawns_list .transfer .news_body .news_info, .user_wrap .tab_person .tawns_list .news .news_body .news_info, .user_wrap .tab_person .transfers_list .town .news_body .news_info, .user_wrap .tab_person .transfers_list .transfer .news_body .news_info, .user_wrap .tab_person .transfers_list .news .news_body .news_info, .user_wrap .tab_person .news_list .town .news_body .news_info, .user_wrap .tab_person .news_list .transfer .news_body .news_info, .user_wrap .tab_person .news_list .news .news_body .news_info {
+    width: 96%;
+}

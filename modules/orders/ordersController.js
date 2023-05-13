@@ -1,5 +1,5 @@
 const ordersService = require('./ordersService');
-const cosole_log = require('../service').log;
+const errorLog = require('../service').errorLog;
 
 class OrdersController {
     async order(req, res) {
@@ -7,7 +7,7 @@ class OrdersController {
             const query_res = await ordersService[req.url.replaceAll("/", "")](req, res);
             res.send({ res: query_res });
         } catch (error) {
-            cosole_log(error);
+            errorLog(error, 'error', 'orders', req);
             res.status(400).send("400 (Bad Request)");
         }
     }

@@ -169,13 +169,14 @@ const modalWindowWrap = (type) => {
 const showModal = function(type, obj, el) {
     console.log('type', type);
     console.log('obj', obj);
-    // console.log('el', el);
+    console.log('el', el);
+
     ['townAdd', 'townAddRes', 'townEdit', 'townEditRes', 'townDel', 'townDelRes',
     'transferAdd', 'transferAddRes', 'transferEdit', 'transferEditRes', 'transferDel', 'transferDelRes',
     'mainformFrom', 'mainformTo', 'mainformCalendar',
     'editMenuTown', 'editMenuTransfer', 'editMenuNews',
     'orderInfo', 'confirmPhone', 'feedbackInfo',
-    'newsAdd', 'newsEdit', 'newsEditRes'].includes(type)
+    'newsAdd', 'newsEdit', 'newsEditRes', 'newsDel', 'newsDelRes', 'newsDelResBad'].includes(type)
         ? modal.innerHTML = modalWindowWrap(type) : null;
 
 
@@ -195,66 +196,52 @@ const showModal = function(type, obj, el) {
             },
             theme: 'snow'
         });
-
-        const editor_body = $_('.ql-editor > p');
-        console.log('editor_body', editor_body);
-
+        // const editor_body = $_('.ql-editor > p');
+        // console.log('editor_body', editor_body);
         news_status = obj;
         news_token = obj === 'edit' ? el : generate_token(6);
-
-        $_('#foto_load')[0].style.backgroundImage = `url(${news_foto})`;
-
-        $_('#news_foto')[0].addEventListener("change", function (event){
+        $_('#news_foto')[0].addEventListener("change", async function (event){
             var file = event.target.files[0];
             var reader = new FileReader();
             reader.onloadend = function(){
+                temp_foto = news_foto === "" ? temp_foto : news_foto;
                 $_('#foto_load')[0].style.backgroundImage = `url(${reader.result})`;
                 news_foto = reader.result;
-                news_foto_is = 'is';
-            }
+            };
             if(file){
                 reader.readAsDataURL(file);
-            }
+            };
         });
 
         if (type === 'newsEdit' ) {
-            news_status = 'edit'
-
-
-            send({ id: el }, `/news/open/${news_token}`, (result) => {
+            news_status = 'edit';
+            send({ id: el }, `/blog/open/${news_token}`, (result) => {
                 const resultat = JSON.parse(result);
-
-                console.log('resultat', resultat);
-
                 const editior = $_('.ql-editor')[0];
                 if (resultat.res) {
-                    console.log('resultat.res.cover', resultat.res.cover);
-
                     news_foto = resultat.res.cover;
-
                     const article = resultat.res.article.split("\n");
 
-                    // const article = [...news_editor].map((element) => element.outerHTML).join("\n");
                     console.log('article', article);
-                    console.log('resultat.res.date_create', resultat.res.date_create);
-                    console.log('resultat.res.date_update', resultat.res.date_update);
 
-
+                    $_('#news_alias')[0].innerHTML = `
+                    <a href="${window.location.hostname}/news/${resultat.res.alias}"
+                        title="Створюється автоматично із назви статті!"
+                        target="_blank">
+                        ${window.location.hostname}/blog/${resultat.res.alias}
+                    </a>`;
                     $_('#news_title')[0].value = resultat.res.title;
                     $_('#news_description')[0].value = resultat.res.description;
                     $_('#news_create')[0].innerHTML = `Створено: <span>${resultat.res.date_create}</span>`;
-                    if (!news_foto.includes('nofoto')) {
-                        news_foto_is = 'is';
-                        $_('#foto_load')[0].style.backgroundImage = `url(${news_foto}_resized.jpg)`;
+                    if (news_foto !== '') {
+                        temp_foto = news_foto;
+                        $_('#foto_load')[0].style.backgroundImage = `url(/img/news/${news_token}/${news_foto}_cover_resized_footer.jpg)`;
                     };
                     if (resultat.res.date_update !== '') {
                         $_('#news_update')[0].innerHTML = `Оновлено: <span>${resultat.res.date_update}</span>`;
                     };
                     editior.innerHTML = '';
-
                     [...article].forEach(element => {
-
-                        console.log('element', element);
                         editior.innerHTML += element;
                     });
                     resizeTextarea($_('#news_title')[0], '60')
@@ -265,8 +252,8 @@ const showModal = function(type, obj, el) {
     };
     if (type === 'editMenuNews') {
         $_(`#${type}`)[0].innerHTML = `
-            <p class="edit_menu" onclick="showModal('newsEdit', 'edit', '${obj.id}'})">Редагувати <i class='far fa-edit'></i></p>
-            <p class="edit_menu" onclick="showModal('newsDel', 'delete', '${obj.id}'})">Видалити <i class='far fa-trash-alt'></i></p>`;
+            <p class="edit_menu" onclick="showModal('newsEdit', 'edit', '${el}')">Редагувати <i class='far fa-edit'></i></p>
+            <p class="edit_menu" onclick="showModal('newsDel', 'delete', '${el}')">Видалити <i class='far fa-trash-alt'></i></p>`;
     };
     if (type === 'newsDel') {
         $_(`#${type} > #id_news`)[0].innerHTML = el
@@ -614,7 +601,7 @@ const selectTownMain = (el, param, clear) => {
 //validation text input
 const validation = (el, type, form = '') => {
     const val = `${el.value.replace(RegExpArr[`RegExp${type}`] , "")}`;
-    el.value = val;
+    el.value = val.replace(/\s\s+/g, ' ');
     if (form === 'feedback') {
         el.classList.remove('err_input');
         const arrInp = ['feedback_name', 'feedback_surname', 'feedback_email', 'feedback_phone', 'feedback_comment'];
@@ -1352,59 +1339,6 @@ const formSendTransfer = (formID) => {
 };
 
 
-
-
-
-//for creating image collection
-// const imageСollection = (news_editor) => {
-//     console.log('news_editor', news_editor);
-
-
-//     [].forEach.call(news_editor, function(el) {
-
-//         console.log(el.getElementsByTagName("img"));
-
-
-//         if (el.getElementsByTagName("img").length > 0) {
-
-
-//             [].forEach.call(el.getElementsByTagName("img"), function(el_img, index) {
-
-//                 console.log(el_img);
-//                 console.log(el_img.src);
-//                 console.log(index);
-//                 console.log('2222222222222222222222222222222222');
-//                 console.log('11111111111111111111');
-//                 console.log('3333333333333333333');
-
-
-
-
-//                 if (el_img.src.slice(0, 11) === 'data:image/') {
-//                     console.log('dddddddddddddddddd');
-
-//                     $_('#news_gallery')[0].files[index] = el_img.src;
-
-
-//                     $_('#news_foto')[0].value = el_img.src;
-
-//                     $_('#news_gallery')[0].click();
-
-//                     let reader = new FileReader();
-//                     reader.onload = function(e) {
-//                         let url = e.target.result;
-
-
-//                         console.log(url);
-//                     }
-//                     reader.readAsDataURL($_('#news_gallery')[0].files[index]);
-
-//                 };
-//             });
-//         };
-//     });
-// };
-
 //for showing news messge
 const messageNews = (text = '', classs = 'mmm') => {
     const news_vilid = $_('#vilid_news')[0];
@@ -1432,31 +1366,58 @@ const validIMG = (event) => {
     };
 };
 
+const createGallery = async (img_base64, formData) => {
+    return new Promise((resolve) => {
+        const image_names = Object.keys(img_base64);
+        if (image_names.length > 0) {
+            let x = 0;
+            Object.entries(img_base64).forEach(async ([key, value]) => {
+                const base64Cover = await fetch(`${value}`);
+                const foto = await base64Cover.blob();
+                formData.append("gallery", foto, `${key}.jpg`);
+                (++x === image_names.length) && resolve(formData);
+            });
+        } else {
+            resolve(formData);
+        };
+    });
+};
+
+const clearCoverImg = () => {
+    $_('#news_foto')[0].type = "text";
+    $_('#news_foto')[0].type = "file";
+    news_foto = temp_foto;
+    $_('#foto_load')[0].style.backgroundImage = temp_foto.length < 5 ? `url(/img/nofoto.png)` : `url(/img/news/${news_token}/${news_foto}_cover_resized_footer.jpg)`;
+};
+
+const removeCoverImg = () => {
+    $_('#foto_load')[0].style.backgroundImage = `url(/img/nofoto.png)`;
+    $_('#news_foto')[0].type = "text";
+    $_('#news_foto')[0].type = "file";
+    news_foto = "";
+};
+
 //for saving news article
-const saveNews = (param) => {
-    let trueSendNews = false, valid_empty = [], valid_fields = [];
-    const field_names = [' назва', ' опис'];
-
-
-    const save_news = $_('#save_news')[0];
-    const save_close_news = $_('#save_close_news')[0];
-
-    // $_('.ql-editor')[0].innerHTML = '';
-    // $_('.ql-editor')[0].innerHTML += '<p>ooooooooooooooo</p>'
-    // $_('.ql-editor')[0].innerHTML += '<p>ooooooooooooooo</p>'
-    // $_('.ql-editor')[0].innerHTML += '<p>ooooooooooooooo</p>'
-    // $_('.ql-editor')[0].innerHTML += `<img src="http://127.0.0.1:8054/img/news/${news_token}/option_minibus.png" />`
-    // $_('.ql-editor')[0].innerHTML += '<p>ttttttttttttttt tttttttttttttt</p>'
-    // $_('.ql-editor')[0].innerHTML += '<p>tttttttttttttttt</p>'
-
+const saveNews = async (param) => {
+    let trueSendNews = false;
+    const valid_empty = [], valid_fields = [], field_names = [' назва', ' опис'];
+    const save_cover = $_('#load_cover')[0];
     const news_title = $_('#news_title')[0].value;
     const news_description = $_('#news_description')[0].value;
-    // const news_foto = $_('#news_foto')[0].value;
     const news_editor = $_('.ql-editor')[0].children;
-    // const news_body = `${news_editor.replace(RegExpArr[`RegExpNews`] , "")}`;;
-
-
-
+    [news_title, news_description].forEach((element, index) => {
+        if (element === '' || element === undefined) {
+            valid_empty.push(false);
+            valid_fields.push(field_names[index]);
+        };
+    });
+    if (!valid_empty.includes(false)) {
+        trueSendNews = true;
+        messageNews('');
+    } else {
+        trueSendNews = false;
+        messageNews(`<span>Поля є обовяковими: ${valid_fields} </span>`, 'vilid_news_bad');
+    };
 
     console.log('news_save_status', param);
     console.log('news_status', news_status);
@@ -1466,230 +1427,143 @@ const saveNews = (param) => {
     console.log('news_foto', news_foto);
     console.log('news_editor', news_editor);
 
-
-
-    [news_title, news_description].forEach((element, index) => {
-        if (element === '' || element === undefined) {
-            valid_empty.push(false);
-            valid_fields.push(field_names[index]);
-        };
-    });
-
-    console.log('valid_empty', valid_empty);
-    console.log('valid_fields', valid_fields);
-
-    if (!valid_empty.includes(false)) {
-        trueSendNews = true;
-        messageNews('');
-    } else {
-        trueSendNews = false;
-        messageNews(`Поля є обовяковими: ${valid_fields} `, 'vilid_news_bad');
-    };
-
-    // imageСollection(news_editor)
-
-
-
-
-
-
     if (trueSendNews) {
-        save_news.disabled = true;
-        save_close_news.disabled = true;
-
-        // setTimeout(() => {
-        //     save_news.disabled = false;
-        //     save_close_news.disabled = false;
-        //     messageNews('');
-        // }, 5000);
-
+        save_cover.style.display = 'flex';
         const img_arr = $_('.ql-editor')[0].getElementsByTagName('img');
-        console.log('img_arr', img_arr);
-
         const img_base64 = {};
         const img_https_names = [];
         [...img_arr].forEach(function(element) {
-            console.log(element);
-            console.log(element.src);
             if (element.src.includes('base64')) {
                 const img_token = generate_token(9)
                 img_base64[img_token] = element.src;
-                // img_base64_names.push(img_token);
                 element.src = img_token;
             };
             if (element.src.includes('http')) {
                 img_https_names.push(element.src);
             };
         });
-
-        console.log('img_base64', img_base64);
-        console.log('img_https_names', img_https_names);
-
         const article = [...news_editor].map((element) => element.outerHTML).join("\n");
-        console.log('article', article);
-        console.log('cover', (news_foto.includes('base64')) ? 'NEW FOTO' : '');
-
-        // const img_base64_names = Object.keys(img_base64);
-        console.log('Object.keys(img_base64)', Object.keys(img_base64));
-
+        const cover_name = (!news_foto.includes('base64')) ? news_foto : generate_token(6);
+        let formData = new FormData();
         const obj = {
             token: news_token,
             title: news_title,
             description: news_description,
-            cover: (news_foto.includes('base64')) ? news_foto : '',
-            cover_is: news_foto_is,
+            cover: cover_name,
             article: article,
-            // foto: img_base64_names,
-            httpnames: img_https_names,
-            fotobase: img_base64
+            gallery: Object.keys(img_base64),
+            httpnames: img_https_names
         };
-        console.log('obj', obj);
-
-
-        fetch(`/news/${news_status}`, {
+        formData.append("obj", JSON.stringify(obj));
+        formData.append("token", news_token);
+        if (news_foto && news_foto.includes('base64')) {
+            const base64Cover = await fetch(`${news_foto}`);
+            formData.append("cover", await base64Cover.blob(), `${cover_name}_cover.jpg`);
+        };
+        await createGallery(img_base64, formData);
+        fetch(`/blog/${news_status}`, {
             method: 'POST',
-            headers: {
-              'Content-Type': 'application/json;charset=utf-8'
-            },
-            body: JSON.stringify(obj)
+            body: formData
         })
-        .then(response => response.status === 200 && response.json())
+        .then(response => {
+            if (response.status === 200) {
+                return response.json()
+            } else {
+                if (response.status === 201) { news_status = 'edit' };
+                throw new Error('Article is not saved!')
+            };
+        })
         .then(result => {
 
             console.log('result', result);
 
-            if (result) {
-                console.log('response_fotos', result);
-                if (Object.keys(img_base64).length > 0) {
-                    const obj = {
-                        token: news_token,
-                        fotobase: img_base64
-                    }
-                    return fetch(`/news/fotos`, {
-                        method: 'POST',
-                        headers: {
-                          'Content-Type': 'application/json;charset=utf-8'
-                        },
-                        body: JSON.stringify(obj)
-                    })
-                    .then(response => {
-                        if (response.status === 200) {
-                            return result
-                        } else {
-                            messageNews(`Виникла помилка під час збереження фотографій. Спробуйте зберегти ще раз.`, 'vilid_news_bad');
-                            throw new Error('Photos is not saved!')
-                        }
-                    })
-                };
-                return result;
-            } else {
-                messageNews(`Виникла помилка під час збереження статті. Спробуйте зберегти ще раз.`, 'vilid_news_bad');
-                throw new Error('Article is not saved!')
-            };
-        })
-        .then((result) => {
-
-            console.log('result2222222222222', result);
-            if (result) {
-                closeModalX();
-                (param === 'save')
-                    ? showModal('newsEdit', 'edit', news_token)
-                    : (showModal('newsEditRes'), setTimeout(() => {
-                        closeModalX();
-                    }, 3000));
-            };
+            closeModalX();
+            (param === 'save')
+                ? showModal('newsEdit', 'edit', news_token)
+                : (showModal('newsEditRes'), setTimeout(() => {
+                    closeModalX();
+                    loadNewsList();
+                }, 3000));
         })
         .finally(() => {
-            save_news.disabled = false;
-            save_close_news.disabled = false;
-            // messageNews('');
-
-
-
+            save_cover.style.display = 'none';
         })
         .catch(error => {
+            messageNews(`<span>Виникла помилка під час збереження статті. Спробуйте зберегти ще раз.</span>`, 'vilid_news_bad');
             [...img_arr].forEach(function(element) {
-                // console.log(element);
-                // console.log(element.src);
-
                 const img_keys = Object.keys(img_base64);
-                // console.log('img_keys', img_keys);
-
                 const original_img = element.src.split('/')[element.src.split('/').length -1].replace("/", "");
-
-                // console.log('xx', original_img);
-
                 if (img_keys.includes(original_img)) {
                     element.src = img_base64[original_img];
                 };
             });
+            loadNewsList();
+            news_status = news_status === 'create' ? news_status : 'edit';
             console.log(error);
         });
     };
 };
 
-const newsCoverImg = () => {
-    const obj = { token: news_token };
-
-    // console.log('foto', $_('#news_foto')[0].files[0]);
-
-    let formData = new FormData();
-    formData.append("obj", JSON.stringify(obj));
-    formData.append("cover", $_('#news_foto')[0].files[0]);
-
-    // console.log('formData', formData);
-    console.log('formData', formData.get('obj'));
-    console.log('formDatafile', formData.get('cover'));
-
-    axios.post(`/news/cover`, formData, {headers:{"Content-type": "multipart/form-data"}})
-    .then(function (res) {
-        console.log('response', res);
-        if (res.status === 200) {
-
-        };
-    })
-    .catch(function (error) { console.log(error) });
-};
-
-const clearCoverImg = () => {
-    $_('#foto_load')[0].style.backgroundImage = `url(/img/nofoto.png)`;
-    $_('#news_foto')[0].type = "text";
-    $_('#news_foto')[0].type = "file";
-    news_foto = `/img/nofoto.png`;
-    news_foto_is = 'none';
-};
-
-
 //load news list
-const loadNewsList = () => {
-    send({} , `/news/list`, (result) => {
-        const resultat = JSON.parse(result);
-        if (resultat.res) {
-            const news_list = $_('.news_list')[0];
-            news_list.innerHTML = '';
-            resultat.res.forEach(element => {
-                news_list.innerHTML += `
-                <div class="news">
-                    <div class="news_body">
-                        <div class="news_foto">
-                            <img onerror="this.src='/img/nofoto.png'" src="/img/news/${element.id_blog}/cover.jpg" />
-                        </div>
-                        <div class="news_info">
-                            <h5>${element.name}</h5>
-                            <p>${element.description}</p>
-                        </div>
+const loadNewsList = (count = '1000', target = '') => {
+    fetch(`/blog/list/${count}`, { method: 'GET' })
+    .then(response => response.status === 200 && response.json())
+    .then(resultat => {
+
+        console.log('resultat', resultat);
+
+
+
+        const news_list = $_(`.news_list${target}`)[0];
+        news_list.innerHTML = '';
+        resultat.res.forEach(element => {
+            console.log('element.cover', element.cover);
+
+
+            const adm_btn = target === '' ? `
+                <i class='fas fa-ellipsis-h' onclick="showModal('editMenuNews', 'edit', '${element.id_blog}')"></i>
+                <i class="fa fa-share" onclick="window.open('/blog/${element.alias}')"></i>` : '';
+            const cover = element.cover !== '' ? `/img/news/${element.id_blog}/${element.cover}_cover_resized${target}.jpg`: '/img/nofoto.png';
+            news_list.innerHTML += `
+            <div class="news${target}">
+                <div class="news_body${target}">
+                    <div class="news_foto${target}">
+                        <img src="${cover}" />
                     </div>
-                    <i class='fas fa-ellipsis-h' onclick="showModal('editMenuNews', {'id' : '${element.id_blog}'})"></i>
-                </div>`
-            });
-        };
-    }, 'GET');
+                    <div class="news_info${target}">
+                        <h4>${element.title}</h4>
+                        <p>${element.description}</p>
+                        <a class="news_more" href="/blog/${element.alias}"><i class='fas fa-long-arrow-alt-right'></i></a>
+                    </div>
+                </div>
+                ${adm_btn}
+            </div>`
+        });
+    });
 };
 
 const formDeleteNews = () => {
     const news_id = $_(`#newsDel > #id_news`)[0].innerHTML;
-
-    console.log('news_id dellll', news_id);
+    fetch(`/blog/delete/${news_id}`, { method: 'DELETE' })
+    .then(response => {
+        console.log('response', response);
+        if (response.status === 400) {
+            throw new Error('Invalid');
+        }
+        if (response.status === 200) {
+            showModal('newsDelRes');
+            setTimeout(() => {
+                closeModalX();
+                loadNewsList();
+            }, 3000)
+        };
+    })
+    .catch(() => {
+        showModal('newsDelResBad');
+        setTimeout(() => {
+            closeModalX();
+        }, 3000)
+    });
 };
 
 

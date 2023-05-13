@@ -1,4 +1,4 @@
-const {readyFullDate, query} = require('../service');
+const {readyFullDate, query, errorLog} = require('../service');
 const fs = require('fs');
 const menu_options = {
     orders: {
@@ -184,11 +184,7 @@ class BotService {
     };
 
     async unauthorizedUser(mess, bot) {
-        const telegram_id = `--TELEGRAM_USER_ID-->> TIME: ${new Date().toLocaleString()} - ID: ${mess.from.id}\n`;
-        console.log(telegram_id);
-        fs.appendFile(`./log/telegram_log.txt`, telegram_id,
-            error => error ? console.log(error) : null
-        );
+        errorLog(mess, 'telegram');
         bot.setMyCommands([{command: '/start', description: 'start'}]);
         return bot.sendMessage(mess.from.id, `Приватний БОТ!`);
     };

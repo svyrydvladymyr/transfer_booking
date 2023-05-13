@@ -91,7 +91,8 @@ body {
 .tabs,
 .bodys,
 .content_container,
-.options_container {
+.options_container,
+.news_container {
   display: flex;
   flex-wrap: wrap;
 }
@@ -1241,7 +1242,7 @@ body {
   font-size: 18px;
   margin: 0px 0px 10px 0px;
 }
-.user_wrap .tab_person .tawns_list, .user_wrap .tab_person .transfers_list {
+.user_wrap .tab_person .tawns_list, .user_wrap .tab_person .transfers_list, .user_wrap .tab_person .news_list {
   width: 100%;
   display: flex;
   flex-wrap: wrap;
@@ -1249,46 +1250,87 @@ body {
   align-items: center;
   padding: 15px 0px;
 }
-.user_wrap .tab_person .tawns_list .transfer, .user_wrap .tab_person .transfers_list .transfer {
+.user_wrap .tab_person .tawns_list .transfer, .user_wrap .tab_person .transfers_list .transfer, .user_wrap .tab_person .news_list .transfer {
   cursor: pointer;
 }
-.user_wrap .tab_person .tawns_list .town, .user_wrap .tab_person .tawns_list .transfer, .user_wrap .tab_person .transfers_list .town, .user_wrap .tab_person .transfers_list .transfer {
+.user_wrap .tab_person .tawns_list .town, .user_wrap .tab_person .tawns_list .transfer, .user_wrap .tab_person .tawns_list .news, .user_wrap .tab_person .transfers_list .town, .user_wrap .tab_person .transfers_list .transfer, .user_wrap .tab_person .transfers_list .news, .user_wrap .tab_person .news_list .town, .user_wrap .tab_person .news_list .transfer, .user_wrap .tab_person .news_list .news {
   width: 100%;
   padding: 12px 30px 12px 30px;
   border-bottom: 1px solid #d9d9d9;
   position: relative;
   background: #fff;
 }
-.user_wrap .tab_person .tawns_list .town span, .user_wrap .tab_person .tawns_list .transfer span, .user_wrap .tab_person .transfers_list .town span, .user_wrap .tab_person .transfers_list .transfer span {
+.user_wrap .tab_person .tawns_list .town > span, .user_wrap .tab_person .tawns_list .town div, .user_wrap .tab_person .tawns_list .transfer > span, .user_wrap .tab_person .tawns_list .transfer div, .user_wrap .tab_person .tawns_list .news > span, .user_wrap .tab_person .tawns_list .news div, .user_wrap .tab_person .transfers_list .town > span, .user_wrap .tab_person .transfers_list .town div, .user_wrap .tab_person .transfers_list .transfer > span, .user_wrap .tab_person .transfers_list .transfer div, .user_wrap .tab_person .transfers_list .news > span, .user_wrap .tab_person .transfers_list .news div, .user_wrap .tab_person .news_list .town > span, .user_wrap .tab_person .news_list .town div, .user_wrap .tab_person .news_list .transfer > span, .user_wrap .tab_person .news_list .transfer div, .user_wrap .tab_person .news_list .news > span, .user_wrap .tab_person .news_list .news div {
   margin: 0px auto;
   display: flex;
   flex-wrap: wrap;
   justify-content: center;
 }
-.user_wrap .tab_person .tawns_list .town span .selfalse, .user_wrap .tab_person .tawns_list .town span .prfalse, .user_wrap .tab_person .tawns_list .town span .microfalse, .user_wrap .tab_person .tawns_list .transfer span .selfalse, .user_wrap .tab_person .tawns_list .transfer span .prfalse, .user_wrap .tab_person .tawns_list .transfer span .microfalse, .user_wrap .tab_person .transfers_list .town span .selfalse, .user_wrap .tab_person .transfers_list .town span .prfalse, .user_wrap .tab_person .transfers_list .town span .microfalse, .user_wrap .tab_person .transfers_list .transfer span .selfalse, .user_wrap .tab_person .transfers_list .transfer span .prfalse, .user_wrap .tab_person .transfers_list .transfer span .microfalse {
+.user_wrap .tab_person .tawns_list .town > span .selfalse, .user_wrap .tab_person .tawns_list .town > span .prfalse, .user_wrap .tab_person .tawns_list .town > span .microfalse, .user_wrap .tab_person .tawns_list .town div .selfalse, .user_wrap .tab_person .tawns_list .town div .prfalse, .user_wrap .tab_person .tawns_list .town div .microfalse, .user_wrap .tab_person .tawns_list .transfer > span .selfalse, .user_wrap .tab_person .tawns_list .transfer > span .prfalse, .user_wrap .tab_person .tawns_list .transfer > span .microfalse, .user_wrap .tab_person .tawns_list .transfer div .selfalse, .user_wrap .tab_person .tawns_list .transfer div .prfalse, .user_wrap .tab_person .tawns_list .transfer div .microfalse, .user_wrap .tab_person .tawns_list .news > span .selfalse, .user_wrap .tab_person .tawns_list .news > span .prfalse, .user_wrap .tab_person .tawns_list .news > span .microfalse, .user_wrap .tab_person .tawns_list .news div .selfalse, .user_wrap .tab_person .tawns_list .news div .prfalse, .user_wrap .tab_person .tawns_list .news div .microfalse, .user_wrap .tab_person .transfers_list .town > span .selfalse, .user_wrap .tab_person .transfers_list .town > span .prfalse, .user_wrap .tab_person .transfers_list .town > span .microfalse, .user_wrap .tab_person .transfers_list .town div .selfalse, .user_wrap .tab_person .transfers_list .town div .prfalse, .user_wrap .tab_person .transfers_list .town div .microfalse, .user_wrap .tab_person .transfers_list .transfer > span .selfalse, .user_wrap .tab_person .transfers_list .transfer > span .prfalse, .user_wrap .tab_person .transfers_list .transfer > span .microfalse, .user_wrap .tab_person .transfers_list .transfer div .selfalse, .user_wrap .tab_person .transfers_list .transfer div .prfalse, .user_wrap .tab_person .transfers_list .transfer div .microfalse, .user_wrap .tab_person .transfers_list .news > span .selfalse, .user_wrap .tab_person .transfers_list .news > span .prfalse, .user_wrap .tab_person .transfers_list .news > span .microfalse, .user_wrap .tab_person .transfers_list .news div .selfalse, .user_wrap .tab_person .transfers_list .news div .prfalse, .user_wrap .tab_person .transfers_list .news div .microfalse, .user_wrap .tab_person .news_list .town > span .selfalse, .user_wrap .tab_person .news_list .town > span .prfalse, .user_wrap .tab_person .news_list .town > span .microfalse, .user_wrap .tab_person .news_list .town div .selfalse, .user_wrap .tab_person .news_list .town div .prfalse, .user_wrap .tab_person .news_list .town div .microfalse, .user_wrap .tab_person .news_list .transfer > span .selfalse, .user_wrap .tab_person .news_list .transfer > span .prfalse, .user_wrap .tab_person .news_list .transfer > span .microfalse, .user_wrap .tab_person .news_list .transfer div .selfalse, .user_wrap .tab_person .news_list .transfer div .prfalse, .user_wrap .tab_person .news_list .transfer div .microfalse, .user_wrap .tab_person .news_list .news > span .selfalse, .user_wrap .tab_person .news_list .news > span .prfalse, .user_wrap .tab_person .news_list .news > span .microfalse, .user_wrap .tab_person .news_list .news div .selfalse, .user_wrap .tab_person .news_list .news div .prfalse, .user_wrap .tab_person .news_list .news div .microfalse {
   display: none;
 }
-.user_wrap .tab_person .tawns_list .town span .seltrue, .user_wrap .tab_person .tawns_list .town span .prtrue, .user_wrap .tab_person .tawns_list .town span .microtrue, .user_wrap .tab_person .tawns_list .transfer span .seltrue, .user_wrap .tab_person .tawns_list .transfer span .prtrue, .user_wrap .tab_person .tawns_list .transfer span .microtrue, .user_wrap .tab_person .transfers_list .town span .seltrue, .user_wrap .tab_person .transfers_list .town span .prtrue, .user_wrap .tab_person .transfers_list .town span .microtrue, .user_wrap .tab_person .transfers_list .transfer span .seltrue, .user_wrap .tab_person .transfers_list .transfer span .prtrue, .user_wrap .tab_person .transfers_list .transfer span .microtrue {
+.user_wrap .tab_person .tawns_list .town > span .seltrue, .user_wrap .tab_person .tawns_list .town > span .prtrue, .user_wrap .tab_person .tawns_list .town > span .microtrue, .user_wrap .tab_person .tawns_list .town div .seltrue, .user_wrap .tab_person .tawns_list .town div .prtrue, .user_wrap .tab_person .tawns_list .town div .microtrue, .user_wrap .tab_person .tawns_list .transfer > span .seltrue, .user_wrap .tab_person .tawns_list .transfer > span .prtrue, .user_wrap .tab_person .tawns_list .transfer > span .microtrue, .user_wrap .tab_person .tawns_list .transfer div .seltrue, .user_wrap .tab_person .tawns_list .transfer div .prtrue, .user_wrap .tab_person .tawns_list .transfer div .microtrue, .user_wrap .tab_person .tawns_list .news > span .seltrue, .user_wrap .tab_person .tawns_list .news > span .prtrue, .user_wrap .tab_person .tawns_list .news > span .microtrue, .user_wrap .tab_person .tawns_list .news div .seltrue, .user_wrap .tab_person .tawns_list .news div .prtrue, .user_wrap .tab_person .tawns_list .news div .microtrue, .user_wrap .tab_person .transfers_list .town > span .seltrue, .user_wrap .tab_person .transfers_list .town > span .prtrue, .user_wrap .tab_person .transfers_list .town > span .microtrue, .user_wrap .tab_person .transfers_list .town div .seltrue, .user_wrap .tab_person .transfers_list .town div .prtrue, .user_wrap .tab_person .transfers_list .town div .microtrue, .user_wrap .tab_person .transfers_list .transfer > span .seltrue, .user_wrap .tab_person .transfers_list .transfer > span .prtrue, .user_wrap .tab_person .transfers_list .transfer > span .microtrue, .user_wrap .tab_person .transfers_list .transfer div .seltrue, .user_wrap .tab_person .transfers_list .transfer div .prtrue, .user_wrap .tab_person .transfers_list .transfer div .microtrue, .user_wrap .tab_person .transfers_list .news > span .seltrue, .user_wrap .tab_person .transfers_list .news > span .prtrue, .user_wrap .tab_person .transfers_list .news > span .microtrue, .user_wrap .tab_person .transfers_list .news div .seltrue, .user_wrap .tab_person .transfers_list .news div .prtrue, .user_wrap .tab_person .transfers_list .news div .microtrue, .user_wrap .tab_person .news_list .town > span .seltrue, .user_wrap .tab_person .news_list .town > span .prtrue, .user_wrap .tab_person .news_list .town > span .microtrue, .user_wrap .tab_person .news_list .town div .seltrue, .user_wrap .tab_person .news_list .town div .prtrue, .user_wrap .tab_person .news_list .town div .microtrue, .user_wrap .tab_person .news_list .transfer > span .seltrue, .user_wrap .tab_person .news_list .transfer > span .prtrue, .user_wrap .tab_person .news_list .transfer > span .microtrue, .user_wrap .tab_person .news_list .transfer div .seltrue, .user_wrap .tab_person .news_list .transfer div .prtrue, .user_wrap .tab_person .news_list .transfer div .microtrue, .user_wrap .tab_person .news_list .news > span .seltrue, .user_wrap .tab_person .news_list .news > span .prtrue, .user_wrap .tab_person .news_list .news > span .microtrue, .user_wrap .tab_person .news_list .news div .seltrue, .user_wrap .tab_person .news_list .news div .prtrue, .user_wrap .tab_person .news_list .news div .microtrue {
   display: flex;
   color: #559f00;
   font-size: 10px;
   margin: 0px 5px;
 }
-.user_wrap .tab_person .tawns_list .town p, .user_wrap .tab_person .tawns_list .transfer p, .user_wrap .tab_person .transfers_list .town p, .user_wrap .tab_person .transfers_list .transfer p {
+.user_wrap .tab_person .tawns_list .town .news_body, .user_wrap .tab_person .tawns_list .transfer .news_body, .user_wrap .tab_person .tawns_list .news .news_body, .user_wrap .tab_person .transfers_list .town .news_body, .user_wrap .tab_person .transfers_list .transfer .news_body, .user_wrap .tab_person .transfers_list .news .news_body, .user_wrap .tab_person .news_list .town .news_body, .user_wrap .tab_person .news_list .transfer .news_body, .user_wrap .tab_person .news_list .news .news_body {
+  margin: 0;
+  justify-content: flex-start;
+  align-items: center;
+  gap: 20px;
+}
+.user_wrap .tab_person .tawns_list .town .news_body .news_foto, .user_wrap .tab_person .tawns_list .transfer .news_body .news_foto, .user_wrap .tab_person .tawns_list .news .news_body .news_foto, .user_wrap .tab_person .transfers_list .town .news_body .news_foto, .user_wrap .tab_person .transfers_list .transfer .news_body .news_foto, .user_wrap .tab_person .transfers_list .news .news_body .news_foto, .user_wrap .tab_person .news_list .town .news_body .news_foto, .user_wrap .tab_person .news_list .transfer .news_body .news_foto, .user_wrap .tab_person .news_list .news .news_body .news_foto {
+  margin: 0;
+  width: 15%;
+  max-width: 150px;
+  min-width: 150px;
+  height: 100px;
+  background-repeat: no-repeat;
+  background-size: cover;
+}
+.user_wrap .tab_person .tawns_list .town .news_body .news_foto img, .user_wrap .tab_person .tawns_list .transfer .news_body .news_foto img, .user_wrap .tab_person .tawns_list .news .news_body .news_foto img, .user_wrap .tab_person .transfers_list .town .news_body .news_foto img, .user_wrap .tab_person .transfers_list .transfer .news_body .news_foto img, .user_wrap .tab_person .transfers_list .news .news_body .news_foto img, .user_wrap .tab_person .news_list .town .news_body .news_foto img, .user_wrap .tab_person .news_list .transfer .news_body .news_foto img, .user_wrap .tab_person .news_list .news .news_body .news_foto img {
+  width: 100%;
+}
+.user_wrap .tab_person .tawns_list .town .news_body .news_info, .user_wrap .tab_person .tawns_list .transfer .news_body .news_info, .user_wrap .tab_person .tawns_list .news .news_body .news_info, .user_wrap .tab_person .transfers_list .town .news_body .news_info, .user_wrap .tab_person .transfers_list .transfer .news_body .news_info, .user_wrap .tab_person .transfers_list .news .news_body .news_info, .user_wrap .tab_person .news_list .town .news_body .news_info, .user_wrap .tab_person .news_list .transfer .news_body .news_info, .user_wrap .tab_person .news_list .news .news_body .news_info {
+  margin: 0;
+  display: flex;
+  flex-wrap: wrap;
+  flex-direction: column;
+  width: 80%;
+}
+.user_wrap .tab_person .tawns_list .town .news_body .news_info > h4, .user_wrap .tab_person .tawns_list .transfer .news_body .news_info > h4, .user_wrap .tab_person .tawns_list .news .news_body .news_info > h4, .user_wrap .tab_person .transfers_list .town .news_body .news_info > h4, .user_wrap .tab_person .transfers_list .transfer .news_body .news_info > h4, .user_wrap .tab_person .transfers_list .news .news_body .news_info > h4, .user_wrap .tab_person .news_list .town .news_body .news_info > h4, .user_wrap .tab_person .news_list .transfer .news_body .news_info > h4, .user_wrap .tab_person .news_list .news .news_body .news_info > h4 {
+  font-size: 12px;
+  font-weight: bold;
+  margin: 0px 0px 12px 0px;
+}
+.user_wrap .tab_person .tawns_list .town .news_body .news_info > p, .user_wrap .tab_person .tawns_list .transfer .news_body .news_info > p, .user_wrap .tab_person .tawns_list .news .news_body .news_info > p, .user_wrap .tab_person .transfers_list .town .news_body .news_info > p, .user_wrap .tab_person .transfers_list .transfer .news_body .news_info > p, .user_wrap .tab_person .transfers_list .news .news_body .news_info > p, .user_wrap .tab_person .news_list .town .news_body .news_info > p, .user_wrap .tab_person .news_list .transfer .news_body .news_info > p, .user_wrap .tab_person .news_list .news .news_body .news_info > p {
+  font-size: 12px;
+  font-weight: normal;
+  text-align: left;
+}
+.user_wrap .tab_person .tawns_list .town p, .user_wrap .tab_person .tawns_list .transfer p, .user_wrap .tab_person .tawns_list .news p, .user_wrap .tab_person .transfers_list .town p, .user_wrap .tab_person .transfers_list .transfer p, .user_wrap .tab_person .transfers_list .news p, .user_wrap .tab_person .news_list .town p, .user_wrap .tab_person .news_list .transfer p, .user_wrap .tab_person .news_list .news p {
   font-size: 14px;
   margin: 0px;
 }
-.user_wrap .tab_person .tawns_list .town i, .user_wrap .tab_person .tawns_list .transfer i, .user_wrap .tab_person .transfers_list .town i, .user_wrap .tab_person .transfers_list .transfer i {
+.user_wrap .tab_person .tawns_list .town i, .user_wrap .tab_person .tawns_list .transfer i, .user_wrap .tab_person .tawns_list .news i, .user_wrap .tab_person .transfers_list .town i, .user_wrap .tab_person .transfers_list .transfer i, .user_wrap .tab_person .transfers_list .news i, .user_wrap .tab_person .news_list .town i, .user_wrap .tab_person .news_list .transfer i, .user_wrap .tab_person .news_list .news i {
   cursor: pointer;
   position: absolute;
   right: 5px;
-  top: 25%;
+  top: 10px;
   font-size: 16px;
   margin: 0px 3px;
   color: #5a5a5a;
+  background: #e1e1e1;
+  padding: 2px 5px;
+  border-radius: 3px;
 }
-.user_wrap .tab_person .tawns_list .town i:hover, .user_wrap .tab_person .tawns_list .transfer i:hover, .user_wrap .tab_person .transfers_list .town i:hover, .user_wrap .tab_person .transfers_list .transfer i:hover {
+.user_wrap .tab_person .tawns_list .town i:hover, .user_wrap .tab_person .tawns_list .transfer i:hover, .user_wrap .tab_person .tawns_list .news i:hover, .user_wrap .tab_person .transfers_list .town i:hover, .user_wrap .tab_person .transfers_list .transfer i:hover, .user_wrap .tab_person .transfers_list .news i:hover, .user_wrap .tab_person .news_list .town i:hover, .user_wrap .tab_person .news_list .transfer i:hover, .user_wrap .tab_person .news_list .news i:hover {
   color: #ee9e07;
+}
+.user_wrap .tab_person .tawns_list .town i.fa, .user_wrap .tab_person .tawns_list .transfer i.fa, .user_wrap .tab_person .tawns_list .news i.fa, .user_wrap .tab_person .transfers_list .town i.fa, .user_wrap .tab_person .transfers_list .transfer i.fa, .user_wrap .tab_person .transfers_list .news i.fa, .user_wrap .tab_person .news_list .town i.fa, .user_wrap .tab_person .news_list .transfer i.fa, .user_wrap .tab_person .news_list .news i.fa {
+  top: 40px;
 }
 
 .modal_wrap {
@@ -2470,6 +2512,29 @@ iframe {
   width: 100%;
 }
 
+.modal_wrap .modal_place {
+  position: relative;
+}
+.modal_wrap .modal_place #load_cover {
+  cursor: no-drop;
+  position: fixed;
+  top: -10px;
+  right: 0px;
+  display: none;
+  flex-wrap: nowrap;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  height: 100%;
+  min-height: 100%;
+  background: #fff;
+  opacity: 0.7;
+  z-index: 999;
+}
+.modal_wrap .modal_place #load_cover img {
+  width: 100%;
+  max-width: 500px;
+}
 .modal_wrap .modal_place div.ql-container .ql-editor p {
   height: fit-content;
 }
@@ -2480,12 +2545,18 @@ iframe {
   width: 96%;
 }
 .modal_wrap .modal_place .vilid_news {
+  display: flex;
+  flex-wrap: wrap;
   width: 96%;
-  line-height: 56px;
   font-size: 14px;
   background-color: transparent;
   border-radius: 5px;
   margin: 0px auto 12px !important;
+}
+.modal_wrap .modal_place .vilid_news span {
+  display: block;
+  width: 100%;
+  padding: 18px;
 }
 .modal_wrap .modal_place .vilid_news_bad {
   color: #bf1717;
@@ -2518,14 +2589,22 @@ iframe {
   justify-content: flex-start;
   margin: 0px;
 }
+.modal_wrap .modal_place .news_create #news_alias a {
+  color: #767676;
+  text-decoration-line: none;
+  letter-spacing: 0.6px;
+}
+.modal_wrap .modal_place .news_create #news_alias a:hover {
+  color: #535353;
+  text-decoration-line: underline;
+}
 .modal_wrap .modal_place .news_create p {
   width: fit-content;
   height: 100%;
   margin: 5px 20px 5px 0px;
   font-size: 12px;
-}
-.modal_wrap .modal_place .news_create p span {
-  border-bottom: 1px solid #646464;
+  color: #767676;
+  font-weight: normal;
 }
 .modal_wrap .modal_place .main_info_wrap {
   display: flex;
@@ -2550,6 +2629,7 @@ iframe {
   width: 100%;
   height: 110px;
   border: 1px solid #b7b7b7;
+  background: url("../img/nofoto.png");
   background-repeat: no-repeat;
   background-position: center;
   background-size: cover;
@@ -2568,11 +2648,25 @@ iframe {
   font-weight: bold;
   border: 0;
   cursor: pointer;
-  margin-bottom: 14px;
+  margin-bottom: 1px;
   border-top: 1px solid white;
 }
 .modal_wrap .modal_place .main_info_wrap .main_foto .clear_cover:hover {
   background: #d3a754;
+}
+.modal_wrap .modal_place .main_info_wrap .main_foto .remove_cover {
+  background: #e37b6d;
+  width: 100%;
+  height: 24px;
+  color: #fff;
+  font-weight: bold;
+  border: 0;
+  cursor: pointer;
+  margin-bottom: 14px;
+  border-top: 1px solid white;
+}
+.modal_wrap .modal_place .main_info_wrap .main_foto .remove_cover:hover {
+  background: #ca5e4b;
 }
 .modal_wrap .modal_place .main_info_wrap .main_info {
   display: flex;
@@ -2597,6 +2691,85 @@ iframe {
   outline: 0;
   overflow: hidden;
   font-family: "Lato", Helvetica, Arial, sans-serif;
+}
+
+/*_____________________news________________________*/
+.news_container {
+  outline: 1px solid red;
+  width: 100%;
+  max-width: 1200px;
+  justify-content: space-between;
+  align-items: stretch;
+  margin: 0px auto;
+  padding: 60px 0px 70px 0px;
+}
+.news_container .line {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  margin: 10px 0px 50px 0px;
+}
+.news_container .line > span {
+  width: 90px;
+  background: #ee9e07;
+  border: 1px solid #ee9e07;
+  height: 0px;
+}
+.news_container .advantages_title1 {
+  width: 100%;
+  text-align: center;
+  color: #ee9e07;
+  font-size: 20px;
+  margin: 20px 0px 10px 0px;
+}
+.news_container .advantages_title2 {
+  width: 100%;
+  text-align: center;
+  color: #3e3f40;
+  font-size: 48px;
+  font-weight: bold;
+  margin: 0px 0px 15px 0px;
+}
+.news_container .news_list_main {
+  padding: 5px 15px;
+}
+.news_container .news_list_main .news_main {
+  padding: 15px 0px;
+  border-bottom: 1px solid #afafaf;
+}
+.news_container .news_list_main .news_main .news_body_main {
+  outline: 1px solid yellow;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  flex-direction: row;
+  gap: 20px;
+}
+.news_container .news_list_main .news_main .news_body_main .news_foto_main {
+  outline: 1px solid blue;
+  max-width: 500px;
+  flex-grow: 1;
+}
+.news_container .news_list_main .news_main .news_body_main .news_foto_main img {
+  width: 100%;
+}
+.news_container .news_list_main .news_main .news_body_main .news_info_main {
+  outline: 1px solid pink;
+  flex-grow: 1;
+}
+.news_container .news_list_main .news_main .news_body_main .news_info_main .news_more {
+  display: block;
+  cursor: pointer;
+  width: 120px;
+  height: 40px;
+  color: #fff;
+  background: #8bc34a;
+  font-size: 38px;
+  margin: 0;
+  text-align: center;
+}
+.news_container .news_list_main .news_main .news_body_main .news_info_main .news_more:hover {
+  background: #9cd65a;
 }
 
 /*# sourceMappingURL=style.css.map */

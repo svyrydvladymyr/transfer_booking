@@ -27,17 +27,18 @@ const telegram = require("./modules/bot/botController");
 telegram.botCreating();
 
 //template engineer
-app.set("views", __dirname + "/templates");
+app.set("views", __dirname + "/views");
 app.set("view engine", "ejs");
 
 //static files
 app.use(express.static(__dirname + "/public"));
+app.use('/blog', express.static(__dirname + "/public"));
 
 //parsers
-// app.use(bodyParser.json());
-// app.use(bodyParser.urlencoded({ extended: true }));
-app.use(bodyParser.json({limit: "20mb"}));
-app.use(bodyParser.urlencoded({limit: "20mb", extended: true, parameterLimit:20000}));
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: true }));
+// app.use(bodyParser.json({limit: "20mb"}));
+// app.use(bodyParser.urlencoded({limit: "20mb", extended: true, parameterLimit:20000}));
 app.use(cookieParser());
 
 //console logs
@@ -51,13 +52,18 @@ app.use("/towns", towns);
 app.use("/transfers", transfers);
 app.use("/order", orders);
 app.use("/feedback", feedbacks);
-app.use("/news", news);
+app.use("/blog", news);
+
+app.use((req, res, next) => {
+    (req.url.slice(-1) === '/' && req.url.length > 1 && !/\?[^]*\//.test(req.url))
+        ? res.redirect(301, req.url.slice(0, -1))
+        : next();
+});
 
 //pages
 app.get("/", renderPage.userData);
 app.get("/home", renderPage.userData);
 app.get("/about", renderPage.userData);
-app.get("/blog", renderPage.userData);
 app.get("/transfer", renderPage.userData);
 app.get("/contacts", renderPage.userData);
 app.get("/person", renderPage.userData);
@@ -65,12 +71,8 @@ app.get("/advantages", renderPage.userData);
 app.get("/privacy-policy", renderPage.userData);
 
 //redirect to home page
-app.get("/$", (req, res, next) => {
-    res.redirect("/home");
-});
-app.get("*", (req, res) => {
-    res.redirect("/home");
-});
+app.get("/$", (req, res, next) => { res.redirect("/home") });
+app.get("*", (req, res) => { res.redirect("/home") });
 
 //creating server
 const PORT = process.env.PORT || 3000;

@@ -24,10 +24,12 @@ const validValue = async (el, type) => {
     // (type === 'news')
     //     ? el.replace(new RegExp("[^a-zA-Zа-яА-Я0-9-()_+=!?.:;'\"/\,іІїЇєЄ<> /\n]", "gi"), '')
     //     : el.replace(new RegExp("[^a-zA-Zа-яА-Я0-9-()_+=!?.:;/\,іІїЇєЄ /\n]", "gi"), '');
-
+    if (el === undefined) throw new Error(`Not valid input: ${type}`);
     switch (type) {
         case 'emailtest':
             return (el.match(/^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/)) ? true : false;
+        case 'alias':
+            return el.replace(new RegExp("[^a-zA-Zа-яА-ЯіІїЇєЄ ]", "gi"), '');
         case 'news':
             return el.replace(new RegExp("[^a-zA-Zа-яА-Я0-9-()_+=!?.:;'\"/\,іІїЇєЄ<> /\n]", "gi"), '');
         case 'email':
@@ -93,11 +95,37 @@ const readyFullDate = (fullDate, reverse) => {
 };
 
 //save access logs
-const accessLog = (req, res, param = '') => {
-    let access_log = `IP: ${req.ip}  TIME: ${new Date().toLocaleString()}  URL: ${req.url}  PARAM: ${param}\n`;
-    fs.appendFile(`./log/error_access.txt`, access_log,
-        error => error ? console.log(error) : null
-    );
+// const accessLog = (req, param = '') => {
+//     const dir = `./log`;
+//     const log = `IP: ${req.ip} TIME: ${new Date().toLocaleString()} URL: ${req.url} PARAM: ${param}\n`;
+//     !fs.existsSync(dir) ? fs.mkdirSync(dir) : null;
+//     fs.existsSync(dir) ? fs.appendFile(dir, log) : null;
+//     fs.existsSync(dir) ? fs.appendFile(`${dir}/error_log.txt`, log, (error) => {error ? console.log(error) : null}) : null;
+// };
+
+//save error logs
+const errorLog = (error,  type = 'error', param = '', req) => {
+    try {
+        console.log(error);
+        const dir = `./logs`;
+        let log = '';
+        switch (type) {
+            case 'error':
+                log = `IP: ${req.ip} TIME: ${new Date().toLocaleString()} URL: ${req.url} PARAM: ${param} ERROR: ${error}\n`;
+                break;
+            case 'access':
+                log = ''
+                break;
+            case 'telegram':
+                const error_type = error.from ? `Unauthorized User: ${error.from.id}` : error;
+                log = `--TELEGRAM-->> TIME: ${new Date().toLocaleString()} - MESSAGE: ${error_type}\n`;
+                break;
+        };
+        !fs.existsSync(dir) ? fs.mkdirSync(dir) : null;
+        fs.existsSync(dir) ? fs.appendFile(`${dir}/${type}_log.log`, log, (error) => {error ? console.log(error) : null}) : null;
+    } catch (error) {
+        console.log('Error creating logs: ', error);
+    };
 };
 
 //get table record
@@ -141,7 +169,7 @@ const autorisation = (req, res, next) => {
         .then((user) => {
             req.user = user;
             if (!user[0]) {
-                accessLog(req, res, 'autorisation');
+                errorLog(req, 'No user!', 'autorisation', 'access');
                 // res.redirect('/home');
                 res.status(400).send();
             } else {
@@ -153,7 +181,7 @@ const autorisation = (req, res, next) => {
 
 const permission = (req, res, next) => {
     if (req.user[0].permission !== 1) {
-        accessLog(req, res, 'permission');
+        errorLog(req, 'Bad permission!', 'permission', 'access');
         // res.redirect('/home');
         res.status(400).send();
     } else {
@@ -170,7 +198,7 @@ module.exports = {
     log,
     readyFullDate,
     validValue,
-    accessLog,
+    errorLog,
     query,
     autorisation,
     permission,
