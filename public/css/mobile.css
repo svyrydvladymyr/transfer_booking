@@ -594,3 +594,23 @@
 .user_wrap .tab_person .tawns_list .town .news_body .news_info, .user_wrap .tab_person .tawns_list .transfer .news_body .news_info, .user_wrap .tab_person .tawns_list .news .news_body .news_info, .user_wrap .tab_person .transfers_list .town .news_body .news_info, .user_wrap .tab_person .transfers_list .transfer .news_body .news_info, .user_wrap .tab_person .transfers_list .news .news_body .news_info, .user_wrap .tab_person .news_list .town .news_body .news_info, .user_wrap .tab_person .news_list .transfer .news_body .news_info, .user_wrap .tab_person .news_list .news .news_body .news_info {
     width: 96%;
 }
+
+.news_container .news_list_main .news_main .news_body_main {
+    flex-wrap: wrap;
+}
+
+.news_container .news_list_main .news_main .news_body_main .news_foto_main, .news_container .news_list_main .news_main .news_body_main .news_foto_footer, .news_container .news_list_main .news_main .news_body_footer .news_foto_main, .news_container .news_list_main .news_main .news_body_footer .news_foto_footer, .news_container .news_list_main .news_footer .news_body_main .news_foto_main, .news_container .news_list_main .news_footer .news_body_main .news_foto_footer, .news_container .news_list_main .news_footer .news_body_footer .news_foto_main, .news_container .news_list_main .news_footer .news_body_footer .news_foto_footer {
+    max-width: 100%;
+}
+
+.news_list_footer .news_footer .news_body_footer {
+    flex-wrap: wrap;
+}
+
+.news_list_footer .news_footer .news_body_footer .news_foto_footer {
+    max-width: 100%;
+}
+
+.news_list_footer .news_footer {
+    padding: 24px 0px 30px 0px;
+}

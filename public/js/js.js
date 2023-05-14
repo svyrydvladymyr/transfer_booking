@@ -19,6 +19,10 @@ class ModalWindow extends Templates {
     constructor(){}
 };
 
+class News extends ModalWindow {
+    constructor(){}
+};
+
 
 
 
@@ -224,11 +228,12 @@ const showModal = function(type, obj, el) {
 
                     console.log('article', article);
 
+                    const port = (window.location.hostname.includes('127.0.0.1')) ? ":8054" : "";
                     $_('#news_alias')[0].innerHTML = `
-                    <a href="${window.location.hostname}/news/${resultat.res.alias}"
+                    <a href="/blog/${resultat.res.alias}"
                         title="Створюється автоматично із назви статті!"
                         target="_blank">
-                        ${window.location.hostname}/blog/${resultat.res.alias}
+                        ${window.location.hostname}${port}/blog/${resultat.res.alias}
                     </a>`;
                     $_('#news_title')[0].value = resultat.res.title;
                     $_('#news_description')[0].value = resultat.res.description;
@@ -1505,40 +1510,36 @@ const saveNews = async (param) => {
 };
 
 //load news list
-const loadNewsList = (count = '1000', target = '') => {
+const loadNewsList = (count = '1000', target = '_admin') => {
     fetch(`/blog/list/${count}`, { method: 'GET' })
     .then(response => response.status === 200 && response.json())
     .then(resultat => {
-
-        console.log('resultat', resultat);
-
-
-
         const news_list = $_(`.news_list${target}`)[0];
-        news_list.innerHTML = '';
-        resultat.res.forEach(element => {
-            console.log('element.cover', element.cover);
-
-
-            const adm_btn = target === '' ? `
-                <i class='fas fa-ellipsis-h' onclick="showModal('editMenuNews', 'edit', '${element.id_blog}')"></i>
-                <i class="fa fa-share" onclick="window.open('/blog/${element.alias}')"></i>` : '';
-            const cover = element.cover !== '' ? `/img/news/${element.id_blog}/${element.cover}_cover_resized${target}.jpg`: '/img/nofoto.png';
-            news_list.innerHTML += `
-            <div class="news${target}">
-                <div class="news_body${target}">
-                    <div class="news_foto${target}">
-                        <img src="${cover}" />
+        if (news_list) {
+            news_list.innerHTML = '';
+            resultat.res.forEach(element => {
+                const adm_btn = target === '_admin' ? `
+                    <i class='fas fa-ellipsis-h' onclick="showModal('editMenuNews', 'edit', '${element.id_blog}')"></i>
+                    <i class="fa fa-share" onclick="window.open('/blog/${element.alias}')"></i>` : '';
+                const cover = element.cover !== '' ? `/img/news/${element.id_blog}/${element.cover}_cover_resized${target}.jpg`: '/img/nofoto.png';
+                const description = target !== '_footer' ? `<p style="font-size:12px;">${element.description}</p>` : '';
+                const open_btn = target === '_footer' ? `onclick="window.open('/blog/${element.alias}')"` : '';
+                news_list.innerHTML += `
+                <div class="news${target}">
+                    <div class="news_body${target}">
+                        <div class="news_foto${target}" ${open_btn}>
+                            <img src="${cover}" />
+                        </div>
+                        <div class="news_info${target}">
+                            <h4>${element.title}</h4>
+                            ${description}
+                            <a class="news_more" href="/blog/${element.alias}"><i class='fas fa-long-arrow-alt-right'></i></a>
+                        </div>
                     </div>
-                    <div class="news_info${target}">
-                        <h4>${element.title}</h4>
-                        <p>${element.description}</p>
-                        <a class="news_more" href="/blog/${element.alias}"><i class='fas fa-long-arrow-alt-right'></i></a>
-                    </div>
-                </div>
-                ${adm_btn}
-            </div>`
-        });
+                    ${adm_btn}
+                </div>`
+            });
+        };
     });
 };
 

@@ -1,15 +1,13 @@
 const multer  = require('multer');
-const Url = require("url-parse");
 const Jimp = require("jimp");
 const fs = require("fs");
 const rimraf = require("rimraf");
-const { query, validValue, readyFullDate, translit, token, clienttoken } = require("../service");
-// const { log } = require("util");
+const { query, validValue, readyFullDate, translit } = require("../service");
 
 class NewsServise {
     limits = {
         fieldNameSize: 15,
-        fileSize: 5242880
+        fileSize: 9242880
     };
     storage = multer.diskStorage({
         destination: (req, file, cb) => {
@@ -18,7 +16,7 @@ class NewsServise {
                 !fs.existsSync(dir) ? fs.mkdirSync(dir) : null;
                 cb(null, dir);
             } catch (error) {
-                cb(new Error(`Error creating folder: ${error}!`));
+                cb(new Error(`Foto error: Error creating folder: ${error}!`));
             }
         },
         filename: (req, file, cb) => {
@@ -42,10 +40,12 @@ class NewsServise {
             const image = await Jimp.read(cover[0].path);
             image.resize(1400, Jimp.AUTO)
                 .write(`${dir}/${cover_name}_cover.jpg`);
-            image.cover(300, 200, Jimp.HORIZONTAL_ALIGN_CENTER, Jimp.VERTICAL_ALIGN_TOP)
+            image.cover(600, 400, Jimp.HORIZONTAL_ALIGN_CENTER, Jimp.VERTICAL_ALIGN_MIDDLE)
                 .write(`${dir}/${cover_name}_cover_resized_footer.jpg`);
-            image.cover(500, 200, Jimp.HORIZONTAL_ALIGN_CENTER, Jimp.VERTICAL_ALIGN_TOP)
+            image.cover(600, 300, Jimp.HORIZONTAL_ALIGN_CENTER, Jimp.VERTICAL_ALIGN_MIDDLE)
                 .write(`${dir}/${cover_name}_cover_resized_main.jpg`);
+            image.cover(300, 200, Jimp.HORIZONTAL_ALIGN_CENTER, Jimp.VERTICAL_ALIGN_MIDDLE)
+                .write(`${dir}/${cover_name}_cover_resized_admin.jpg`);
             return "Cover saved!";
         } catch (error) {
             throw new Error(`Foto error: ${error}`);
@@ -172,8 +172,13 @@ class NewsServise {
         const sql = `SELECT id_blog, alias, title, description, cover, date_create, article, date_update FROM blog WHERE id_blog = '${newsid}' OR alias = '${newsid}'`;
         return await query(sql).then((result) => {
             if (result[0]) {
-                const cover = `${__dirname}/../../public/img/news/${newsid}/${result[0].cover}_cover.jpg`;
+
+                console.log('result[0]', result[0]);
+                const cover = `${__dirname}/../../public/img/news/${result[0].id_blog}/${result[0].cover}_cover.jpg`;
+
+                const main_img = (alias && fs.existsSync(cover)) ? `/img/news/${result[0].id_blog}/${result[0].cover}_cover.jpg` : '';
                 const file_path = fs.existsSync(cover) ? `${result[0].cover}` : "";
+                result[0].main_img = main_img;
                 result[0].cover = file_path;
                 result[0].date_update = (result[0].date_update !== null) ? readyFullDate(result[0].date_update) : '';
                 result[0].date_create = readyFullDate(result[0].date_create);

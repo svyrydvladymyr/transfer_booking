@@ -1260,7 +1260,7 @@ body {
               }
             }
           }
-        .tawns_list, .transfers_list, .news_list {
+        .tawns_list, .transfers_list, .news_list_admin {
           // outline: 1px solid red;
           width: 100%;
           display: flex;
@@ -1271,7 +1271,7 @@ body {
             .transfer {
               cursor: pointer;
             }
-            .town, .transfer, .news {
+            .town, .transfer, .news_admin {
               width: 100%;
               padding: 12px 30px 12px 30px;
               border-bottom: 1px solid #d9d9d9;
@@ -1292,24 +1292,19 @@ body {
                     margin: 0px 5px;
                   }
                 }
-                .news_body {
+                .news_body_admin {
                   margin: 0;
                   justify-content: flex-start;
                   align-items: center;
                   gap: 20px;
-                  .news_foto {
+                  .news_foto_admin {
                     margin: 0;
-                    width: 15%;
-                    max-width: 150px;
-                    min-width: 150px;
-                    height: 100px;
-                    background-repeat: no-repeat;
-                    background-size: cover;
+                    width: 150px;
                     img {
                       width: 100%;
                     }
                   }
-                  .news_info {
+                  .news_info_admin {
                     margin: 0;
                     display: flex;
                     flex-wrap: wrap;
@@ -2775,18 +2770,36 @@ iframe {
 
 /*_____________________news________________________*/
 .news_container {
-  outline: 1px solid red;
   width: 100%;
   max-width: 1200px;
   justify-content: space-between;
   align-items: stretch;
   margin: 0px auto;
-  padding: 60px 0px 70px 0px;
+  padding: 50px 0px;
+  .article{
+    width: 100%;
+    padding: 0px 15px;
+    img {
+      width: 100%;
+    }
+    p {
+      margin: 10px 0px;
+    }
+    .ql-align-center{
+      text-align: center;
+    }
+    .ql-align-right {
+      text-align: right;
+    }
+    .ql-align-justify{
+      text-align: justify;
+    }
+  }
   .line {
     width: 100%;
     display: flex;
     justify-content: center;
-    margin: 10px 0px 50px 0px;
+    margin: 10px 0px 30px 0px;
     > span {
       width: 90px;
       background: #ee9e07;
@@ -2810,28 +2823,24 @@ iframe {
     margin: 0px 0px 15px 0px;
   }
   .news_list_main{
-    padding: 5px 15px;    
-    .news_main {
-      padding: 15px 0px;
+    padding: 5px 15px;
+    .news_main, .news_footer {
+      padding: 40px 0px;
       border-bottom: 1px solid #afafaf;
-      .news_body_main {
-        outline: 1px solid yellow;
+      .news_body_main, .news_body_footer {
         display: flex;
-        flex-wrap: wrap;
+        flex-wrap: nowrap;
         justify-content: center;
-        flex-direction: row;
         gap: 20px;
-        .news_foto_main {
-          outline: 1px solid blue;
+        .news_foto_main, .news_foto_footer {
           max-width: 500px;
-          flex-grow: 1;
+          width: 100%;
           img {
             width: 100%;
           }
         }
-        .news_info_main {
-          outline: 1px solid pink;
-          flex-grow: 1;
+        .news_info_main, .news_info_footer {
+          width: 100%;
           .news_more{
             display: block;
             cursor: pointer;
@@ -2849,5 +2858,42 @@ iframe {
         }
       }
     }
+  }
+}
+
+.news_list_footer{
+  padding: 0px;
+  .news_footer {
+    padding: 9px 0px 7px 0px;
+    border-bottom: 1px solid #afafaf;
+    .news_body_footer {
+      display: flex;
+      flex-wrap: nowrap;
+      justify-content: center;
+      gap: 5px;
+      .news_foto_footer {
+        max-width: 40%;
+        width: 100%;
+        img {
+          width: 100%;
+        }
+      }
+      .news_info_footer {
+        width: 100%;
+        position: relative;
+        h4 {
+          color: #cacac0;
+          margin: 0;
+          font-size: 14px;
+          font-weight: normal;
+        }
+        .news_more{
+          display: none;
+        }
+      }
+    }
+  }
+  .news_footer:last-child {
+    border: 0;
   }
 }

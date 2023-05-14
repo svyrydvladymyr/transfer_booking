@@ -76,7 +76,7 @@ const tables = {
         date_answer DATETIME
         )`,
     blog: `CREATE TABLE blog (id INT AUTO_INCREMENT PRIMARY KEY,
-        id_blog VARCHAR(10) NOT NULL,
+        id_blog VARCHAR(10) NOT NULL UNIQUE,
         alias VARCHAR(265) NOT NULL,
         title VARCHAR(265) NOT NULL,
         description VARCHAR(705) NOT NULL,
