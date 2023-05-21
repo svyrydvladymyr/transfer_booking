@@ -4,12 +4,33 @@ const CryptoJS = require("crypto-js");
 const fs = require('fs');
 const con = require('./db-models/connectDB').con;
 
+class ShowDate {
+    plusZero = (value) => ((value >= 0) && (value <= 9) && (value.toString().length === 1)) ? "0" + value : value;
+    minutes = (date) => this.plusZero(date.getMinutes());
+    hours = (date) => this.plusZero(date.getHours());
+    seconds = (date) => this.plusZero(date.getSeconds());
+    day = (date) => this.plusZero(date.getDate());
+    month = (date) => this.plusZero(date.getMonth() + 1);
+    year = (date) => `${date.getFullYear()}`;
+    show(format = 'hh:mi:ss dd.mm.yyyy', date) {
+        date = date ? new Date(date) : new Date();
+        const year_length = [...format].filter(el => el === 'y').length;
+        const year = year_length === 2 ? this.year(date).slice(2, 4) : this.year(date);
+        return format
+            .replace(/mi/g, `${this.minutes(date)}`)
+            .replace(/hh|h/g, `${this.hours(date)}`)
+            .replace(/ss|s/g, `${this.seconds(date)}`)
+            .replace(/dd|d/g, `${this.day(date)}`)
+            .replace(/mm|m/g, `${this.month(date)}`)
+            .replace(/yy/g, 'y')
+            .replace(/yy/g, 'y')
+            .replace(/y/g, year);
+    };
+};
 
-//transliteration
 const translit = (length) =>
     require('transliteration.cyr').transliterate(length);
 
-//chack on true values - validation
 const validValue = async (el, type) => {
     if (el === undefined) throw new Error(`Not valid input: ${type}`);
     switch (type) {
@@ -28,7 +49,6 @@ const validValue = async (el, type) => {
     }
 };
 
-//generate token
 const token = (length) => {
     let result = '';
     const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
@@ -38,77 +58,35 @@ const token = (length) => {
     return result;
 };
 
-//consoleLog message
-const log = (mess, val, arrow = '') => {
-    let i = 0;
+const log = (mess, val, color = '') => {
+    let i = 0, arrow = '';
     do {
         arrow += '-'
         i++
     } while (i < 25 - mess.length);
-    console.log(`--${mess}-${arrow}>> `, val);
+    if (color === '') {console.log(`\u001b[30m--${mess}-${arrow}>>\u001b[0m `, val)};
+    if (color === 'error') {console.log(`\u001b[31m--${mess}-${arrow}>>\u001b[0m `, val)};
+    if (color === 'info') {console.log(`\u001b[36m--${mess}-${arrow}>>\u001b[0m `, val)};
+    if (color === 'log') {console.log(`\u001b[32m--${mess}-${arrow}>>\u001b[0m `, val)};
+    if (color === 'mark') {console.log(`\u001b[33m--${mess}-${arrow}>>\u001b[0m `, val)};
 };
 
-
-class ShowDate {
-    constructor(){}
-
-    show(format = 'h:m:s dd.mm.yyyy', date = '') {
-
-    }
-};
-
-//date format minutes
-const readyMin = function(fullDate){
-    const createDate = new Date(fullDate);
-    return finDay = ((createDate.getMinutes() >= 1) && (createDate.getMinutes() <= 9)) ? "0" + createDate.getMinutes() : createDate.getMinutes();
-};
-
-//date format day
-const readyDay = function(fullDate){
-    const createDate = new Date(fullDate);
-    return ((createDate.getDate() >= 1) && (createDate.getDate() <= 9)) ? "0" + createDate.getDate() : createDate.getDate();
-};
-
-//date format month
-const readyMonth = function(fullDate){
-    const createDate = new Date(fullDate);
-    return ((createDate.getMonth() >= 0) && (createDate.getMonth() <= 8)) ? "0" + (createDate.getMonth() + 1) : createDate.getMonth() + 1;
-};
-
-//ready full date
-const readyFullDate = (fullDate, reverse) => {
-    const dateFull = new Date(fullDate);
-    const DATE = new Date();
-    if (reverse === 'reverse'){
-        return ((fullDate === '') || (fullDate === undefined))
-            ? readyDay(DATE) + "-" + readyMonth(DATE) + "-" + DATE.getFullYear() + ' ' + DATE.getHours() + ":" + readyMin(DATE)
-            : readyDay(dateFull) + "-" + readyMonth(dateFull) + "-" + dateFull.getFullYear() + ' ' + dateFull.getHours() + ":" + readyMin(dateFull);
-    } else {
-        return ((fullDate === '') || (fullDate === undefined))
-            ? DATE.getFullYear() + "-" + readyMonth(DATE) + "-" + readyDay(DATE) + ' ' + DATE.getHours() + ":" + readyMin(DATE)
-            : dateFull.getFullYear() + "-" + readyMonth(dateFull) + "-" + readyDay(dateFull) + ' ' + dateFull.getHours() + ":" + readyMin(dateFull);
-    };
-};
-
-//save error logs
-const errorLog = (error,  type = 'error', param = '', req) => {
+const errorLog = (error,  type = 'error', param = '', req = {ip : '', url : ''}) => {
     try {
-        console.log(error);
+        log(param, error, 'error');
         const dir = `./logs`;
-        const error_type = error.from ? `Unauthorized User: ${error.from.id}` : error;
         const log_templates = {
             'error' : `IP: ${req.ip} TIME: ${new Date().toLocaleString()} URL: ${req.url} PARAM: ${param} ERROR: ${error}\n`,
             'access' : `IP: ${req.ip} TIME: ${new Date().toLocaleString()} URL: ${req.url} PARAM: ${param} ERROR: ${error}\n`,
-            'telegram' : `--TELEGRAM-->> TIME: ${new Date().toLocaleString()} - MESSAGE: ${error_type}\n`
+            'telegram' : `--TELEGRAM-->> TIME: ${new Date().toLocaleString()} - MESSAGE: ${error}\n`
         }
         !fs.existsSync(dir) && fs.mkdirSync(dir);
         fs.existsSync(dir) && fs.appendFile(`${dir}/${type}_log.log`, log_templates[type], (error) => {error ? console.log(error) : null});
     } catch (error) {
-        console.log('Error creating logs: ', error);
+        log('Error creating logs: ', error);
     };
 };
 
-//get table record
 const query = async (sql) => {
     return new Promise((resolve, reject) => {
         con.query(sql, function (error, result) {
@@ -174,12 +152,13 @@ module.exports = {
     translit,
     token,
     log,
-    readyFullDate,
     validValue,
     errorLog,
     query,
     autorisation,
     permission,
     clienttoken,
-    addCookies
+    addCookies,
+    date : new ShowDate()
+
 }

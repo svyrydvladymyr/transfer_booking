@@ -1,41 +1,64 @@
 class ShowDate {
-    constructor(){}
-
-    show() {
-
-    }
+    plusZero = (value) => ((value >= 0) && (value <= 9) && (value.toString().length === 1)) ? "0" + value : value;
+    minutes = (date) => this.plusZero(date.getMinutes());
+    hours = (date) => this.plusZero(date.getHours());
+    seconds = (date) => this.plusZero(date.getSeconds());
+    day = (date) => this.plusZero(date.getDate());
+    month = (date) => this.plusZero(date.getMonth() + 1);
+    year = (date) => `${date.getFullYear()}`;
+    show(format = 'hh:mi:ss dd.mm.yyyy', date) {
+        date = date ? new Date(date) : new Date();
+        const year_length = [...format].filter(el => el === 'y').length;
+        const year = year_length === 2 ? this.year(date).slice(2, 4) : this.year(date);
+        return format
+            .replace(/mi/g, `${this.minutes(date)}`)
+            .replace(/hh|h/g, `${this.hours(date)}`)
+            .replace(/ss|s/g, `${this.seconds(date)}`)
+            .replace(/dd|d/g, `${this.day(date)}`)
+            .replace(/mm|m/g, `${this.month(date)}`)
+            .replace(/yy/g, 'y')
+            .replace(/yy/g, 'y')
+            .replace(/y/g, year);
+    };
 };
-const showDate = new ShowDate().show();
+class Calendar extends ShowDate {
+    constructor(){
+        super();
+    }
+    show() {return super.show('dd.mm.yyyy')};
+    // show = () => 'ddddddd';
+};
+const date = new ShowDate();
+const calendar = new Calendar();
+console.log('.........................', calendar.show());
+
+
 
 class Services {
+    metods = {
+        create: "POST",
+        edit: "PUT",
+    }
     constructor(){}
 };
 
-class Templates {
-    constructor(){}
-};
+const service = new Services();
 
-class ModalWindow extends Templates {
-    constructor(){}
-};
 
-class News extends ModalWindow {
-    constructor(){}
-};
 
 
 
 
 //for creating calendar
-const date = new Date();
+const date_calendar = new Date();
 const renderCalendar = (year) => {
-    date.setDate(1);
-    date.setYear(year);
+    date_calendar.setDate(1);
+    date_calendar.setYear(year);
     const monthDays = document.querySelector(".days");
-    const lastDay = new Date(date.getFullYear(), date.getMonth() + 1, 0).getDate();
-    const prevLastDay = new Date(date.getFullYear(), date.getMonth(), 0).getDate();
-    const firstDayIndex = date.getDay();
-    const lastDayIndex = new Date(date.getFullYear(), date.getMonth() + 1, 0).getDay();
+    const lastDay = new Date(date_calendar.getFullYear(), date_calendar.getMonth() + 1, 0).getDate();
+    const prevLastDay = new Date(date_calendar.getFullYear(), date_calendar.getMonth(), 0).getDate();
+    const firstDayIndex = date_calendar.getDay();
+    const lastDayIndex = new Date(date_calendar.getFullYear(), date_calendar.getMonth() + 1, 0).getDay();
     const nextDays = 7 - lastDayIndex - 1;
     let months = [], days = "";
     if (getLang('lang') === 'uk') {
@@ -44,16 +67,16 @@ const renderCalendar = (year) => {
     if (getLang('lang')  === 'en') {
         months = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
     };
-    document.querySelector(".date h1").innerHTML = months[date.getMonth()];
+    document.querySelector(".date h1").innerHTML = months[date_calendar.getMonth()];
     for (let i = firstDayIndex; i > 0; i--) { days += `<div class="prev-date">${prevLastDay - i + 1}</div>` };
     const today = `${new Date().getFullYear()}-${(readyMonth(new Date()))}-${readyDay(new Date())}`;
     for (let i = 1; i <= lastDay; i++) {
-        if ( i === new Date().getDate() && date.getMonth() === new Date().getMonth() && date.getFullYear() === new Date().getFullYear()) {
-            days += `<div class="today" onclick="selectDate('${i}/${readyMonth(date.getMonth())}/${year}')">${i}</div>`;
-        } else if (`${date.getFullYear()}-${readyMonth(date)}-${readyDay(`2022-01-${i}`)}` < today) {
+        if ( i === new Date().getDate() && date_calendar.getMonth() === new Date().getMonth() && date_calendar.getFullYear() === new Date().getFullYear()) {
+            days += `<div class="today" onclick="selectDate('${i}/${readyMonth(date_calendar.getMonth())}/${year}')">${i}</div>`;
+        } else if (`${date_calendar.getFullYear()}-${readyMonth(date_calendar)}-${readyDay(`2022-01-${i}`)}` < today) {
             days += `<div class="prev-date">${i}</div>`;
         } else {
-            days += `<div onclick="selectDate('${i}/${readyMonth(`${year}-${date.getMonth() + 1}-${i}`)}/${year}')">${i}</div>`;
+            days += `<div onclick="selectDate('${i}/${readyMonth(`${year}-${date_calendar.getMonth() + 1}-${i}`)}/${year}')">${i}</div>`;
         };
     };
     for (let i = 1; i <= nextDays; i++) { days += `<div class="next-date">${i}</div>` };
@@ -139,6 +162,465 @@ const selectTime = (type, arrow) => {
     };
 };
 
+class Templates {
+    constructor(){}
+    //TOWNS
+    townSave(data) {
+        const creatingID = !data.town_id ? 'town.creatingTownID(this), ' : '';
+        return `<p class="towns_error">Сталася помилка спробуйте ще раз!</p>
+        <p id="id_town">${data.town_id ? data.town_id : ''}</p>
+        <p class="form_info">Унікальний номер міста</p>
+        <input type="text" id="uk" name="uk" value="${data.name_uk ? data.name_uk : ''}" maxlength="90" placeholder="Назва українською" oninput="${creatingID}validation(this, 'Input')">
+        <p class="town_dup_uk">Така назва вже є в базі!</p>
+        <p class="town_empty_uk">Не може бути пустим!</p>
+        <input type="text" id="en" name="en" value="${data.name_en ? data.name_en : ''}" maxlength="90" placeholder="Name in English" oninput="validation(this, 'Input')">
+        <p class="town_dup_en">Така назва вже є в базі!</p>
+        <p class="town_empty_en">Не може бути пустим!</p>
+        <input type="text" id="ru" name="ru" value="${data.name_ru ? data.name_ru : ''}" maxlength="90" placeholder="Название на русском" oninput="validation(this, 'Input')">
+        <p class="town_dup_ru">Така назва вже є в базі!</p>
+        <p class="town_empty_ru">Не може бути пустим!</p>
+        <p class="form_send" onclick="town.save('${this.town_param}', '${this.town_form}')">Добавити в базу</p>`;
+    }
+    townDel(data) {
+        return `<p id="id_town">${data.id ? data.id : ''}</p>
+        <p class="form_info">Унікальний номер міста</p>
+        <p class="del_info" style="color:#991818;">Підтвердіть видалення!</p>
+        <p class="del_info" style="color:#991818;">Зверніть увагу, що після видалення міста також будуть недоступні маршрути з цим містом</p>
+        <p class="form_send" onclick="town.delete('${data.id ? data.id : ''}')">Видалити остаточно!</p>`;
+    }
+    townRes(data) {
+        return `<p id="id_town">${data.id ? data.id : ''}</p>
+        <p class="form_info">Унікальний номер міста</p>
+        <p class="res_mess">${data.message ? data.message : ''}</p>`;
+    }
+    //NEWS
+    newsSave(data) {
+        return `<div id="load_cover"><img src="../img/loading.gif"></div>
+        <p class="vilid_news" id="vilid_news"></p>
+        <div class="main_info_wrap">
+            <div class="main_foto">
+                <div id="foto_load" style="background-image: ${data.foto ? data.foto : ''}">
+                    <label for="news_foto" id="news_foto_label"></label>
+                    <input type="file" name="news_foto" id="news_foto" accept=".jpg, .jpeg, .png, .bmp" onchange="news.validIMG(event)" hidden />
+                </div>
+                <button class="clear_cover" id="clear_cover" onclick="news.clearImg()">Очистити</button>
+                <button class="remove_cover" id="remove_cover" onclick="news.removeImg()">Видалити</button>
+            </div>
+            <div class="main_info">
+                <textarea name="news_title" id="news_title" maxlength="260" placeholder="Назва статті"
+                    oninput="news.resizeTextarea(this, '60'), validation(this, 'Input', 'news')"
+                    onkeydown="return (event.keyCode!=13);">${data.title ? data.title : ''}</textarea>
+                <textarea name="news_description" id="news_description" maxlength="700" placeholder="Опис статті"
+                    oninput="news.resizeTextarea(this, '100'), validation(this, 'Input', 'news')"
+                    onkeydown="return (event.keyCode!=13);">${data.description ? data.description : ''}</textarea>
+            </div>
+        </div>
+        <div class="news_create"><p>${data.create ? data.create : ''}</p><p>${data.update ? data.update : ''}</p></div>
+        <div class="news_create"><p id="news_alias">${data.alias ? data.alias : ''}</p></div>
+        <div id="editor">${data.article ? data.article : ''}</div>
+        <button class="save_new" id="save_news" onclick="news.save('save')">Зберегти</button>
+        <button class="save_new" id="save_close_news" onclick="news.save('saveclose')">Зберегти і закрити</button>`;
+    }
+    newsDel(data) {
+        return `<p class="del_info" style="color:#991818;">Підтвердіть видалення новини!</p>
+        <p class="form_send" onclick="news.delete('${data.id}')">Видалити остаточно!</p>`
+    }
+    newsList(data) {
+        return `<div class="news${data.target}">
+            <div class="news_body${data.target}">
+                <div class="news_foto${data.target}" ${data.open_btn}>
+                    <img src="${data.cover}" />
+                </div>
+                <div class="news_info${data.target}">
+                    <h4>${data.title}</h4>
+                    ${data.description}
+                    <a class="news_more" href="/blog/${data.alias}"><i class='fas fa-long-arrow-alt-right'></i></a>
+                </div>
+            </div>
+            ${data.adm_btn}
+        </div>`;
+    };
+    newsRes(data) { return `<p class="res_mess">${data.message ? data.message : ''}</p>` }
+
+    menu(data) {
+        return `<p class="edit_menu" onclick="${data.module}.showWindow('${data.module}', 'Save', 'edit', '${data.id}')">Редагувати <i class='far fa-edit'></i></p>
+        <p class="edit_menu" onclick="${data.module}.show('${data.module}', 'Del', {}, '${data.id}')">Видалити <i class='far fa-trash-alt'></i></p>`;
+    }
+
+    template(type, data) {
+        console.log('type template', type);
+        console.log('data template', data);
+
+        let type_res = type;
+        // if (type === 'newsAdd' || type === 'newsEdit') {
+        //     type_res = 'newsSave';
+        // }
+        // if (type === 'townAdd' || type === 'townEdit') {
+        //     type_res = 'townSave';
+        // }
+        if (type === 'newsmenu' || type === 'townmenu') {
+            type_res = 'menu';
+        }
+
+        console.log('type template after', type_res);
+
+        return this[type_res](data);
+    };
+};
+
+class ModalWindow extends Templates {
+    constructor(){
+        super();
+        this.modal_place = $_('.modal_wrap')[0];
+    }
+
+
+    // news(type, data) {
+    //     console.log('news type', type + data);
+    //     return type + data
+    // };
+
+    closeWrap(event) {
+        let valClose = true;
+        for (let element of event.target.children) {
+            if (element.classList && element.classList.contains('modal_place')) {
+                valClose = false;
+            };
+        };
+        if (!valClose) { this.modal_place.innerHTML = '' };
+    };
+    closeBtn() { this.modal_place.innerHTML = '' };
+    closeSub() { $_('.wrap_sub_modal')[0].innerHTML = '' };
+
+
+
+    show(module, type, data = {}, id) {
+        const window_type = module + type;
+
+        // console.log('-----', JSON.parse(data_menu));
+        // const data = JSON.parse(data_menu);
+
+        console.log('window_type', window_type);
+        console.log('data show', data);
+        console.log('data show', data.id);
+
+        data.module = module;
+        id && (data.id = id);
+
+        console.log('data show', data);
+
+        const place = this.modal_place;
+
+        const wrap_close_arr = ['townSave', 'transferEdit', 'transferAdd', 'transferTowns', 'transferTimes', 'newsSave'];
+        const wrap_close = wrap_close_arr.includes(window_type) ? '' : `onclick="${module}.closeWrap(event)"`;
+        const no_close_btn = ['transferTowns', 'transferTimes'].includes(window_type) ? '' : `<i class="fa fa-times" onclick="${module}.closeBtn()"></i>`;
+        place.innerHTML =  `<div class="modal_body" ${wrap_close}>
+            <div class="modal_close">${no_close_btn}</div>
+            <div class="modal_place" id="${window_type}" style="${window_type === "newsSave" ? 'max-width: 90%' : '' }">
+                ${this.template(window_type, data)}
+            </div>
+            <div class="wrap_sub_modal"></div>
+        </div>`;
+    };
+};
+
+class News extends ModalWindow {
+    news_status = '';
+    news_token = '';
+    news_foto = '';
+    temp_foto = '';
+    constructor(){ super() }
+
+    async showWindow(module, type, param, id){
+        let data = {};
+        this.news_status = param;
+        this.news_token = param === 'edit' ? id : generate_token(6);
+        if (param === 'edit' ) {
+            this.news_status = 'edit';
+            data = await this.open();
+        };
+        this.show(module, type, data);
+        const toolbarOptions = [
+            ['bold', 'italic', 'underline', 'strike'],
+            [{ 'list': 'ordered'}, { 'list': 'bullet' }],
+            [{ 'header': [1, 2, 3, 4, 5, 6, false] }],
+            [{ 'align': [] }],
+            ['image'],
+            ['link'],
+            ['clean']
+        ];
+        new Quill('#editor', {
+            modules: { toolbar: toolbarOptions },
+            theme: 'snow'
+        });
+        $_('#news_foto')[0].addEventListener("change", async (event) => {
+            var file = event.target.files[0];
+            var reader = new FileReader();
+            reader.onloadend = () => {
+                this.temp_foto = this.news_foto === "" ? this.temp_foto : this.news_foto;
+                $_('#foto_load')[0].style.backgroundImage = `url(${reader.result})`;
+                this.news_foto = reader.result;
+            };
+            if(file){
+                reader.readAsDataURL(file);
+            };
+        });
+        this.resizeTextarea($_('#news_title')[0], '60')
+        this.resizeTextarea($_('#news_description')[0], '100');
+        if (param === 'edit' ) {
+            const editor = $_('.ql-editor')[0];
+            editor.innerHTML = '';
+            [...data.article].forEach(element => {
+                editor.innerHTML += element;
+            });
+        };
+    }
+
+    resizeTextarea(el, h) {
+        el.style.height = "";
+        el.style.height = el.scrollHeight + "px";
+        el.style.overflow = (el.scrollHeight > +h) ? 'auto' : 'hidden';
+    }
+
+    message(text = '', classs = 'mmm') {
+        const news_vilid = $_('#vilid_news')[0];
+        if (news_vilid) {
+            news_vilid.innerHTML = text;
+            news_vilid.classList.remove('vilid_news_bad');
+            news_vilid.classList.remove('vilid_news_good');
+            news_vilid.classList.add(classs);
+        };
+    }
+
+    clearImg() {
+        $_('#news_foto')[0].type = "text";
+        $_('#news_foto')[0].type = "file";
+        this.news_foto = this.temp_foto;
+        $_('#foto_load')[0].style.backgroundImage = (this.temp_foto.length < 5)
+            ? `url(/img/nofoto.png)`
+            : `url(/img/news/${this.news_token}/${this.news_foto}_cover_resized_footer.jpg)`;
+    }
+
+    removeImg() {
+        $_('#foto_load')[0].style.backgroundImage = `url(/img/nofoto.png)`;
+        $_('#news_foto')[0].type = "text";
+        $_('#news_foto')[0].type = "file";
+        this.news_foto = "";
+    }
+
+    validIMG(event) {
+        const files = event.target.files;
+        if (!['image/jpg', 'image/jpeg', 'image/png', 'image/bmp'].includes(files[0].type)) {
+            this.message(`Недоступний формат. Доступними є: jpg, jpeg, png`, 'vilid_news_bad');
+            $_('#news_foto')[0].value = '';
+        } else {
+            if (files[0].size > 5000000) {
+                this.message(`Надто великий розмір. Максимально 5Mb`, 'vilid_news_bad');
+                $_('#news_foto')[0].value = '';
+            } else {
+                this.message('');
+            };
+        };
+    }
+
+    async createGallery(img_base64, formData) {
+        return new Promise((resolve) => {
+            const image_names = Object.keys(img_base64);
+            if (image_names.length > 0) {
+                let x = 0;
+                Object.entries(img_base64).forEach(async ([key, value]) => {
+                    const base64Cover = await fetch(`${value}`);
+                    const foto = await base64Cover.blob();
+                    formData.append("gallery", foto, `${key}.jpg`);
+                    (++x === image_names.length) && resolve(formData);
+                });
+            } else {
+                resolve(formData);
+            };
+        });
+    }
+
+    async notEmpty(fields) {
+        const valid = [], fields_names = [], names = [' НАЗВА', ' ОПИС'];
+        [...fields].forEach((element, index) => {
+            if (element === '' || element === undefined) {
+                valid.push(false);
+                fields_names.push(names[index]);
+            };
+        });
+        const trueSendNews = (!valid.includes(false)) ? true : false;
+        this.message(!trueSendNews ? `<span>Поля є обовяковими: ${fields_names} </span>` : '', 'vilid_news_bad');
+        return trueSendNews;
+    }
+
+    async save(param) {
+        const save_cover = $_('#load_cover')[0];
+        const news_title = $_('#news_title')[0].value;
+        const news_description = $_('#news_description')[0].value;
+        const news_editor = $_('.ql-editor')[0].children;
+        const validating_fields = [news_title, news_description];
+        // console.log('news_save_status', param);
+        // console.log('news_status', this.news_status);
+        // console.log('news_token', this.news_token);
+        // console.log('news_title', news_title);
+        // console.log('news_description', news_description);
+        // console.log('news_foto', this.news_foto);
+        // console.log('news_editor', news_editor);
+        if (await this.notEmpty(validating_fields)) {
+            save_cover.style.display = 'flex';
+            const img_arr = $_('.ql-editor')[0].getElementsByTagName('img');
+            const img_base64 = {};
+            const img_https_names = [];
+            [...img_arr].forEach(function(element) {
+                if (element.src.includes('base64')) {
+                    const img_token = generate_token(9)
+                    img_base64[img_token] = element.src;
+                    element.src = img_token;
+                };
+                if (element.src.includes('http')) {
+                    img_https_names.push(element.src);
+                };
+            });
+            const article = [...news_editor].map((element) => element.outerHTML).join("\n");
+            const cover_name = (!this.news_foto.includes('base64')) ? this.news_foto : generate_token(6);
+            let formData = new FormData();
+            const obj = {
+                token: this.news_token,
+                title: news_title,
+                description: news_description,
+                cover: cover_name,
+                article: article,
+                gallery: Object.keys(img_base64),
+                httpnames: img_https_names
+            };
+            formData.append("obj", JSON.stringify(obj));
+            formData.append("token", this.news_token);
+            if (this.news_foto && this.news_foto.includes('base64')) {
+                const base64Cover = await fetch(`${this.news_foto}`);
+                formData.append("cover", await base64Cover.blob(), `${cover_name}_cover.jpg`);
+            };
+            await this.createGallery(img_base64, formData);
+            fetch(`/blog/${this.news_status}`, {
+                method: 'POST',
+                body: formData
+            })
+            .then(response => {
+                if (response.status === 200) {
+                    return response.json()
+                } else {
+                    if (response.status === 201) { news_status = 'edit' };
+                    throw new Error('Article is not saved!')
+                };
+            })
+            .then(result => {
+                // console.log('result', result);
+                this.closeBtn();
+                (param === 'save')
+                    ? this.showWindow('news', 'Save', 'edit', this.news_token)
+                    : (this.show('news', 'Res', { message: 'Новину збережено!'}), setTimeout(() => {
+                        this.closeBtn();
+                        this.list();
+                    }, 3000));
+            })
+            .finally(() => {
+                save_cover.style.display = 'none';
+            })
+            .catch(error => {
+                this.message(`<span>Виникла помилка під час збереження статті. Спробуйте зберегти ще раз.</span>`, 'vilid_news_bad');
+                [...img_arr].forEach(function(element) {
+                    const img_keys = Object.keys(img_base64);
+                    const original_img = element.src.split('/')[element.src.split('/').length -1].replace("/", "");
+                    if (img_keys.includes(original_img)) {
+                        element.src = img_base64[original_img];
+                    };
+                });
+                this.list();
+                this.news_status = this.news_status === 'create' ? this.news_status : 'edit';
+                console.log(error);
+            });
+        };
+    };
+
+    async open() {
+        return fetch(`/blog/open/${this.news_token}`, { method: 'GET' })
+        .then(response => response.status === 200 && response.json())
+        .then(resultat => {
+            const data = {};
+            this.news_foto = resultat.res.cover;
+            const port = (window.location.hostname.includes('127.0.0.1')) ? ":8054" : "";
+            const alias = `
+                <a href="/blog/${resultat.res.alias}"
+                    title="Створюється автоматично із назви статті!"
+                    target="_blank">
+                    ${window.location.hostname}${port}/blog/${resultat.res.alias}
+                </a>`;
+            data.news_foto = this.news_foto,
+            data.article = resultat.res.article.split("\n"),
+            data.alias = alias,
+            data.title = resultat.res.title,
+            data.description = resultat.res.description,
+            data.create = `Створено: <span>${resultat.res.date_create}</span>`;
+            if (this.news_foto !== '') {
+                this.temp_foto = this.news_foto;
+                data.foto = `url(/img/news/${this.news_token}/${this.news_foto}_cover_resized_footer.jpg)`;
+            };
+            if (resultat.res.date_update !== '') {
+                data.update = `Оновлено: <span>${resultat.res.date_update}</span>`;
+            };
+            return data;
+        });
+    }
+
+    delete(id) {
+        fetch(`/blog/delete/${id}`, { method: 'DELETE' })
+        .then(response => {
+            if (response.status === 400) { throw new Error('Invalid') };
+            if (response.status === 200) { this.show('news', 'Res', { message: 'Новину видалено!' }) };
+        })
+        .finally(() => {
+            setTimeout(() => {
+                this.closeBtn();
+                this.list();
+            }, 3000)
+        })
+        .catch(() => {
+            this.show('news', 'Res', { message: '<span style="color:red;"> Виникла помилка під час видалення статті. Спробуйте ще раз.</span>'});
+        });
+    }
+
+    list(count = '1000', target = '_admin') {
+        fetch(`/blog/list/${count}`, { method: 'GET' })
+        .then(response => response.status === 200 && response.json())
+        .then(resultat => {
+            const news_list = $_(`.news_list${target}`)[0];
+            if (news_list) {
+                const data = {};
+                news_list.innerHTML = '';
+                resultat.res.forEach(element => {
+                    const menu_param =  JSON.stringify({ id: element.id_blog, module: 'news' });
+
+                    console.log('aaaaaaaaaaaaaa', menu_param);
+                    data.target = target;
+                    data.target = target;
+                    data.title = element.title;
+                    data.alias = element.alias;
+                    data.open_btn = target === '_footer' ? `onclick="window.open('/blog/${element.alias}')"` : '';
+                    data.cover = element.cover !== '' ? `/img/news/${element.id_blog}/${element.cover}_cover_resized${target}.jpg`: '/img/nofoto.png';
+                    data.description = target !== '_footer' ? `<p style="font-size:12px;">${element.description}</p>` : '';
+                    data.adm_btn = target === '_admin' ? `
+                        <i class='fas fa-ellipsis-h' onclick='news.show("news", "menu", {}, "${element.id_blog}")'></i>
+                        <i class="fa fa-share" onclick="window.open('/blog/${element.alias}')"></i>` : '';
+                    news_list.innerHTML += `${this.template('newsList', data)}`;
+                });
+            };
+        });
+    }
+};
+
+const news = new News();
+
+
+
 //close modal window
 const closeSubModal = () => { $_('.wrap_sub_modal')[0].innerHTML = '' };
 const closeModalX = () => {modal.innerHTML = ''};
@@ -178,91 +660,88 @@ const showModal = function(type, obj, el) {
     ['townAdd', 'townAddRes', 'townEdit', 'townEditRes', 'townDel', 'townDelRes',
     'transferAdd', 'transferAddRes', 'transferEdit', 'transferEditRes', 'transferDel', 'transferDelRes',
     'mainformFrom', 'mainformTo', 'mainformCalendar',
-    'editMenuTown', 'editMenuTransfer', 'editMenuNews',
-    'orderInfo', 'confirmPhone', 'feedbackInfo',
-    'newsAdd', 'newsEdit', 'newsEditRes', 'newsDel', 'newsDelRes', 'newsDelResBad'].includes(type)
+    'editMenuTown', 'editMenuTransfer',
+    'orderInfo', 'confirmPhone', 'feedbackInfo'].includes(type)
         ? modal.innerHTML = modalWindowWrap(type) : null;
 
 
-    if (type === 'newsEdit' || type === 'newsAdd') {
-        var toolbarOptions = [
-            ['bold', 'italic', 'underline', 'strike'],
-            [{ 'list': 'ordered'}, { 'list': 'bullet' }],
-            [{ 'header': [1, 2, 3, 4, 5, 6, false] }],
-            [{ 'align': [] }],
-            ['image'],
-            ['link'],
-            ['clean']
-        ];
-        var editor = new Quill('#editor', {
-            modules: {
-              toolbar: toolbarOptions
-            },
-            theme: 'snow'
-        });
-        // const editor_body = $_('.ql-editor > p');
-        // console.log('editor_body', editor_body);
-        news_status = obj;
-        news_token = obj === 'edit' ? el : generate_token(6);
-        $_('#news_foto')[0].addEventListener("change", async function (event){
-            var file = event.target.files[0];
-            var reader = new FileReader();
-            reader.onloadend = function(){
-                temp_foto = news_foto === "" ? temp_foto : news_foto;
-                $_('#foto_load')[0].style.backgroundImage = `url(${reader.result})`;
-                news_foto = reader.result;
-            };
-            if(file){
-                reader.readAsDataURL(file);
-            };
-        });
+    // if (type === 'newsEdit' || type === 'newsAdd') {
+    //     const toolbarOptions = [
+    //         ['bold', 'italic', 'underline', 'strike'],
+    //         [{ 'list': 'ordered'}, { 'list': 'bullet' }],
+    //         [{ 'header': [1, 2, 3, 4, 5, 6, false] }],
+    //         [{ 'align': [] }],
+    //         ['image'],
+    //         ['link'],
+    //         ['clean']
+    //     ];
+    //     const editor = new Quill('#editor', {
+    //         modules: {
+    //           toolbar: toolbarOptions
+    //         },
+    //         theme: 'snow'
+    //     });
+    //     news_status = obj;
+    //     news_token = obj === 'edit' ? el : generate_token(6);
+    //     $_('#news_foto')[0].addEventListener("change", async function (event){
+    //         var file = event.target.files[0];
+    //         var reader = new FileReader();
+    //         reader.onloadend = function(){
+    //             temp_foto = news_foto === "" ? temp_foto : news_foto;
+    //             $_('#foto_load')[0].style.backgroundImage = `url(${reader.result})`;
+    //             news_foto = reader.result;
+    //         };
+    //         if(file){
+    //             reader.readAsDataURL(file);
+    //         };
+    //     });
 
-        if (type === 'newsEdit' ) {
-            news_status = 'edit';
-            send({ id: el }, `/blog/open/${news_token}`, (result) => {
-                const resultat = JSON.parse(result);
-                const editior = $_('.ql-editor')[0];
-                if (resultat.res) {
-                    news_foto = resultat.res.cover;
-                    const article = resultat.res.article.split("\n");
+    //     if (type === 'newsEdit' ) {
+    //         news_status = 'edit';
+    //         send({ id: el }, `/blog/open/${news_token}`, (result) => {
+    //             const resultat = JSON.parse(result);
+    //             const editior = $_('.ql-editor')[0];
+    //             if (resultat.res) {
+    //                 news_foto = resultat.res.cover;
+    //                 const article = resultat.res.article.split("\n");
 
-                    console.log('article', article);
+    //                 console.log('article', article);
 
-                    const port = (window.location.hostname.includes('127.0.0.1')) ? ":8054" : "";
-                    $_('#news_alias')[0].innerHTML = `
-                    <a href="/blog/${resultat.res.alias}"
-                        title="Створюється автоматично із назви статті!"
-                        target="_blank">
-                        ${window.location.hostname}${port}/blog/${resultat.res.alias}
-                    </a>`;
-                    $_('#news_title')[0].value = resultat.res.title;
-                    $_('#news_description')[0].value = resultat.res.description;
-                    $_('#news_create')[0].innerHTML = `Створено: <span>${resultat.res.date_create}</span>`;
-                    if (news_foto !== '') {
-                        temp_foto = news_foto;
-                        $_('#foto_load')[0].style.backgroundImage = `url(/img/news/${news_token}/${news_foto}_cover_resized_footer.jpg)`;
-                    };
-                    if (resultat.res.date_update !== '') {
-                        $_('#news_update')[0].innerHTML = `Оновлено: <span>${resultat.res.date_update}</span>`;
-                    };
-                    editior.innerHTML = '';
-                    [...article].forEach(element => {
-                        editior.innerHTML += element;
-                    });
-                    resizeTextarea($_('#news_title')[0], '60')
-                    resizeTextarea($_('#news_description')[0], '100');
-                };
-            }, 'GET');
-        };
-    };
-    if (type === 'editMenuNews') {
-        $_(`#${type}`)[0].innerHTML = `
-            <p class="edit_menu" onclick="showModal('newsEdit', 'edit', '${el}')">Редагувати <i class='far fa-edit'></i></p>
-            <p class="edit_menu" onclick="showModal('newsDel', 'delete', '${el}')">Видалити <i class='far fa-trash-alt'></i></p>`;
-    };
-    if (type === 'newsDel') {
-        $_(`#${type} > #id_news`)[0].innerHTML = el
-    };
+    //                 const port = (window.location.hostname.includes('127.0.0.1')) ? ":8054" : "";
+    //                 $_('#news_alias')[0].innerHTML = `
+    //                 <a href="/blog/${resultat.res.alias}"
+    //                     title="Створюється автоматично із назви статті!"
+    //                     target="_blank">
+    //                     ${window.location.hostname}${port}/blog/${resultat.res.alias}
+    //                 </a>`;
+    //                 $_('#news_title')[0].value = resultat.res.title;
+    //                 $_('#news_description')[0].value = resultat.res.description;
+    //                 $_('#news_create')[0].innerHTML = `Створено: <span>${resultat.res.date_create}</span>`;
+    //                 if (news_foto !== '') {
+    //                     temp_foto = news_foto;
+    //                     $_('#foto_load')[0].style.backgroundImage = `url(/img/news/${news_token}/${news_foto}_cover_resized_footer.jpg)`;
+    //                 };
+    //                 if (resultat.res.date_update !== '') {
+    //                     $_('#news_update')[0].innerHTML = `Оновлено: <span>${resultat.res.date_update}</span>`;
+    //                 };
+    //                 editior.innerHTML = '';
+    //                 [...article].forEach(element => {
+    //                     editior.innerHTML += element;
+    //                 });
+    //                 resizeTextarea($_('#news_title')[0], '60')
+    //                 resizeTextarea($_('#news_description')[0], '100');
+    //             };
+    //         }, 'GET');
+    //     };
+    // };
+    // if (type === 'editMenuNews') {
+    //     $_(`#${type}`)[0].innerHTML = `
+    //         <p class="edit_menu" onclick="showModal('newsEdit', 'edit', '${el}')">Редагувати <i class='far fa-edit'></i></p>
+    //         <p class="edit_menu" onclick="showModal('newsDel', 'delete', '${el}')">Видалити <i class='far fa-trash-alt'></i></p>`;
+    // };
+    // if (type === 'newsDel') {
+    //     $_(`#${type} > #id_news`)[0].innerHTML = el
+    // };
 
 
     if (type === 'feedbackInfo') {
@@ -454,20 +933,27 @@ const showModal = function(type, obj, el) {
             };
         }, 'GET');
     };
+
+
+
     //____TOWNS
-    if (type === 'townAdd') {
-        idTownPlace = $_('#id_town')[0];
-        tokenTown = generate_token(6);
-    };
-    if (type === 'townEdit') {
-        $_(`#${type} > #id_town`)[0].innerHTML = obj.id;
-        $_(`#${type} > #uk`)[0].value = obj.uk;
-        $_(`#${type} > #en`)[0].value = obj.en;
-        $_(`#${type} > #ru`)[0].value = obj.ru;
-    };
-    if (type === 'townDel') {
-        $_(`#${type} > #id_town`)[0].innerHTML = obj.id
-    };
+    // if (type === 'townAdd') {
+    //     idTownPlace = $_('#id_town')[0];
+    //     tokenTown = generate_token(6);
+    // };
+    // if (type === 'townEdit') {
+    //     $_(`#${type} > #id_town`)[0].innerHTML = obj.id;
+    //     $_(`#${type} > #uk`)[0].value = obj.uk;
+    //     $_(`#${type} > #en`)[0].value = obj.en;
+    //     $_(`#${type} > #ru`)[0].value = obj.ru;
+    // };
+    // if (type === 'townDel') {
+    //     $_(`#${type} > #id_town`)[0].innerHTML = obj.id
+    // };
+
+
+
+
     //____TRANSFERS
     if (type === 'transferEdit') {
         const timeList = [];
@@ -618,6 +1104,7 @@ const validation = (el, type, form = '') => {
         if (type ==='Input') {
             $_(`.town_empty_${el.id}`)[0].style.display = 'none';
             $_(`.town_dup_${el.id}`)[0].style.display = 'none';
+            $_(`.towns_error`)[0].style.display = 'none';
         } else {
             el.classList.remove('err_input');
             checkForm();
@@ -717,15 +1204,7 @@ const validationChildren = (el) => {
         childrenValue.classList.remove('err_input');
     };
 };
-const resizeTextarea = (el, h) => {
-    el.style.height = "";
-    el.style.height = el.scrollHeight + "px";
-    if (el.scrollHeight > +h) {
-        el.style.overflow = 'auto';
-    } else {
-        el.style.overflow = 'hidden';
-    };
-};
+
 
 //for back to previous tab
 const mainFormBack = () => {
@@ -1141,22 +1620,6 @@ const loadVariablesList = () => {
     }, 'GET');
 };
 
-//load towns list
-const loadTownsList = () => {
-    send({} , `/towns/list`, (result) => {
-        const resultat = JSON.parse(result);
-        if (resultat.res) {
-            const tawns_list = $_('.tawns_list')[0];
-            tawns_list.innerHTML = '';
-            resultat.res.forEach(element => {
-                tawns_list.innerHTML += `
-                <div class="town"><p>${element.name_uk}</p>
-                <i class='fas fa-ellipsis-h' onclick="showModal('editMenuTown', {'id' : '${element.town_id}', 'uk' : '${element.name_uk}', 'en' : '${element.name_en}', 'ru' : '${element.name_ru}'})"></i>
-                </div>`
-            });
-        };
-    }, 'GET');
-};
 
 //for save transfer list position
 const savePosition = () => {
@@ -1217,58 +1680,149 @@ const loadTransfersList = () => {
     }, 'GET');
 };
 
-//add to DB Towns
-const formSend = (formID) => {
-    let obj = {}, trueSend = true, metod = 'POST', url = 'create';
-    if ((formID === 'townAdd') || (formID === 'townEdit')) {
-        const id_town = $_(`#${formID} > #id_town`)[0].innerHTML;
-        const uk_town = $_(`#${formID} > #uk`)[0].value.replace(RegExpArr.RegExpInput , "");
-        const en_town = $_(`#${formID} > #en`)[0].value.replace(RegExpArr.RegExpInput , "");
-        const ru_town = $_(`#${formID} > #ru`)[0].value.replace(RegExpArr.RegExpInput , "");
-        obj = {"id" : id_town, "uk" : uk_town, "en" : en_town, "ru" : ru_town, "param" : formID};
+
+class Towns extends ModalWindow {
+    town_token = '';
+    town_id_place = '';
+    town_id = '';
+    town_form = '';
+    town_param = '';
+    trueSend = false;
+    constructor(){ super() }
+
+    creatingTownID(element) {
+        const id = `${transliterate(element.value).replace( /[^a-zA-ZiIіІ]/g, "" )}_${this.town_token}`;
+        this.town_id_place.innerHTML = id;
+        this.town_id = id;
+    };
+
+    async showWindow(module, type, param, id){
+        let data = {};
+        this.town_form = module + type;
+        this.town_param = param;
+        this.town_token = generate_token(6);
+        if (param === 'edit' ) {
+            data = await this.open(id);
+            this.town_id = data.town_id;
+        };
+        this.show(module, 'Save', data);
+        this.town_id_place = $_('#id_town')[0];
+    }
+
+    notEmpty(form) {
+        const valid = [];
         ["uk", "en", "ru"].forEach(element => {
-            if ($_(`#${formID} > #${element}`)[0].value === '') {
+            const field = $_(`#${form} > #${element}`)[0];
+            if (field.value === '' || field.value === undefined) {
                 $_(`.town_empty_${element}`)[0].style.display = 'block';
-                trueSend = false;
+                valid.push(false);
             };
         });
-    };
-    if (formID === 'townEdit') {
-        metod = "PUT";
-        url = 'update';
+        return (!valid.includes(false)) ? true : false;
     }
-    if (formID === 'townDel') {
-        const id_town = $_(`#${formID} > #id_town`)[0].innerHTML;
-        obj = {"id" : id_town, "param" : formID};
-        metod = "DELETE";
-        url = 'delete';
+
+    data(form) {
+        const uk = $_(`#${form} > #uk`)[0].value.replace(RegExpArr.RegExpInput , "");
+        const en = $_(`#${form} > #en`)[0].value.replace(RegExpArr.RegExpInput , "");
+        const ru = $_(`#${form} > #ru`)[0].value.replace(RegExpArr.RegExpInput , "");
+        return {"id" : this.town_id, "uk" : uk, "en" : en, "ru" : ru};
     }
-    if (trueSend) {
 
-        console.log('obj', obj);
+    async save(param, form) {
+        console.log('param', param);
+        console.log('form', form);
+        console.log('emmmpppttttyyy', this.notEmpty(form));
+        console.log('ddddaaaattttaaaa', this.data(form));
+        console.log('service', service.metods[param]);
 
-        send(obj, `/towns/${url}`, (result) => {
-            const resultat = JSON.parse(result);
-            if (resultat.res) {
-                console.log(resultat.res);
-                showModal(`${formID}Res`);
-                $_('#id_town')[0].innerHTML = obj.id;
-                setTimeout(() => { modal.innerHTML = '' }, 2000);
-                loadTownsList();
-                (formID === 'townDel') ? loadTransfersList() : null;
-            }
-            if (resultat.DUP) {
-                for (const key in obj) {
-                    if (Object.hasOwnProperty.call(obj, key)) {
-                        if (obj[key] === resultat.DUP) {
-                            $_(`.town_dup_${key}`)[0].style.display = 'block';
+
+        if (this.notEmpty(form)) {
+            const body = this.data(form);
+            fetch(`/towns/${param}`, {
+                method: service.metods[param],
+                headers: { 'Content-Type': 'application/json;charset=utf-8' },
+                body: JSON.stringify(body) })
+            .then(response => response.status === 200 && response.json())
+            .then(resultat => {
+                console.log('resultat', resultat);
+                if (!resultat) { throw new Error() };
+                if (resultat.res) {
+                    this.show('town', 'Res', {
+                        id: this.town_id,
+                        message: param === 'create' ? 'Місто додано до списку!' : 'Зміни внесено!'}
+                    );
+                    setTimeout(() => {
+                        this.closeBtn();
+                        this.list()
+                    }, 2000);
+                };
+                if (resultat.DUP) {
+                    for (const key in body) {
+                        if (Object.hasOwnProperty.call(body, key)) {
+                            if (body[key] === resultat.DUP) {
+                                $_(`.town_dup_${key}`)[0].style.display = 'block';
+                            };
                         };
                     };
                 };
+            })
+            .catch(() => {
+                $_(`.towns_error`)[0].style.display = 'block';
+            });
+        };
+    }
+
+    async open(id) {
+        return new Promise((resolve, reject) => {
+            return fetch(`/towns/open`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json;charset=utf-8' },
+                body: JSON.stringify({id})
+            })
+            .then(response => response.status === 200 && response.json())
+            .then(resultat => { resultat.res && resolve(resultat.res[0]) });
+        });
+    }
+
+    list() {
+        fetch(`/towns/list`, { method: 'GET' })
+        .then(response => response.status === 200 && response.json())
+        .then(resultat => {
+
+            console.log('list town',resultat);
+
+            if (resultat.res) {
+                const tawns_list = $_('.tawns_list')[0];
+                tawns_list.innerHTML = '';
+                resultat.res.forEach(element => {
+                    tawns_list.innerHTML += `
+                    <div class="town"><p>${element.name_uk}</p>
+                    <i class='fas fa-ellipsis-h' onclick="town.show('town', 'menu', {}, '${ element.town_id }')"></i>
+                    </div>`
+                });
             };
-        }, metod);
-    };
-};
+        });
+    }
+
+    delete(id) {
+        fetch(`/towns/delete/${id}`, { method: 'DELETE' })
+        .then(response => {
+            if (response.status === 400) { throw new Error('Invalid') };
+            if (response.status === 200) { this.show('town', 'Res', { message: 'Місто видалено!' }) };
+        })
+        .finally(() => {
+            setTimeout(() => {
+                this.closeBtn();
+                this.list();
+            }, 3000)
+        })
+        .catch(() => {
+            this.show('town', 'Res', { message: '<span style="color:red;"> Виникла помилка під час видалення. Спробуйте ще раз.</span>'});
+        });
+    }
+}
+
+const town = new Towns();
 
 //add to DB Transfers
 const formSendTransfer = (formID) => {
@@ -1344,228 +1898,6 @@ const formSendTransfer = (formID) => {
 };
 
 
-//for showing news messge
-const messageNews = (text = '', classs = 'mmm') => {
-    const news_vilid = $_('#vilid_news')[0];
-    if (news_vilid) {
-        news_vilid.innerHTML = text;
-        news_vilid.classList.remove('vilid_news_bad');
-        news_vilid.classList.remove('vilid_news_good');
-        news_vilid.classList.add(classs);
-    };
-};
-
-//for validation file input
-const validIMG = (event) => {
-    const files = event.target.files;
-    if (!['image/jpg', 'image/jpeg', 'image/png', 'image/bmp'].includes(files[0].type)) {
-        messageNews(`Недоступний формат. Доступними є: jpg, jpeg, png`, 'vilid_news_bad');
-        $_('#news_foto')[0].value = '';
-    } else {
-        if (files[0].size > 5000000) {
-            messageNews(`Надто великий розмір. Максимально 5Mb`, 'vilid_news_bad');
-            $_('#news_foto')[0].value = '';
-        } else {
-            messageNews('');
-        };
-    };
-};
-
-const createGallery = async (img_base64, formData) => {
-    return new Promise((resolve) => {
-        const image_names = Object.keys(img_base64);
-        if (image_names.length > 0) {
-            let x = 0;
-            Object.entries(img_base64).forEach(async ([key, value]) => {
-                const base64Cover = await fetch(`${value}`);
-                const foto = await base64Cover.blob();
-                formData.append("gallery", foto, `${key}.jpg`);
-                (++x === image_names.length) && resolve(formData);
-            });
-        } else {
-            resolve(formData);
-        };
-    });
-};
-
-const clearCoverImg = () => {
-    $_('#news_foto')[0].type = "text";
-    $_('#news_foto')[0].type = "file";
-    news_foto = temp_foto;
-    $_('#foto_load')[0].style.backgroundImage = temp_foto.length < 5 ? `url(/img/nofoto.png)` : `url(/img/news/${news_token}/${news_foto}_cover_resized_footer.jpg)`;
-};
-
-const removeCoverImg = () => {
-    $_('#foto_load')[0].style.backgroundImage = `url(/img/nofoto.png)`;
-    $_('#news_foto')[0].type = "text";
-    $_('#news_foto')[0].type = "file";
-    news_foto = "";
-};
-
-//for saving news article
-const saveNews = async (param) => {
-    let trueSendNews = false;
-    const valid_empty = [], valid_fields = [], field_names = [' назва', ' опис'];
-    const save_cover = $_('#load_cover')[0];
-    const news_title = $_('#news_title')[0].value;
-    const news_description = $_('#news_description')[0].value;
-    const news_editor = $_('.ql-editor')[0].children;
-    [news_title, news_description].forEach((element, index) => {
-        if (element === '' || element === undefined) {
-            valid_empty.push(false);
-            valid_fields.push(field_names[index]);
-        };
-    });
-    if (!valid_empty.includes(false)) {
-        trueSendNews = true;
-        messageNews('');
-    } else {
-        trueSendNews = false;
-        messageNews(`<span>Поля є обовяковими: ${valid_fields} </span>`, 'vilid_news_bad');
-    };
-
-    console.log('news_save_status', param);
-    console.log('news_status', news_status);
-    console.log('news_token', news_token);
-    console.log('news_title', news_title);
-    console.log('news_description', news_description);
-    console.log('news_foto', news_foto);
-    console.log('news_editor', news_editor);
-
-    if (trueSendNews) {
-        save_cover.style.display = 'flex';
-        const img_arr = $_('.ql-editor')[0].getElementsByTagName('img');
-        const img_base64 = {};
-        const img_https_names = [];
-        [...img_arr].forEach(function(element) {
-            if (element.src.includes('base64')) {
-                const img_token = generate_token(9)
-                img_base64[img_token] = element.src;
-                element.src = img_token;
-            };
-            if (element.src.includes('http')) {
-                img_https_names.push(element.src);
-            };
-        });
-        const article = [...news_editor].map((element) => element.outerHTML).join("\n");
-        const cover_name = (!news_foto.includes('base64')) ? news_foto : generate_token(6);
-        let formData = new FormData();
-        const obj = {
-            token: news_token,
-            title: news_title,
-            description: news_description,
-            cover: cover_name,
-            article: article,
-            gallery: Object.keys(img_base64),
-            httpnames: img_https_names
-        };
-        formData.append("obj", JSON.stringify(obj));
-        formData.append("token", news_token);
-        if (news_foto && news_foto.includes('base64')) {
-            const base64Cover = await fetch(`${news_foto}`);
-            formData.append("cover", await base64Cover.blob(), `${cover_name}_cover.jpg`);
-        };
-        await createGallery(img_base64, formData);
-        fetch(`/blog/${news_status}`, {
-            method: 'POST',
-            body: formData
-        })
-        .then(response => {
-            if (response.status === 200) {
-                return response.json()
-            } else {
-                if (response.status === 201) { news_status = 'edit' };
-                throw new Error('Article is not saved!')
-            };
-        })
-        .then(result => {
-
-            console.log('result', result);
-
-            closeModalX();
-            (param === 'save')
-                ? showModal('newsEdit', 'edit', news_token)
-                : (showModal('newsEditRes'), setTimeout(() => {
-                    closeModalX();
-                    loadNewsList();
-                }, 3000));
-        })
-        .finally(() => {
-            save_cover.style.display = 'none';
-        })
-        .catch(error => {
-            messageNews(`<span>Виникла помилка під час збереження статті. Спробуйте зберегти ще раз.</span>`, 'vilid_news_bad');
-            [...img_arr].forEach(function(element) {
-                const img_keys = Object.keys(img_base64);
-                const original_img = element.src.split('/')[element.src.split('/').length -1].replace("/", "");
-                if (img_keys.includes(original_img)) {
-                    element.src = img_base64[original_img];
-                };
-            });
-            loadNewsList();
-            news_status = news_status === 'create' ? news_status : 'edit';
-            console.log(error);
-        });
-    };
-};
-
-//load news list
-const loadNewsList = (count = '1000', target = '_admin') => {
-    fetch(`/blog/list/${count}`, { method: 'GET' })
-    .then(response => response.status === 200 && response.json())
-    .then(resultat => {
-        const news_list = $_(`.news_list${target}`)[0];
-        if (news_list) {
-            news_list.innerHTML = '';
-            resultat.res.forEach(element => {
-                const adm_btn = target === '_admin' ? `
-                    <i class='fas fa-ellipsis-h' onclick="showModal('editMenuNews', 'edit', '${element.id_blog}')"></i>
-                    <i class="fa fa-share" onclick="window.open('/blog/${element.alias}')"></i>` : '';
-                const cover = element.cover !== '' ? `/img/news/${element.id_blog}/${element.cover}_cover_resized${target}.jpg`: '/img/nofoto.png';
-                const description = target !== '_footer' ? `<p style="font-size:12px;">${element.description}</p>` : '';
-                const open_btn = target === '_footer' ? `onclick="window.open('/blog/${element.alias}')"` : '';
-                news_list.innerHTML += `
-                <div class="news${target}">
-                    <div class="news_body${target}">
-                        <div class="news_foto${target}" ${open_btn}>
-                            <img src="${cover}" />
-                        </div>
-                        <div class="news_info${target}">
-                            <h4>${element.title}</h4>
-                            ${description}
-                            <a class="news_more" href="/blog/${element.alias}"><i class='fas fa-long-arrow-alt-right'></i></a>
-                        </div>
-                    </div>
-                    ${adm_btn}
-                </div>`
-            });
-        };
-    });
-};
-
-const formDeleteNews = () => {
-    const news_id = $_(`#newsDel > #id_news`)[0].innerHTML;
-    fetch(`/blog/delete/${news_id}`, { method: 'DELETE' })
-    .then(response => {
-        console.log('response', response);
-        if (response.status === 400) {
-            throw new Error('Invalid');
-        }
-        if (response.status === 200) {
-            showModal('newsDelRes');
-            setTimeout(() => {
-                closeModalX();
-                loadNewsList();
-            }, 3000)
-        };
-    })
-    .catch(() => {
-        showModal('newsDelResBad');
-        setTimeout(() => {
-            closeModalX();
-        }, 3000)
-    });
-};
 
 
 

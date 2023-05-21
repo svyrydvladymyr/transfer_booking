@@ -20,20 +20,17 @@ class BotController {
                     ? (await botService.setMenu(mess, bot, userId), await botService.feedbackAnswer(mess, bot, userId, botId))
                     : mess.from.id !== userId && (await botService.unauthorizedUser(mess, bot));
             } catch (error) {
-                console.log("Telegram-error:", error);
                 errorLog(error, 'telegram');
                 bot.sendMessage(userId, `Сталася помилка! Спробуйте ще раз...`);
-            }
+            };
         });
         bot.on("callback_query", async (btn) => {
             btn.from.id === userId && (await botService.subButton(btn, bot, userId));
         });
         bot.on("polling_error", (error) => {
-            console.log(error);
             errorLog(error, 'telegram');
         });
     }
-
     async botMessage(message, params) {
         await botService.botMessage(message, params, bot, userId);
     }

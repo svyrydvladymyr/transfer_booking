@@ -19,7 +19,7 @@ let idTownPlace, tokenTown, formValid;
 let hours, minutes, hArr = [], mArr = [], hStart = 0, mStart = 0, peopleCount = 0, peopleMax = 50, peopleType = 'gr';
 let townsFrom = {}, townsTo = {}, transfersArr = [];
 let calkTrue = true, feedbackCalkTrue = true;
-let news_status = '', news_token = '', news_foto = "", temp_foto = "";
+// let news_status = '', news_token = '', news_foto = "", temp_foto = "";
 
 //redirect page
 const redirect = way => window.location.replace(`${way}`);
@@ -125,6 +125,6 @@ const shoeMobilInfo = () => {
 }
 
 //creating town id
-const creatingIdTown = (el) => {
-    idTownPlace.innerHTML = `${transliterate(el.value).replace( /[^a-zA-ZiIіІ]/g, "" )}_${tokenTown}`;
-};
+// const creatingIdTown = (el) => {
+//     idTownPlace.innerHTML = `${transliterate(el.value).replace( /[^a-zA-ZiIіІ]/g, "" )}_${tokenTown}`;
+// };

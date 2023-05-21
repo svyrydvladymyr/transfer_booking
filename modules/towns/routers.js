@@ -9,7 +9,8 @@ townsRouter.get('/variables', towns.town);
 townsRouter.use(autorisation, permission);
 townsRouter.get('/list', towns.town);
 townsRouter.post('/create', towns.town);
-townsRouter.put('/update', towns.town);
-townsRouter.delete('/delete', towns.town);
+townsRouter.put('/edit', towns.town);
+townsRouter.post('/open', towns.town);
+townsRouter.delete('/delete/:townid$', towns.town);
 
 module.exports = townsRouter;

@@ -1617,18 +1617,25 @@ body {
         }
         #id_town {
           word-break: break-all;
+          color: #9b4747;
+          font-size: 14px;
+          margin: 10px 20px 0 20px;
         }
         .form_info {
           font-size: 11px;
           color: #9b9b9b;
         }
-        .town_empty_uk, .town_empty_en, .town_empty_ru, .transfer_empty_to {
+
+        .town_empty_uk, .town_empty_en, .town_empty_ru, .transfer_empty_to, .towns_error {
           display: none;
           color: #bd1717;
           font-size: 11px;
           margin: 5px 0px 10px 0px;
           width: 90%;
           max-width: 300px;
+        }
+        .towns_error {
+          font-size: 14px;
         }
         .town_dup_uk, .town_dup_en, .town_dup_ru, .transfer_dup_to, .transfer_price_gr, .transfer_price_pr, .transfer_price_empt, .transfer_duplicated {
           display: none;

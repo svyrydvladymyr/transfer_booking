@@ -1,4 +1,4 @@
-const {query, clienttoken, readyFullDate} = require('../service');
+const {query, clienttoken, date} = require('../service');
 const lang_list = ['uk-UA', 'en-GB', 'ru-RU'];
 
 class Users {
@@ -37,7 +37,7 @@ class Users {
                 routeArr : ''
             },
             langPack : require(`../lang/${lang}`)
-        }
+        };
     };
 
     async getUser(req, res, pageName) {
@@ -66,7 +66,7 @@ class Users {
                     DATAS.user.phone = phone;
                     DATAS.user.phone_verified = phone_verified;
                     DATAS.user.provider = provider;
-                    DATAS.user.date_registered = readyFullDate(date_registered, 'reverse');
+                    DATAS.user.date_registered = date.show('yyyy-mm-dd hh:mi', date_registered);
                     if (permission === 1) {
                         DATAS.person.townArr = ``;
                         DATAS.person.routeArr = ``;

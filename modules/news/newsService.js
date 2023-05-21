@@ -2,7 +2,7 @@ const multer  = require('multer');
 const Jimp = require("jimp");
 const fs = require("fs");
 const rimraf = require("rimraf");
-const { query, validValue, readyFullDate, translit } = require("../service");
+const { query, validValue, translit, date } = require("../service");
 
 class NewsServise {
     limits = {
@@ -90,7 +90,7 @@ class NewsServise {
                     '${description.replace(/\s\s+/g, ' ').trim()}',
                     '${cover ? cover : ''}',
                     '${await validValue(await this.replaceImagesPath(body), "news")}',
-                    '${readyFullDate(new Date(), "")}')`;
+                    '${date.show('yyyy-mm-dd hh:mi')}')`;
     };
 
     async edit(body, cover) {
@@ -103,7 +103,7 @@ class NewsServise {
                 description = '${description.replace(/\s\s+/g, ' ').trim()}',
                 ${cover ? `cover = '${cover}',` : ""}
                 article = '${await validValue(await this.replaceImagesPath(body), "news")}',
-                date_update = '${readyFullDate(new Date(), "")}'
+                date_update = '${date.show('yyyy-mm-dd hh:mi')}'
             WHERE id_blog = '${body.token}'`;
     };
 
@@ -161,27 +161,17 @@ class NewsServise {
     };
 
     async open(req, res, route, alias) {
-
-        console.log('req.params["newsid"]', req.params["newsid"]);
-        console.log('openalias', alias);
-
         const newsid = req.params["newsid"] ? req.params["newsid"] : alias;
-
-        console.log('opennewsid', newsid);
-
         const sql = `SELECT id_blog, alias, title, description, cover, date_create, article, date_update FROM blog WHERE id_blog = '${newsid}' OR alias = '${newsid}'`;
         return await query(sql).then((result) => {
             if (result[0]) {
-
-                console.log('result[0]', result[0]);
                 const cover = `${__dirname}/../../public/img/news/${result[0].id_blog}/${result[0].cover}_cover.jpg`;
-
                 const main_img = (alias && fs.existsSync(cover)) ? `/img/news/${result[0].id_blog}/${result[0].cover}_cover.jpg` : '';
                 const file_path = fs.existsSync(cover) ? `${result[0].cover}` : "";
                 result[0].main_img = main_img;
                 result[0].cover = file_path;
-                result[0].date_update = (result[0].date_update !== null) ? readyFullDate(result[0].date_update) : '';
-                result[0].date_create = readyFullDate(result[0].date_create);
+                result[0].date_update = (result[0].date_update !== null) ? date.show('yyyy-mm-dd hh:mi', result[0].date_update) : '';
+                result[0].date_create = date.show('yyyy-mm-dd hh:mi', result[0].date_create);
                 return result[0];
             } else {
                 throw new Error("Page not found");
@@ -204,7 +194,7 @@ class NewsServise {
 
     async delete(req) {
         const newsid = req.params["newsid"];
-        const sql = `DELETE FROM blog WHERE id_blog='${newsid}'`;;
+        const sql = `DELETE FROM blogo WHERE id_blog='${newsid}'`;;
         return await query(sql)
             .then((resultat) => {
                 if (resultat.affectedRows === 1) {

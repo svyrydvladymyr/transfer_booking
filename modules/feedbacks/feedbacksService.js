@@ -1,5 +1,5 @@
 const telegram = require('../bot/botController');
-const {query, validValue, readyFullDate, token, clienttoken} = require('../service');
+const {query, validValue, token, clienttoken, date } = require('../service');
 
 class FeedbacksServise {
     async feedback(req, res) {
@@ -23,14 +23,14 @@ class FeedbacksServise {
                 '${await validValue(feedbackEmail, 'email')}',
                 '${await validValue(feedbackPhone, 'phone')}',
                 '${await validValue(feedbackComment)}',
-                '${readyFullDate(new Date(), '')}')`;
+                '${date.show('yyyy-mm-dd hh:mi')}')`;
         return await query(sql)
         .then((result) => {
             const telegramFeedback = 'Feedback ID: ' + tokenGen + '\n' +
                 feedbackSurname + ' ' + feedbackName + '\n' +
                 'Tel: ' + feedbackPhone + '\n' +
                 'Email: ' + feedbackEmail + '\n' +
-                'Date: ' + readyFullDate(new Date(), '') + '\n' +
+                'Date: ' + date.show('yyyy-mm-dd hh:mi') + '\n' +
                 'Mess: ' + feedbackComment;
             telegram.botMessage(telegramFeedback, 'feedback');
             return 'Feedback sended!'
@@ -41,7 +41,7 @@ class FeedbacksServise {
         let sql = `UPDATE feedback
             SET status='answer',
                 answer='${await validValue(req.body.answer)}',
-                date_answer='${readyFullDate(new Date(), '')}'
+                date_answer='${date.show('yyyy-mm-dd hh:mi')}'
             WHERE idfeedback='${req.body.id}'`;
         return await query(sql).then((result) => 'Answer added!')
     };
@@ -55,19 +55,19 @@ class FeedbacksServise {
         if (user.permission === 1) {
             let where = '', statussql = '', datesql = '';
             const status = ['answer', 'noanswer'].includes(req.body.param[0]['status']) ? req.body.param[0]['status'] : '';
-            const date = ['', '3', '6', '12'].includes(req.body.param[1]['date']) ? req.body.param[1]['date'] : '3';
-            if (date !== '') {
+            const date_count = ['', '3', '6', '12'].includes(req.body.param[1]['date']) ? req.body.param[1]['date'] : '3';
+            if (date_count !== '') {
                 where = ' WHERE ';
-                const present_date = readyFullDate(new Date(), '');
+                const present_date = date.show('yyyy-mm-dd hh:mi');
                 const date_now = new Date();
-                date_now.setMonth(date_now.getMonth() - +date);
-                const next_date = readyFullDate(date_now, '');
+                date_now.setMonth(date_now.getMonth() - +date_count);
+                const next_date = date.show('yyyy-mm-dd hh:mi', date_now);
                 datesql = `date_create>'${next_date}' AND date_create<'${present_date}'`;
             };
-            if (status !== '' && date !== '') {
+            if (status !== '' && date_count !== '') {
                 statussql = `AND status='${status}'`;
             };
-            if (status !== '' && date === '') {
+            if (status !== '' && date_count === '') {
                 where = ' WHERE ';
                 statussql = `status='${status}'`;
             };
@@ -87,8 +87,8 @@ class FeedbacksServise {
         .then((result) => {
             result.forEach(element => {
                 element.settings = (user.permission === 1) ? 'true' : 'false';
-                element.date_answer = readyFullDate(element.date_answer, '');
-                element.date_create = readyFullDate(element.date_create, '');
+                element.date_answer = date.show('yyyy-mm-dd hh:mi', element.date_answer);
+                element.date_create = date.show('yyyy-mm-dd hh:mi', element.date_create);
             });
             return {'count': count_records, 'list': result};
         })

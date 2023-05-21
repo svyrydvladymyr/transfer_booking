@@ -1,48 +1,4 @@
 template = {
-    townAdd:
-        `<p id="id_town"></p>
-        <p class="form_info">Унікальний номер міста</p>
-        <input type="text" id="uk" name="uk" maxlength="90" placeholder="Назва українською" oninput="creatingIdTown(this), validation(this, 'Input')">
-        <p class="town_dup_uk">Така назва вже є в базі!</p>
-        <p class="town_empty_uk">Не може бути пустим!</p>
-        <input type="text" id="en" name="en" maxlength="90" placeholder="Name in English" oninput="validation(this, 'Input')">
-        <p class="town_dup_en">Така назва вже є в базі!</p>
-        <p class="town_empty_en">Не може бути пустим!</p>
-        <input type="text" id="ru" name="ru" maxlength="90" placeholder="Название на русском" oninput="validation(this, 'Input')">
-        <p class="town_dup_ru">Така назва вже є в базі!</p>
-        <p class="town_empty_ru">Не може бути пустим!</p>
-        <p class="form_send" onclick="formSend('townAdd')">Добавити в базу</p>`,
-    townAddRes:
-        `<p id="id_town"></p>
-        <p class="form_info">Унікальний номер міста</p>
-        <p class="res_mess">Місто додано до списку!</p>`,
-    townEdit:
-        `<p id="id_town"></p>
-        <p class="form_info">Унікальний номер міста</p>
-        <input type="text" id="uk" name="uk" maxlength="90" placeholder="Назва українською" oninput="validation(this, 'Input')">
-        <p class="town_dup_uk">Така назва вже є в базі!</p>
-        <p class="town_empty_uk">Не може бути пустим!</p>
-        <input type="text" id="en" name="en" maxlength="90" placeholder="Name in English" oninput="validation(this, 'Input')">
-        <p class="town_dup_en">Така назва вже є в базі!</p>
-        <p class="town_empty_en">Не може бути пустим!</p>
-        <input type="text" id="ru" name="ru" maxlength="90" placeholder="Название на русском" oninput="validation(this, 'Input')">
-        <p class="town_dup_ru">Така назва вже є в базі!</p>
-        <p class="town_empty_ru">Не може бути пустим!</p>
-        <p class="form_send" onclick="formSend('townEdit')">Зберегти зміни</p>`,
-    townEditRes:
-        `<p id="id_town"></p>
-        <p class="form_info">Унікальний номер міста</p>
-        <p class="res_mess">Зміни внесено!</p>`,
-    townDel:
-        `<p id="id_town"></p>
-        <p class="form_info">Унікальний номер міста</p>
-        <p class="del_info" style="color:#991818;">Підтвердіть видалення!</p>
-        <p class="del_info" style="color:#991818;">Зверніть увагу, що після видалення міста також будуть недоступні маршрути з цим містом</p>
-        <p class="form_send" onclick="formSend('townDel')">Видалити остаточно!</p>`,
-    townDelRes:
-        `<p id="id_town"></p>
-        <p class="form_info">Унікальний номер міста</p>
-        <p class="res_mess">Місто видалено із списку!</p>`,
     transferAdd:
         `<input type="text" id="from" name="from" maxlength="120" inputparam="" value="" autocomplete="off" placeholder="Перевезення з ..." oninput="validation(this, 'Input')" onfocus="showModal('transferTowns', {'param': 'from'})" readonly>
         <input type="text" id="to" name="to" maxlength="120" inputparam="" value="" autocomplete="off" placeholder="Перевезення до ..." oninput="validation(this, 'Input')" onfocus="showModal('transferTowns', {'param': 'to'})" readonly>
@@ -197,62 +153,6 @@ template = {
     orderInfo: ``,
     feedbackInfo: ``,
     confirmPhone: ``,
-    newsAdd:
-        `<div id="load_cover"><img src="../img/loading.gif"></div>
-        <p class="vilid_news" id="vilid_news"></p>
-        <div class="main_info_wrap">
-            <div class="main_foto">
-                <div id="foto_load">
-                    <label for="news_foto" id="news_foto_label"></label>
-                    <input type="file" name="news_foto" id="news_foto" accept=".jpg, .jpeg, .png, .bmp" onchange="validIMG(event)" hidden />
-                </div>
-                <button class="clear_cover" id="clear_cover" onclick="clearCoverImg()">Очистити</button>
-                <button class="remove_cover" id="remove_cover" onclick="removeCoverImg()">Видалити</button>
-            </div>
-            <div class="main_info">
-                <textarea name="news_title" id="news_title" maxlength="260" placeholder="Назва статті" oninput="resizeTextarea(this, '60'), validation(this, 'Input', 'news')" onkeydown="return (event.keyCode!=13);"></textarea>
-                <textarea name="news_description" id="news_description" maxlength="700" placeholder="Опис статті" oninput="resizeTextarea(this, '100'), validation(this, 'Input', 'news')" onkeydown="return (event.keyCode!=13);"></textarea>
-            </div>
-        </div>
-        <div class="news_create"><p id="news_create"></p><p id="news_update"></p></div>
-        <div class="news_create"><p id="news_alias"></p></div>
-        <div id="editor"></div>
-        <button class="save_new" id="save_news" onclick="saveNews('save')">Зберегти</button>
-        <button class="save_new" id="save_close_news" onclick="saveNews('saveclose')">Зберегти і закрити</button>
-        `,
-    newsEdit:
-        `<div id="load_cover"><img src="../img/loading.gif"></div>
-        <p class="vilid_news" id="vilid_news"></p>
-        <div class="main_info_wrap">
-            <div class="main_foto">
-                <div id="foto_load">
-                    <label for="news_foto" id="news_foto_label"></label>
-                    <input type="file" name="news_foto" id="news_foto" accept=".jpg, .jpeg, .png, .bmp" onchange="validIMG(event)" hidden />
-                </div>
-                <button class="clear_cover" id="clear_cover" onclick="clearCoverImg()">Очистити</button>
-                <button class="remove_cover" id="remove_cover" onclick="removeCoverImg()">Видалити</button>
-            </div>
-            <div class="main_info">
-                <textarea name="news_title" id="news_title" maxlength="260" placeholder="Назва статті" oninput="resizeTextarea(this, '60'), validation(this, 'Input', 'news')" onkeydown="return (event.keyCode!=13);"></textarea>
-                <textarea name="news_description" id="news_description" maxlength="700" placeholder="Опис статті" oninput="resizeTextarea(this, '100'), validation(this, 'Input', 'news')" onkeydown="return (event.keyCode!=13);"></textarea>
-            </div>
-        </div>
-        <div class="news_create"><p id="news_create"></p><p id="news_update"></p></div>
-        <div class="news_create"><p id="news_alias"></p></div>
-        <div id="editor"></div>
-        <button class="save_new" id="save_news" onclick="saveNews('save')">Зберегти</button>
-        <button class="save_new" id="save_close_news" onclick="saveNews('saveclose')">Зберегти і закрити</button>
-        `,
-    newsDel:
-        `<p id="id_news"></p>
-        <p class="del_info" style="color:#991818;">Підтвердіть видалення новини!</p>
-        <p class="form_send" onclick="formDeleteNews()">Видалити остаточно!</p>`,
-    newsEditRes:
-        `<p class="res_mess">Новину збережено!</p>`,
-    newsDelRes:
-        `<p class="res_mess">Новину видалено!</p>`,
-    newsDelResBad:
-        `<p class="res_mess">Виникла помилка під час видалення статті. Спробуйте ще раз.</p>`,
 };
 
 

@@ -1,7 +1,6 @@
 const newsService = require('./newsService');
-const errorLog = require('../service').errorLog;
 const pagesService = require('../pages/pagesService');
-const lang_list = ['uk-UA', 'en-GB', 'ru-RU'];
+const errorLog = require('../service').errorLog;
 
 class NewsController {
     async news(req, res) {
@@ -9,11 +8,6 @@ class NewsController {
             const alias = req.params["newsalias"];
             const url = req.url.split('/')[1].replace("/", "");
             const route = ['create', 'edit'].includes(url) ? 'save' : alias ? 'open' : url;
-
-            console.log('alias', alias);
-            console.log('url', url);
-            console.log('route', route);
-
             if (route === '') {
                 await pagesService.getUser(req, res, 'blog')
                 .then((DATA) => {
@@ -21,9 +15,6 @@ class NewsController {
                 });
             } else {
                 const query_res = await newsService[route](req, res, url, alias);
-
-                console.log('query_res', query_res);
-
                 (route === 'open' && alias)
                     ? await pagesService.getUser(req, res, 'blog')
                         .then((DATA) => {
@@ -42,7 +33,7 @@ class NewsController {
                 res.status(400).send("400 (Bad Request)");
             };
         };
-    }
-}
+    };
+};
 
 module.exports = new NewsController();

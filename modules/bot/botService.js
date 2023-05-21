@@ -1,4 +1,4 @@
-const {readyFullDate, query, errorLog} = require('../service');
+const { query, errorLog, date} = require('../service');
 const fs = require('fs');
 const menu_options = {
     orders: {
@@ -98,7 +98,7 @@ class BotService {
                                 ${el.feedbackSurname} ${el.feedbackName}
                                 Tel: ${el.feedbackPhone}
                                 Email: ${el.feedbackEmail}
-                                Date: ${readyFullDate(el.date_create)}
+                                Date: ${date.show('yyyy-mm-dd hh:mi', el.date_create)}
                                 Mess: ${el.feedbackComment}
                                 Answer: ${el.answer}`;
                         } else if (type === 'orders') {
@@ -152,9 +152,9 @@ class BotService {
             const text = reply.text.split("\n")[0].replace('Feedback ID: ', '');
             const answer_text = mess.text;
             let sql = `UPDATE feedback
-                SET status='answer', answer='${answer_text}', date_answer='${readyFullDate(new Date(reply.date * 1000))}'
+                SET status='answer', answer='${answer_text}', date_answer='${date.show('yyyy-mm-dd hh:mi', reply.date * 1000)}'
                 WHERE idfeedback='${text}'`;
-            await query(sql)
+            await queryo(sql)
                 .then(result =>
                     (result.affectedRows === 0)
                         ? bot.sendMessage(userId, `Неможливо зберегти відповідь на відгук, тому що такого відгуку не знайдено!`)

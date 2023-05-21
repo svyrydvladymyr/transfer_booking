@@ -2,6 +2,8 @@ const express = require("express");
 const app = express();
 const bodyParser = require("body-parser");
 const cookieParser = require("cookie-parser");
+const log = require("./modules/service").log;
+
 require("dotenv").config({ path: `.${process.env.NODE_ENV}.env` });
 
 //routs
@@ -43,7 +45,7 @@ app.use(cookieParser());
 
 //console logs
 app.use((req, res, next) => {
-    console.log(`-URL-REQUEST:-(${req.method})--->`, req.url);
+    log(`-URL-REQUEST:-(${req.method})---`, req.url, 'info');
     next();
 });
 

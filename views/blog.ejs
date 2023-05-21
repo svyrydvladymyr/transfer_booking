@@ -29,7 +29,7 @@
     <%- include("./parts/script.ejs") %>
     <% if (!DATA.news) { %>
         <script>
-            loadNewsList(1000, "_main");
+            news.list(1000, "_main");
         </script>
     <% } %>
     <% if (DATA.news) { %>

@@ -101,7 +101,7 @@
                                 <div class="feedback_pagination"></div>
                             </div>
                             <div class="body">
-                                <p onclick="showModal('townAdd')" class="add_point">Додати місто</p>
+                                <p onclick="town.showWindow('town', 'Save', 'create')" class="add_point">Додати місто</p>
                                 <div class="tawns_list"></div>
                             </div>
                             <div class="body">
@@ -110,7 +110,7 @@
                                 <div class="transfers_list" id="sortable"></div>
                             </div>
                             <div class="body">
-                                <p onclick="showModal('newsAdd', 'create')" class="add_point">Додати новину</p>
+                                <p onclick="news.showWindow('news', 'Save', 'create')" class="add_point">Додати новину</p>
                                 <div class="news_list_admin"></div>
                             </div>
                         </div>
@@ -143,9 +143,9 @@
             <script>
                 ordersList(1);
                 feedbackList(1);
-                loadTownsList();
+                town.list();
                 loadTransfersList();
-                loadNewsList(1000, '_admin');
+                news.list(1000, '_admin');
             </script>
         <% } else { %>
             <script>

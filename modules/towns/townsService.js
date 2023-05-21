@@ -10,16 +10,17 @@ class TownsService {
         };
     }
 
-    async checkValue(body, req, res) {
-        return body.uk ? {
+    async checkValue(body) {
+        return  {
             "id": await validValue(body.id),
             "uk": await validValue(body.uk),
             "en": await validValue(body.en),
             "ru": await validValue(body.ru)
-        } : {req, res};
+        };
     }
 
     async create(body) {
+        body = await this.checkValue(body);
         const sql = `INSERT INTO points (town_id, name_uk, name_en, name_ru)
             VALUES ('${body.id}',
                     '${body.uk}',
@@ -29,7 +30,8 @@ class TownsService {
             .then(() => "Town created!")
     }
 
-    async update(body) {
+    async edit(body) {
+        body = await this.checkValue(body);
         const sql = `UPDATE points
             SET name_uk='${body.uk}',
                 name_en='${body.en}',
@@ -39,14 +41,21 @@ class TownsService {
             .then(() => "Town updated!")
     }
 
-    async delete(body) {
+    async delete(body, req) {
+        const id = req.params["townid"];
         const sql = `DELETE a.*, b.*
             FROM points a
             LEFT JOIN transfers b
             ON a.town_id = b.transfer_from OR a.town_id = b.transfer_to
-            WHERE a.town_id='${body.id}'`;
+            WHERE a.town_id='${id}'`;
         return await query(sql)
             .then(() => "Town deleted!");
+    }
+
+    async open(body) {
+        const sql = `SELECT * FROM pointso WHERE town_id='${body.id}'`;
+        return await query(sql)
+            .then((result) => result);
     }
 
     async list() {
@@ -55,7 +64,7 @@ class TownsService {
             .then((result) => result);
     }
 
-    async townNames(req, res) {
+    async townNames(body, req, res) {
         const lang = ['uk-UA', 'en-US', 'ru-RU'].includes(req.cookies ? req.cookies['lang'] : undefined)
             ? req.cookies['lang'].slice(0, 2)
             : 'uk';
