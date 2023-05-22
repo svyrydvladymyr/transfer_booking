@@ -193,6 +193,41 @@ class Templates {
         <p class="form_info">Унікальний номер міста</p>
         <p class="res_mess">${data.message ? data.message : ''}</p>`;
     }
+
+    //TRANSFER
+    transferAdd(data) {
+        return `<input type="text" id="from" name="from" maxlength="120" inputparam="" value="" autocomplete="off" placeholder="Перевезення з ..." oninput="validation(this, 'Input')" onfocus="showModal('transferTowns', {'param': 'from'})" readonly>
+        <input type="text" id="to" name="to" maxlength="120" inputparam="" value="" autocomplete="off" placeholder="Перевезення до ..." oninput="validation(this, 'Input')" onfocus="showModal('transferTowns', {'param': 'to'})" readonly>
+        <p class="transfer_dup_to">Поля "Перевезення з" і "Перевезення до" не можуть співпадати!</p>
+        <p class="transfer_empty_to">Поля "Перевезення з" і "Перевезення до" не можуть бути пустим!</p>
+        <p class="transfer_duplicated">Такий маршрут вже існує! Його можна редагувати. Ціни для групових та приватних перевезень потрібно вказувати в одному маршруті.</p>
+        <div class="price_form">
+            <p>Груповий</p>
+            <input type="number" id="gr" name="gr" min="0" max="50000" autocomplete="off" placeholder="Ціна за груповий..." oninput="validationPrice(this), showTimeList(this)">
+        </div>
+        <p class="transfer_price_gr">Перевищує допустимі значення! (доступно з 1грн до 50000грн)</p>
+        <div class="price_form">
+            <p>Приватний</p>
+            <input type="number" id="pr" name="pr" min="0" max="50000" autocomplete="off" placeholder="Ціна за приватний..." oninput="validationPrice(this)">
+        </div>
+        <p class="transfer_price_pr">Перевищує допустимі значення! (доступно з 1грн до 50000грн)</p>
+        <p class="transfer_price_empt">Хоча б одна ціна має бути вказана!</p>
+        <div class="add_time" style="display: none">
+            <div class="add">
+                <p class="time_label">Відправлення 1</p>
+                <input type="text" name="time" class="time" autocomplete="off" placeholder="Час перевезення..." onfocus="showModal('transferTimes', {}, this)" readonly>
+                <i class='fas fa-plus' onclick="plusTime(this, 'plus')"></i>
+            </div>
+        </div>
+        <p class="title">Поставте галочку щоб добавити в список обраних перевезень</p>
+        <input type="checkbox" id="selection" name="selection">
+        <p class="title" style="margin-top:5px">Поставте галочку щоб добавити в список <span style="color:#c95f5f">приватних перевезень</span> максисально 3 шт.</p>
+        <input type="checkbox" id="privat" name="privat">
+        <p class="title" style="margin-top:5px">Поставте галочку щоб добавити в список <span style="color:#c95f5f">перевезень мікроавтобусом</span> максисально 3 шт.</p>
+        <input type="checkbox" id="microbus" name="microbus">
+        <p class="form_send" onclick="formSendTransfer('transferAdd')">Добавити в базу</p>`
+    }
+
     //NEWS
     newsSave(data) {
         return `<div id="load_cover"><img src="../img/loading.gif"></div>
@@ -324,300 +359,200 @@ class ModalWindow extends Templates {
     };
 };
 
-class News extends ModalWindow {
-    news_status = '';
-    news_token = '';
-    news_foto = '';
-    temp_foto = '';
+
+
+class Transfers extends ModalWindow {
+    town_token = '';
+    town_id_place = '';
+    town_id = '';
+    town_form = '';
+    town_param = '';
+    trueSend = false;
     constructor(){ super() }
 
     async showWindow(module, type, param, id){
         let data = {};
-        this.news_status = param;
-        this.news_token = param === 'edit' ? id : generate_token(6);
+        this.town_form = module + type;
+        this.town_param = param;
+        this.town_token = generate_token(6);
         if (param === 'edit' ) {
-            this.news_status = 'edit';
-            data = await this.open();
+            data = await this.open(id);
+            this.town_id = data.town_id;
         };
-        this.show(module, type, data);
-        const toolbarOptions = [
-            ['bold', 'italic', 'underline', 'strike'],
-            [{ 'list': 'ordered'}, { 'list': 'bullet' }],
-            [{ 'header': [1, 2, 3, 4, 5, 6, false] }],
-            [{ 'align': [] }],
-            ['image'],
-            ['link'],
-            ['clean']
-        ];
-        new Quill('#editor', {
-            modules: { toolbar: toolbarOptions },
-            theme: 'snow'
-        });
-        $_('#news_foto')[0].addEventListener("change", async (event) => {
-            var file = event.target.files[0];
-            var reader = new FileReader();
-            reader.onloadend = () => {
-                this.temp_foto = this.news_foto === "" ? this.temp_foto : this.news_foto;
-                $_('#foto_load')[0].style.backgroundImage = `url(${reader.result})`;
-                this.news_foto = reader.result;
-            };
-            if(file){
-                reader.readAsDataURL(file);
-            };
-        });
-        this.resizeTextarea($_('#news_title')[0], '60')
-        this.resizeTextarea($_('#news_description')[0], '100');
-        if (param === 'edit' ) {
-            const editor = $_('.ql-editor')[0];
-            editor.innerHTML = '';
-            [...data.article].forEach(element => {
-                editor.innerHTML += element;
-            });
-        };
+        this.show(module, 'Save', data);
+        this.town_id_place = $_('#id_town')[0];
     }
 
-    resizeTextarea(el, h) {
-        el.style.height = "";
-        el.style.height = el.scrollHeight + "px";
-        el.style.overflow = (el.scrollHeight > +h) ? 'auto' : 'hidden';
-    }
+    // async open(id) {
+    //     return new Promise(async (resolve) => {
+    //         const response = await fetch(`/towns/open`, {
+    //             method: 'POST',
+    //             headers: { 'Content-Type': 'application/json;charset=utf-8' },
+    //             body: JSON.stringify({ id })
+    //         });
+    //         const resultat = response.status === 200 && response.json();
+    //         resultat.res && resolve(resultat.res[0]);
+    //     });
+    // }
 
-    message(text = '', classs = 'mmm') {
-        const news_vilid = $_('#vilid_news')[0];
-        if (news_vilid) {
-            news_vilid.innerHTML = text;
-            news_vilid.classList.remove('vilid_news_bad');
-            news_vilid.classList.remove('vilid_news_good');
-            news_vilid.classList.add(classs);
-        };
-    }
-
-    clearImg() {
-        $_('#news_foto')[0].type = "text";
-        $_('#news_foto')[0].type = "file";
-        this.news_foto = this.temp_foto;
-        $_('#foto_load')[0].style.backgroundImage = (this.temp_foto.length < 5)
-            ? `url(/img/nofoto.png)`
-            : `url(/img/news/${this.news_token}/${this.news_foto}_cover_resized_footer.jpg)`;
-    }
-
-    removeImg() {
-        $_('#foto_load')[0].style.backgroundImage = `url(/img/nofoto.png)`;
-        $_('#news_foto')[0].type = "text";
-        $_('#news_foto')[0].type = "file";
-        this.news_foto = "";
-    }
-
-    validIMG(event) {
-        const files = event.target.files;
-        if (!['image/jpg', 'image/jpeg', 'image/png', 'image/bmp'].includes(files[0].type)) {
-            this.message(`Недоступний формат. Доступними є: jpg, jpeg, png`, 'vilid_news_bad');
-            $_('#news_foto')[0].value = '';
-        } else {
-            if (files[0].size > 5000000) {
-                this.message(`Надто великий розмір. Максимально 5Mb`, 'vilid_news_bad');
-                $_('#news_foto')[0].value = '';
-            } else {
-                this.message('');
-            };
-        };
-    }
-
-    async createGallery(img_base64, formData) {
-        return new Promise((resolve) => {
-            const image_names = Object.keys(img_base64);
-            if (image_names.length > 0) {
-                let x = 0;
-                Object.entries(img_base64).forEach(async ([key, value]) => {
-                    const base64Cover = await fetch(`${value}`);
-                    const foto = await base64Cover.blob();
-                    formData.append("gallery", foto, `${key}.jpg`);
-                    (++x === image_names.length) && resolve(formData);
-                });
-            } else {
-                resolve(formData);
-            };
-        });
-    }
-
-    async notEmpty(fields) {
-        const valid = [], fields_names = [], names = [' НАЗВА', ' ОПИС'];
-        [...fields].forEach((element, index) => {
-            if (element === '' || element === undefined) {
+    notEmpty(form) {
+        const valid = [];
+        ["uk", "en", "ru"].forEach(element => {
+            const field = $_(`#${form} > #${element}`)[0];
+            if (field.value === '' || field.value === undefined) {
+                $_(`.town_empty_${element}`)[0].style.display = 'block';
                 valid.push(false);
-                fields_names.push(names[index]);
             };
         });
-        const trueSendNews = (!valid.includes(false)) ? true : false;
-        this.message(!trueSendNews ? `<span>Поля є обовяковими: ${fields_names} </span>` : '', 'vilid_news_bad');
-        return trueSendNews;
+        return (!valid.includes(false)) ? true : false;
     }
+}
 
-    async save(param) {
-        const save_cover = $_('#load_cover')[0];
-        const news_title = $_('#news_title')[0].value;
-        const news_description = $_('#news_description')[0].value;
-        const news_editor = $_('.ql-editor')[0].children;
-        const validating_fields = [news_title, news_description];
-        // console.log('news_save_status', param);
-        // console.log('news_status', this.news_status);
-        // console.log('news_token', this.news_token);
-        // console.log('news_title', news_title);
-        // console.log('news_description', news_description);
-        // console.log('news_foto', this.news_foto);
-        // console.log('news_editor', news_editor);
-        if (await this.notEmpty(validating_fields)) {
-            save_cover.style.display = 'flex';
-            const img_arr = $_('.ql-editor')[0].getElementsByTagName('img');
-            const img_base64 = {};
-            const img_https_names = [];
-            [...img_arr].forEach(function(element) {
-                if (element.src.includes('base64')) {
-                    const img_token = generate_token(9)
-                    img_base64[img_token] = element.src;
-                    element.src = img_token;
-                };
-                if (element.src.includes('http')) {
-                    img_https_names.push(element.src);
-                };
-            });
-            const article = [...news_editor].map((element) => element.outerHTML).join("\n");
-            const cover_name = (!this.news_foto.includes('base64')) ? this.news_foto : generate_token(6);
-            let formData = new FormData();
-            const obj = {
-                token: this.news_token,
-                title: news_title,
-                description: news_description,
-                cover: cover_name,
-                article: article,
-                gallery: Object.keys(img_base64),
-                httpnames: img_https_names
-            };
-            formData.append("obj", JSON.stringify(obj));
-            formData.append("token", this.news_token);
-            if (this.news_foto && this.news_foto.includes('base64')) {
-                const base64Cover = await fetch(`${this.news_foto}`);
-                formData.append("cover", await base64Cover.blob(), `${cover_name}_cover.jpg`);
-            };
-            await this.createGallery(img_base64, formData);
-            fetch(`/blog/${this.news_status}`, {
-                method: 'POST',
-                body: formData
-            })
-            .then(response => {
-                if (response.status === 200) {
-                    return response.json()
-                } else {
-                    if (response.status === 201) { news_status = 'edit' };
-                    throw new Error('Article is not saved!')
-                };
-            })
-            .then(result => {
-                // console.log('result', result);
-                this.closeBtn();
-                (param === 'save')
-                    ? this.showWindow('news', 'Save', 'edit', this.news_token)
-                    : (this.show('news', 'Res', { message: 'Новину збережено!'}), setTimeout(() => {
-                        this.closeBtn();
-                        this.list();
-                    }, 3000));
-            })
-            .finally(() => {
-                save_cover.style.display = 'none';
-            })
-            .catch(error => {
-                this.message(`<span>Виникла помилка під час збереження статті. Спробуйте зберегти ще раз.</span>`, 'vilid_news_bad');
-                [...img_arr].forEach(function(element) {
-                    const img_keys = Object.keys(img_base64);
-                    const original_img = element.src.split('/')[element.src.split('/').length -1].replace("/", "");
-                    if (img_keys.includes(original_img)) {
-                        element.src = img_base64[original_img];
-                    };
-                });
-                this.list();
-                this.news_status = this.news_status === 'create' ? this.news_status : 'edit';
-                console.log(error);
-            });
-        };
+
+
+
+
+
+
+//for save transfer list position
+const savePosition = () => {
+    const sortWrap = $_('#sortable')[0].children, sortArr = {};
+    for (var i = 0; i < sortWrap.length; ++i) {
+        sortArr[`${sortWrap[i].id}`] = `${i+1}${token(4)}`;
     };
-
-    async open() {
-        return fetch(`/blog/open/${this.news_token}`, { method: 'GET' })
-        .then(response => response.status === 200 && response.json())
-        .then(resultat => {
-            const data = {};
-            this.news_foto = resultat.res.cover;
-            const port = (window.location.hostname.includes('127.0.0.1')) ? ":8054" : "";
-            const alias = `
-                <a href="/blog/${resultat.res.alias}"
-                    title="Створюється автоматично із назви статті!"
-                    target="_blank">
-                    ${window.location.hostname}${port}/blog/${resultat.res.alias}
-                </a>`;
-            data.news_foto = this.news_foto,
-            data.article = resultat.res.article.split("\n"),
-            data.alias = alias,
-            data.title = resultat.res.title,
-            data.description = resultat.res.description,
-            data.create = `Створено: <span>${resultat.res.date_create}</span>`;
-            if (this.news_foto !== '') {
-                this.temp_foto = this.news_foto;
-                data.foto = `url(/img/news/${this.news_token}/${this.news_foto}_cover_resized_footer.jpg)`;
-            };
-            if (resultat.res.date_update !== '') {
-                data.update = `Оновлено: <span>${resultat.res.date_update}</span>`;
-            };
-            return data;
-        });
-    }
-
-    delete(id) {
-        fetch(`/blog/delete/${id}`, { method: 'DELETE' })
-        .then(response => {
-            if (response.status === 400) { throw new Error('Invalid') };
-            if (response.status === 200) { this.show('news', 'Res', { message: 'Новину видалено!' }) };
-        })
-        .finally(() => {
-            setTimeout(() => {
-                this.closeBtn();
-                this.list();
-            }, 3000)
-        })
-        .catch(() => {
-            this.show('news', 'Res', { message: '<span style="color:red;"> Виникла помилка під час видалення статті. Спробуйте ще раз.</span>'});
-        });
-    }
-
-    list(count = '1000', target = '_admin') {
-        fetch(`/blog/list/${count}`, { method: 'GET' })
-        .then(response => response.status === 200 && response.json())
-        .then(resultat => {
-            const news_list = $_(`.news_list${target}`)[0];
-            if (news_list) {
-                const data = {};
-                news_list.innerHTML = '';
-                resultat.res.forEach(element => {
-                    const menu_param =  JSON.stringify({ id: element.id_blog, module: 'news' });
-
-                    console.log('aaaaaaaaaaaaaa', menu_param);
-                    data.target = target;
-                    data.target = target;
-                    data.title = element.title;
-                    data.alias = element.alias;
-                    data.open_btn = target === '_footer' ? `onclick="window.open('/blog/${element.alias}')"` : '';
-                    data.cover = element.cover !== '' ? `/img/news/${element.id_blog}/${element.cover}_cover_resized${target}.jpg`: '/img/nofoto.png';
-                    data.description = target !== '_footer' ? `<p style="font-size:12px;">${element.description}</p>` : '';
-                    data.adm_btn = target === '_admin' ? `
-                        <i class='fas fa-ellipsis-h' onclick='news.show("news", "menu", {}, "${element.id_blog}")'></i>
-                        <i class="fa fa-share" onclick="window.open('/blog/${element.alias}')"></i>` : '';
-                    news_list.innerHTML += `${this.template('newsList', data)}`;
-                });
-            };
-        });
-    }
+    send(sortArr , `/transfers/saveposition`, (result) => {
+        const resultat = JSON.parse(result);
+        if (resultat.res) {
+            $_('#save_position')[0].style.display = 'none';
+            loadTransfersList();
+        };
+    }, 'POST');
 };
 
-const news = new News();
+//load transferі list
+const loadTransfersList = () => {
+    send({} , `/transfers/list`, (result) => {
+        const resultat = JSON.parse(result);
+        if (resultat.res) {
+            // console.log('res', resultat.res);
+            const transfers_list = $_('.transfers_list')[0];
+            transfers_list.innerHTML = '';
+            resultat.res.forEach(element => {
+                transfers_list.innerHTML += `
+                <div class="transfer" id="${element.id}">
+                    <p>${element.transfer_from} - ${element.transfer_to}</p>
+                    <span>
+                        <p class="sel${element.selection}">обрані</p>
+                        <p class="pr${element.privat}">приватні</p>
+                        <p class="micro${element.microbus}">мікроавтобус</p>
+                    </span>
+                    <i class='fas fa-ellipsis-h' onclick="showModal('editMenuTransfer',
+                    {'id' : '${element.transfer_id}',
+                    'from' : '${element.transfer_from}',
+                    'from_id' : '${element.transfer_from_id}',
+                    'to' : '${element.transfer_to}',
+                    'to_id' : '${element.transfer_to_id}',
+                    'pricepr' : '${element.price_pr}',
+                    'pricegr' : '${element.price_gr}',
+                    'time1' : '${element.time1}',
+                    'time2' : '${element.time2}',
+                    'time3' : '${element.time3}',
+                    'time4' : '${element.time4}',
+                    'time5' : '${element.time5}',
+                    'time6' : '${element.time6}',
+                    'time7' : '${element.time7}',
+                    'time8' : '${element.time8}',
+                    'time9' : '${element.time9}',
+                    'time10' : '${element.time10}',
+                    'select' : '${element.selection}',
+                    'privat' : '${element.privat}',
+                    'microbus' : '${element.microbus}'})"></i>
+                </div>`
+            });
+        };
+    }, 'GET');
+};
+
+
+
+
+//add to DB Transfers
+const formSendTransfer = (formID) => {
+    let obj = {}, trueSend, metod = 'POST', url = 'create';
+    if ((formID === 'transferAdd') || (formID === 'transferEdit')) {
+        const transfer_id = $_(`#${formID}`)[0].paramid;
+        const transfer_from = $_(`#${formID} > #from`)[0].inputparam;
+        const transfer_to = $_(`#${formID} > #to`)[0].inputparam;
+        const transfer_gr = $_(`#${formID} #gr`)[0].value;
+        const transfer_pr = $_(`#${formID} #pr`)[0].value;
+        const transfer_select = $_(`#${formID} > #selection`)[0].checked;
+        const privat = $_(`#${formID} > #privat`)[0].checked;
+        const microbus = $_(`#${formID} > #microbus`)[0].checked;
+        const transfer_times = [];
+        $_('.time').forEach(element => { if (element.value !== '') { transfer_times.push(element.value)}});
+        obj = {"id" : transfer_id, "from" : transfer_from, "to" : transfer_to, "gr" : transfer_gr, "pr" : transfer_pr,
+               "select" : transfer_select, "privat" : privat, "microbus" : microbus, "times" : transfer_times, "param" : formID};
+        if (transfer_from !== '' && transfer_from !== undefined && transfer_to !== '' && transfer_to !== undefined) {
+            if (transfer_from === transfer_to) {
+                $_(`.transfer_dup_to`)[0].style.display = 'block';
+                trueSend = false;
+            } else {
+                if ((transfer_gr !== '' || transfer_pr !== '')) {
+                    if (transfer_gr !== '' && (transfer_gr >= 1 && transfer_gr <= 50000) && transfer_pr === '') {
+                        trueSend = true;
+                    } else {
+                        if (transfer_pr !== '' &&  (transfer_pr >= 1 && transfer_pr <= 50000) && transfer_gr === '') {
+                            trueSend = true;
+                        } else {
+                            if ((transfer_pr !== '' &&  (transfer_pr >= 1 && transfer_pr <= 50000)) && (transfer_gr !== '' && (transfer_gr >= 1 && transfer_gr <= 50000))) {
+                                trueSend = true;
+                            } else {
+                                $_(`.transfer_price_empt`)[0].style.display = 'block';
+                                trueSend = false;
+                            };
+                        };
+                    };
+                } else {
+                    $_(`.transfer_price_empt`)[0].style.display = 'block';
+                    trueSend = false;
+                };
+            };
+        } else {
+            $_(`.transfer_empty_to`)[0].style.display = 'block';
+            trueSend = false;
+        };
+    };
+    if (formID === 'transferEdit') {
+        metod = "PUT";
+        url = 'update'
+    };
+    if (formID === 'transferDel') {
+        const id_transfer = $_(`#${formID} > #id_transfer`)[0].paramid;
+        obj = {"id" : id_transfer, "param" : formID};
+        trueSend = true;
+        metod = "DELETE";
+        url = 'delete'
+    };
+    if (trueSend) {
+        send(obj, `/transfers/${url}`, (result) => {
+            const resultat = JSON.parse(result);
+            if (resultat.res) {
+                showModal(`${formID}Res`);
+                setTimeout(() => { modal.innerHTML = '' }, 2000);
+                loadTransfersList();
+            };
+            if (resultat.DUP) {
+                console.log('Transfer duplicated!');
+                $_(`.transfer_duplicated`)[0].style.display = 'block';
+            };
+        }, metod);
+    };
+};
+
+
+
+
+
 
 
 
@@ -636,7 +571,7 @@ const closeModal = (el) => {
 
 //wrap for modal window
 const modalWindowWrap = (type) => {
-    const sub_close = ['townAdd', 'townEdit', 'transferEdit', 'transferAdd', 'transferTowns', 'transferTimes', 'newsAdd', 'newsEdit'].includes(type) ? '' : 'onclick="closeModal(event)"';
+    const sub_close = ['transferEdit', 'transferAdd', 'transferTowns', 'transferTimes'].includes(type) ? '' : 'onclick="closeModal(event)"';
     const sub_noclose = ['transferTowns', 'transferTimes'].includes(type) ? '' : '<i class="fa fa-times" onclick="closeModalX()"></i>';
     const style = {
         newsAdd: "max-width: 90%",
@@ -657,92 +592,11 @@ const showModal = function(type, obj, el) {
     console.log('obj', obj);
     console.log('el', el);
 
-    ['townAdd', 'townAddRes', 'townEdit', 'townEditRes', 'townDel', 'townDelRes',
-    'transferAdd', 'transferAddRes', 'transferEdit', 'transferEditRes', 'transferDel', 'transferDelRes',
+    ['transferAdd', 'transferAddRes', 'transferEdit', 'transferEditRes', 'transferDel', 'transferDelRes',
     'mainformFrom', 'mainformTo', 'mainformCalendar',
     'editMenuTown', 'editMenuTransfer',
     'orderInfo', 'confirmPhone', 'feedbackInfo'].includes(type)
         ? modal.innerHTML = modalWindowWrap(type) : null;
-
-
-    // if (type === 'newsEdit' || type === 'newsAdd') {
-    //     const toolbarOptions = [
-    //         ['bold', 'italic', 'underline', 'strike'],
-    //         [{ 'list': 'ordered'}, { 'list': 'bullet' }],
-    //         [{ 'header': [1, 2, 3, 4, 5, 6, false] }],
-    //         [{ 'align': [] }],
-    //         ['image'],
-    //         ['link'],
-    //         ['clean']
-    //     ];
-    //     const editor = new Quill('#editor', {
-    //         modules: {
-    //           toolbar: toolbarOptions
-    //         },
-    //         theme: 'snow'
-    //     });
-    //     news_status = obj;
-    //     news_token = obj === 'edit' ? el : generate_token(6);
-    //     $_('#news_foto')[0].addEventListener("change", async function (event){
-    //         var file = event.target.files[0];
-    //         var reader = new FileReader();
-    //         reader.onloadend = function(){
-    //             temp_foto = news_foto === "" ? temp_foto : news_foto;
-    //             $_('#foto_load')[0].style.backgroundImage = `url(${reader.result})`;
-    //             news_foto = reader.result;
-    //         };
-    //         if(file){
-    //             reader.readAsDataURL(file);
-    //         };
-    //     });
-
-    //     if (type === 'newsEdit' ) {
-    //         news_status = 'edit';
-    //         send({ id: el }, `/blog/open/${news_token}`, (result) => {
-    //             const resultat = JSON.parse(result);
-    //             const editior = $_('.ql-editor')[0];
-    //             if (resultat.res) {
-    //                 news_foto = resultat.res.cover;
-    //                 const article = resultat.res.article.split("\n");
-
-    //                 console.log('article', article);
-
-    //                 const port = (window.location.hostname.includes('127.0.0.1')) ? ":8054" : "";
-    //                 $_('#news_alias')[0].innerHTML = `
-    //                 <a href="/blog/${resultat.res.alias}"
-    //                     title="Створюється автоматично із назви статті!"
-    //                     target="_blank">
-    //                     ${window.location.hostname}${port}/blog/${resultat.res.alias}
-    //                 </a>`;
-    //                 $_('#news_title')[0].value = resultat.res.title;
-    //                 $_('#news_description')[0].value = resultat.res.description;
-    //                 $_('#news_create')[0].innerHTML = `Створено: <span>${resultat.res.date_create}</span>`;
-    //                 if (news_foto !== '') {
-    //                     temp_foto = news_foto;
-    //                     $_('#foto_load')[0].style.backgroundImage = `url(/img/news/${news_token}/${news_foto}_cover_resized_footer.jpg)`;
-    //                 };
-    //                 if (resultat.res.date_update !== '') {
-    //                     $_('#news_update')[0].innerHTML = `Оновлено: <span>${resultat.res.date_update}</span>`;
-    //                 };
-    //                 editior.innerHTML = '';
-    //                 [...article].forEach(element => {
-    //                     editior.innerHTML += element;
-    //                 });
-    //                 resizeTextarea($_('#news_title')[0], '60')
-    //                 resizeTextarea($_('#news_description')[0], '100');
-    //             };
-    //         }, 'GET');
-    //     };
-    // };
-    // if (type === 'editMenuNews') {
-    //     $_(`#${type}`)[0].innerHTML = `
-    //         <p class="edit_menu" onclick="showModal('newsEdit', 'edit', '${el}')">Редагувати <i class='far fa-edit'></i></p>
-    //         <p class="edit_menu" onclick="showModal('newsDel', 'delete', '${el}')">Видалити <i class='far fa-trash-alt'></i></p>`;
-    // };
-    // if (type === 'newsDel') {
-    //     $_(`#${type} > #id_news`)[0].innerHTML = el
-    // };
-
 
     if (type === 'feedbackInfo') {
         const bookLang = getLang('lang');
@@ -933,25 +787,6 @@ const showModal = function(type, obj, el) {
             };
         }, 'GET');
     };
-
-
-
-    //____TOWNS
-    // if (type === 'townAdd') {
-    //     idTownPlace = $_('#id_town')[0];
-    //     tokenTown = generate_token(6);
-    // };
-    // if (type === 'townEdit') {
-    //     $_(`#${type} > #id_town`)[0].innerHTML = obj.id;
-    //     $_(`#${type} > #uk`)[0].value = obj.uk;
-    //     $_(`#${type} > #en`)[0].value = obj.en;
-    //     $_(`#${type} > #ru`)[0].value = obj.ru;
-    // };
-    // if (type === 'townDel') {
-    //     $_(`#${type} > #id_town`)[0].innerHTML = obj.id
-    // };
-
-
 
 
     //____TRANSFERS
@@ -1621,64 +1456,16 @@ const loadVariablesList = () => {
 };
 
 
-//for save transfer list position
-const savePosition = () => {
-    const sortWrap = $_('#sortable')[0].children, sortArr = {};
-    for (var i = 0; i < sortWrap.length; ++i) {
-        sortArr[`${sortWrap[i].id}`] = `${i+1}${token(4)}`;
-    };
-    send(sortArr , `/transfers/saveposition`, (result) => {
-        const resultat = JSON.parse(result);
-        if (resultat.res) {
-            $_('#save_position')[0].style.display = 'none';
-            loadTransfersList();
-        };
-    }, 'POST');
-};
 
-//load transferі list
-const loadTransfersList = () => {
-    send({} , `/transfers/list`, (result) => {
-        const resultat = JSON.parse(result);
-        if (resultat.res) {
-            // console.log('res', resultat.res);
-            const transfers_list = $_('.transfers_list')[0];
-            transfers_list.innerHTML = '';
-            resultat.res.forEach(element => {
-                transfers_list.innerHTML += `
-                <div class="transfer" id="${element.id}">
-                    <p>${element.transfer_from} - ${element.transfer_to}</p>
-                    <span>
-                        <p class="sel${element.selection}">обрані</p>
-                        <p class="pr${element.privat}">приватні</p>
-                        <p class="micro${element.microbus}">мікроавтобус</p>
-                    </span>
-                    <i class='fas fa-ellipsis-h' onclick="showModal('editMenuTransfer',
-                    {'id' : '${element.transfer_id}',
-                    'from' : '${element.transfer_from}',
-                    'from_id' : '${element.transfer_from_id}',
-                    'to' : '${element.transfer_to}',
-                    'to_id' : '${element.transfer_to_id}',
-                    'pricepr' : '${element.price_pr}',
-                    'pricegr' : '${element.price_gr}',
-                    'time1' : '${element.time1}',
-                    'time2' : '${element.time2}',
-                    'time3' : '${element.time3}',
-                    'time4' : '${element.time4}',
-                    'time5' : '${element.time5}',
-                    'time6' : '${element.time6}',
-                    'time7' : '${element.time7}',
-                    'time8' : '${element.time8}',
-                    'time9' : '${element.time9}',
-                    'time10' : '${element.time10}',
-                    'select' : '${element.selection}',
-                    'privat' : '${element.privat}',
-                    'microbus' : '${element.microbus}'})"></i>
-                </div>`
-            });
-        };
-    }, 'GET');
-};
+
+
+
+
+
+
+
+
+
 
 
 class Towns extends ModalWindow {
@@ -1687,14 +1474,7 @@ class Towns extends ModalWindow {
     town_id = '';
     town_form = '';
     town_param = '';
-    trueSend = false;
     constructor(){ super() }
-
-    creatingTownID(element) {
-        const id = `${transliterate(element.value).replace( /[^a-zA-ZiIіІ]/g, "" )}_${this.town_token}`;
-        this.town_id_place.innerHTML = id;
-        this.town_id = id;
-    };
 
     async showWindow(module, type, param, id){
         let data = {};
@@ -1708,6 +1488,24 @@ class Towns extends ModalWindow {
         this.show(module, 'Save', data);
         this.town_id_place = $_('#id_town')[0];
     }
+
+    async open(id) {
+        return new Promise(async (resolve) => {
+            const response = await fetch(`/towns/open`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json;charset=utf-8' },
+                body: JSON.stringify({ id })
+            });
+            const resultat = response.status === 200 && response.json();
+            resultat.res && resolve(resultat.res[0]);
+        });
+    }
+
+    creatingTownID(element) {
+        const id = `${transliterate(element.value).replace( /[^a-zA-ZiIіІ]/g, "" )}_${this.town_token}`;
+        this.town_id_place.innerHTML = id;
+        this.town_id = id;
+    };
 
     notEmpty(form) {
         const valid = [];
@@ -1728,20 +1526,12 @@ class Towns extends ModalWindow {
         return {"id" : this.town_id, "uk" : uk, "en" : en, "ru" : ru};
     }
 
-    async save(param, form) {
-        console.log('param', param);
-        console.log('form', form);
-        console.log('emmmpppttttyyy', this.notEmpty(form));
-        console.log('ddddaaaattttaaaa', this.data(form));
-        console.log('service', service.metods[param]);
-
-
+    save(param, form) {
         if (this.notEmpty(form)) {
-            const body = this.data(form);
             fetch(`/towns/${param}`, {
                 method: service.metods[param],
                 headers: { 'Content-Type': 'application/json;charset=utf-8' },
-                body: JSON.stringify(body) })
+                body: JSON.stringify(this.data(form)) })
             .then(response => response.status === 200 && response.json())
             .then(resultat => {
                 console.log('resultat', resultat);
@@ -1772,38 +1562,6 @@ class Towns extends ModalWindow {
         };
     }
 
-    async open(id) {
-        return new Promise((resolve, reject) => {
-            return fetch(`/towns/open`, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json;charset=utf-8' },
-                body: JSON.stringify({id})
-            })
-            .then(response => response.status === 200 && response.json())
-            .then(resultat => { resultat.res && resolve(resultat.res[0]) });
-        });
-    }
-
-    list() {
-        fetch(`/towns/list`, { method: 'GET' })
-        .then(response => response.status === 200 && response.json())
-        .then(resultat => {
-
-            console.log('list town',resultat);
-
-            if (resultat.res) {
-                const tawns_list = $_('.tawns_list')[0];
-                tawns_list.innerHTML = '';
-                resultat.res.forEach(element => {
-                    tawns_list.innerHTML += `
-                    <div class="town"><p>${element.name_uk}</p>
-                    <i class='fas fa-ellipsis-h' onclick="town.show('town', 'menu', {}, '${ element.town_id }')"></i>
-                    </div>`
-                });
-            };
-        });
-    }
-
     delete(id) {
         fetch(`/towns/delete/${id}`, { method: 'DELETE' })
         .then(response => {
@@ -1820,85 +1578,314 @@ class Towns extends ModalWindow {
             this.show('town', 'Res', { message: '<span style="color:red;"> Виникла помилка під час видалення. Спробуйте ще раз.</span>'});
         });
     }
+
+    list() {
+        fetch(`/towns/list`, { method: 'GET' })
+        .then(response => response.status === 200 && response.json())
+        .then(resultat => {
+            if (resultat.res) {
+                const tawns_list = $_('.tawns_list')[0];
+                tawns_list.innerHTML = '';
+                resultat.res.forEach(element => {
+                    tawns_list.innerHTML += `
+                    <div class="town"><p>${element.name_uk}</p>
+                    <i class='fas fa-ellipsis-h' onclick="town.show('town', 'menu', {}, '${ element.town_id }')"></i>
+                    </div>`
+                });
+            };
+        });
+    }
 }
 
-const town = new Towns();
+class News extends ModalWindow {
+    news_status = '';
+    news_token = '';
+    news_foto = '';
+    temp_foto = '';
+    constructor(){ super() }
 
-//add to DB Transfers
-const formSendTransfer = (formID) => {
-    let obj = {}, trueSend, metod = 'POST', url = 'create';
-    if ((formID === 'transferAdd') || (formID === 'transferEdit')) {
-        const transfer_id = $_(`#${formID}`)[0].paramid;
-        const transfer_from = $_(`#${formID} > #from`)[0].inputparam;
-        const transfer_to = $_(`#${formID} > #to`)[0].inputparam;
-        const transfer_gr = $_(`#${formID} #gr`)[0].value;
-        const transfer_pr = $_(`#${formID} #pr`)[0].value;
-        const transfer_select = $_(`#${formID} > #selection`)[0].checked;
-        const privat = $_(`#${formID} > #privat`)[0].checked;
-        const microbus = $_(`#${formID} > #microbus`)[0].checked;
-        const transfer_times = [];
-        $_('.time').forEach(element => { if (element.value !== '') { transfer_times.push(element.value)}});
-        obj = {"id" : transfer_id, "from" : transfer_from, "to" : transfer_to, "gr" : transfer_gr, "pr" : transfer_pr,
-               "select" : transfer_select, "privat" : privat, "microbus" : microbus, "times" : transfer_times, "param" : formID};
-        if (transfer_from !== '' && transfer_from !== undefined && transfer_to !== '' && transfer_to !== undefined) {
-            if (transfer_from === transfer_to) {
-                $_(`.transfer_dup_to`)[0].style.display = 'block';
-                trueSend = false;
-            } else {
-                if ((transfer_gr !== '' || transfer_pr !== '')) {
-                    if (transfer_gr !== '' && (transfer_gr >= 1 && transfer_gr <= 50000) && transfer_pr === '') {
-                        trueSend = true;
-                    } else {
-                        if (transfer_pr !== '' &&  (transfer_pr >= 1 && transfer_pr <= 50000) && transfer_gr === '') {
-                            trueSend = true;
-                        } else {
-                            if ((transfer_pr !== '' &&  (transfer_pr >= 1 && transfer_pr <= 50000)) && (transfer_gr !== '' && (transfer_gr >= 1 && transfer_gr <= 50000))) {
-                                trueSend = true;
-                            } else {
-                                $_(`.transfer_price_empt`)[0].style.display = 'block';
-                                trueSend = false;
-                            };
-                        };
-                    };
-                } else {
-                    $_(`.transfer_price_empt`)[0].style.display = 'block';
-                    trueSend = false;
-                };
+    async showWindow(module, type, param, id){
+        let data = {};
+        this.news_status = param;
+        this.news_token = param === 'edit' ? id : generate_token(6);
+        if (param === 'edit' ) {
+            this.news_status = 'edit';
+            data = await this.open();
+        };
+        this.show(module, type, data);
+        const toolbarOptions = [
+            ['bold', 'italic', 'underline', 'strike'],
+            [{ 'list': 'ordered'}, { 'list': 'bullet' }],
+            [{ 'header': [1, 2, 3, 4, 5, 6, false] }],
+            [{ 'align': [] }],
+            ['image'],
+            ['link'],
+            ['clean']
+        ];
+        new Quill('#editor', {
+            modules: { toolbar: toolbarOptions },
+            theme: 'snow'
+        });
+        $_('#news_foto')[0].addEventListener("change", async (event) => {
+            var file = event.target.files[0];
+            var reader = new FileReader();
+            reader.onloadend = () => {
+                this.temp_foto = this.news_foto === "" ? this.temp_foto : this.news_foto;
+                $_('#foto_load')[0].style.backgroundImage = `url(${reader.result})`;
+                this.news_foto = reader.result;
             };
+            if(file){
+                reader.readAsDataURL(file);
+            };
+        });
+        this.resizeTextarea($_('#news_title')[0], '60')
+        this.resizeTextarea($_('#news_description')[0], '100');
+        if (param === 'edit' ) {
+            const editor = $_('.ql-editor')[0];
+            editor.innerHTML = '';
+            [...data.article].forEach(element => {
+                editor.innerHTML += element;
+            });
+        };
+    }
+
+    resizeTextarea(el, h) {
+        el.style.height = "";
+        el.style.height = el.scrollHeight + "px";
+        el.style.overflow = (el.scrollHeight > +h) ? 'auto' : 'hidden';
+    }
+
+    message(text = '', classs = 'mmm') {
+        const news_vilid = $_('#vilid_news')[0];
+        if (news_vilid) {
+            news_vilid.innerHTML = text;
+            news_vilid.classList.remove('vilid_news_bad');
+            news_vilid.classList.remove('vilid_news_good');
+            news_vilid.classList.add(classs);
+        };
+    }
+
+    clearImg() {
+        $_('#news_foto')[0].type = "text";
+        $_('#news_foto')[0].type = "file";
+        this.news_foto = this.temp_foto;
+        $_('#foto_load')[0].style.backgroundImage = (this.temp_foto.length < 5)
+            ? `url(/img/nofoto.png)`
+            : `url(/img/news/${this.news_token}/${this.news_foto}_cover_resized_footer.jpg)`;
+    }
+
+    removeImg() {
+        $_('#foto_load')[0].style.backgroundImage = `url(/img/nofoto.png)`;
+        $_('#news_foto')[0].type = "text";
+        $_('#news_foto')[0].type = "file";
+        this.news_foto = "";
+    }
+
+    validIMG(event) {
+        const files = event.target.files;
+        if (!['image/jpg', 'image/jpeg', 'image/png', 'image/bmp'].includes(files[0].type)) {
+            this.message(`Недоступний формат. Доступними є: jpg, jpeg, png`, 'vilid_news_bad');
+            $_('#news_foto')[0].value = '';
         } else {
-            $_(`.transfer_empty_to`)[0].style.display = 'block';
-            trueSend = false;
+            if (files[0].size > 5000000) {
+                this.message(`Надто великий розмір. Максимально 5Mb`, 'vilid_news_bad');
+                $_('#news_foto')[0].value = '';
+            } else {
+                this.message('');
+            };
+        };
+    }
+
+    async createGallery(img_base64, formData) {
+        return new Promise((resolve) => {
+            const image_names = Object.keys(img_base64);
+            if (image_names.length > 0) {
+                let x = 0;
+                Object.entries(img_base64).forEach(async ([key, value]) => {
+                    const base64Cover = await fetch(`${value}`);
+                    const foto = await base64Cover.blob();
+                    formData.append("gallery", foto, `${key}.jpg`);
+                    (++x === image_names.length) && resolve(formData);
+                });
+            } else {
+                resolve(formData);
+            };
+        });
+    }
+
+    async notEmpty(fields) {
+        const valid = [], fields_names = [], names = [' НАЗВА', ' ОПИС'];
+        [...fields].forEach((element, index) => {
+            if (element === '' || element === undefined) {
+                valid.push(false);
+                fields_names.push(names[index]);
+            };
+        });
+        const trueSendNews = (!valid.includes(false)) ? true : false;
+        this.message(!trueSendNews ? `<span>Поля є обовяковими: ${fields_names} </span>` : '', 'vilid_news_bad');
+        return trueSendNews;
+    }
+
+    async save(param) {
+        const save_cover = $_('#load_cover')[0];
+        const news_title = $_('#news_title')[0].value;
+        const news_description = $_('#news_description')[0].value;
+        const news_editor = $_('.ql-editor')[0].children;
+        const validating_fields = [news_title, news_description];
+        // console.log('news_save_status', param);
+        // console.log('news_status', this.news_status);
+        // console.log('news_token', this.news_token);
+        // console.log('news_title', news_title);
+        // console.log('news_description', news_description);
+        // console.log('news_foto', this.news_foto);
+        // console.log('news_editor', news_editor);
+        if (await this.notEmpty(validating_fields)) {
+            save_cover.style.display = 'flex';
+            const img_arr = $_('.ql-editor')[0].getElementsByTagName('img');
+            const img_base64 = {};
+            const img_https_names = [];
+            [...img_arr].forEach(function(element) {
+                if (element.src.includes('base64')) {
+                    const img_token = generate_token(9)
+                    img_base64[img_token] = element.src;
+                    element.src = img_token;
+                };
+                if (element.src.includes('http')) {
+                    img_https_names.push(element.src);
+                };
+            });
+            const article = [...news_editor].map((element) => element.outerHTML).join("\n");
+            const cover_name = (!this.news_foto.includes('base64')) ? this.news_foto : generate_token(6);
+            let formData = new FormData();
+            const obj = {
+                token: this.news_token,
+                title: news_title,
+                description: news_description,
+                cover: cover_name,
+                article: article,
+                gallery: Object.keys(img_base64),
+                httpnames: img_https_names
+            };
+            formData.append("obj", JSON.stringify(obj));
+            formData.append("token", this.news_token);
+            if (this.news_foto && this.news_foto.includes('base64')) {
+                const base64Cover = await fetch(`${this.news_foto}`);
+                formData.append("cover", await base64Cover.blob(), `${cover_name}_cover.jpg`);
+            };
+            await this.createGallery(img_base64, formData);
+            fetch(`/blog/${this.news_status}`, {
+                method: 'POST',
+                body: formData
+            })
+            .then(response => {
+                if (response.status === 200) {
+                    return response.json()
+                } else {
+                    if (response.status === 201) { news_status = 'edit' };
+                    throw new Error('Article is not saved!')
+                };
+            })
+            .then(result => {
+                this.closeBtn();
+                (param === 'save')
+                    ? this.showWindow('news', 'Save', 'edit', this.news_token)
+                    : (this.show('news', 'Res', { message: 'Новину збережено!'}), setTimeout(() => {
+                        this.closeBtn();
+                        this.list();
+                    }, 3000));
+            })
+            .finally(() => {
+                save_cover.style.display = 'none';
+            })
+            .catch(error => {
+                this.message(`<span>Виникла помилка під час збереження статті. Спробуйте зберегти ще раз.</span>`, 'vilid_news_bad');
+                [...img_arr].forEach(function(element) {
+                    const img_keys = Object.keys(img_base64);
+                    const original_img = element.src.split('/')[element.src.split('/').length -1].replace("/", "");
+                    if (img_keys.includes(original_img)) {
+                        element.src = img_base64[original_img];
+                    };
+                });
+                this.list();
+                this.news_status = this.news_status === 'create' ? this.news_status : 'edit';
+                console.log(error);
+            });
         };
     };
-    if (formID === 'transferEdit') {
-        metod = "PUT";
-        url = 'update'
-    };
-    if (formID === 'transferDel') {
-        const id_transfer = $_(`#${formID} > #id_transfer`)[0].paramid;
-        obj = {"id" : id_transfer, "param" : formID};
-        trueSend = true;
-        metod = "DELETE";
-        url = 'delete'
-    };
-    if (trueSend) {
-        send(obj, `/transfers/${url}`, (result) => {
-            const resultat = JSON.parse(result);
-            if (resultat.res) {
-                showModal(`${formID}Res`);
-                setTimeout(() => { modal.innerHTML = '' }, 2000);
-                loadTransfersList();
+
+    async open() {
+        return fetch(`/blog/open/${this.news_token}`, { method: 'GET' })
+        .then(response => response.status === 200 && response.json())
+        .then(resultat => {
+            const data = {};
+            this.news_foto = resultat.res.cover;
+            const port = (window.location.hostname.includes('127.0.0.1')) ? ":8054" : "";
+            const alias = `
+                <a href="/blog/${resultat.res.alias}"
+                    title="Створюється автоматично із назви статті!"
+                    target="_blank">
+                    ${window.location.hostname}${port}/blog/${resultat.res.alias}
+                </a>`;
+            data.news_foto = this.news_foto,
+            data.article = resultat.res.article.split("\n"),
+            data.alias = alias,
+            data.title = resultat.res.title,
+            data.description = resultat.res.description,
+            data.create = `Створено: <span>${resultat.res.date_create}</span>`;
+            if (this.news_foto !== '') {
+                this.temp_foto = this.news_foto;
+                data.foto = `url(/img/news/${this.news_token}/${this.news_foto}_cover_resized_footer.jpg)`;
             };
-            if (resultat.DUP) {
-                console.log('Transfer duplicated!');
-                $_(`.transfer_duplicated`)[0].style.display = 'block';
+            if (resultat.res.date_update !== '') {
+                data.update = `Оновлено: <span>${resultat.res.date_update}</span>`;
             };
-        }, metod);
-    };
+            return data;
+        });
+    }
+
+    delete(id) {
+        fetch(`/blog/delete/${id}`, { method: 'DELETE' })
+        .then(response => {
+            if (response.status === 400) { throw new Error('Invalid') };
+            if (response.status === 200) { this.show('news', 'Res', { message: 'Новину видалено!' }) };
+        })
+        .finally(() => {
+            setTimeout(() => {
+                this.closeBtn();
+                this.list();
+            }, 3000)
+        })
+        .catch(() => {
+            this.show('news', 'Res', { message: '<span style="color:red;"> Виникла помилка під час видалення статті. Спробуйте ще раз.</span>'});
+        });
+    }
+
+    list(count = '1000', target = '_admin') {
+        fetch(`/blog/list/${count}`, { method: 'GET' })
+        .then(response => response.status === 200 && response.json())
+        .then(resultat => {
+            const news_list = $_(`.news_list${target}`)[0];
+            if (news_list) {
+                const data = {};
+                news_list.innerHTML = '';
+                resultat.res.forEach(element => {
+                    data.target = target;
+                    data.target = target;
+                    data.title = element.title;
+                    data.alias = element.alias;
+                    data.open_btn = target === '_footer' ? `onclick="window.open('/blog/${element.alias}')"` : '';
+                    data.cover = element.cover !== '' ? `/img/news/${element.id_blog}/${element.cover}_cover_resized${target}.jpg`: '/img/nofoto.png';
+                    data.description = target !== '_footer' ? `<p style="font-size:12px;">${element.description}</p>` : '';
+                    data.adm_btn = target === '_admin' ? `
+                        <i class='fas fa-ellipsis-h' onclick='news.show("news", "menu", {}, "${element.id_blog}")'></i>
+                        <i class="fa fa-share" onclick="window.open('/blog/${element.alias}')"></i>` : '';
+                    news_list.innerHTML += `${this.template('newsList', data)}`;
+                });
+            };
+        });
+    }
 };
 
-
-
-
-
-
+const town = new Towns();
+const transfers = new Transfers();
+const news = new News();

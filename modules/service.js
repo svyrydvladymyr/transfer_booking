@@ -46,7 +46,7 @@ const validValue = async (el, type) => {
             return el.replace(new RegExp("[^0-9+]", "gi"), "");
         default:
             return el.replace(new RegExp("[^a-zA-Zа-яА-Я0-9-()_+=!?.:;/\,іІїЇєЄ /\n]", "gi"), '');
-    }
+    };
 };
 
 const token = (length) => {

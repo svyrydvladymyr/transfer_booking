@@ -9,6 +9,7 @@ class NewsServise {
         fieldNameSize: 15,
         fileSize: 9242880
     };
+
     storage = multer.diskStorage({
         destination: (req, file, cb) => {
             try {
@@ -194,7 +195,7 @@ class NewsServise {
 
     async delete(req) {
         const newsid = req.params["newsid"];
-        const sql = `DELETE FROM blogo WHERE id_blog='${newsid}'`;;
+        const sql = `DELETE FROM blog WHERE id_blog='${newsid}'`;;
         return await query(sql)
             .then((resultat) => {
                 if (resultat.affectedRows === 1) {

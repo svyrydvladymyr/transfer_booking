@@ -53,7 +53,7 @@ class TownsService {
     }
 
     async open(body) {
-        const sql = `SELECT * FROM pointso WHERE town_id='${body.id}'`;
+        const sql = `SELECT * FROM points WHERE town_id='${body.id}'`;
         return await query(sql)
             .then((result) => result);
     }
@@ -85,7 +85,7 @@ class TownsService {
             towns_to[`${element.transfer_to}`] = town_id[element.transfer_to];
         });
         return { towns_from, towns_to, transfers_arr };
-    };
+    }
 
     async variables(body, req, res) {
         const { towns_from, towns_to, transfers_arr } = await this.townNames(req, res);
