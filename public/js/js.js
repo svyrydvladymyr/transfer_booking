@@ -162,10 +162,8 @@ class Templates {
         <input type="text" name="transfer" class="time" value="${data.value ? data.value : ''}" autocomplete="off" placeholder="Час перевезення..." onfocus="time.showWindow('transfer', 'Times', this)">
         <i class='fas fa-${data.timeAction ? data.timeAction : 'plus'}' onclick="time.plusTime(this, '${data.timeAction ? data.timeAction : 'plus'}')"></i>`
     }
-
-    transferTimes() {
-        return `<p>Вкажіть час</p>
-        <div class="time_modal_wrap">
+    timeBody() {
+        return `<div class="time_modal_wrap">
             <div>
                 <i class='fas fa-angle-up' onclick="time.selectTime('hour', 'up')"></i>
                 <p class="hours">00</p>
@@ -177,8 +175,17 @@ class Templates {
                 <p class="minutes">00</p>
                 <i class='fas fa-angle-down' onclick="time.selectTime('minute', 'down')"></i>
             </div>
-        </div>
+        </div>`
+    }
+    transferTimes() {
+        return `<p>Вкажіть час</p>
+        ${this.timeBody()}
         <p class="form_send admTime">Підтвердити</p>`
+    }
+    mainformTimes() {
+        return `<p class="mainform_title"></p>
+        ${this.timeBody()}
+        <p class="main_form_send admTime"><i class='fas fa-check'></i></p>`
     }
 
     //NEWS
@@ -233,9 +240,7 @@ class Templates {
         ${town_attentions}
         <p class="form_send" onclick="${data.module ? data.module : ''}.delete('${data.id ? data.id : ''}')">Видалити остаточно!</p>`
     }
-
     res(data) { return `<p class="res_mess">${data.message ? data.message : ''}</p>` }
-
     menu(data) {
         return `<p class="edit_menu" onclick="${data.module}.showWindow('${data.module}', 'Save', 'edit', '${data.id}')">Редагувати <i class='far fa-edit'></i></p>
         <p class="edit_menu" onclick="${data.module}.show('${data.module}', 'Del', {}, '${data.id}')">Видалити <i class='far fa-trash-alt'></i></p>`;
@@ -334,108 +339,6 @@ class Services extends ModalWindow {
         });
     }
 };
-
-class Time extends Services{
-    arrow = '';
-    minutes = '';
-    hArr = ['00', '01', '02', '03', '04', '05', '06', '07', '08', '09', '10', '11', '12', '13', '14', '15', '16', '17', '18', '19', '20', '21', '22', '23'];
-    mArr = ['00', '05', '10', '15', '20', '25', '30', '35', '40', '45', '50', '55', '60'];
-    hStart = 0;
-    mStart = 0;
-    time_place = '';
-    constructor(){ super() }
-
-
-    showWindow(module, type, el){
-        this.hStart = 0;
-        this.mStart = 0;
-        this.show(module, type);
-        this.hours = $_('.hours')[0];
-        this.minutes = $_('.minutes')[0];
-        $_('.admTime')[0].addEventListener('click', () => {
-            el.value = `${this.hours.innerHTML}:${this.minutes.innerHTML}`;
-            this.closeSub();
-            // mainTimeInput.classList.remove('err_input');
-            // checkForm();
-        });
-    }
-
-    selectTime(type, arrow) {
-        if (type === 'hour') {
-            if (arrow === 'up') {
-                this.hStart++
-                if (this.hStart === 24) {this.hStart = 0}
-                this.hours.innerHTML = this.hArr[this.hStart];
-            };
-            if (arrow === 'down') {
-                this.hStart--
-                if (this.hStart === -1) {this.hStart = 23}
-                this.hours.innerHTML = this.hArr[this.hStart];
-            };
-        };
-        if (type === 'minute') {
-            if (arrow === 'up') {
-                this.mStart++
-                if (this.mStart === 13) {this.mStart = 0}
-                this.minutes.innerHTML = this.mArr[this.mStart];
-            };
-            if (arrow === 'down') {
-                this.mStart--
-                if (this.mStart === -1) {this.mStart = 12}
-                this.minutes.innerHTML = this.mArr[this.mStart];
-            };
-        };
-    }
-
-    showTimeList(el) {
-        $_('.add_time')[0].style.display = el.value === '' ? 'none' : 'table';
-    }
-
-    plusTime(element, type) {
-        const transferBody = $_('.add_time')[0];
-        const transferBodyChild = transferBody.children;
-        const plusTransBody = document.createElement("div");
-        plusTransBody.setAttribute('class', 'add');
-        plusTransBody.innerHTML = this.template('timeField', {});
-        class classLists { constructor(){}
-            style(element, first, second){
-                element.classList.replace(`fa-${first}`, `fa-${second}`);
-                element.setAttribute('onclick', `time.plusTime(this, '${second}')`);
-            };
-        };
-        const classStyle = new classLists();
-        if (type === 'plus') {
-            classStyle.style(element, 'plus', 'minus');
-            if (transferBodyChild.length < 10) { transferBody.appendChild(plusTransBody) };
-            if (transferBodyChild.length === 10) { classStyle.style(transferBodyChild[transferBodyChild.length - 1].children[2], 'plus', 'minus') };
-        };
-        if (type === 'minus') {
-            element.parentNode.remove();
-            if (transferBodyChild.length < 10) { classStyle.style(transferBodyChild[transferBodyChild.length - 1].children[2], 'minus', 'plus') };
-        };
-        const timeLabels = $_('.time_label');
-        for (const [index, iterator] of timeLabels.entries()) {
-            timeLabels[index].innerHTML = `Відправлення ${index + 1}`;
-        };
-    }
-
-    setTime(value) {
-        mainTimeInput.value = value;
-        modal.innerHTML = '';
-        mainTimeInput.classList.remove('err_input');
-        checkForm();
-    }
-
-
-
-
-};
-
-const time = new Time();
-
-
-
-
 
 
 
@@ -1872,6 +1775,103 @@ class News extends Services {
     delete(id) { super.delete(id, 'blog') }
 };
 
+class Time extends Services{
+    arrow = '';
+    minutes = '';
+    hArr = ['00', '01', '02', '03', '04', '05', '06', '07', '08', '09', '10', '11', '12', '13', '14', '15', '16', '17', '18', '19', '20', '21', '22', '23'];
+    mArr = ['00', '05', '10', '15', '20', '25', '30', '35', '40', '45', '50', '55', '60'];
+    hStart = 0;
+    mStart = 0;
+    time_place = '';
+    constructor(){ super() }
+
+
+    showWindow(module, type, el){
+        this.hStart = 0;
+        this.mStart = 0;
+        this.show(module, type);
+        this.hours = $_('.hours')[0];
+        this.minutes = $_('.minutes')[0];
+        $_('.admTime')[0].addEventListener('click', () => {
+            el.value = `${this.hours.innerHTML}:${this.minutes.innerHTML}`;
+            this.closeSub();
+            // mainTimeInput.classList.remove('err_input');
+            // checkForm();
+        });
+    }
+
+    selectTime(type, arrow) {
+        if (type === 'hour') {
+            if (arrow === 'up') {
+                this.hStart++
+                if (this.hStart === 24) {this.hStart = 0}
+                this.hours.innerHTML = this.hArr[this.hStart];
+            };
+            if (arrow === 'down') {
+                this.hStart--
+                if (this.hStart === -1) {this.hStart = 23}
+                this.hours.innerHTML = this.hArr[this.hStart];
+            };
+        };
+        if (type === 'minute') {
+            if (arrow === 'up') {
+                this.mStart++
+                if (this.mStart === 13) {this.mStart = 0}
+                this.minutes.innerHTML = this.mArr[this.mStart];
+            };
+            if (arrow === 'down') {
+                this.mStart--
+                if (this.mStart === -1) {this.mStart = 12}
+                this.minutes.innerHTML = this.mArr[this.mStart];
+            };
+        };
+    }
+
+    showTimeList(el) {
+        $_('.add_time')[0].style.display = el.value === '' ? 'none' : 'table';
+    }
+
+    plusTime(element, type) {
+        const transferBody = $_('.add_time')[0];
+        const transferBodyChild = transferBody.children;
+        const plusTransBody = document.createElement("div");
+        plusTransBody.setAttribute('class', 'add');
+        plusTransBody.innerHTML = this.template('timeField', {});
+        class classLists { constructor(){}
+            style(element, first, second){
+                element.classList.replace(`fa-${first}`, `fa-${second}`);
+                element.setAttribute('onclick', `time.plusTime(this, '${second}')`);
+            };
+        };
+        const classStyle = new classLists();
+        if (type === 'plus') {
+            classStyle.style(element, 'plus', 'minus');
+            if (transferBodyChild.length < 10) { transferBody.appendChild(plusTransBody) };
+            if (transferBodyChild.length === 10) { classStyle.style(transferBodyChild[transferBodyChild.length - 1].children[2], 'plus', 'minus') };
+        };
+        if (type === 'minus') {
+            element.parentNode.remove();
+            if (transferBodyChild.length < 10) { classStyle.style(transferBodyChild[transferBodyChild.length - 1].children[2], 'minus', 'plus') };
+        };
+        const timeLabels = $_('.time_label');
+        for (const [index, iterator] of timeLabels.entries()) {
+            timeLabels[index].innerHTML = `Відправлення ${index + 1}`;
+        };
+    }
+
+    setTime(value) {
+        mainTimeInput.value = value;
+        modal.innerHTML = '';
+        mainTimeInput.classList.remove('err_input');
+        checkForm();
+    }
+
+
+
+
+};
+
+const time = new Time();
 const town = new Towns();
 const transfer = new Transfers();
 const news = new News();
