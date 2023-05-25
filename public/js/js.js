@@ -34,15 +34,12 @@ console.log('.........................', calendar.show());
 
 
 
-class Services {
-    metods = {
-        create: "POST",
-        edit: "PUT",
-    }
-    constructor(){}
-};
 
-const service = new Services();
+
+
+
+
+
 
 
 
@@ -90,77 +87,6 @@ const selectDate = (date) => {
     checkForm();
 };
 
-//for add time field
-const plusTime = (element, type) => {
-    const translateBody = $_('.add_time')[0];
-    const translateBodyChild = translateBody.children;
-    const plusTransBody = document.createElement("div");
-    plusTransBody.setAttribute('class', 'add');
-    plusTransBody.innerHTML = `<p class="time_label">Відправлення</p>
-                               <input type="text" name="translate" class="time" autocomplete="off" placeholder="Час перевезення..." onfocus="showModal('transferTimes', {}, this)" readonly>
-                               <i class='fas fa-plus' onclick="plusTime(this, 'plus')"></i>`;
-    class classLists { constructor(){}
-        style(element, first, second){
-            element.classList.replace(`fa-${first}`, `fa-${second}`);
-            element.setAttribute('onclick', `plusTime(this, '${second}')`);
-        };
-    };
-    const classStyle = new classLists();
-    if (type === 'plus') {
-        classStyle.style(element, 'plus', 'minus');
-        if (translateBodyChild.length < 10) { translateBody.appendChild(plusTransBody) };
-        if (translateBodyChild.length === 10) { classStyle.style(translateBodyChild[translateBodyChild.length - 1].children[2], 'plus', 'minus') };
-    };
-    if (type === 'minus') {
-        element.parentNode.remove();
-        if (translateBodyChild.length < 10) { classStyle.style(translateBodyChild[translateBodyChild.length - 1].children[2], 'minus', 'plus') };
-    };
-    const timeLabels = $_('.time_label');
-    for (const [index, iterator] of timeLabels.entries()) {
-        timeLabels[index].innerHTML = `Відправлення ${index + 1}`;
-    };
-};
-
-//for show times form
-const showTimeList = (el) => {
-    $_('.add_time')[0].style.display = el.value === '' ? 'none' : 'table';
-};
-
-//for set times to main form
-const setTime = (value) => {
-    mainTimeInput.value = value;
-    modal.innerHTML = '';
-    mainTimeInput.classList.remove('err_input');
-    checkForm();
-};
-
-//for selecting time
-const selectTime = (type, arrow) => {
-    if (type === 'hour') {
-        if (arrow === 'up') {
-            hStart++
-            if (hStart === 24) {hStart = 0}
-            hours.innerHTML = hArr[hStart];
-        };
-        if (arrow === 'down') {
-            hStart--
-            if (hStart === -1) {hStart = 23}
-            hours.innerHTML = hArr[hStart];
-        };
-    };
-    if (type === 'minute') {
-        if (arrow === 'up') {
-            mStart++
-            if (mStart === 13) {mStart = 0}
-            minutes.innerHTML = mArr[mStart];
-        };
-        if (arrow === 'down') {
-            mStart--
-            if (mStart === -1) {mStart = 12}
-            minutes.innerHTML = mArr[mStart];
-        };
-    };
-};
 
 class Templates {
     constructor(){}
@@ -181,51 +107,78 @@ class Templates {
         <p class="town_empty_ru">Не може бути пустим!</p>
         <p class="form_send" onclick="town.save('${this.town_param}', '${this.town_form}')">Добавити в базу</p>`;
     }
-    townDel(data) {
-        return `<p id="id_town">${data.id ? data.id : ''}</p>
-        <p class="form_info">Унікальний номер міста</p>
-        <p class="del_info" style="color:#991818;">Підтвердіть видалення!</p>
-        <p class="del_info" style="color:#991818;">Зверніть увагу, що після видалення міста також будуть недоступні маршрути з цим містом</p>
-        <p class="form_send" onclick="town.delete('${data.id ? data.id : ''}')">Видалити остаточно!</p>`;
-    }
-    townRes(data) {
-        return `<p id="id_town">${data.id ? data.id : ''}</p>
-        <p class="form_info">Унікальний номер міста</p>
-        <p class="res_mess">${data.message ? data.message : ''}</p>`;
+    transferTowns() {
+        return `<p>Натисніть на місто щоб вибрати</p>
+        <div class="towns_select_list"></div>
+        <p class="form_send" onclick="town.closeSub()">Закрити</p>`
     }
 
     //TRANSFER
-    transferAdd(data) {
-        return `<input type="text" id="from" name="from" maxlength="120" inputparam="" value="" autocomplete="off" placeholder="Перевезення з ..." oninput="validation(this, 'Input')" onfocus="showModal('transferTowns', {'param': 'from'})" readonly>
-        <input type="text" id="to" name="to" maxlength="120" inputparam="" value="" autocomplete="off" placeholder="Перевезення до ..." oninput="validation(this, 'Input')" onfocus="showModal('transferTowns', {'param': 'to'})" readonly>
+    transferSave(data) {
+        return `<p class="transfer_error">Сталася помилка спробуйте ще раз!</p>
+        <input type="text" id="from" name="from" maxlength="120" autocomplete="off" placeholder="Перевезення з ..."
+            data-input="${data.transfer_from_id ? data.transfer_from_id : ''}"
+            value="${data.transfer_from ? data.transfer_from : ''}"
+            oninput="validation(this, 'Input')"
+            onfocus="town.townList('transfer', 'Towns', 'from')" readonly>
+        <input type="text" id="to" name="to" maxlength="120" autocomplete="off" placeholder="Перевезення до ..."
+            data-input="${data.transfer_to_id ? data.transfer_to_id : ''}"
+            value="${data.transfer_to ? data.transfer_to : ''}"
+            oninput="validation(this, 'Input')"
+            onfocus="town.townList('transfer', 'Towns', 'to')" readonly>
         <p class="transfer_dup_to">Поля "Перевезення з" і "Перевезення до" не можуть співпадати!</p>
         <p class="transfer_empty_to">Поля "Перевезення з" і "Перевезення до" не можуть бути пустим!</p>
         <p class="transfer_duplicated">Такий маршрут вже існує! Його можна редагувати. Ціни для групових та приватних перевезень потрібно вказувати в одному маршруті.</p>
         <div class="price_form">
             <p>Груповий</p>
-            <input type="number" id="gr" name="gr" min="0" max="50000" autocomplete="off" placeholder="Ціна за груповий..." oninput="validationPrice(this), showTimeList(this)">
+            <input type="number" id="gr" name="gr" value="${data.price_gr ? data.price_gr : ''}" min="0" max="50000" autocomplete="off"
+            placeholder="Ціна за груповий..." oninput="validationPrice(this), time.showTimeList(this)">
         </div>
         <p class="transfer_price_gr">Перевищує допустимі значення! (доступно з 1грн до 50000грн)</p>
         <div class="price_form">
             <p>Приватний</p>
-            <input type="number" id="pr" name="pr" min="0" max="50000" autocomplete="off" placeholder="Ціна за приватний..." oninput="validationPrice(this)">
+            <input type="number" id="pr" name="pr" value="${data.price_pr ? data.price_pr : ''}" min="0" max="50000" autocomplete="off"
+            placeholder="Ціна за приватний..." oninput="validationPrice(this)">
         </div>
         <p class="transfer_price_pr">Перевищує допустимі значення! (доступно з 1грн до 50000грн)</p>
         <p class="transfer_price_empt">Хоча б одна ціна має бути вказана!</p>
         <div class="add_time" style="display: none">
             <div class="add">
-                <p class="time_label">Відправлення 1</p>
-                <input type="text" name="time" class="time" autocomplete="off" placeholder="Час перевезення..." onfocus="showModal('transferTimes', {}, this)" readonly>
-                <i class='fas fa-plus' onclick="plusTime(this, 'plus')"></i>
+                ${this.timeField({})}
             </div>
         </div>
         <p class="title">Поставте галочку щоб добавити в список обраних перевезень</p>
-        <input type="checkbox" id="selection" name="selection">
+        <input type="checkbox" id="selection" name="selection" ${data.selection === 'true' ? 'checked' : ''}>
         <p class="title" style="margin-top:5px">Поставте галочку щоб добавити в список <span style="color:#c95f5f">приватних перевезень</span> максисально 3 шт.</p>
-        <input type="checkbox" id="privat" name="privat">
+        <input type="checkbox" id="privat" name="privat" ${data.privat === 'true' ? 'checked' : ''}>
         <p class="title" style="margin-top:5px">Поставте галочку щоб добавити в список <span style="color:#c95f5f">перевезень мікроавтобусом</span> максисально 3 шт.</p>
-        <input type="checkbox" id="microbus" name="microbus">
-        <p class="form_send" onclick="formSendTransfer('transferAdd')">Добавити в базу</p>`
+        <input type="checkbox" id="microbus" name="microbus" ${data.microbus === 'true' ? 'checked' : ''}>
+        <p class="form_send" onclick="transfer.save('${this.transfer_param}', '${this.transfer_form}')">Добавити в базу</p>`
+    }
+
+    //TIME
+    timeField(data) {
+        return `<p class="time_label">Відправлення 1</p>
+        <input type="text" name="transfer" class="time" value="${data.value ? data.value : ''}" autocomplete="off" placeholder="Час перевезення..." onfocus="time.showWindow('transfer', 'Times', this)">
+        <i class='fas fa-${data.timeAction ? data.timeAction : 'plus'}' onclick="time.plusTime(this, '${data.timeAction ? data.timeAction : 'plus'}')"></i>`
+    }
+
+    transferTimes() {
+        return `<p>Вкажіть час</p>
+        <div class="time_modal_wrap">
+            <div>
+                <i class='fas fa-angle-up' onclick="time.selectTime('hour', 'up')"></i>
+                <p class="hours">00</p>
+                <i class='fas fa-angle-down' onclick="time.selectTime('hour', 'down')"></i>
+            </div>
+            <p class="dvokrapka">:</p>
+            <div>
+                <i class='fas fa-angle-up' onclick="time.selectTime('minute', 'up')"></i>
+                <p class="minutes">00</p>
+                <i class='fas fa-angle-down' onclick="time.selectTime('minute', 'down')"></i>
+            </div>
+        </div>
+        <p class="form_send admTime">Підтвердити</p>`
     }
 
     //NEWS
@@ -256,10 +209,6 @@ class Templates {
         <button class="save_new" id="save_news" onclick="news.save('save')">Зберегти</button>
         <button class="save_new" id="save_close_news" onclick="news.save('saveclose')">Зберегти і закрити</button>`;
     }
-    newsDel(data) {
-        return `<p class="del_info" style="color:#991818;">Підтвердіть видалення новини!</p>
-        <p class="form_send" onclick="news.delete('${data.id}')">Видалити остаточно!</p>`
-    }
     newsList(data) {
         return `<div class="news${data.target}">
             <div class="news_body${data.target}">
@@ -275,7 +224,17 @@ class Templates {
             ${data.adm_btn}
         </div>`;
     };
-    newsRes(data) { return `<p class="res_mess">${data.message ? data.message : ''}</p>` }
+
+    //OTHER FUNCTIONS
+    del(data) {
+        const town_attentions = (data.module && data.module === 'town')
+            ? '<p class="del_info" style="color:#991818;">Зверніть увагу, що після видалення міста також будуть недоступні маршрути з цим містом</p>' : '';
+        return `<p class="del_info" style="color:#991818;">Підтвердіть видалення!</p>
+        ${town_attentions}
+        <p class="form_send" onclick="${data.module ? data.module : ''}.delete('${data.id ? data.id : ''}')">Видалити остаточно!</p>`
+    }
+
+    res(data) { return `<p class="res_mess">${data.message ? data.message : ''}</p>` }
 
     menu(data) {
         return `<p class="edit_menu" onclick="${data.module}.showWindow('${data.module}', 'Save', 'edit', '${data.id}')">Редагувати <i class='far fa-edit'></i></p>
@@ -283,21 +242,12 @@ class Templates {
     }
 
     template(type, data) {
-        console.log('type template', type);
-        console.log('data template', data);
+        console.log('template type ', type);
+        console.log('template data ', data);
 
-        let type_res = type;
-        // if (type === 'newsAdd' || type === 'newsEdit') {
-        //     type_res = 'newsSave';
-        // }
-        // if (type === 'townAdd' || type === 'townEdit') {
-        //     type_res = 'townSave';
-        // }
-        if (type === 'newsmenu' || type === 'townmenu') {
-            type_res = 'menu';
-        }
+        const type_res = type.includes('menu') ? 'menu' : type;
 
-        console.log('type template after', type_res);
+        console.log('template type after', type_res);
 
         return this[type_res](data);
     };
@@ -330,23 +280,18 @@ class ModalWindow extends Templates {
 
 
     show(module, type, data = {}, id) {
-        const window_type = module + type;
-
-        // console.log('-----', JSON.parse(data_menu));
-        // const data = JSON.parse(data_menu);
+        const window_type = (type === "Del" || type === 'Res') ? type.toLowerCase() : module + type;
 
         console.log('window_type', window_type);
-        console.log('data show', data);
-        console.log('data show', data.id);
+        // console.log('data show', data);
 
         data.module = module;
         id && (data.id = id);
 
         console.log('data show', data);
 
-        const place = this.modal_place;
-
-        const wrap_close_arr = ['townSave', 'transferEdit', 'transferAdd', 'transferTowns', 'transferTimes', 'newsSave'];
+        const place = (['Towns', 'Times'].includes(type)) ? $_('.wrap_sub_modal')[0] : this.modal_place;
+        const wrap_close_arr = ['townSave', 'transferSave', 'newsSave', 'transferTowns', 'transferTimes'];
         const wrap_close = wrap_close_arr.includes(window_type) ? '' : `onclick="${module}.closeWrap(event)"`;
         const no_close_btn = ['transferTowns', 'transferTimes'].includes(window_type) ? '' : `<i class="fa fa-times" onclick="${module}.closeBtn()"></i>`;
         place.innerHTML =  `<div class="modal_body" ${wrap_close}>
@@ -359,195 +304,138 @@ class ModalWindow extends Templates {
     };
 };
 
-
-
-class Transfers extends ModalWindow {
-    town_token = '';
-    town_id_place = '';
-    town_id = '';
-    town_form = '';
-    town_param = '';
-    trueSend = false;
+class Services extends ModalWindow {
+    metods = {
+        create: "POST",
+        edit: "PUT",
+    }
     constructor(){ super() }
 
-    async showWindow(module, type, param, id){
-        let data = {};
-        this.town_form = module + type;
-        this.town_param = param;
-        this.town_token = generate_token(6);
-        if (param === 'edit' ) {
-            data = await this.open(id);
-            this.town_id = data.town_id;
+    delete(id, module) {
+        const module_mess = {
+            towns: 'Місто',
+            transfers: 'Маршрут',
+            blog: 'Новину',
         };
-        this.show(module, 'Save', data);
-        this.town_id_place = $_('#id_town')[0];
-    }
-
-    // async open(id) {
-    //     return new Promise(async (resolve) => {
-    //         const response = await fetch(`/towns/open`, {
-    //             method: 'POST',
-    //             headers: { 'Content-Type': 'application/json;charset=utf-8' },
-    //             body: JSON.stringify({ id })
-    //         });
-    //         const resultat = response.status === 200 && response.json();
-    //         resultat.res && resolve(resultat.res[0]);
-    //     });
-    // }
-
-    notEmpty(form) {
-        const valid = [];
-        ["uk", "en", "ru"].forEach(element => {
-            const field = $_(`#${form} > #${element}`)[0];
-            if (field.value === '' || field.value === undefined) {
-                $_(`.town_empty_${element}`)[0].style.display = 'block';
-                valid.push(false);
-            };
+        fetch(`/${module}/delete/${id}`, { method: 'DELETE' })
+        .then(response => {
+            if (response.status === 400) { throw new Error('Invalid') };
+            if (response.status === 200) { this.show(module === 'blog' ? 'news' : module, 'Res', { message: `${module_mess[module]} видалено!` }) };
+        })
+        .finally(() => {
+            setTimeout(() => {
+                this.closeBtn();
+                this.list();
+                (module === 'towns') && transfer.list();
+            }, 3000)
+        })
+        .catch(() => {
+            this.show(module === 'blog' ? 'news' : module, 'Res', { message: '<span style="color:red;"> Виникла помилка під час видалення. Спробуйте ще раз.</span>'});
         });
-        return (!valid.includes(false)) ? true : false;
     }
-}
-
-
-
-
-
-
-
-//for save transfer list position
-const savePosition = () => {
-    const sortWrap = $_('#sortable')[0].children, sortArr = {};
-    for (var i = 0; i < sortWrap.length; ++i) {
-        sortArr[`${sortWrap[i].id}`] = `${i+1}${token(4)}`;
-    };
-    send(sortArr , `/transfers/saveposition`, (result) => {
-        const resultat = JSON.parse(result);
-        if (resultat.res) {
-            $_('#save_position')[0].style.display = 'none';
-            loadTransfersList();
-        };
-    }, 'POST');
 };
 
-//load transferі list
-const loadTransfersList = () => {
-    send({} , `/transfers/list`, (result) => {
-        const resultat = JSON.parse(result);
-        if (resultat.res) {
-            // console.log('res', resultat.res);
-            const transfers_list = $_('.transfers_list')[0];
-            transfers_list.innerHTML = '';
-            resultat.res.forEach(element => {
-                transfers_list.innerHTML += `
-                <div class="transfer" id="${element.id}">
-                    <p>${element.transfer_from} - ${element.transfer_to}</p>
-                    <span>
-                        <p class="sel${element.selection}">обрані</p>
-                        <p class="pr${element.privat}">приватні</p>
-                        <p class="micro${element.microbus}">мікроавтобус</p>
-                    </span>
-                    <i class='fas fa-ellipsis-h' onclick="showModal('editMenuTransfer',
-                    {'id' : '${element.transfer_id}',
-                    'from' : '${element.transfer_from}',
-                    'from_id' : '${element.transfer_from_id}',
-                    'to' : '${element.transfer_to}',
-                    'to_id' : '${element.transfer_to_id}',
-                    'pricepr' : '${element.price_pr}',
-                    'pricegr' : '${element.price_gr}',
-                    'time1' : '${element.time1}',
-                    'time2' : '${element.time2}',
-                    'time3' : '${element.time3}',
-                    'time4' : '${element.time4}',
-                    'time5' : '${element.time5}',
-                    'time6' : '${element.time6}',
-                    'time7' : '${element.time7}',
-                    'time8' : '${element.time8}',
-                    'time9' : '${element.time9}',
-                    'time10' : '${element.time10}',
-                    'select' : '${element.selection}',
-                    'privat' : '${element.privat}',
-                    'microbus' : '${element.microbus}'})"></i>
-                </div>`
-            });
+class Time extends Services{
+    arrow = '';
+    minutes = '';
+    hArr = ['00', '01', '02', '03', '04', '05', '06', '07', '08', '09', '10', '11', '12', '13', '14', '15', '16', '17', '18', '19', '20', '21', '22', '23'];
+    mArr = ['00', '05', '10', '15', '20', '25', '30', '35', '40', '45', '50', '55', '60'];
+    hStart = 0;
+    mStart = 0;
+    time_place = '';
+    constructor(){ super() }
+
+
+    showWindow(module, type, el){
+        this.hStart = 0;
+        this.mStart = 0;
+        this.show(module, type);
+        this.hours = $_('.hours')[0];
+        this.minutes = $_('.minutes')[0];
+        $_('.admTime')[0].addEventListener('click', () => {
+            el.value = `${this.hours.innerHTML}:${this.minutes.innerHTML}`;
+            this.closeSub();
+            // mainTimeInput.classList.remove('err_input');
+            // checkForm();
+        });
+    }
+
+    selectTime(type, arrow) {
+        if (type === 'hour') {
+            if (arrow === 'up') {
+                this.hStart++
+                if (this.hStart === 24) {this.hStart = 0}
+                this.hours.innerHTML = this.hArr[this.hStart];
+            };
+            if (arrow === 'down') {
+                this.hStart--
+                if (this.hStart === -1) {this.hStart = 23}
+                this.hours.innerHTML = this.hArr[this.hStart];
+            };
         };
-    }, 'GET');
+        if (type === 'minute') {
+            if (arrow === 'up') {
+                this.mStart++
+                if (this.mStart === 13) {this.mStart = 0}
+                this.minutes.innerHTML = this.mArr[this.mStart];
+            };
+            if (arrow === 'down') {
+                this.mStart--
+                if (this.mStart === -1) {this.mStart = 12}
+                this.minutes.innerHTML = this.mArr[this.mStart];
+            };
+        };
+    }
+
+    showTimeList(el) {
+        $_('.add_time')[0].style.display = el.value === '' ? 'none' : 'table';
+    }
+
+    plusTime(element, type) {
+        const transferBody = $_('.add_time')[0];
+        const transferBodyChild = transferBody.children;
+        const plusTransBody = document.createElement("div");
+        plusTransBody.setAttribute('class', 'add');
+        plusTransBody.innerHTML = this.template('timeField', {});
+        class classLists { constructor(){}
+            style(element, first, second){
+                element.classList.replace(`fa-${first}`, `fa-${second}`);
+                element.setAttribute('onclick', `time.plusTime(this, '${second}')`);
+            };
+        };
+        const classStyle = new classLists();
+        if (type === 'plus') {
+            classStyle.style(element, 'plus', 'minus');
+            if (transferBodyChild.length < 10) { transferBody.appendChild(plusTransBody) };
+            if (transferBodyChild.length === 10) { classStyle.style(transferBodyChild[transferBodyChild.length - 1].children[2], 'plus', 'minus') };
+        };
+        if (type === 'minus') {
+            element.parentNode.remove();
+            if (transferBodyChild.length < 10) { classStyle.style(transferBodyChild[transferBodyChild.length - 1].children[2], 'minus', 'plus') };
+        };
+        const timeLabels = $_('.time_label');
+        for (const [index, iterator] of timeLabels.entries()) {
+            timeLabels[index].innerHTML = `Відправлення ${index + 1}`;
+        };
+    }
+
+    setTime(value) {
+        mainTimeInput.value = value;
+        modal.innerHTML = '';
+        mainTimeInput.classList.remove('err_input');
+        checkForm();
+    }
+
+
+
+
 };
 
+const time = new Time();
 
 
 
-//add to DB Transfers
-const formSendTransfer = (formID) => {
-    let obj = {}, trueSend, metod = 'POST', url = 'create';
-    if ((formID === 'transferAdd') || (formID === 'transferEdit')) {
-        const transfer_id = $_(`#${formID}`)[0].paramid;
-        const transfer_from = $_(`#${formID} > #from`)[0].inputparam;
-        const transfer_to = $_(`#${formID} > #to`)[0].inputparam;
-        const transfer_gr = $_(`#${formID} #gr`)[0].value;
-        const transfer_pr = $_(`#${formID} #pr`)[0].value;
-        const transfer_select = $_(`#${formID} > #selection`)[0].checked;
-        const privat = $_(`#${formID} > #privat`)[0].checked;
-        const microbus = $_(`#${formID} > #microbus`)[0].checked;
-        const transfer_times = [];
-        $_('.time').forEach(element => { if (element.value !== '') { transfer_times.push(element.value)}});
-        obj = {"id" : transfer_id, "from" : transfer_from, "to" : transfer_to, "gr" : transfer_gr, "pr" : transfer_pr,
-               "select" : transfer_select, "privat" : privat, "microbus" : microbus, "times" : transfer_times, "param" : formID};
-        if (transfer_from !== '' && transfer_from !== undefined && transfer_to !== '' && transfer_to !== undefined) {
-            if (transfer_from === transfer_to) {
-                $_(`.transfer_dup_to`)[0].style.display = 'block';
-                trueSend = false;
-            } else {
-                if ((transfer_gr !== '' || transfer_pr !== '')) {
-                    if (transfer_gr !== '' && (transfer_gr >= 1 && transfer_gr <= 50000) && transfer_pr === '') {
-                        trueSend = true;
-                    } else {
-                        if (transfer_pr !== '' &&  (transfer_pr >= 1 && transfer_pr <= 50000) && transfer_gr === '') {
-                            trueSend = true;
-                        } else {
-                            if ((transfer_pr !== '' &&  (transfer_pr >= 1 && transfer_pr <= 50000)) && (transfer_gr !== '' && (transfer_gr >= 1 && transfer_gr <= 50000))) {
-                                trueSend = true;
-                            } else {
-                                $_(`.transfer_price_empt`)[0].style.display = 'block';
-                                trueSend = false;
-                            };
-                        };
-                    };
-                } else {
-                    $_(`.transfer_price_empt`)[0].style.display = 'block';
-                    trueSend = false;
-                };
-            };
-        } else {
-            $_(`.transfer_empty_to`)[0].style.display = 'block';
-            trueSend = false;
-        };
-    };
-    if (formID === 'transferEdit') {
-        metod = "PUT";
-        url = 'update'
-    };
-    if (formID === 'transferDel') {
-        const id_transfer = $_(`#${formID} > #id_transfer`)[0].paramid;
-        obj = {"id" : id_transfer, "param" : formID};
-        trueSend = true;
-        metod = "DELETE";
-        url = 'delete'
-    };
-    if (trueSend) {
-        send(obj, `/transfers/${url}`, (result) => {
-            const resultat = JSON.parse(result);
-            if (resultat.res) {
-                showModal(`${formID}Res`);
-                setTimeout(() => { modal.innerHTML = '' }, 2000);
-                loadTransfersList();
-            };
-            if (resultat.DUP) {
-                console.log('Transfer duplicated!');
-                $_(`.transfer_duplicated`)[0].style.display = 'block';
-            };
-        }, metod);
-    };
-};
+
 
 
 
@@ -571,8 +459,8 @@ const closeModal = (el) => {
 
 //wrap for modal window
 const modalWindowWrap = (type) => {
-    const sub_close = ['transferEdit', 'transferAdd', 'transferTowns', 'transferTimes'].includes(type) ? '' : 'onclick="closeModal(event)"';
-    const sub_noclose = ['transferTowns', 'transferTimes'].includes(type) ? '' : '<i class="fa fa-times" onclick="closeModalX()"></i>';
+    const sub_close = ['transferTowns'].includes(type) ? '' : 'onclick="closeModal(event)"';
+    const sub_noclose = ['transferTowns'].includes(type) ? '' : '<i class="fa fa-times" onclick="closeModalX()"></i>';
     const style = {
         newsAdd: "max-width: 90%",
         newsEdit: "max-width: 90%",
@@ -592,10 +480,7 @@ const showModal = function(type, obj, el) {
     console.log('obj', obj);
     console.log('el', el);
 
-    ['transferAdd', 'transferAddRes', 'transferEdit', 'transferEditRes', 'transferDel', 'transferDelRes',
-    'mainformFrom', 'mainformTo', 'mainformCalendar',
-    'editMenuTown', 'editMenuTransfer',
-    'orderInfo', 'confirmPhone', 'feedbackInfo'].includes(type)
+    ['mainformFrom', 'mainformTo', 'mainformCalendar', 'orderInfo', 'confirmPhone', 'feedbackInfo'].includes(type)
         ? modal.innerHTML = modalWindowWrap(type) : null;
 
     if (type === 'feedbackInfo') {
@@ -636,39 +521,8 @@ const showModal = function(type, obj, el) {
             ${del}
         `;
     };
-    if (type === 'editMenuTown') {
-        $_(`#${type}`)[0].innerHTML = `
-            <p class="edit_menu" onclick="showModal('townEdit', {'id' : '${obj.id}', 'uk' : '${obj.uk}', 'en' : '${obj.en}', 'ru' : '${obj.ru}'})">Редагувати <i class='far fa-edit'></i></p>
-            <p class="edit_menu" onclick="showModal('townDel', {'id' : '${obj.id}'})">Видалити <i class='far fa-trash-alt'></i></p>`;
-    };
-    if (type === 'editMenuTransfer') {
-        $_(`#${type}`)[0].innerHTML = `
-        <p class="edit_menu" onclick="showModal('transferEdit',
-            {'id' : '${obj.id}',
-            'from' : '${obj.from}',
-            'from_id' : '${obj.from_id}',
-            'to' : '${obj.to}',
-            'to_id' : '${obj.to_id}',
-            'pricepr' : '${obj.pricepr}',
-            'pricegr' : '${obj.pricegr}',
-            'time1' : '${obj.time1}',
-            'time2' : '${obj.time2}',
-            'time3' : '${obj.time3}',
-            'time4' : '${obj.time4}',
-            'time5' : '${obj.time5}',
-            'time6' : '${obj.time6}',
-            'time7' : '${obj.time7}',
-            'time8' : '${obj.time8}',
-            'time9' : '${obj.time9}',
-            'time10' : '${obj.time10}',
-            'select' : '${obj.select}',
-            'privat' : '${obj.privat}',
-            'microbus' : '${obj.microbus}'})">Редагувати <i class='far fa-edit'></i></p>
-        <p class="edit_menu" onclick="showModal('transferDel',
-            {'id' : '${obj.id}',
-            'from' : '${obj.from}',
-            'to' : '${obj.to}'})">Видалити <i class='far fa-trash-alt'></i></p>`;
-    };
+
+
     if (type === 'mainformCalendar') {
         $_(`#${type}`)[0].children[0].innerHTML = lang[`${type}${getLang('lang')}`];
         let yearVal = 1, dateField = $_(`.date_year > h1`)[0];
@@ -724,20 +578,8 @@ const showModal = function(type, obj, el) {
             };
         };
     };
-    if (type === 'transferTimes') {
-        $_('.wrap_sub_modal')[0].innerHTML = modalWindowWrap(type);
-        hours = $_('.hours')[0];
-        minutes = $_('.minutes')[0];
-        hArr = ['00', '01', '02', '03', '04', '05', '06', '07', '08', '09', '10', '11', '12', '13', '14', '15', '16', '17', '18', '19', '20', '21', '22', '23'];
-        mArr = ['00', '05', '10', '15', '20', '25', '30', '35', '40', '45', '50', '55', '60'];
-        hStart = 0, mStart = 0;
-        $_('.admTime')[0].addEventListener('click', function(){
-            el.value = `${hours.innerHTML}:${minutes.innerHTML}`;
-            closeSubModal();
-            // mainTimeInput.classList.remove('err_input');
-            // checkForm();
-        });
-    };
+
+
     if (type === 'mainformTimes') {
         if (el.getAttribute("setparam") === 'limit') {
             modal.innerHTML = modalWindowWrap(`${type}limit`);
@@ -773,57 +615,7 @@ const showModal = function(type, obj, el) {
             });
         };
     };
-    if (type === 'transferTowns') {
-        $_('.wrap_sub_modal')[0].innerHTML = modalWindowWrap(type);
-        const setParam =  obj.param;
-        send('' , `/towns/list`, (result) => {
-            const resultat = JSON.parse(result);
-            if (resultat.res) {
-                const tawns_list = $_('.towns_select_list')[0];
-                tawns_list.innerHTML = '';
-                resultat.res.forEach(element => {
-                    tawns_list.innerHTML += `<p id="${element.town_id}" onclick="selectTown(this, '${setParam}')">${element.name_uk}</p>`
-                });
-            };
-        }, 'GET');
-    };
 
-
-    //____TRANSFERS
-    if (type === 'transferEdit') {
-        const timeList = [];
-        for (let i = 0; i < 10; i++) { if (obj[`time${i + 1}`] !== '') { timeList.push(obj[`time${i + 1}`])}};
-        $_(`#${type}`)[0].paramid = obj.id;
-        $_(`#${type} > #from`)[0].inputparam = obj.from_id;
-        $_(`#${type} > #from`)[0].value = obj.from;
-        $_(`#${type} > #to`)[0].inputparam = obj.to_id;
-        $_(`#${type} > #to`)[0].value = obj.to;
-        $_(`#${type} #gr`)[0].value = obj.pricegr;
-        $_(`#${type} #pr`)[0].value = obj.pricepr;
-        $_(`#${type} > #selection`)[0].checked = obj.select === 'true' ? true : false;
-        $_(`#${type} > #privat`)[0].checked = obj.privat === 'true' ? true : false;
-        $_(`#${type} > #microbus`)[0].checked = obj.microbus === 'true' ? true : false;
-        if (timeList.length > 0) {
-            const translateBody = $_('.add_time')[0];
-            translateBody.style.display = 'block';
-            translateBody.innerHTML = '';
-            for (let i = 0; i < timeList.length; i++) {
-                let timeAction = 'minus';
-                if (i === timeList.length - 1) { timeAction = 'plus' };
-                const plusTransBody = document.createElement("div");
-                plusTransBody.setAttribute('class', 'add');
-                plusTransBody.innerHTML = `<p class="time_label">Відправлення</p>
-                                           <input type="text" name="translate" class="time" value="${timeList[i]}" autocomplete="off" placeholder="Час перевезення..." onfocus="showModal('transferTimes', {}, this)">
-                                           <i class='fas fa-${timeAction}' onclick="plusTime(this, '${timeAction}')"></i>`;
-                translateBody.appendChild(plusTransBody);
-            };
-        };
-        $_('.add_time')[0].style.display = $_(`#${type} #gr`)[0].value !== '' ? 'table' : 'none'
-    };
-    if (type === 'transferDel') {
-        $_(`#${type} > #id_transfer`)[0].paramid = `${obj.id}`;
-        $_(`#${type} > #id_transfer`)[0].innerHTML = `${obj.from} - ${obj.to}`;
-    };
 };
 
 //for send to main page and set route to main form
@@ -853,21 +645,7 @@ const setToMainForm = (transfid, type, obj) => {
     checkForm();
 };
 
-//for select town and add to input
-const selectTown = (el, param) => {
-    $_(`.transfer_dup_to`)[0].style.display = 'none';
-    $_(`.transfer_empty_to`)[0].style.display = 'none';
-    $_(`.transfer_duplicated`)[0].style.display = 'none';
-    $_('.wrap_sub_modal')[0].innerHTML = '';
-    const inputPlace = $_(`#${param}`)[0];
-    const inputPlaceTO = $_(`#to`)[0];
-    const inputPlaceFROM = $_(`#from`)[0];
-    inputPlace.value = el.innerHTML;
-    inputPlace.inputparam = el.id;
-    if (inputPlaceFROM.inputparam === inputPlaceTO.inputparam) {
-        $_(`.transfer_dup_to`)[0].style.display = 'block';
-    };
-};
+
 const selectTownMain = (el, param, clear) => {
     modal.innerHTML = '';
     const inputPlace = $_(`#${param}`)[0];
@@ -1468,7 +1246,7 @@ const loadVariablesList = () => {
 
 
 
-class Towns extends ModalWindow {
+class Towns extends Services {
     town_token = '';
     town_id_place = '';
     town_id = '';
@@ -1491,14 +1269,64 @@ class Towns extends ModalWindow {
 
     async open(id) {
         return new Promise(async (resolve) => {
-            const response = await fetch(`/towns/open`, {
+            return fetch(`/towns/open`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json;charset=utf-8' },
                 body: JSON.stringify({ id })
-            });
-            const resultat = response.status === 200 && response.json();
-            resultat.res && resolve(resultat.res[0]);
+            })
+            .then(response => response.status === 200 && response.json())
+            .then(resultat => {
+                resultat.res && resolve(resultat.res[0]);
+            })
         });
+    }
+
+    townList(module, type, param) {
+        fetch(`/towns/list`, { method: 'GET' })
+        .then(response => response.status === 200 && response.json())
+        .then(resultat => {
+            this.show(module, type);
+            const tawns_list = $_('.towns_select_list')[0];
+            tawns_list.innerHTML = '';
+            resultat.res.forEach(element => {
+                tawns_list.innerHTML += `<p id="${element.town_id}" onclick="town.select(this, '${param}')">${element.name_uk}</p>`
+            });
+        });
+    }
+
+    select(el, field) {
+        console.log('elelelelelelelel', el);
+        console.log('paramparamparam', field);
+
+        transfer.labels.dup.style.display = 'none';
+        transfer.labels.empty.style.display = 'none';
+        transfer.labels.is.style.display = 'none';
+
+        // $_('.wrap_sub_modal')[0].innerHTML = '';
+        transfer.fields.modal.innerHTML = '';
+        const place = transfer.fields[`${field}`];
+
+        console.log('place', place);
+
+
+        place.value = el.innerHTML;
+        place.setAttribute('data-input', `${el.id}`);
+
+        const to = transfer.fields.to.getAttribute("data-input");
+        const from = transfer.fields.from.getAttribute("data-input");
+
+        console.log('inputPlaceTOfffffff', transfer.fields.to);
+        console.log('inputPlacefromfffff', transfer.fields.from);
+
+        console.log('inputPlaceTO', to);
+        console.log('inputPlaceFROM', from);
+
+        // console.log('inputPlaceTO', $_(`#transferSave`)[0]);
+        // console.log('inputPlaceFROM', $_(`#transferSave > #from`)[0]);
+
+        if (from === to) {
+            transfer.labels.dup.style.display = 'block';
+        };
     }
 
     creatingTownID(element) {
@@ -1529,7 +1357,7 @@ class Towns extends ModalWindow {
     save(param, form) {
         if (this.notEmpty(form)) {
             fetch(`/towns/${param}`, {
-                method: service.metods[param],
+                method: this.metods[param],
                 headers: { 'Content-Type': 'application/json;charset=utf-8' },
                 body: JSON.stringify(this.data(form)) })
             .then(response => response.status === 200 && response.json())
@@ -1562,23 +1390,6 @@ class Towns extends ModalWindow {
         };
     }
 
-    delete(id) {
-        fetch(`/towns/delete/${id}`, { method: 'DELETE' })
-        .then(response => {
-            if (response.status === 400) { throw new Error('Invalid') };
-            if (response.status === 200) { this.show('town', 'Res', { message: 'Місто видалено!' }) };
-        })
-        .finally(() => {
-            setTimeout(() => {
-                this.closeBtn();
-                this.list();
-            }, 3000)
-        })
-        .catch(() => {
-            this.show('town', 'Res', { message: '<span style="color:red;"> Виникла помилка під час видалення. Спробуйте ще раз.</span>'});
-        });
-    }
-
     list() {
         fetch(`/towns/list`, { method: 'GET' })
         .then(response => response.status === 200 && response.json())
@@ -1595,9 +1406,199 @@ class Towns extends ModalWindow {
             };
         });
     }
+
+    delete(id) { super.delete(id, 'towns') }
 }
 
-class News extends ModalWindow {
+
+
+class Transfers extends Services {
+    transfer_id = '';
+    transfer_form = '';
+    transfer_param = '';
+    fields = {};
+    labels = {};
+
+    constructor(){ super() }
+
+    savePosition() {
+        const sortWrap = $_('#sortable')[0].children, sortArr = {};
+        for (var i = 0; i < sortWrap.length; ++i) {
+            sortArr[`${sortWrap[i].id}`] = `${i+1}${token(4)}`;
+        };
+        fetch(`/transfers/saveposition`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json;charset=utf-8' },
+            body: JSON.stringify(sortArr) })
+        .then(response => response.status === 200 && response.json())
+        .then(resultat => {
+            if (resultat.res) {
+                $_('#save_position')[0].style.display = 'none';
+                this.list();
+            };
+        });
+    }
+
+    setFields(form) {
+        this.fields.from = $_(`#from`, form)[0];
+        this.fields.to = $_(`#to`, form)[0];
+        this.fields.gr = $_(`#gr`, form)[0];
+        this.fields.pr = $_(`#pr`, form)[0];
+        this.fields.selection = $_(`#selection`, form)[0];
+        this.fields.privat = $_(`#privat`, form)[0];
+        this.fields.microbus = $_(`#microbus`, form)[0];
+        this.fields.time = $_('.time', form)[0];
+        this.fields.modal = $_('.wrap_sub_modal')[0];
+        this.labels.dup = $_(`.transfer_dup_to`, form)[0];
+        this.labels.empty = $_(`.transfer_empty_to`, form)[0];
+        this.labels.is = $_(`.transfer_duplicated`, form)[0];
+        this.labels.price_gr = $_(`.transfer_price_gr`, form)[0];
+        this.labels.price_pr = $_(`.transfer_price_pr`, form)[0];
+        this.labels.price_empt = $_(`.transfer_price_empt`, form)[0];
+    }
+
+    async showWindow(module, type, param, id){
+        let data = {};
+        this.transfer_form = module + type;
+        this.transfer_param = param;
+        this.transfer_id = generate_token(6);
+        if (param === 'edit' ) {
+            data = await this.open(id);
+            this.transfer_id = data.transfer_id;
+        };
+        this.show(module, 'Save', data);
+        this.setFields($_(`#${module + type}`)[0]);
+        if (param === 'edit' ) {
+            const timeList = [];
+            for (let i = 0; i < 10; i++) { if (data[`time${i + 1}`] !== '') { timeList.push(data[`time${i + 1}`])}};
+            if (timeList.length > 0) {
+                const transferBody = $_('.add_time')[0];
+                transferBody.style.display = 'block';
+                transferBody.innerHTML = '';
+                for (let i = 0; i < timeList.length; i++) {
+                    let timeAction = 'minus';
+                    if (i === timeList.length - 1) { timeAction = 'plus' };
+                    const plusTransBody = document.createElement("div");
+                    plusTransBody.setAttribute('class', 'add');
+                    plusTransBody.innerHTML = this.template('timeField', {timeAction, value: timeList[i]});
+                    transferBody.appendChild(plusTransBody);
+                };
+            };
+        };
+    }
+
+    async open(id) {
+        return new Promise(async (resolve) => {
+            return fetch(`/transfers/open`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json;charset=utf-8' },
+                body: JSON.stringify({ id })
+            })
+            .then(response => response.status === 200 && response.json())
+            .then(resultat => {
+                resultat.res && resolve(resultat.res[0]);
+            });
+        });
+    }
+
+    notEmpty(form) {
+        const {from, to, gr, pr} = this.data(form);
+        if (from && to && from !== '' && to !== '') {
+            if (from === to) {
+                this.labels.dup.style.display = 'block';
+                return false;
+            } else {
+                if ((gr !== '' || pr !== '')) {
+                    if (gr !== '' && (gr >= 1 && gr <= 50000) && pr === '') { return true;
+                    } else {
+                        if (pr !== '' &&  (pr >= 1 && pr <= 50000) && gr === '') { return true;
+                        } else {
+                            if ((pr !== '' &&  (pr >= 1 && pr <= 50000)) && (gr !== '' && (gr >= 1 && gr <= 50000))) { return true;
+                            } else {
+                                this.labels.price_empt.style.display = 'block';
+                                return false;
+                            };
+                        };
+                    };
+                } else {
+                    this.labels.price_empt.style.display = 'block';
+                    return false;
+                };
+            };
+        } else {
+            this.labels.empty.style.display = 'block';
+            return false;
+        };
+    }
+
+    data(form) {
+        return {
+            "id" : this.transfer_id,
+            "from" : this.fields.from.getAttribute("data-input"),
+            "to" : this.fields.to.getAttribute("data-input"),
+            "gr" : this.fields.gr.value,
+            "pr" : this.fields.pr.value,
+            "select" : this.fields.selection.checked,
+            "privat" : this.fields.privat.checked,
+            "microbus" : this.fields.microbus.checked,
+            "times" : [...$_('.time')].map((el) => el.value !== '' && el.value).filter((el) => el !== false),
+            "param" : form
+        };
+    }
+
+    save(param, form) {
+        if (this.notEmpty(form)) {
+            fetch(`/transfers/${param}`, {
+                method: this.metods[param],
+                headers: { 'Content-Type': 'application/json;charset=utf-8' },
+                body: JSON.stringify(this.data(form)) })
+            .then(response => response.status === 200 && response.json())
+            .then(resultat => {
+                if (!resultat) { throw new Error() };
+                if (resultat.res) {
+                    this.show('transfer', 'Res', {message: param === 'create' ? 'Маршрут додано!' : 'Зміни до маршруту внесено!'});
+                    setTimeout(() => {
+                        this.closeBtn();
+                        this.list()
+                    }, 2000);
+                };
+                if (resultat.DUP) {
+                    this.labels.is.style.display = 'block';
+                };
+            })
+            .catch(() => {
+                $_(`.transfer_error`)[0].style.display = 'block';
+            });
+        };
+    }
+
+    list() {
+        fetch(`/transfers/list`, { method: 'GET' })
+        .then(response => response.status === 200 && response.json())
+        .then(resultat => {
+            const transfers_list = $_('.transfers_list')[0];
+            if (transfers_list) {
+                transfers_list.innerHTML = '';
+                resultat.res.forEach(element => {
+                    transfers_list.innerHTML += `
+                    <div class="transfer" id="${element.transfer_id}">
+                        <p>${element.transfer_from} - ${element.transfer_to}</p>
+                        <span>
+                            <p class="sel${element.selection}">обрані</p>
+                            <p class="pr${element.privat}">приватні</p>
+                            <p class="micro${element.microbus}">мікроавтобус</p>
+                        </span>
+                        <i class='fas fa-ellipsis-h' onclick="transfer.show('transfer', 'menu', {}, '${element.transfer_id}')"></i>
+                    </div>`
+                });
+            };
+        });
+    }
+
+    delete(id) { super.delete(id, 'transfers') }
+}
+
+class News extends Services {
     news_status = '';
     news_token = '';
     news_foto = '';
@@ -1843,23 +1844,6 @@ class News extends ModalWindow {
         });
     }
 
-    delete(id) {
-        fetch(`/blog/delete/${id}`, { method: 'DELETE' })
-        .then(response => {
-            if (response.status === 400) { throw new Error('Invalid') };
-            if (response.status === 200) { this.show('news', 'Res', { message: 'Новину видалено!' }) };
-        })
-        .finally(() => {
-            setTimeout(() => {
-                this.closeBtn();
-                this.list();
-            }, 3000)
-        })
-        .catch(() => {
-            this.show('news', 'Res', { message: '<span style="color:red;"> Виникла помилка під час видалення статті. Спробуйте ще раз.</span>'});
-        });
-    }
-
     list(count = '1000', target = '_admin') {
         fetch(`/blog/list/${count}`, { method: 'GET' })
         .then(response => response.status === 200 && response.json())
@@ -1884,8 +1868,10 @@ class News extends ModalWindow {
             };
         });
     }
+
+    delete(id) { super.delete(id, 'blog') }
 };
 
 const town = new Towns();
-const transfers = new Transfers();
+const transfer = new Transfers();
 const news = new News();

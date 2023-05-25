@@ -5,9 +5,10 @@ const {autorisation, permission} = require('../service');
 
 transfersRouter.use(autorisation, permission);
 transfersRouter.get('/list', transfers.transfer)
+transfersRouter.post('/open', transfers.transfer)
 transfersRouter.post('/create', transfers.transfer)
 transfersRouter.post('/saveposition', transfers.transfer)
-transfersRouter.put('/update', transfers.transfer)
-transfersRouter.delete('/delete', transfers.transfer)
+transfersRouter.put('/edit', transfers.transfer)
+transfersRouter.delete('/delete/:transferid$', transfers.transfer)
 
 module.exports = transfersRouter;

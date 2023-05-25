@@ -1626,7 +1626,7 @@ body {
           color: #9b9b9b;
         }
 
-        .town_empty_uk, .town_empty_en, .town_empty_ru, .transfer_empty_to, .towns_error {
+        .town_empty_uk, .town_empty_en, .town_empty_ru, .transfer_empty_to, .towns_error, .transfer_error {
           display: none;
           color: #bd1717;
           font-size: 11px;
@@ -1634,7 +1634,7 @@ body {
           width: 90%;
           max-width: 300px;
         }
-        .towns_error {
+        .towns_error, .transfer_error {
           font-size: 14px;
         }
         .town_dup_uk, .town_dup_en, .town_dup_ru, .transfer_dup_to, .transfer_price_gr, .transfer_price_pr, .transfer_price_empt, .transfer_duplicated {

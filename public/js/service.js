@@ -16,9 +16,12 @@ const RegExpArr = {
 }
 
 let idTownPlace, tokenTown, formValid;
-let hours, minutes, hArr = [], mArr = [], hStart = 0, mStart = 0, peopleCount = 0, peopleMax = 50, peopleType = 'gr';
 let townsFrom = {}, townsTo = {}, transfersArr = [];
 let calkTrue = true, feedbackCalkTrue = true;
+
+let peopleCount = 0, peopleMax = 50, peopleType = 'gr';
+// let hours, minutes, hArr = [], mArr = [], hStart = 0, mStart = 0;
+
 // let news_status = '', news_token = '', news_foto = "", temp_foto = "";
 
 //redirect page

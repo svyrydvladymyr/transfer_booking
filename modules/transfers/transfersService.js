@@ -8,7 +8,7 @@ class transfersService {
         this.time_string = '';
         for (let i = 1; i <= 10; i++) {
             time_arr[`time${i}`] = body.times[i-1] !== undefined
-                ? body.times[i-1].replace(new RegExp("[^0-9:]", "gi"), '')
+                ? body.times[`${i-1}`].replace(new RegExp("[^0-9:]", "gi"), '')
                 : '';
             this.time_string += `time${i}, `;
         };
@@ -50,7 +50,7 @@ class transfersService {
             .then(() => "Transfer added!");
     }
 
-    async update(body) {
+    async edit(body) {
         const time_arr = await this.createTimeArr(body);
         const sql = `
             UPDATE transfers
@@ -76,19 +76,36 @@ class transfersService {
             .then(() => "Transfer updated!");
     }
 
-    async delete(body) {
-        const sql = `DELETE FROM transfers WHERE transfer_id='${await validValue(body.id)}'`;
+    async open(body) {
+        const townsArr = {};
+        const sql = `SELECT * FROM transfers WHERE transfer_id='${body.id}'`;
+        return await query(sql)
+        .then(async(transfers) => {
+            const town_names = await query(`SELECT town_id, name_uk FROM points`);
+            town_names.forEach(element => {
+                townsArr[`${element.town_id}`] = element.name_uk;
+            });
+            transfers[0].transfer_from_id = transfers[0].transfer_from;
+            transfers[0].transfer_to_id = transfers[0].transfer_to;
+            transfers[0].transfer_from = townsArr[transfers[0].transfer_from];
+            transfers[0].transfer_to = townsArr[transfers[0].transfer_to];
+            return transfers;
+        });
+    }
+
+    async delete(body, req) {
+        const id = req.params["transferid"];
+        console.log(id);
+        const sql = `DELETE FROM transfers WHERE transfer_id='${id}'`;
         return await query(sql)
             .then(() => "Transfer deleted!");
     }
 
     async list(body) {
         const townsArr = {};
-        return await Promise.all([
-            query(`SELECT town_id, name_uk FROM points`),
-            query(`SELECT * FROM transfers`)
-        ])
-        .then(async([town_names, transfers]) => {
+        return await query(`SELECT * FROM transfers`)
+        .then(async(transfers) => {
+            const town_names = await query(`SELECT town_id, name_uk FROM points`);
             town_names.forEach(element => {
                 townsArr[`${element.town_id}`] = element.name_uk;
             });
@@ -97,21 +114,7 @@ class transfersService {
                     'id': element.id,
                     'transfer_id': element.transfer_id,
                     'transfer_from': townsArr[element.transfer_from],
-                    'transfer_from_id': element.transfer_from,
                     'transfer_to': townsArr[element.transfer_to],
-                    'transfer_to_id': element.transfer_to,
-                    'price_pr': element.price_pr,
-                    'price_gr': element.price_gr,
-                    'time1': element.time1,
-                    'time2': element.time2,
-                    'time3': element.time3,
-                    'time4': element.time4,
-                    'time5': element.time5,
-                    'time6': element.time6,
-                    'time7': element.time7,
-                    'time8': element.time8,
-                    'time9': element.time9,
-                    'time10': element.time10,
                     'selection': element.selection === 'true' ? true : false,
                     'privat': element.privat === 'true' ? true : false,
                     'microbus': element.microbus === 'true' ? true : false,
@@ -122,7 +125,7 @@ class transfersService {
 
     async saveposition(body) {
         const set_of_query = Object.entries(body).map((value, key) => {
-            return `WHEN id = ${Object.keys(body)[key]} THEN ${Object.values(body)[key]}`;
+            return `WHEN transfer_id = '${Object.keys(body)[key]}' THEN '${Object.values(body)[key]}'`;
         });
         const sql = `UPDATE transfers SET id = CASE ${set_of_query.join(' ')} END`;
         return await query(sql)

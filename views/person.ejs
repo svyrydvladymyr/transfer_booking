@@ -106,8 +106,7 @@
                             </div>
                             <div class="body">
                                 <p onclick="transfer.showWindow('transfer', 'Save', 'create')" class="add_point">Додати маршрут</p>
-                                <p onclick="showModal('transferAdd')" class="add_point">Додати маршрут</p>
-                                <p onclick="savePosition()" id="save_position" class="add_point" style="margin-top: 5px; display: none;">Зберегти позиції</p>
+                                <p onclick="transfer.savePosition()" id="save_position" class="add_point" style="margin-top: 5px; display: none;">Зберегти позиції</p>
                                 <div class="transfers_list" id="sortable"></div>
                             </div>
                             <div class="body">
@@ -145,15 +144,13 @@
                 ordersList(1);
                 feedbackList(1);
                 town.list();
-                // transfers.list();
-                // loadTransfersList();
+                transfer.list();
                 news.list(1000, '_admin');
             </script>
         <% } else { %>
             <script>
                 ordersList(1);
                 feedbackList(1);
-                // loadTownsList();
             </script>
         <% } %>
     <% } %>
