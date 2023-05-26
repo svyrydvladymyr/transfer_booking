@@ -112,10 +112,12 @@ const transliterate = (word) => {
 
 //tabs
 const tabs = (tab) => {
+    tab = (tab === 'null' || tab === undefined) ? 0 : tab;
     const tabs = $_('.tabs > p');
     const bodys = $_('.tab_bodys > .body');
     tabs.forEach(element => { element.classList.remove('tab_active') });
     bodys.forEach(element => { element.classList.remove('body_active') });
+    localStorage.setItem("tab", tab);
     tabs[tab].classList.add('tab_active');
     bodys[tab].classList.add('body_active');
 }

@@ -143,6 +143,7 @@
             <script>
                 (async () => {
                     service.lang = await service.languagePack(service.language);
+                    tabs(`${localStorage.getItem("tab")}`);
                     ordersList(1);
                     feedback.list(1);
                     town.list();
