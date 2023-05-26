@@ -52,8 +52,9 @@ class TownsService {
             .then(() => "Town deleted!");
     }
 
-    async open(body) {
-        const sql = `SELECT * FROM points WHERE town_id='${body.id}'`;
+    async open(body, req) {
+        const id = req.params["townid"];
+        const sql = `SELECT * FROM points WHERE town_id='${id}'`;
         return await query(sql)
             .then((result) => result);
     }

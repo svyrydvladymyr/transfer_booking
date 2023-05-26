@@ -82,7 +82,7 @@
                     <textarea name="feedback_comment" id="feedback_comment" autocomplete="nope" maxlength="300" placeholder="<%=DATA.langPack.feedback_form_message %>" oninput="validation(this, 'Input', 'feedback')"></textarea>
                     <p class="feedback_form_err hide_err"><%=DATA.langPack.feedback_form_err %></p>
                     <p class="feedback_sended hide_err"><%=DATA.langPack.feedback_sended %></p>
-                    <p class="send" onclick="sendFeedback()"><i class='far fa-paper-plane'></i></p>
+                    <p class="send" onclick="feedback.send()"><i class='far fa-paper-plane'></i></p>
                 </div>
             </div>
         </div>

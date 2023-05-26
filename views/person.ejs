@@ -10,7 +10,7 @@
     <% if (DATA.permission.permissionAuthorization === '1') { %>
         <script>
             let numb = 30, orderstat = '', orderdate = '3';
-            let feedback_numb = 30, feedback_stat = '', feedback_date = '3';
+            
         </script>
         <script src="https://code.jquery.com/jquery-3.6.0.js"></script>
         <script src="https://code.jquery.com/ui/1.13.1/jquery-ui.js"></script>
@@ -78,18 +78,18 @@
                             </div>
                             <div class="body">
                                 <div class="feedback_search">
-                                    <select name="feedback_date" onchange="setFeedbackDate(this)">
+                                    <select name="feedback_date" onchange="feedback.setParam(this, 'date')">
                                         <option value="3" selected>За 3 місяці</option>
                                         <option value="6">За 6 місяців</option>
                                         <option value="12">За 1 рік</option>
                                         <option value="">За весь час</option>
                                     </select>
-                                    <select name="feedback_status" onchange="setFeedbackStatus(this)">
+                                    <select name="feedback_status" onchange="feedback.setParam(this, 'status')">
                                         <option value="" selected>Всі</option>
                                         <option value="answer">З відповіддю</option>
                                         <option value="noanswer">Без відповіді</option>
                                     </select>
-                                    <select name="feedback_number" onchange="setFeedbackNumb(this)">
+                                    <select name="feedback_number" onchange="feedback.setParam(this, 'number')">
                                         <option value="30" selected>30</option>
                                         <option value="50">50</option>
                                         <option value="100">100</option>
@@ -102,7 +102,7 @@
                             </div>
                             <div class="body">
                                 <p onclick="town.showWindow('town', 'Save', 'create')" class="add_point">Додати місто</p>
-                                <div class="tawns_list"></div>
+                                <div class="towns_list"></div>
                             </div>
                             <div class="body">
                                 <p onclick="transfer.showWindow('transfer', 'Save', 'create')" class="add_point">Додати маршрут</p>
@@ -141,16 +141,22 @@
     <% if (DATA.permission.permissionAuthorization === '1') { %>
         <% if (DATA.permission.permissionRules === '1') { %>
             <script>
-                ordersList(1);
-                feedbackList(1);
-                town.list();
-                transfer.list();
-                news.list(1000, '_admin');
+                (async () => {
+                    service.lang = await service.languagePack(service.language);
+                    ordersList(1);
+                    feedback.list(1);
+                    town.list();
+                    transfer.list();
+                    news.list(1000, '_admin');
+                })()
             </script>
         <% } else { %>
             <script>
-                ordersList(1);
-                feedbackList(1);
+                (async () => {
+                    service.lang = await service.languagePack(service.language);
+                    ordersList(1);
+                    feedback.list(1);
+                })()
             </script>
         <% } %>
     <% } %>

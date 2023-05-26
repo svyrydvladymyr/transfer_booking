@@ -25,12 +25,12 @@ class Calendar extends ShowDate {
     constructor(){
         super();
     }
-    show() {return super.show('dd.mm.yyyy')};
+    show() {return service.show('dd.mm.yyyy')};
     // show = () => 'ddddddd';
 };
 const date = new ShowDate();
 const calendar = new Calendar();
-console.log('.........................', calendar.show());
+// console.log('.........................', calendar.show());
 
 
 
@@ -107,6 +107,11 @@ class Templates {
         <p class="town_empty_ru">Не може бути пустим!</p>
         <p class="form_send" onclick="town.save('${this.town_param}', '${this.town_form}')">Добавити в базу</p>`;
     }
+    townsList(data) {
+        return `<div class="town"><p>${data.name_uk}</p>
+        <i class='fas fa-ellipsis-h' onclick="town.show('town', 'menu', {}, '${ data.town_id }')"></i>
+        </div>`
+    }
     transferTowns() {
         return `<p>Натисніть на місто щоб вибрати</p>
         <div class="towns_select_list"></div>
@@ -154,6 +159,17 @@ class Templates {
         <p class="title" style="margin-top:5px">Поставте галочку щоб добавити в список <span style="color:#c95f5f">перевезень мікроавтобусом</span> максисально 3 шт.</p>
         <input type="checkbox" id="microbus" name="microbus" ${data.microbus === 'true' ? 'checked' : ''}>
         <p class="form_send" onclick="transfer.save('${this.transfer_param}', '${this.transfer_form}')">Добавити в базу</p>`
+    }
+    transfersList(data) {
+        return `<div class="transfer" id="${data.transfer_id}">
+            <p>${data.transfer_from} - ${data.transfer_to}</p>
+            <span>
+                <p class="sel${data.selection}">обрані</p>
+                <p class="pr${data.privat}">приватні</p>
+                <p class="micro${data.microbus}">мікроавтобус</p>
+            </span>
+            <i class='fas fa-ellipsis-h' onclick="transfer.show('transfer', 'menu', {}, '${data.transfer_id}')"></i>
+        </div>`
     }
 
     //TIME
@@ -232,6 +248,19 @@ class Templates {
         </div>`;
     };
 
+
+    //FEEDBACK
+    feedbackInfo(data) {
+        const answer = (data.settings === 'true') ? `<p class="edit_menu" style="min-width: 200px; margin-top: 25px;" onclick="${data.module}.answer('${data.idfeedback}')">Відправити відповідь</p>` : '';
+        return `<p class="feedback_info">${data.feedbackSurname + data.feedbackName}</p>
+        <p class="feedback_info">${data.feedbackEmail}</p>
+        <p class="feedback_info">${data.feedbackPhone}</p>
+        <p class="feedback_info">${data.date_create}</p>
+        <p class="feedback_mess">${data.feedbackComment}</p>
+        <textarea name="feedback_answer" id="feedback_answer" autocomplete="nope" maxlength="300" placeholder="Введіть текст відповіді..." oninput="validation(this, 'Input', 'answer')">${data.answer}</textarea>
+        ${answer}`;
+    }
+
     //OTHER FUNCTIONS
     del(data) {
         const town_attentions = (data.module && data.module === 'town')
@@ -247,12 +276,12 @@ class Templates {
     }
 
     template(type, data) {
-        console.log('template type ', type);
-        console.log('template data ', data);
+        // console.log('template type ', type);
+        // console.log('template data ', data);
 
         const type_res = type.includes('menu') ? 'menu' : type;
 
-        console.log('template type after', type_res);
+        // console.log('template type after', type_res);
 
         return this[type_res](data);
     };
@@ -309,14 +338,71 @@ class ModalWindow extends Templates {
     };
 };
 
-class Services extends ModalWindow {
+class Services {
     metods = {
         create: "POST",
         edit: "PUT",
     }
-    constructor(){ super() }
+    language = 'uk';
+    lang = {};
 
-    delete(id, module) {
+    constructor(){
+    }
+
+    async languagePack(lang) {
+        return new Promise((resolve, reject) => {
+            fetch(`./json/${lang}.json`)
+            .then(response =>  response.json())
+            .then(response => resolve(response))
+        });
+    }
+
+    setLang = (lang) => {
+        document.cookie = `lang=${lang}`;
+        document.location.reload();
+    }
+
+    async getLang() {
+        let matches = document.cookie.match(new RegExp("(?:^|; )" + 'lang'.replace(/([\.$?*|{}\(\)\[\]\\\/\+^])/g, '\\$1') + "=([^;]*)"));
+        this.language = matches ? decodeURIComponent(matches[1]).slice(0, 2) : 'uk';
+    }
+
+    async list(module, route, place = '') {
+        return new Promise(async (resolve) => {
+            return fetch(`/${module}/${route}`, { method: 'GET' })
+            .then(response => response.status === 200 && response.json())
+            .then(resultat => {
+                if (resultat.res) {
+                    const list = $_(`.${module === 'blog' ? 'news' : module}_list${place}`)[0];
+                    if (list) {
+                        list.innerHTML = '';
+                        resultat.place = list;
+                        return resolve(resultat);
+                    };
+                };
+            });
+        });
+    }
+
+    async open(id, module, that) {
+        return new Promise(async (resolve) => {
+            return fetch(`/${module}/open/${id}`, { method: 'GET' })
+            .then(response => {
+                if (response.status === 400) { throw new Error('Invalid') };
+                if (response.status === 200) { return response.json() };
+            })
+            .then(resultat => { resultat.res && resolve(resultat.res[0]) })
+            .catch(() => {
+                this.showErrorMessage(module, that);
+                setTimeout(() => {
+                    that.closeBtn();
+                    that.list();
+                }, 3000);
+            });
+        });
+    }
+
+    delete(id, module, that) {
         const module_mess = {
             towns: 'Місто',
             transfers: 'Маршрут',
@@ -325,24 +411,26 @@ class Services extends ModalWindow {
         fetch(`/${module}/delete/${id}`, { method: 'DELETE' })
         .then(response => {
             if (response.status === 400) { throw new Error('Invalid') };
-            if (response.status === 200) { this.show(module === 'blog' ? 'news' : module, 'Res', { message: `${module_mess[module]} видалено!` }) };
+            if (response.status === 200) { that.show(module === 'blog' ? 'news' : module, 'Res', { message: `${module_mess[module]} видалено!` }) };
         })
+        .catch(() => { this.showErrorMessage(module, that) })
         .finally(() => {
             setTimeout(() => {
-                this.closeBtn();
-                this.list();
+                that.closeBtn();
+                that.list();
                 (module === 'towns') && transfer.list();
             }, 3000)
-        })
-        .catch(() => {
-            this.show(module === 'blog' ? 'news' : module, 'Res', { message: '<span style="color:red;"> Виникла помилка під час видалення. Спробуйте ще раз.</span>'});
         });
+    }
+
+    showErrorMessage(module, that) {
+        that.show(module === 'blog' ? 'news' : module, 'Res', { message: '<span style="color:red;"> Виникла помилка. Спробуйте ще раз.</span>'});
     }
 };
 
 
-
-
+const service = new Services();
+service.getLang();
 
 
 
@@ -383,24 +471,10 @@ const showModal = function(type, obj, el) {
     console.log('obj', obj);
     console.log('el', el);
 
-    ['mainformFrom', 'mainformTo', 'mainformCalendar', 'orderInfo', 'confirmPhone', 'feedbackInfo'].includes(type)
+    ['mainformFrom', 'mainformTo', 'mainformCalendar', 'orderInfo'].includes(type)
         ? modal.innerHTML = modalWindowWrap(type) : null;
 
-    if (type === 'feedbackInfo') {
-        const bookLang = getLang('lang');
-        let answer = '';
-        if (obj.settings === 'true') {
-            answer = `<p class="edit_menu" style="min-width: 200px; margin-top: 25px;" onclick="saveAnswer('${obj.idfeedback}')">Відправити відповідь</p>`;
-        }
-        $_(`#${type}`)[0].innerHTML = `
-            <p class="feedback_info">${obj.user_name}</p>
-            <p class="feedback_info">${obj.feedbackEmail}</p>
-            <p class="feedback_info">${obj.feedbackPhone}</p>
-            <p class="feedback_info">${obj.date}</p>
-            <p class="feedback_mess">${obj.feedbackComment}</p>
-            <textarea name="feedback_answer" id="feedback_answer" autocomplete="nope" maxlength="300" placeholder="Введіть текст відповіді..." oninput="validation(this, 'Input', 'answer')">${obj.answer}</textarea>
-            ${answer}`;
-    }
+
     if (type === 'orderInfo') {
         const bookLang = getLang('lang');
         let proof = '', del = '';
@@ -938,49 +1012,112 @@ const ordersList = (page = 1) => {
     }, "POST");
 };
 
-//for check feedback form
-const checkFeedback = () => {
-    let arrInp = ['feedback_name', 'feedback_surname', 'feedback_email', 'feedback_phone', 'feedback_comment'];
-    const arrTrue = [];
-    arrInp.forEach(element => {
-        const elemCheck = $_(`#${element}`)[0];
+
+
+
+
+
+
+
+
+
+//for send feedback
+
+// const sendFeedback = () => {
+//     checkFeedback();
+//     const feedbackArr = {};
+//     if (feedbackCalkTrue) {
+//         feedbackArr.feedbackName = $_('#feedback_name')[0].value;
+//         feedbackArr.feedbackSurname = $_('#feedback_surname')[0].value;
+//         feedbackArr.feedbackEmail = $_('#feedback_email')[0].value;
+//         feedbackArr.feedbackPhone = $_('#feedback_phone')[0].value;
+//         feedbackArr.feedbackComment = $_('#feedback_comment')[0].value;
+//         send(feedbackArr , `/feedback/feedback`, (result) => {
+//             const resultat = JSON.parse(result);
+//             if (resultat.res) {
+//                 if (resultat.res === 'Feedback sended!') {
+//                     if ($_('.feedback_name')[0]) {$_('.feedback_name')[0].value = ''};
+//                     if ($_('.feedback_surname')[0]) {$_('.feedback_surname')[0].value = ''};
+//                     if ($_('.feedback_email')[0]) {$_('.feedback_email')[0].value = ''};
+//                     if ($_('#feedback_phone')[0]) {$_('#feedback_phone')[0].value = ''};
+//                     $_('#feedback_comment')[0].value = '';
+//                     $_(`.feedback_sended`)[0].classList.remove('hide_err');
+//                     setTimeout(() => {
+//                         $_(`.feedback_sended`)[0].classList.add('hide_err');
+//                     }, 5000);
+//                 };
+//             };
+//         }, "POST");
+//     };
+// };
+
+
+
+class Feedback extends ModalWindow {
+    number = 30;
+    status = '';
+    date = '3';
+
+    constructor(){
+        super()
+    }
+
+    setParam(el, param) {
+        this[param] = el.value;
+        this.list(1)
+    }
+
+    check() {
+        const arrTrue = [];
+        const arrInp = ['feedback_name', 'feedback_surname', 'feedback_email', 'feedback_phone', 'feedback_comment'];
+        const message = $_(`.feedback_form_err`)[0];
+        arrInp.forEach(element => {
+            const elemCheck = $_(`#${element}`)[0];
+            if (elemCheck.value === '') {
+                arrTrue.push(false);
+                elemCheck.classList.add('err_input');
+            };
+        });
         const emailCheck = $_('#feedback_email')[0];
-        const phoneCheck = $_('#feedback_phone')[0];
-        if (elemCheck.value === '') {
-            arrTrue.push(false);
-            elemCheck.classList.add('err_input');
-        };
         if (emailCheck.value !== '' && !validEmail(emailCheck.value)) {
             arrTrue.push(false);
             emailCheck.classList.add('err_input');
         };
+        const phoneCheck = $_('#feedback_phone')[0];
         if (phoneCheck.value !== '' && !validPhone(phoneCheck.value)) {
             arrTrue.push(false);
             phoneCheck.classList.add('err_input');
         };
-    });
-    if (arrTrue.includes(false)) {
-        feedbackCalkTrue = false;
-        $_(`.feedback_form_err`)[0].classList.remove('hide_err');
-    } else {
-        feedbackCalkTrue = true;
-        $_(`.feedback_form_err`)[0].classList.add('hide_err');
-    };
-};
+        console.log('rrrrrrrrrrrrrrrrrrr', arrTrue);
+        if (arrTrue.includes(false)) {
+            message.classList.remove('hide_err');
+            return false
+        } else {
+            message.classList.add('hide_err');
+            return true
+        };
+    }
 
-//for send feedback
-const feedbackArr = {};
-const sendFeedback = () => {
-    checkFeedback();
-    if (feedbackCalkTrue) {
+    data() {
+        const feedbackArr = {};
         feedbackArr.feedbackName = $_('#feedback_name')[0].value;
         feedbackArr.feedbackSurname = $_('#feedback_surname')[0].value;
         feedbackArr.feedbackEmail = $_('#feedback_email')[0].value;
         feedbackArr.feedbackPhone = $_('#feedback_phone')[0].value;
         feedbackArr.feedbackComment = $_('#feedback_comment')[0].value;
-        send(feedbackArr , `/feedback/feedback`, (result) => {
-            const resultat = JSON.parse(result);
-            if (resultat.res) {
+        return feedbackArr;
+    }
+
+    send() {
+        if (this.check()) {
+            const data = this.data();
+            fetch(`/feedback/feedback`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json;charset=utf-8' },
+                body: JSON.stringify(data)
+            })
+            .then(response => response.status === 200 && response.json())
+            .then(resultat => {
                 if (resultat.res === 'Feedback sended!') {
                     if ($_('.feedback_name')[0]) {$_('.feedback_name')[0].value = ''};
                     if ($_('.feedback_surname')[0]) {$_('.feedback_surname')[0].value = ''};
@@ -992,164 +1129,83 @@ const sendFeedback = () => {
                         $_(`.feedback_sended`)[0].classList.add('hide_err');
                     }, 5000);
                 };
-            };
-        }, "POST");
-    };
-};
-
-//for set feedback sort numbers
-const setFeedbackNumb = (el) => { feedback_numb = el.value; feedbackList(1) };
-const setFeedbackStatus = (el) => { feedback_stat = el.value; feedbackList(1) };
-const setFeedbackDate = (el) => { feedback_date = el.value; feedbackList(1) };
-
-//for sending feedback answer
-const saveAnswer = (feedbackid) => {
-    const answer_mess = $_('#feedback_answer')[0].value;
-    send({"id": `${feedbackid}`, 'answer': `${answer_mess}`}, `/feedback/answer`, (result) => {
-        const resultat = JSON.parse(result);
-        if (resultat.res) { feedbackList(1); modal.innerHTML = '' };
-    }, "POST");
-};
-
-//for show feedback list
-const feedbackList = (page = 1) => {
-    let param = [];
-    ['answer', 'noanswer'].includes(feedback_stat) ? param.push({"status": feedback_stat}) : param.push({"status": ''});
-    ['3', '6', '12', ''].includes(feedback_date) ? param.push({"date": feedback_date}) : param.push({"date": ''});
-    send({page, param, 'numb' : feedback_numb} , `/feedback/list`, (result) => {
-        const resultat = JSON.parse(result);
-        if (resultat.res) {
-            const bookLang = getLang('lang');
-            const feedback_list = $_('.feedback_list')[0];
-            const feedback_pagination = $_('.feedback_pagination')[0];
-            const present_pagination = feedback_pagination.children;
-            const pagin_page = Math.ceil(resultat.res.count / feedback_numb);
-            feedback_list.innerHTML = '';
-            feedback_pagination.innerHTML = '';
-            if (pagin_page > 1) {
-                for (let i = 1; i <= pagin_page; i++) { feedback_pagination.innerHTML += `<p onclick="feedbackList(${i})">${i}</p>` };
-                present_pagination[page-1].style.color = '#fff';
-                present_pagination[page-1].style.backgroundColor = 'rgb(139 195 74)';
-                present_pagination[page-1].removeAttribute("onclick");
-            };
-            resultat.res.list.forEach(element => {
-                let settings = '', answer = '', answerdate = '';
-                if (element.settings === 'true') {
-                    settings = `<i class='fas fa-edit' onclick="showModal('feedbackInfo',
-                    {'idfeedback' : '${element.idfeedback}',
-                    'feedbackComment' : '${element.feedbackComment}',
-                    'user_name' : '${element.feedbackName} ${element.feedbackSurname}',
-                    'feedbackEmail' : '${element.feedbackEmail}',
-                    'feedbackPhone' : '${element.feedbackPhone}',
-                    'date' : '${element.date_create}',
-                    'answer' : '${element.answer}',
-                    'settings' : '${element.settings}'}, this)"></i>`;
-                };
-                if (element.status === 'answer') {
-                    answer = `<p class="f_answer"><span>${lang[`answer${bookLang}`]}: </span> ${element.answer}</p>`;
-                    answerdate = `<p class="f_answer_date">${lang[`date${bookLang}`]}: ${element.date_answer}</p>`;
-                };
-                feedback_list.innerHTML += `
-                <div class="feedback user${element.settings}">
-                    <p>${element.feedbackComment}</p>
-                    <p class="f_date">${lang[`date${bookLang}`]}: ${element.date_create}</p>
-                    ${answer}
-                    ${answerdate}
-                    ${settings}
-                </div>`
             });
         };
-    }, "POST");
-};
+    }
 
-//load variables list
-const loadVariablesList = () => {
-    send('', `/towns/variables`, (result) => {
-        const resultat = JSON.parse(result);
-        if (resultat.res) {
-            townsFrom = resultat.res.towns_from;
-            townsTo = resultat.res.towns_to;
-            transfersArr = resultat.res.transfers_arr;
-            const langName = getLang('lang');
-            const privatWrap = $_('.wrap_prevat')[0];
-            const microbusWrap = $_('.wrap_microbus')[0];
-            const specialWrap = $_('.wrap_special')[0];
-            if (privatWrap !== undefined) {
-                privatWrap.innerHTML = '';
-                resultat.res.privat.forEach(priv => {
-                    transfersArr.forEach(transf => {
-                        if (transf.transfer_id === priv.transfer_id) {
-                            privatWrap.innerHTML += `
-                            <p onclick="setToMainForm('${transf.transfer_id}', 'pr',
-                                {'from': '${townsFrom[transf.transfer_from]}',
-                                'to': '${townsTo[transf.transfer_to]}',
-                                'fromid': '${transf.transfer_from}',
-                                'toid': '${transf.transfer_to}'})">
-                                <i class='fas fa-arrow-alt-circle-right'></i>${townsFrom[transf.transfer_from]} - ${townsTo[transf.transfer_to]}</p>
-                            <p class="price"><span>${lang[`from${langName}`]}</span>${transf.price_pr}<span>${lang[`sum_type${langName}`]}</span></p>`
-                        };
-                    });
+    async showWindow(module, type, param, id){
+        const data = await this.open(id);
+        this.show(module, type, data);
+    }
+
+    async open(id) {
+        return await service.open(id, 'feedback', this);
+    }
+
+    answer(id) {
+        const answer = $_('#feedback_answer')[0].value;
+        fetch(`/feedback/answer`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json;charset=utf-8' },
+            body: JSON.stringify({ id, answer })
+        })
+        .then(response => response.status === 200 && response.json())
+        .then(resultat => {
+            if (!resultat) { throw new Error() };
+            resultat.res && this.show('feedback', 'Res', { message: 'Зміни внесено!' })
+        })
+        .catch(() => { this.show('feedback', 'Res', { message: '<span style="color:red;">Сталася помилка, спробуйте ще раз!</span>' }) })
+        .finally(() => {
+            setTimeout(() => {
+                this.closeBtn();
+                this.list()
+            }, 2000)
+        });
+    }
+
+    list(page = 1) {
+        let param = [];
+        param.push({"status": `${['answer', 'noanswer'].includes(this.status) ? this.status : ''}`});
+        param.push({"date": `${['3', '6', '12', ''].includes(this.date) ? this.date : ''}`});
+        fetch(`/feedback/list`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json;charset=utf-8' },
+            body: JSON.stringify({page, param, 'numb' : this.number} )
+        })
+        .then(response => response.status === 200 && response.json())
+        .then(async resultat => {
+            if (resultat.res) {
+                const list_wrap = $_('.feedback_list')[0];
+                const pagination_wrap = $_('.feedback_pagination')[0];
+                const pages = pagination_wrap.children;
+                const pages_count = Math.ceil(resultat.res.count / this.number);
+                list_wrap.innerHTML = '';
+                pagination_wrap.innerHTML = '';
+                if (pages_count > 1) {
+                    for (let i = 1; i <= pages_count; i++) { pagination_wrap.innerHTML += `<p onclick="feedback.list(${i})">${i}</p>` };
+                    pages[page-1].style.color = '#fff';
+                    pages[page-1].style.backgroundColor = 'rgb(139 195 74)';
+                    pages[page-1].removeAttribute("onclick");
+                };
+                resultat.res.list.forEach(el => {
+                    const settings =  (el.settings === 'true') ? `<i class='fas fa-edit' onclick="feedback.showWindow('feedback', 'Info', '', '${el.idfeedback}')"></i>` : '';
+                    const answer = (el.status === 'answer') ? `<p class="f_answer"><span>${service.lang['answer']}: </span> ${el.answer}</p>` : '';
+                    const answerdate = (el.status === 'answer') ? `<p class="f_answer_date">${service.lang['date']}: ${el.date_answer}</p>` : '';
+                    list_wrap.innerHTML += `
+                    <div class="feedback user${el.settings}">
+                        <p>${el.feedbackComment}</p>
+                        <p class="f_date">${service.lang['date']}: ${el.date_create}</p>
+                        ${answer}
+                        ${answerdate}
+                        ${settings}
+                    </div>`
                 });
             };
-            if (microbusWrap !== undefined) {
-                microbusWrap.innerHTML = '';
-                resultat.res.microbus.forEach(micro => {
-                    transfersArr.forEach(transf => {
-                        if (transf.transfer_id === micro.transfer_id) {
-                            microbusWrap.innerHTML += `
-                            <p onclick="setToMainForm('${transf.transfer_id}', 'gr',
-                                {'from': '${townsFrom[transf.transfer_from]}',
-                                'to': '${townsTo[transf.transfer_to]}',
-                                'fromid': '${transf.transfer_from}',
-                                'toid': '${transf.transfer_to}'})">
-                                <i class='fas fa-arrow-alt-circle-right'></i>${townsFrom[transf.transfer_from]} - ${townsTo[transf.transfer_to]}</p>
-                            <p class="price"><span>${lang[`from${langName}`]}</span>${transf.price_gr}<span>${lang[`sum_type${langName}`]}</span></p>`
-                        };
-                    });
-                });
-            };
-            if (specialWrap !== undefined) {
-                specialWrap.innerHTML = '';
-                resultat.res.spec.forEach(spec => {
-                    transfersArr.forEach(transf => {
-                        if (transf.transfer_id === spec.transfer_id) {
-                            specialWrap.innerHTML += `
-                            <div>
-                                <p><i class='fas fa-arrow-alt-circle-right'></i>
-                                    <span>${townsFrom[transf.transfer_from]}</span>
-                                    <span>&nbsp-&nbsp</span>
-                                    <span>${townsTo[transf.transfer_to]}</span>
-                                </p>
-                                <p class="price"><span>${lang[`from${langName}`]}</span>${transf.price_pr}<span>${lang[`sum_type${langName}`]}</span></p>
-                                <p class="special_btn" onclick="sendToMainForm('${transf.transfer_id}', 'pr',
-                                    {'from': '${townsFrom[transf.transfer_from]}',
-                                    'to': '${townsTo[transf.transfer_to]}',
-                                    'fromid': '${transf.transfer_from}',
-                                    'toid': '${transf.transfer_to}'}
-                                )">${lang[`book${langName}`]}</p>
-                            </div>`
-                        };
-                    });
-                });
-            };
-        };
-    }, 'GET');
-};
+        });
+    };
+}
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-class Towns extends Services {
+class Towns extends ModalWindow {
     town_token = '';
     town_id_place = '';
     town_id = '';
@@ -1171,17 +1227,7 @@ class Towns extends Services {
     }
 
     async open(id) {
-        return new Promise(async (resolve) => {
-            return fetch(`/towns/open`, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json;charset=utf-8' },
-                body: JSON.stringify({ id })
-            })
-            .then(response => response.status === 200 && response.json())
-            .then(resultat => {
-                resultat.res && resolve(resultat.res[0]);
-            })
-        });
+        return await service.open(id, 'towns', this);
     }
 
     townList(module, type, param) {
@@ -1260,7 +1306,7 @@ class Towns extends Services {
     save(param, form) {
         if (this.notEmpty(form)) {
             fetch(`/towns/${param}`, {
-                method: this.metods[param],
+                method: service.metods[param],
                 headers: { 'Content-Type': 'application/json;charset=utf-8' },
                 body: JSON.stringify(this.data(form)) })
             .then(response => response.status === 200 && response.json())
@@ -1275,6 +1321,7 @@ class Towns extends Services {
                     setTimeout(() => {
                         this.closeBtn();
                         this.list()
+                        transfer.list()
                     }, 2000);
                 };
                 if (resultat.DUP) {
@@ -1293,36 +1340,28 @@ class Towns extends Services {
         };
     }
 
-    list() {
-        fetch(`/towns/list`, { method: 'GET' })
-        .then(response => response.status === 200 && response.json())
-        .then(resultat => {
-            if (resultat.res) {
-                const tawns_list = $_('.tawns_list')[0];
-                tawns_list.innerHTML = '';
-                resultat.res.forEach(element => {
-                    tawns_list.innerHTML += `
-                    <div class="town"><p>${element.name_uk}</p>
-                    <i class='fas fa-ellipsis-h' onclick="town.show('town', 'menu', {}, '${ element.town_id }')"></i>
-                    </div>`
-                });
-            };
+    async list() {
+        const result = await service.list('towns', 'list');
+        result.res.forEach(data => {
+            result.place.innerHTML += `${this.template('townsList', data)}`;
         });
     }
 
-    delete(id) { super.delete(id, 'towns') }
+    delete(id) {
+        service.delete(id, 'towns', this)
+    }
 }
 
-
-
-class Transfers extends Services {
+class Transfers extends ModalWindow {
     transfer_id = '';
     transfer_form = '';
     transfer_param = '';
     fields = {};
     labels = {};
 
-    constructor(){ super() }
+    constructor(){
+        super()
+    }
 
     savePosition() {
         const sortWrap = $_('#sortable')[0].children, sortArr = {};
@@ -1390,20 +1429,6 @@ class Transfers extends Services {
         };
     }
 
-    async open(id) {
-        return new Promise(async (resolve) => {
-            return fetch(`/transfers/open`, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json;charset=utf-8' },
-                body: JSON.stringify({ id })
-            })
-            .then(response => response.status === 200 && response.json())
-            .then(resultat => {
-                resultat.res && resolve(resultat.res[0]);
-            });
-        });
-    }
-
     notEmpty(form) {
         const {from, to, gr, pr} = this.data(form);
         if (from && to && from !== '' && to !== '') {
@@ -1452,7 +1477,7 @@ class Transfers extends Services {
     save(param, form) {
         if (this.notEmpty(form)) {
             fetch(`/transfers/${param}`, {
-                method: this.metods[param],
+                method: service.metods[param],
                 headers: { 'Content-Type': 'application/json;charset=utf-8' },
                 body: JSON.stringify(this.data(form)) })
             .then(response => response.status === 200 && response.json())
@@ -1475,38 +1500,31 @@ class Transfers extends Services {
         };
     }
 
-    list() {
-        fetch(`/transfers/list`, { method: 'GET' })
-        .then(response => response.status === 200 && response.json())
-        .then(resultat => {
-            const transfers_list = $_('.transfers_list')[0];
-            if (transfers_list) {
-                transfers_list.innerHTML = '';
-                resultat.res.forEach(element => {
-                    transfers_list.innerHTML += `
-                    <div class="transfer" id="${element.transfer_id}">
-                        <p>${element.transfer_from} - ${element.transfer_to}</p>
-                        <span>
-                            <p class="sel${element.selection}">обрані</p>
-                            <p class="pr${element.privat}">приватні</p>
-                            <p class="micro${element.microbus}">мікроавтобус</p>
-                        </span>
-                        <i class='fas fa-ellipsis-h' onclick="transfer.show('transfer', 'menu', {}, '${element.transfer_id}')"></i>
-                    </div>`
-                });
-            };
+    async list() {
+        const result = await service.list('transfers', 'list');
+        result.res.forEach(data => {
+            result.place.innerHTML += `${this.template('transfersList', data)}`;
         });
     }
 
-    delete(id) { super.delete(id, 'transfers') }
+    async open(id) {
+        return await service.open(id, 'transfers', this)
+    }
+
+    delete(id) {
+        service.delete(id, 'transfers', this)
+    }
 }
 
-class News extends Services {
+class News extends ModalWindow {
     news_status = '';
     news_token = '';
     news_foto = '';
     temp_foto = '';
-    constructor(){ super() }
+
+    constructor(){
+        super()
+    }
 
     async showWindow(module, type, param, id){
         let data = {};
@@ -1514,7 +1532,7 @@ class News extends Services {
         this.news_token = param === 'edit' ? id : generate_token(6);
         if (param === 'edit' ) {
             this.news_status = 'edit';
-            data = await this.open();
+            data = await this.open(this.news_token);
         };
         this.show(module, type, data);
         const toolbarOptions = [
@@ -1717,65 +1735,58 @@ class News extends Services {
         };
     };
 
-    async open() {
-        return fetch(`/blog/open/${this.news_token}`, { method: 'GET' })
-        .then(response => response.status === 200 && response.json())
-        .then(resultat => {
+    async open(id) {
+        return await service.open(id, 'blog', this)
+        .then((resultat) => {
             const data = {};
-            this.news_foto = resultat.res.cover;
+            this.news_foto = resultat.cover;
             const port = (window.location.hostname.includes('127.0.0.1')) ? ":8054" : "";
             const alias = `
-                <a href="/blog/${resultat.res.alias}"
+                <a href="/blog/${resultat.alias}"
                     title="Створюється автоматично із назви статті!"
                     target="_blank">
-                    ${window.location.hostname}${port}/blog/${resultat.res.alias}
+                    ${window.location.hostname}${port}/blog/${resultat.alias}
                 </a>`;
             data.news_foto = this.news_foto,
-            data.article = resultat.res.article.split("\n"),
+            data.article = resultat.article.split("\n"),
             data.alias = alias,
-            data.title = resultat.res.title,
-            data.description = resultat.res.description,
-            data.create = `Створено: <span>${resultat.res.date_create}</span>`;
+            data.title = resultat.title,
+            data.description = resultat.description,
+            data.create = `Створено: <span>${resultat.date_create}</span>`;
             if (this.news_foto !== '') {
                 this.temp_foto = this.news_foto;
                 data.foto = `url(/img/news/${this.news_token}/${this.news_foto}_cover_resized_footer.jpg)`;
             };
-            if (resultat.res.date_update !== '') {
-                data.update = `Оновлено: <span>${resultat.res.date_update}</span>`;
+            if (resultat.date_update !== '') {
+                data.update = `Оновлено: <span>${resultat.date_update}</span>`;
             };
             return data;
+        })
+    }
+
+    async list(count = '1000', target = '_admin') {
+        const result = await service.list('blog', `list/${count}`, target);
+        result.res.forEach(element => {
+            const data = {};
+            data.target = target;
+            data.title = element.title;
+            data.alias = element.alias;
+            data.open_btn = target === '_footer' ? `onclick="window.open('/blog/${element.alias}')"` : '';
+            data.cover = element.cover !== '' ? `/img/news/${element.id_blog}/${element.cover}_cover_resized${target}.jpg`: '/img/nofoto.png';
+            data.description = target !== '_footer' ? `<p style="font-size:12px;">${element.description}</p>` : '';
+            data.adm_btn = target === '_admin' ? `
+                <i class='fas fa-ellipsis-h' onclick='news.show("news", "menu", {}, "${element.id_blog}")'></i>
+                <i class="fa fa-share" onclick="window.open('/blog/${element.alias}')"></i>` : '';
+            result.place.innerHTML += `${this.template('newsList', data)}`;
         });
     }
 
-    list(count = '1000', target = '_admin') {
-        fetch(`/blog/list/${count}`, { method: 'GET' })
-        .then(response => response.status === 200 && response.json())
-        .then(resultat => {
-            const news_list = $_(`.news_list${target}`)[0];
-            if (news_list) {
-                const data = {};
-                news_list.innerHTML = '';
-                resultat.res.forEach(element => {
-                    data.target = target;
-                    data.target = target;
-                    data.title = element.title;
-                    data.alias = element.alias;
-                    data.open_btn = target === '_footer' ? `onclick="window.open('/blog/${element.alias}')"` : '';
-                    data.cover = element.cover !== '' ? `/img/news/${element.id_blog}/${element.cover}_cover_resized${target}.jpg`: '/img/nofoto.png';
-                    data.description = target !== '_footer' ? `<p style="font-size:12px;">${element.description}</p>` : '';
-                    data.adm_btn = target === '_admin' ? `
-                        <i class='fas fa-ellipsis-h' onclick='news.show("news", "menu", {}, "${element.id_blog}")'></i>
-                        <i class="fa fa-share" onclick="window.open('/blog/${element.alias}')"></i>` : '';
-                    news_list.innerHTML += `${this.template('newsList', data)}`;
-                });
-            };
-        });
+    delete(id) {
+        service.delete(id, 'blog', this)
     }
-
-    delete(id) { super.delete(id, 'blog') }
 };
 
-class Time extends Services{
+class Time extends ModalWindow{
     arrow = '';
     minutes = '';
     hArr = ['00', '01', '02', '03', '04', '05', '06', '07', '08', '09', '10', '11', '12', '13', '14', '15', '16', '17', '18', '19', '20', '21', '22', '23'];
@@ -1783,8 +1794,10 @@ class Time extends Services{
     hStart = 0;
     mStart = 0;
     time_place = '';
-    constructor(){ super() }
 
+    constructor(){
+        super()
+    }
 
     showWindow(module, type, el){
         this.hStart = 0;
@@ -1871,6 +1884,7 @@ class Time extends Services{
 
 };
 
+const feedback = new Feedback();
 const time = new Time();
 const town = new Towns();
 const transfer = new Transfers();

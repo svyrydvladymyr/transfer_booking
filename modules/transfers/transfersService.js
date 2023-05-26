@@ -76,9 +76,10 @@ class transfersService {
             .then(() => "Transfer updated!");
     }
 
-    async open(body) {
+    async open(body, req) {
+        const id = req.params["transferid"];
         const townsArr = {};
-        const sql = `SELECT * FROM transfers WHERE transfer_id='${body.id}'`;
+        const sql = `SELECT * FROM transfers WHERE transfer_id='${id}'`;
         return await query(sql)
         .then(async(transfers) => {
             const town_names = await query(`SELECT town_id, name_uk FROM points`);

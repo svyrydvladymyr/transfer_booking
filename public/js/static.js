@@ -206,3 +206,77 @@ if ($_('.feedback_container')[0]) {
         slideFeed();
     });
 };
+
+//load variables list
+const loadVariablesList = () => {
+    send('', `/towns/variables`, (result) => {
+        const resultat = JSON.parse(result);
+        if (resultat.res) {
+            townsFrom = resultat.res.towns_from;
+            townsTo = resultat.res.towns_to;
+            transfersArr = resultat.res.transfers_arr;
+            const langName = getLang('lang');
+            const privatWrap = $_('.wrap_prevat')[0];
+            const microbusWrap = $_('.wrap_microbus')[0];
+            const specialWrap = $_('.wrap_special')[0];
+            if (privatWrap !== undefined) {
+                privatWrap.innerHTML = '';
+                resultat.res.privat.forEach(priv => {
+                    transfersArr.forEach(transf => {
+                        if (transf.transfer_id === priv.transfer_id) {
+                            privatWrap.innerHTML += `
+                            <p onclick="setToMainForm('${transf.transfer_id}', 'pr',
+                                {'from': '${townsFrom[transf.transfer_from]}',
+                                'to': '${townsTo[transf.transfer_to]}',
+                                'fromid': '${transf.transfer_from}',
+                                'toid': '${transf.transfer_to}'})">
+                                <i class='fas fa-arrow-alt-circle-right'></i>${townsFrom[transf.transfer_from]} - ${townsTo[transf.transfer_to]}</p>
+                            <p class="price"><span>${lang[`from${langName}`]}</span>${transf.price_pr}<span>${lang[`sum_type${langName}`]}</span></p>`
+                        };
+                    });
+                });
+            };
+            if (microbusWrap !== undefined) {
+                microbusWrap.innerHTML = '';
+                resultat.res.microbus.forEach(micro => {
+                    transfersArr.forEach(transf => {
+                        if (transf.transfer_id === micro.transfer_id) {
+                            microbusWrap.innerHTML += `
+                            <p onclick="setToMainForm('${transf.transfer_id}', 'gr',
+                                {'from': '${townsFrom[transf.transfer_from]}',
+                                'to': '${townsTo[transf.transfer_to]}',
+                                'fromid': '${transf.transfer_from}',
+                                'toid': '${transf.transfer_to}'})">
+                                <i class='fas fa-arrow-alt-circle-right'></i>${townsFrom[transf.transfer_from]} - ${townsTo[transf.transfer_to]}</p>
+                            <p class="price"><span>${lang[`from${langName}`]}</span>${transf.price_gr}<span>${lang[`sum_type${langName}`]}</span></p>`
+                        };
+                    });
+                });
+            };
+            if (specialWrap !== undefined) {
+                specialWrap.innerHTML = '';
+                resultat.res.spec.forEach(spec => {
+                    transfersArr.forEach(transf => {
+                        if (transf.transfer_id === spec.transfer_id) {
+                            specialWrap.innerHTML += `
+                            <div>
+                                <p><i class='fas fa-arrow-alt-circle-right'></i>
+                                    <span>${townsFrom[transf.transfer_from]}</span>
+                                    <span>&nbsp-&nbsp</span>
+                                    <span>${townsTo[transf.transfer_to]}</span>
+                                </p>
+                                <p class="price"><span>${lang[`from${langName}`]}</span>${transf.price_pr}<span>${lang[`sum_type${langName}`]}</span></p>
+                                <p class="special_btn" onclick="sendToMainForm('${transf.transfer_id}', 'pr',
+                                    {'from': '${townsFrom[transf.transfer_from]}',
+                                    'to': '${townsTo[transf.transfer_to]}',
+                                    'fromid': '${transf.transfer_from}',
+                                    'toid': '${transf.transfer_to}'}
+                                )">${lang[`book${langName}`]}</p>
+                            </div>`
+                        };
+                    });
+                });
+            };
+        };
+    }, 'GET');
+};

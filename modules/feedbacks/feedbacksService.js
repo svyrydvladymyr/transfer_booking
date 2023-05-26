@@ -1,8 +1,18 @@
 const telegram = require('../bot/botController');
-const {query, validValue, token, clienttoken, date } = require('../service');
+const {query, validValue, token, date } = require('../service');
 
 class FeedbacksServise {
-    async feedback(req, res) {
+    async open(body, req) {
+        const id = req.params["feedbacksid"];
+        const sql = `SELECT * FROM feedback WHERE idfeedback='${id}'`;
+        return await query(sql)
+            .then((result) => {
+                result[0].settings = (req.user[0].permission === 1) ? 'true' : 'false';
+                return result;
+            });
+    }
+
+    async feedback(body, req) {
         const tokenGen = token(10);
         const {
             feedbackName,
@@ -10,9 +20,8 @@ class FeedbacksServise {
             feedbackEmail,
             feedbackPhone,
             feedbackComment
-        } = req.body;
-        const userid = await query(`SELECT userid FROM users WHERE token = '${clienttoken(req, res)}'`)
-            .then((user_id) => !user_id.err && user_id != "" ? user_id[0].userid : "" );
+        } = body;
+        const userid = req.user ? req.user[0].userid : '';
         const sql = `INSERT INTO feedback (
             idfeedback, user_id, feedbackName, feedbackSurname,
             feedbackEmail, feedbackPhone, feedbackComment, date_create)
@@ -37,25 +46,25 @@ class FeedbacksServise {
         })
     };
 
-    async answer(req, res) {
+    async answer(body) {
         let sql = `UPDATE feedback
             SET status='answer',
-                answer='${await validValue(req.body.answer)}',
+                answer='${await validValue(body.answer)}',
                 date_answer='${date.show('yyyy-mm-dd hh:mi')}'
-            WHERE idfeedback='${req.body.id}'`;
+            WHERE idfeedback='${body.id}'`;
         return await query(sql).then((result) => 'Answer added!')
     };
 
-    async list(req, res) {
+    async list(body, req) {
         let sql = '', countsql = '';
         const user = req.user[0];
-        const page = (req.body.page && !isNaN(req.body.page)) ? req.body.page : 1;
-        const limit = (req.body.numb && ['100', '50', '30', '2', '5'].includes(req.body.numb)) ? req.body.numb : 30;
+        const page = (body.page && !isNaN(body.page)) ? body.page : 1;
+        const limit = (body.numb && ['100', '50', '30', '2', '5'].includes(body.numb)) ? body.numb : 30;
         const start_page = (page -1) * limit;
         if (user.permission === 1) {
             let where = '', statussql = '', datesql = '';
-            const status = ['answer', 'noanswer'].includes(req.body.param[0]['status']) ? req.body.param[0]['status'] : '';
-            const date_count = ['', '3', '6', '12'].includes(req.body.param[1]['date']) ? req.body.param[1]['date'] : '3';
+            const status = ['answer', 'noanswer'].includes(body.param[0]['status']) ? body.param[0]['status'] : '';
+            const date_count = ['', '3', '6', '12'].includes(body.param[1]['date']) ? body.param[1]['date'] : '3';
             if (date_count !== '') {
                 where = ' WHERE ';
                 const present_date = date.show('yyyy-mm-dd hh:mi');

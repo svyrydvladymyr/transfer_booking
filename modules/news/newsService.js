@@ -173,7 +173,7 @@ class NewsServise {
                 result[0].cover = file_path;
                 result[0].date_update = (result[0].date_update !== null) ? date.show('yyyy-mm-dd hh:mi', result[0].date_update) : '';
                 result[0].date_create = date.show('yyyy-mm-dd hh:mi', result[0].date_create);
-                return result[0];
+                return result;
             } else {
                 throw new Error("Page not found");
             };

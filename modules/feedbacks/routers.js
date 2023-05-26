@@ -5,6 +5,7 @@ const {autorisation, permission} = require('../service');
 
 feedbacksRouter.post('/feedback', feedbacks.feedback);
 feedbacksRouter.post('/list', autorisation, feedbacks.feedback);
+feedbacksRouter.get('/open/:feedbacksid$', autorisation, permission, feedbacks.feedback);
 feedbacksRouter.post('/answer', autorisation, permission, feedbacks.feedback);
 
 module.exports = feedbacksRouter;

@@ -2,11 +2,16 @@
 const $_ = (value, parent = document) => parent.querySelectorAll(value);
 
 const modal = $_('.modal_wrap')[0];
+
+
+
 const inputFrom = $_('#main_from')[0];
 const inputTo = $_('#main_to')[0];
 const mainTimeInput = $_('#main_time')[0];
 const adultInp =  $_('#adults')[0];
 const childrenValue =  $_('#children')[0];
+
+
 const RegExpArr = {
     RegExpInput : new RegExp(/[^a-zA-Zа-яА-Я0-9-()_+=!?.:;/\,іІїЇєЄ /\n]/g),
     RegExpNews : new RegExp(/[^a-zA-Zа-яА-Я0-9-()_+=!?.:;'"/\,іІїЇєЄ<> /\n]/g),
@@ -17,12 +22,10 @@ const RegExpArr = {
 
 let idTownPlace, tokenTown, formValid;
 let townsFrom = {}, townsTo = {}, transfersArr = [];
-let calkTrue = true, feedbackCalkTrue = true;
+let calkTrue = true;
 
 let peopleCount = 0, peopleMax = 50, peopleType = 'gr';
-// let hours, minutes, hArr = [], mArr = [], hStart = 0, mStart = 0;
 
-// let news_status = '', news_token = '', news_foto = "", temp_foto = "";
 
 //redirect page
 const redirect = way => window.location.replace(`${way}`);
@@ -58,10 +61,10 @@ const validPhone = text => (text.match(/^[\+]?[(]?[0-9]{3}[)]?[-\s\.]?[0-9]{3}[-
 
 
 //to change the language
-const setLang = (lang) => {
-    document.cookie = `lang=${lang}`;
-    document.location.reload();
-};
+// const setLang = (lang) => {
+//     document.cookie = `lang=${lang}`;
+//     document.location.reload();
+// };
 
 //to get the language name
 const getLang = (name) => {
