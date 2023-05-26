@@ -154,7 +154,7 @@ class BotService {
             let sql = `UPDATE feedback
                 SET status='answer', answer='${answer_text}', date_answer='${date.show('yyyy-mm-dd hh:mi', reply.date * 1000)}'
                 WHERE idfeedback='${text}'`;
-            await queryo(sql)
+            await query(sql)
                 .then(result =>
                     (result.affectedRows === 0)
                         ? bot.sendMessage(userId, `Неможливо зберегти відповідь на відгук, тому що такого відгуку не знайдено!`)
