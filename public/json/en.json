@@ -1,8 +1,7 @@
 {
-    "mainformTimes" : "Specify the time",
-    "mainformCalendar" : "Choose a date",
-    "mainformTo" : "Click on the city name to select",
-    "mainformFrom" : "Click on the city name to select",
+    "time_title" : "Specify the time",
+    "calendar_title" : "Choose a date",
+    "town_title" : "Click on the city name to select",
     "date" : "Date",
     "time" : "Time",
     "transfer_pr" : "Private",

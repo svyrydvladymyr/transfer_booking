@@ -5,9 +5,8 @@ const modal = $_('.modal_wrap')[0];
 
 
 
-const inputFrom = $_('#main_from')[0];
-const inputTo = $_('#main_to')[0];
-const mainTimeInput = $_('#main_time')[0];
+
+// const mainTimeInput = $_('#main_time')[0];
 const adultInp =  $_('#adults')[0];
 const childrenValue =  $_('#children')[0];
 
@@ -20,11 +19,9 @@ const RegExpArr = {
     RegExpEmail : new RegExp(/[^a-zA-Z0-9.&@-_]/g)
 }
 
-let idTownPlace, tokenTown, formValid;
-let townsFrom = {}, townsTo = {}, transfersArr = [];
-let calkTrue = true;
-
-let peopleCount = 0, peopleMax = 50, peopleType = 'gr';
+let idTownPlace, tokenTown;
+// let townsFrom = {}, townsTo = {}, transfersArr = [];
+// let peopleCount = 0, peopleMax = 50, peopleType = 'gr';
 
 
 //redirect page

@@ -21,72 +21,6 @@ class ShowDate {
             .replace(/y/g, year);
     };
 };
-class Calendar extends ShowDate {
-    constructor(){
-        super();
-    }
-    show() {return service.show('dd.mm.yyyy')};
-    // show = () => 'ddddddd';
-};
-const date = new ShowDate();
-const calendar = new Calendar();
-// console.log('.........................', calendar.show());
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-//for creating calendar
-const date_calendar = new Date();
-const renderCalendar = (year) => {
-    date_calendar.setDate(1);
-    date_calendar.setYear(year);
-    const monthDays = document.querySelector(".days");
-    const lastDay = new Date(date_calendar.getFullYear(), date_calendar.getMonth() + 1, 0).getDate();
-    const prevLastDay = new Date(date_calendar.getFullYear(), date_calendar.getMonth(), 0).getDate();
-    const firstDayIndex = date_calendar.getDay();
-    const lastDayIndex = new Date(date_calendar.getFullYear(), date_calendar.getMonth() + 1, 0).getDay();
-    const nextDays = 7 - lastDayIndex - 1;
-    let months = [], days = "";
-    if (getLang('lang') === 'uk') {
-        months = ["Січень", "Лютий", "Березень", "Квітень", "Травень", "Червень", "Липень", "Серпень", "Вересень", "Жовтень", "Листопад", "Грудень"];
-    };
-    if (getLang('lang')  === 'en') {
-        months = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
-    };
-    document.querySelector(".date h1").innerHTML = months[date_calendar.getMonth()];
-    for (let i = firstDayIndex; i > 0; i--) { days += `<div class="prev-date">${prevLastDay - i + 1}</div>` };
-    const today = `${new Date().getFullYear()}-${(readyMonth(new Date()))}-${readyDay(new Date())}`;
-    for (let i = 1; i <= lastDay; i++) {
-        if ( i === new Date().getDate() && date_calendar.getMonth() === new Date().getMonth() && date_calendar.getFullYear() === new Date().getFullYear()) {
-            days += `<div class="today" onclick="selectDate('${i}/${readyMonth(date_calendar.getMonth())}/${year}')">${i}</div>`;
-        } else if (`${date_calendar.getFullYear()}-${readyMonth(date_calendar)}-${readyDay(`2022-01-${i}`)}` < today) {
-            days += `<div class="prev-date">${i}</div>`;
-        } else {
-            days += `<div onclick="selectDate('${i}/${readyMonth(`${year}-${date_calendar.getMonth() + 1}-${i}`)}/${year}')">${i}</div>`;
-        };
-    };
-    for (let i = 1; i <= nextDays; i++) { days += `<div class="next-date">${i}</div>` };
-    monthDays.innerHTML = days;
-};
-const selectDate = (date) => {
-    const inputPlace = $_(`#main_date`)[0];
-    inputPlace.value = date;
-    inputPlace.classList.remove('err_input');
-    modal.innerHTML = '';
-    checkForm();
-};
-
 
 class Templates {
     constructor(){}
@@ -116,6 +50,10 @@ class Templates {
         return `<p>Натисніть на місто щоб вибрати</p>
         <div class="towns_select_list"></div>
         <p class="form_send" onclick="town.closeSub()">Закрити</p>`
+    }
+    townTown() {
+        return `<p class="mainform_title"></p>
+        <div class="towns_select_list"></div>`
     }
 
     //TRANSFER
@@ -198,10 +136,49 @@ class Templates {
         ${this.timeBody()}
         <p class="form_send admTime">Підтвердити</p>`
     }
-    mainformTimes() {
+    timeTime() {
         return `<p class="mainform_title"></p>
         ${this.timeBody()}
         <p class="main_form_send admTime"><i class='fas fa-check'></i></p>`
+    }
+    timeTimelimit() {
+        return `<p class="mainform_title"></p>
+        <div class="towns_select_list"></div>`
+    }
+
+    //CALENDAR
+    calendarCalendar() {
+        return `<p class="mainform_title"></p>
+        <div class="calendar_wrap">
+            <div class="container">
+                <div class="calendar">
+                    <div class="year">
+                        <i class="fas fa-angle-left prev_year"></i>
+                        <div class="date_year">
+                            <h1></h1>
+                        </div>
+                        <i class="fas fa-angle-right next_year"></i>
+                    </div>
+                    <div class="month">
+                        <i class="fas fa-angle-left prev"></i>
+                        <div class="date">
+                            <h1></h1>
+                        </div>
+                        <i class="fas fa-angle-right next"></i>
+                    </div>
+                    <div class="weekdays">
+                        <div>Sun</div>
+                        <div>Mon</div>
+                        <div>Tue</div>
+                        <div>Wed</div>
+                        <div>Thu</div>
+                        <div>Fri</div>
+                        <div>Sat</div>
+                    </div>
+                    <div class="days"></div>
+                </div>
+            </div>
+        </div>`
     }
 
     //NEWS
@@ -261,6 +238,29 @@ class Templates {
         ${answer}`;
     }
 
+    //ORDER
+    orderInfo(data) {
+        const settings = (data.settings === 'true') ? `
+            <p class="edit_menu" style="min-width: 200px; margin-top: 25px;" onclick="order.proof('${data.orders}', 'proof')">Підтвердити замовлення <i class='fas fa-check-double'></i></p>
+            <p class="edit_menu" style="min-width: 200px; margin-bottom: 20px;" onclick="order.proof('${data.orders}', 'del')">Скасувати замовлення <i class='fas fa-times'></i></p>` : "";
+        return `
+            ${data.transfer_notexist ? '<p class="order_info block" style="color: #dd0a0a; font-weight: bold; background: #ffc6c6;">Маршрут недоступний!</p>' : ""}
+            <p class="order_info title_order">
+            ${data.order_from} ${data.order_from_origin && data.order_from_origin !== data.order_from ? '<span>(' + data.order_from_origin + ')</span>' : ''}
+            - ${data.order_to}  ${data.order_to_origin && data.order_to_origin !== data.order_to ? '<span>(' + data.order_to_origin + ')</span>' : ''} </p>
+            <p class="order_info name" style="border-radius: 5px 5px 0px 0px;"><span>${data.user_name}</span> - <span>${data.user_surname}</span></p>
+            <p class="order_info name" style="border-radius: 0px; border-top: 1px solid #e1e1e1; border-bottom: 1px solid #e1e1e1;"><span>${data.user_email}</span></p>
+            <p class="order_info name" style="border-radius: 0px 0px 5px 5px; margin-bottom: 7px;"><span>${data.user_tel}</span></p>
+            <p class="order_info block">${service.lang[`date`]} - <span>${data.date}</span> &nbsp ${service.lang[`time`]} - <span>${data.time}</span></p>
+            <p class="order_info block">${service.lang[`adult`]} - <span>${data.adult}</span> &nbsp ${service.lang[`children`]} - <span>${data.children}</span></p>
+            <p class="order_info block">${service.lang[`equip`]} - <span>${service.lang[data.equip]}</span> &nbsp ${service.lang[`equip_child`]} - <span>${data.equip_child}</span></p>
+            <p class="order_info block">${service.lang[`sum`]} - <span>${data.sum}</span> ${service.lang[`sum_type`]} &nbsp <span>${service.lang[`transfer_${data.type}`]}</span></p>
+            <p class="order_info block">${service.lang[`bookdate`]} - <span>${data.book_date}</span></p>
+            <p class="order_info block">${service.lang[`paid`]} - <span class="${data.paid}">${service.lang[`${data.paid}`]}</span></p>
+            <p class="order_info block">${service.lang[`status`]} - <span class="${data.status}">${service.lang[`${data.status}`]}</span></p>
+            ${settings}`;
+    };
+
     //OTHER FUNCTIONS
     del(data) {
         const town_attentions = (data.module && data.module === 'town')
@@ -269,20 +269,18 @@ class Templates {
         ${town_attentions}
         <p class="form_send" onclick="${data.module ? data.module : ''}.delete('${data.id ? data.id : ''}')">Видалити остаточно!</p>`
     }
-    res(data) { return `<p class="res_mess">${data.message ? data.message : ''}</p>` }
+
+    res(data) {
+        return `<p class="res_mess">${data.message ? data.message : ''}</p>`
+    }
+
     menu(data) {
         return `<p class="edit_menu" onclick="${data.module}.showWindow('${data.module}', 'Save', 'edit', '${data.id}')">Редагувати <i class='far fa-edit'></i></p>
         <p class="edit_menu" onclick="${data.module}.show('${data.module}', 'Del', {}, '${data.id}')">Видалити <i class='far fa-trash-alt'></i></p>`;
     }
 
     template(type, data) {
-        // console.log('template type ', type);
-        // console.log('template data ', data);
-
         const type_res = type.includes('menu') ? 'menu' : type;
-
-        // console.log('template type after', type_res);
-
         return this[type_res](data);
     };
 };
@@ -293,12 +291,6 @@ class ModalWindow extends Templates {
         this.modal_place = $_('.modal_wrap')[0];
     }
 
-
-    // news(type, data) {
-    //     console.log('news type', type + data);
-    //     return type + data
-    // };
-
     closeWrap(event) {
         let valClose = true;
         for (let element of event.target.children) {
@@ -308,21 +300,19 @@ class ModalWindow extends Templates {
         };
         if (!valClose) { this.modal_place.innerHTML = '' };
     };
+
     closeBtn() { this.modal_place.innerHTML = '' };
     closeSub() { $_('.wrap_sub_modal')[0].innerHTML = '' };
-
-
 
     show(module, type, data = {}, id) {
         const window_type = (type === "Del" || type === 'Res') ? type.toLowerCase() : module + type;
 
         console.log('window_type', window_type);
-        // console.log('data show', data);
 
         data.module = module;
         id && (data.id = id);
 
-        console.log('data show', data);
+        // console.log('data show', data);
 
         const place = (['Towns', 'Times'].includes(type)) ? $_('.wrap_sub_modal')[0] : this.modal_place;
         const wrap_close_arr = ['townSave', 'transferSave', 'newsSave', 'transferTowns', 'transferTimes'];
@@ -429,171 +419,83 @@ class Services {
 };
 
 
-const service = new Services();
-service.getLang();
+
 
 
 
 
 //close modal window
-const closeSubModal = () => { $_('.wrap_sub_modal')[0].innerHTML = '' };
-const closeModalX = () => {modal.innerHTML = ''};
-const closeModal = (el) => {
-    let valClose = true;
-    for (let element of el.target.children) {
-        if (element.classList && element.classList.contains('modal_place')) {
-            valClose = false;
-        };
-    };
-    if (!valClose) { modal.innerHTML = '' };
-};
+// const closeSubModal = () => { $_('.wrap_sub_modal')[0].innerHTML = '' };
+// const closeModalX = () => {modal.innerHTML = ''};
+// const closeModal = (el) => {
+//     let valClose = true;
+//     for (let element of el.target.children) {
+//         if (element.classList && element.classList.contains('modal_place')) {
+//             valClose = false;
+//         };
+//     };
+//     if (!valClose) { modal.innerHTML = '' };
+// };
 
 //wrap for modal window
-const modalWindowWrap = (type) => {
-    const sub_close = ['transferTowns'].includes(type) ? '' : 'onclick="closeModal(event)"';
-    const sub_noclose = ['transferTowns'].includes(type) ? '' : '<i class="fa fa-times" onclick="closeModalX()"></i>';
-    const style = {
-        newsAdd: "max-width: 90%",
-        newsEdit: "max-width: 90%",
-    };
-    return `<div class="modal_body" ${sub_close}>
-        <div class="modal_close">${sub_noclose}</div>
-        <div class="modal_place" id="${type}" style="${style[type]}">
-            ${template[type]}
-        </div>
-        <div class="wrap_sub_modal"></div>
-    </div>`;
-};
+// const modalWindowWrap = (type) => {
+//     const sub_close = ['transferTowns'].includes(type) ? '' : 'onclick="closeModal(event)"';
+//     const sub_noclose = ['transferTowns'].includes(type) ? '' : '<i class="fa fa-times" onclick="closeModalX()"></i>';
+//     const style = {
+//         newsAdd: "max-width: 90%",
+//         newsEdit: "max-width: 90%",
+//     };
+//     return `<div class="modal_body" ${sub_close}>
+//         <div class="modal_close">${sub_noclose}</div>
+//         <div class="modal_place" id="${type}" style="${style[type]}">
+//             ${template[type]}
+//         </div>
+//         <div class="wrap_sub_modal"></div>
+//     </div>`;
+// };
 
 //show modal window
-const showModal = function(type, obj, el) {
-    console.log('type', type);
-    console.log('obj', obj);
-    console.log('el', el);
+// const showModal = function(type, obj, el) {
+//     console.log('type', type);
+//     console.log('obj', obj);
+//     console.log('el', el);
 
-    ['mainformFrom', 'mainformTo', 'mainformCalendar', 'orderInfo'].includes(type)
-        ? modal.innerHTML = modalWindowWrap(type) : null;
+//     ['mainformFrom', 'mainformTo'].includes(type)
+//         ? modal.innerHTML = modalWindowWrap(type) : null;
 
+    // if (type === 'mainformFrom' || type === 'mainformTo') {
+    //     $_(`#${type}`)[0].children[0].innerHTML = lang[`${type}${getLang('lang')}`];
+    //     const tawns_list = $_('.towns_select_list')[0];
+    //     let objTowns = {}, inpValue, param1, param2;
+    //     if (type === 'mainformFrom') { objTowns = townsFrom; inpValue = inputTo; param1 = 'to'; param2 = 'from'; };
+    //     if (type === 'mainformTo') { objTowns = townsTo; inpValue = inputFrom; param1 = 'from'; param2 = 'to'; };
+    //     tawns_list.innerHTML = '';
+    //     if ((inputFrom.value !== '') && (inputTo.value !== '')) {
+    //         for (const [key, value] of Object.entries(objTowns)) {
+    //             tawns_list.innerHTML += `<p id="${key}" onclick="selectTownMain(this, 'main_${param2}', 'clear')">${value}</p>`;
+    //         };
+    //     } else {
+    //         if (inpValue.value === '') {
+    //             for (const [key, value] of Object.entries(objTowns)) {
+    //                 tawns_list.innerHTML += `<p id="${key}" onclick="selectTownMain(this, 'main_${param2}')">${value}</p>`;
+    //             };
+    //         } else {
+    //             const anotherValue = $_(`#main_${param1}`)[0].getAttribute('inputmainparam'), resListTowns = [];
+    //             transfersArr.forEach(element => {
+    //                 if (element[`transfer_${param1}`] === anotherValue) {
+    //                     resListTowns.push({[`${element[`transfer_${param2}`]}`] : `${objTowns[element[`transfer_${param2}`]]}`});
+    //                 };
+    //             });
+    //             resListTowns.forEach(element => {
+    //                 for (const [key, value] of Object.entries(element)) {
+    //                     tawns_list.innerHTML += `<p id="${key}" onclick="selectTownMain(this, 'main_${param2}')">${value}</p>`;
+    //                 };
+    //             });
+    //         };
+    //     };
+    // };
 
-    if (type === 'orderInfo') {
-        const bookLang = getLang('lang');
-        let proof = '', del = '';
-        if (obj.settings === 'true') {
-            proof = `<p class="edit_menu" style="min-width: 200px; margin-top: 25px;" onclick="proofOrder('${obj.orders}', 'proof')">Підтвердити замовлення <i class='fas fa-check-double'></i></p>`;
-            del = `<p class="edit_menu" style="min-width: 200px; margin-bottom: 20px;" onclick="proofOrder('${obj.orders}', 'del')">Скасувати замовлення <i class='fas fa-times'></i></p>`;
-        }
-        $_(`#${type}`)[0].innerHTML = `
-            <p class="order_info title_order">${obj.from} - ${obj.to} </p>
-            <p class="order_info name" style="border-radius: 5px 5px 0px 0px;"><span>${obj.user_name}</span> - <span>${obj.user_surname}</span></p>
-            <p class="order_info name" style="border-radius: 0px; border-top: 1px solid #e1e1e1; border-bottom: 1px solid #e1e1e1;"><span>${obj.user_email}</span></p>
-            <p class="order_info name" style="border-radius: 0px 0px 5px 5px; margin-bottom: 7px;"><span>${obj.user_tel}</span></p>
-            <p class="order_info block">${lang[`date${bookLang}`]} - <span>${obj.date}</span> &nbsp ${lang[`time${bookLang}`]} - <span>${obj.time}</span></p>
-            <p class="order_info block">${lang[`adult${bookLang}`]} - <span>${obj.adult}</span> &nbsp ${lang[`children${bookLang}`]} - <span>${obj.children}</span></p>
-            <p class="order_info block">${lang[`equip${bookLang}`]} - <span>${lang[`${obj.equip}${bookLang}`]}</span> &nbsp ${lang[`equip_child${bookLang}`]} - <span>${obj.equip_child}</span></p>
-            <p class="order_info block">${lang[`sum${bookLang}`]} - <span>${obj.sum}</span> ${lang[`sum_type${bookLang}`]} &nbsp <span>${lang[`transfer_${obj.type}${bookLang}`]}</span></p>
-            <p class="order_info block">${lang[`bookdate${bookLang}`]} - <span>${obj.book_date}</span></p>
-            <p class="order_info block">${lang[`paid${bookLang}`]} - <span class="${obj.paid}">${lang[`${obj.paid}${bookLang}`]}</span></p>
-            <p class="order_info block">${lang[`status${bookLang}`]} - <span class="${obj.status}">${lang[`${obj.status}${bookLang}`]}</span></p>
-            ${proof}
-            ${del}
-        `;
-    };
-
-
-    if (type === 'mainformCalendar') {
-        $_(`#${type}`)[0].children[0].innerHTML = lang[`${type}${getLang('lang')}`];
-        let yearVal = 1, dateField = $_(`.date_year > h1`)[0];
-        dateField.innerHTML = (new Date().getFullYear() -1) + yearVal;
-        document.querySelector(".prev_year").addEventListener("click", () => {
-            (yearVal <= 1) ? yearVal = 1 : yearVal--;
-            dateField.innerHTML = (new Date().getFullYear() -1) + yearVal;
-            renderCalendar((new Date().getFullYear() -1) + yearVal);
-        });
-        document.querySelector(".next_year").addEventListener("click", () => {
-            (yearVal > 15) ? yearVal = 15 : yearVal++;
-            dateField.innerHTML = (new Date().getFullYear() -1) + yearVal;
-            renderCalendar((new Date().getFullYear() -1) + yearVal);
-        });
-        document.querySelector(".prev").addEventListener("click", () => {
-            date.setMonth(date.getMonth() - 1);
-            renderCalendar((new Date().getFullYear() -1) + yearVal);
-        });
-        document.querySelector(".next").addEventListener("click", () => {
-            date.setMonth(date.getMonth() + 1);
-            renderCalendar((new Date().getFullYear() -1) + yearVal);
-        });
-        renderCalendar((new Date().getFullYear() -1) + yearVal);
-    };
-    if (type === 'mainformFrom' || type === 'mainformTo') {
-        $_(`#${type}`)[0].children[0].innerHTML = lang[`${type}${getLang('lang')}`];
-        const tawns_list = $_('.towns_select_list')[0];
-        let objTowns = {}, inpValue, param1, param2;
-        if (type === 'mainformFrom') { objTowns = townsFrom; inpValue = inputTo; param1 = 'to'; param2 = 'from'; };
-        if (type === 'mainformTo') { objTowns = townsTo; inpValue = inputFrom; param1 = 'from'; param2 = 'to'; };
-        tawns_list.innerHTML = '';
-        if ((inputFrom.value !== '') && (inputTo.value !== '')) {
-            for (const [key, value] of Object.entries(objTowns)) {
-                tawns_list.innerHTML += `<p id="${key}" onclick="selectTownMain(this, 'main_${param2}', 'clear')">${value}</p>`;
-            };
-        } else {
-            if (inpValue.value === '') {
-                for (const [key, value] of Object.entries(objTowns)) {
-                    tawns_list.innerHTML += `<p id="${key}" onclick="selectTownMain(this, 'main_${param2}')">${value}</p>`;
-                };
-            } else {
-                const anotherValue = $_(`#main_${param1}`)[0].getAttribute('inputmainparam'), resListTowns = [];
-                transfersArr.forEach(element => {
-                    if (element[`transfer_${param1}`] === anotherValue) {
-                        resListTowns.push({[`${element[`transfer_${param2}`]}`] : `${objTowns[element[`transfer_${param2}`]]}`});
-                    };
-                });
-                resListTowns.forEach(element => {
-                    for (const [key, value] of Object.entries(element)) {
-                        tawns_list.innerHTML += `<p id="${key}" onclick="selectTownMain(this, 'main_${param2}')">${value}</p>`;
-                    };
-                });
-            };
-        };
-    };
-
-
-    if (type === 'mainformTimes') {
-        if (el.getAttribute("setparam") === 'limit') {
-            modal.innerHTML = modalWindowWrap(`${type}limit`);
-            $_(`#${type}limit`)[0].children[0].innerHTML = lang[`${type}${getLang('lang')}`];
-            if (inputFrom.value !== '' && inputTo.value !== '') {
-                const timeArrForm = [];
-                const fromParam = inputFrom.getAttribute("inputmainparam")
-                const toParam = inputTo.getAttribute("inputmainparam")
-                transfersArr.forEach(element => {
-                    if (element.transfer_from === fromParam && element.transfer_to === toParam && element.price_gr !== '') {
-                        for (let i = 0; i < 10; i++) {
-                            if (element[`time${i+1}`] !== '') { timeArrForm.push(element[`time${i+1}`])};
-                        };
-                    };
-                });
-                timeArrForm.forEach(element => {
-                    $_('#mainformTimeslimit > .towns_select_list')[0].innerHTML += `<p onclick="setTime('${element}')">${element}</p>`;
-                });
-            };
-        } else {
-            modal.innerHTML = modalWindowWrap(type);
-            $_(`#${type}`)[0].children[0].innerHTML = lang[`${type}${getLang('lang')}`];
-            hours = $_('.hours')[0];
-            minutes = $_('.minutes')[0];
-            hArr = ['00', '01', '02', '03', '04', '05', '06', '07', '08', '09', '10', '11', '12', '13', '14', '15', '16', '17', '18', '19', '20', '21', '22', '23'];
-            mArr = ['00', '05', '10', '15', '20', '25', '30', '35', '40', '45', '50', '55', '60'];
-            hStart = 0, mStart = 0;
-            $_('.admTime')[0].addEventListener('click', function(){
-                el.value = `${hours.innerHTML}:${minutes.innerHTML}`;
-                modal.innerHTML = '';
-                mainTimeInput.classList.remove('err_input');
-                checkForm();
-            });
-        };
-    };
-
-};
+// };
 
 //for send to main page and set route to main form
 const sendToMainForm = (transfid, type, obj) => {
@@ -612,71 +514,14 @@ const setToMainForm = (transfid, type, obj) => {
         top: $_('.main_form_container')[0].offsetTop - 140,
         behavior: "smooth"
     });
-    formValid = 'book';
+    order.formValid = 'book';
     inputFrom.value = obj.from;
     inputTo.value = obj.to;
-    $_('#type_transfer')[0].value = `transfer_${type}`;
+    this.inputType.value = `transfer_${type}`;
     inputFrom.setAttribute("inputmainparam", obj.fromid);
     inputTo.setAttribute("inputmainparam", obj.toid);
-    validationType($_('#type_transfer')[0]);
-    checkForm();
-};
-
-
-const selectTownMain = (el, param, clear) => {
-    modal.innerHTML = '';
-    const inputPlace = $_(`#${param}`)[0];
-    mainTimeInput.value = '';
-    inputPlace.value = el.innerHTML;
-    inputPlace.setAttribute("inputmainparam", el.id);
-    checkForm();
-    if (param === 'main_from') { $_('#main_from')[0].classList.remove('err_input') };
-    if (param === 'main_to') { $_('#main_to')[0].classList.remove('err_input') };
-    if (clear === 'clear') {
-        if (param === 'main_from') {
-            inputTo.value = '';
-            inputTo.setAttribute("inputmainparam", '');
-            $_('#main_from')[0].classList.remove('err_input');
-        };
-        if (param === 'main_to') {
-            inputFrom.value = '';
-            inputFrom.setAttribute("inputmainparam", '');
-            $_('#main_to')[0].classList.remove('err_input');
-        };
-    };
-    if (inputFrom.value !== '' && inputTo.value !== '') {
-        const fromParam = inputFrom.getAttribute("inputmainparam");
-        const toParam = inputTo.getAttribute("inputmainparam");
-        $_('#type_transfer')[0].value = '';
-        transfersArr.forEach(element => {
-            if (element.transfer_from === fromParam && element.transfer_to === toParam && element.price_gr !== '' && element.price_pr === '') {
-                $_(`#type_gr`)[0].selected = true;
-                $_(`#type_gr`)[0].classList.remove('hide_err');
-                $_(`#type_pr`)[0].classList.add('hide_err');
-                mainTimeInput.setAttribute("setparam", 'limit');
-                $_('#type_transfer')[0].classList.remove('err_input');
-                peopleMax = 50;
-                peopleType = 'gr';
-            } else if (element.transfer_from === fromParam && element.transfer_to === toParam && element.price_gr === '' && element.price_pr !== '') {
-                $_(`#type_pr`)[0].selected = true;
-                $_(`#type_pr`)[0].classList.remove('hide_err');
-                $_(`#type_gr`)[0].classList.add('hide_err');
-                mainTimeInput.setAttribute("setparam", '');
-                $_('#type_transfer')[0].classList.remove('err_input');
-                peopleMax = 7;
-                peopleType = 'pr';
-            } else if (element.transfer_from === fromParam && element.transfer_to === toParam && element.price_gr === ''){
-                $_(`#type_gr`)[0].classList.add('hide_err');
-                mainTimeInput.setAttribute("setparam", '');
-            };
-        });
-    } else {
-        mainTimeInput.setAttribute("setparam", '');
-        mainTimeInput.value = '';
-        $_(`#type_gr`)[0].classList.remove('hide_err');
-        $_(`#type_pr`)[0].classList.remove('hide_err');
-        $_(`#type_gr`)[0].selected = false;
-    };
+    validationType(this.inputType);
+    order.check();
 };
 
 //validation text input
@@ -697,7 +542,7 @@ const validation = (el, type, form = '') => {
             $_(`.towns_error`)[0].style.display = 'none';
         } else {
             el.classList.remove('err_input');
-            checkForm();
+            order.check();
         };
     };
 };
@@ -724,38 +569,39 @@ const validationEquip = (el) => {
     (priceVal === '') ? el.value = '' : null;
 };
 const validationType = (el) => {
-    $_('#type_transfer')[0].classList.remove('err_input');
+    el.classList.remove('err_input');
     $_(`.main_form_err_limit_pr`)[0].classList.add('hide_err');
     $_(`.main_form_err_limit_gr`)[0].classList.add('hide_err');
-    mainTimeInput.value = '';
+    order.inputTime.value = '';
     if (el.value === 'transfer_pr') {
-        peopleMax = 7;
-        peopleType = 'pr';
-        mainTimeInput.setAttribute("setparam", '');
+        order.peopleMax = 7;
+        order.peopleType = 'pr';
+        order.inputTime.setAttribute("setparam", '');
     };
     if (el.value === 'transfer_gr') {
-        peopleMax = 50;
-        peopleType = 'gr';
-        if (inputFrom.value !== '' && inputTo.value !== '') {
-            const fromParam = inputFrom.getAttribute("inputmainparam");
-            const toParam = inputTo.getAttribute("inputmainparam");
-            transfersArr.forEach(element => {
+        order.peopleMax = 50;
+        order.peopleType = 'gr';
+        if (order.inputFrom.value !== '' && order.inputTo.value !== '') {
+            const fromParam = order.inputFrom.getAttribute("inputmainparam");
+            const toParam = order.inputTo.getAttribute("inputmainparam");
+            loadStatic.transfersArr.forEach(element => {
                 if (element.transfer_from === fromParam && element.transfer_to === toParam && element.price_gr !== '') {
-                    mainTimeInput.setAttribute("setparam", 'limit');
+                    order.inputTime.setAttribute("setparam", 'limit');
                 };
             });
         };
     };
-    checkForm();
+    order.check();
 };
 const validationAdults = (el) => {
-    checkForm();
+    order.check();
     (adultInp.value > 0) ? adultInp.classList.remove('err_input') : adultInp.classList.add('err_input');
-    peopleCount = +adultInp.value + +childrenValue.value;
-    const peopleTypeErr = $_(`.main_form_err_limit_${peopleType}`)[0];
+    order.peopleCount = +adultInp.value + +childrenValue.value;
+    const peopleTypeErr = $_(`.main_form_err_limit_${order.peopleType}`)[0];
     // console.log('peopleType', peopleType);
     // console.log('peopleTypeErr', peopleTypeErr);
-    if (peopleCount > peopleMax) {
+
+    if (order.peopleCount > order.peopleMax) {
         peopleTypeErr.classList.remove('hide_err');
         if (childrenValue.value !== '' && childrenValue.value !== '0') {
             adultInp.classList.add('err_input');
@@ -777,9 +623,10 @@ const validationChildren = (el) => {
     (equipchildInp.value > childrenValue.value) ? equipchildInp.value = childrenValue.value : null;
     (el.value < 1) ? equipchild.style.display = 'none' : null;
     (el.value > 0) ? equipchild.style.display = 'flex' : null;
-    peopleCount = +adultInp.value + +childrenValue.value;
-    const peopleTypeErr = $_(`.main_form_err_limit_${peopleType}`)[0];
-    if (peopleCount > peopleMax) {
+    order.peopleCount = +adultInp.value + +childrenValue.value;
+    const peopleTypeErr = $_(`.main_form_err_limit_${order.peopleType}`)[0];
+
+    if (order.peopleCount > order.peopleMax) {
         peopleTypeErr.classList.remove('hide_err');
         if (adultInp.value !== '' && adultInp.value !== '0') {
             adultInp.classList.add('err_input');
@@ -796,414 +643,6 @@ const validationChildren = (el) => {
 };
 
 
-//for back to previous tab
-const mainFormBack = () => {
-    $_('#check')[0].style.display = 'flex';
-    $_('#booking')[0].style.display = 'none';
-};
-
-//for check form
-const checkForm = () => {
-    let arrInp = [];
-    if (formValid !== undefined && formValid !== '') {
-        const arrCall = ['main_from', 'main_to', 'adults', 'type_transfer'];
-        const arrBook = ['main_from', 'main_to', 'adults', 'type_transfer', 'main_date', 'main_time'];
-        const arrBookFinal = ['main_from', 'main_to', 'adults', 'type_transfer', 'main_date', 'main_time', 'main_name', 'main_surname', 'main_email', 'main_phone'];
-        if (formValid === 'calk') {
-            $_(`.main_form_err_book`)[0].classList.add('hide_err');
-            arrInp = arrCall;
-            arrBook.forEach(element => { $_(`#${element}`)[0].classList.remove('err_input') });
-        };
-        if (formValid === 'book') {
-            $_(`.main_form_err_calk`)[0].classList.add('hide_err');
-            arrInp = arrBook;
-            arrCall.forEach(element => { $_(`#${element}`)[0].classList.remove('err_input') });
-        };
-        if (formValid === 'bookfinal') {
-            $_(`.main_form_err_bookfinal`)[0].classList.add('hide_err');
-            arrInp = arrBookFinal;
-        };
-    };
-    const arrTrue = [];
-    arrInp.forEach(element => {
-        const elemCheck = $_(`#${element}`)[0];
-        const adultsCheck = $_('#adults')[0];
-        const emailCheck = $_('#main_email')[0];
-        const phoneCheck = $_('#main_phone')[0];
-        const peopleTypeErr = $_(`.main_form_err_limit_${peopleType}`)[0];
-        if (elemCheck.value === '') {
-            arrTrue.push(false);
-            elemCheck.classList.add('err_input');
-        };
-        if (peopleCount > peopleMax) {
-            arrTrue.push(false);
-            peopleTypeErr.classList.remove('hide_err');
-            if (childrenValue.value !== '' && childrenValue.value !== '0') {
-                adultInp.classList.add('err_input');
-                childrenValue.classList.add('err_input');
-            } else {
-                adultInp.classList.add('err_input');
-            };
-        } else {
-            adultInp.classList.remove('err_input');
-            childrenValue.classList.remove('err_input');
-        };
-        if (adultsCheck.value <= 0) {
-            arrTrue.push(false);
-            adultsCheck.classList.add('err_input');
-        };
-        if (formValid === 'bookfinal') {
-            if (emailCheck.value !== '' && !validEmail(emailCheck.value)) {
-                arrTrue.push(false);
-                emailCheck.classList.add('err_input');
-            };
-            if (phoneCheck.value !== '' && !validPhone(phoneCheck.value)) {
-                arrTrue.push(false);
-                phoneCheck.classList.add('err_input');
-            };
-        };
-    });
-    if (arrTrue.includes(false)) {
-        calkTrue = false;
-        $_('.main_form_price')[0].classList.add('hide_err');
-        if (formValid !== undefined && formValid !== '') {
-            $_(`.main_form_err_${formValid}`)[0].classList.remove('hide_err');
-        };
-    } else {
-        calkTrue = true;
-        $_('.main_form_price')[0].classList.add('hide_err');
-        if (formValid !== undefined && formValid !== '') {
-            $_(`.main_form_err_${formValid}`)[0].classList.add('hide_err');
-        };
-    };
-};
-
-//for culculate and send orders
-const bookArr = {};
-const culculate = () => {
-    checkForm();
-    if (calkTrue) {
-        const inpFrom = inputFrom.getAttribute('inputmainparam');
-        const inpTo = inputTo.getAttribute('inputmainparam');
-        transfersArr.forEach(element => {
-            if (element.transfer_from === inpFrom && element.transfer_to === inpTo) {
-                bookArr.transferId = element.transfer_id;
-                bookArr.transferFromName = $_('#main_from')[0].value;
-                bookArr.transferToName = $_('#main_to')[0].value;
-                bookArr.adult = +$_('#adults')[0].value;
-                bookArr.children = +$_('#children')[0].value;
-                bookArr.type = $_('#type_transfer')[0].value;
-                bookArr.sum = ($_('#type_transfer')[0].value === 'transfer_gr') ? element.price_gr * (bookArr.adult + bookArr.children) : element.price_pr;
-                bookArr.date = $_('#main_date')[0].value;
-                bookArr.time = $_('#main_time')[0].value;
-                bookArr.equip = document.querySelector('input[name="equip"]:checked').value;
-                bookArr.equip_child = +$_('#equip_child')[0].value;
-                bookArr.user_name = $_('#main_name')[0].value;
-                bookArr.user_surname = $_('#main_surname')[0].value;
-                bookArr.user_email = $_('#main_email')[0].value;
-                bookArr.user_phone = $_('#main_phone')[0].value;
-                // bookArr.paid = $_('#main_paid')[0].checked;
-                if (formValid === 'calk') {
-                    $_('.main_form_price')[0].classList.remove('hide_err');
-                    let culkSum = 0;
-                    if (bookArr.type === 'transfer_gr') { culkSum = element.price_gr * (bookArr.adult + bookArr.children) };
-                    if (bookArr.type === 'transfer_pr') { culkSum = element.price_pr };
-                    $_('.main_form_price > span')[0].innerHTML = culkSum;
-                };
-                if (formValid === 'book') {
-                    const resInfo = $_('.book_info')[0];
-                    const bookLang = getLang('lang');
-                    const resInfoBlock = `
-                        <p class="main_form_color">${bookArr.transferFromName} - ${bookArr.transferToName}</p>
-                        <p>${lang[`date${bookLang}`]} - <span class="main_form_color">${bookArr.date}</span> &nbsp ${lang[`time${bookLang}`]} - <span class="main_form_color">${bookArr.time}</span></p>
-                        <p>${lang[`adult${bookLang}`]} - <span class="main_form_color">${bookArr.adult}</span> &nbsp
-                            ${lang[`children${bookLang}`]} - <span class="main_form_color">${bookArr.children}</span> &nbsp
-                            ${lang[`children_chear${bookLang}`]} - <span class="main_form_color">${bookArr.equip_child}</span></p>
-                        <p>${lang[`equip${bookLang}`]} - <span class="main_form_color">${lang[`${bookArr.equip}${bookLang}`]}</span> &nbsp
-                            <b class="main_form_color">${lang[`${bookArr.type}${bookLang}`]}</b></p>
-                        <p>${lang[`sum${bookLang}`]} - <span class="main_form_color">${bookArr.sum}</span> </p>
-                    `;
-                    resInfo.innerHTML = resInfoBlock;
-                    $_('#check')[0].style.display = 'none';
-                    $_('#booking')[0].style.display = 'flex';
-                };
-                if (formValid === 'bookfinal') {
-                    send(bookArr , `/order/order`, (result) => {
-                        const resultat = JSON.parse(result);
-                        if (resultat.res) {
-                            if (resultat.res === 'Order created!') {
-                                $_('#check')[0].style.display = 'none';
-                                $_('#booking')[0].style.display = 'none';
-                                $_('#received')[0].style.display = 'flex';
-                            };
-                        };
-                    }, 'POST');
-                };
-            };
-        });
-    };
-};
-
-//for set order sort numbers
-const setOrderNumb = (el) => { numb = el.value; ordersList(1) };
-const setOrderStatus = (el) => { orderstat = el.value; ordersList(1) };
-const setOrderDate = (el) => { orderdate = el.value; ordersList(1) };
-
-//for proofing or canceling order
-const proofOrder = (orderid, param) => {
-    send({"id": `${orderid}`, 'param': `${param}`} , `/order/orderstatus`, (result) => {
-        const resultat = JSON.parse(result);
-        if (resultat.res) { ordersList(1); modal.innerHTML = '' };
-    }, 'POST');
-};
-
-//load towns list
-const ordersList = (page = 1) => {
-    let param = [];
-    ['reserv', 'proof', 'del'].includes(orderstat) ? param.push({"status": orderstat}) : param.push({"status": ''});
-    ['3', '6', '12', ''].includes(orderdate) ? param.push({"date": orderdate}) : param.push({"date": ''});
-    send({page, param, 'numb' : numb} , `/order/list`, (result) => {
-        const resultat = JSON.parse(result);
-        if (resultat.res) {
-            const bookLang = getLang('lang');
-            const orders_list = $_('.orders_list')[0];
-            const orders_pagination = $_('.orders_pagination')[0];
-            const present_pagination = orders_pagination.children;
-            const pagin_page = Math.ceil(resultat.res.count / numb);
-            orders_list.innerHTML = '';
-            orders_pagination.innerHTML = '';
-            if (pagin_page > 1) {
-                for (let i = 1; i <= pagin_page; i++) { orders_pagination.innerHTML += `<p onclick="ordersList(${i})">${i}</p>` };
-                present_pagination[page-1].style.color = '#fff';
-                present_pagination[page-1].style.backgroundColor = 'rgb(139 195 74)';
-                present_pagination[page-1].removeAttribute("onclick");
-            };
-            resultat.res.list.forEach(element => {
-                orders_list.innerHTML += `
-                <div class="order" onclick="showModal('orderInfo',
-                {'orders' : '${element.orders}',
-                'from' : '${element.order_from}',
-                'to' : '${element.order_to}',
-                'date' : '${element.date}',
-                'time' : '${element.time}',
-                'type' : '${element.type}',
-                'adult' : '${element.adult}',
-                'children' : '${element.children}',
-                'equip' : '${element.equip}',
-                'equip_child' : '${element.equip_child}',
-                'sum' : '${element.sum}',
-                'paid' : '${element.paid}',
-                'status' : '${element.status}',
-                'book_date' : '${element.book_date}',
-                'user_email' : '${element.user_email}',
-                'user_name' : '${element.user_name}',
-                'user_surname' : '${element.user_surname}',
-                'user_tel' : '${element.user_tel}',
-                'settings' : '${element.settings}'}, this)">
-                    <p>${element.order_from} - ${element.order_to}  </p>
-                    <p>${lang[`date${bookLang}`]} - <span>${element.date}</span> </p>
-                    <p>${lang[`time${bookLang}`]} - <span>${element.time}</span></p>
-                    <p>${lang[`sum${bookLang}`]} - <span>${element.sum}</span> ${lang[`sum_type${bookLang}`]}</p>
-                    <p><span>${lang[`transfer_${element.type}${bookLang}`]}</span></p>
-                    <i class='fas fa-info-circle ${element.proof}'></i>
-                </div>`
-            });
-        };
-    }, "POST");
-};
-
-
-
-
-
-
-
-
-
-
-//for send feedback
-
-// const sendFeedback = () => {
-//     checkFeedback();
-//     const feedbackArr = {};
-//     if (feedbackCalkTrue) {
-//         feedbackArr.feedbackName = $_('#feedback_name')[0].value;
-//         feedbackArr.feedbackSurname = $_('#feedback_surname')[0].value;
-//         feedbackArr.feedbackEmail = $_('#feedback_email')[0].value;
-//         feedbackArr.feedbackPhone = $_('#feedback_phone')[0].value;
-//         feedbackArr.feedbackComment = $_('#feedback_comment')[0].value;
-//         send(feedbackArr , `/feedback/feedback`, (result) => {
-//             const resultat = JSON.parse(result);
-//             if (resultat.res) {
-//                 if (resultat.res === 'Feedback sended!') {
-//                     if ($_('.feedback_name')[0]) {$_('.feedback_name')[0].value = ''};
-//                     if ($_('.feedback_surname')[0]) {$_('.feedback_surname')[0].value = ''};
-//                     if ($_('.feedback_email')[0]) {$_('.feedback_email')[0].value = ''};
-//                     if ($_('#feedback_phone')[0]) {$_('#feedback_phone')[0].value = ''};
-//                     $_('#feedback_comment')[0].value = '';
-//                     $_(`.feedback_sended`)[0].classList.remove('hide_err');
-//                     setTimeout(() => {
-//                         $_(`.feedback_sended`)[0].classList.add('hide_err');
-//                     }, 5000);
-//                 };
-//             };
-//         }, "POST");
-//     };
-// };
-
-
-
-class Feedback extends ModalWindow {
-    number = 30;
-    status = '';
-    date = '3';
-
-    constructor(){
-        super()
-    }
-
-    setParam(el, param) {
-        this[param] = el.value;
-        this.list(1)
-    }
-
-    check() {
-        const arrTrue = [];
-        const arrInp = ['feedback_name', 'feedback_surname', 'feedback_email', 'feedback_phone', 'feedback_comment'];
-        const message = $_(`.feedback_form_err`)[0];
-        arrInp.forEach(element => {
-            const elemCheck = $_(`#${element}`)[0];
-            if (elemCheck.value === '') {
-                arrTrue.push(false);
-                elemCheck.classList.add('err_input');
-            };
-        });
-        const emailCheck = $_('#feedback_email')[0];
-        if (emailCheck.value !== '' && !validEmail(emailCheck.value)) {
-            arrTrue.push(false);
-            emailCheck.classList.add('err_input');
-        };
-        const phoneCheck = $_('#feedback_phone')[0];
-        if (phoneCheck.value !== '' && !validPhone(phoneCheck.value)) {
-            arrTrue.push(false);
-            phoneCheck.classList.add('err_input');
-        };
-        console.log('rrrrrrrrrrrrrrrrrrr', arrTrue);
-        if (arrTrue.includes(false)) {
-            message.classList.remove('hide_err');
-            return false
-        } else {
-            message.classList.add('hide_err');
-            return true
-        };
-    }
-
-    data() {
-        const feedbackArr = {};
-        feedbackArr.feedbackName = $_('#feedback_name')[0].value;
-        feedbackArr.feedbackSurname = $_('#feedback_surname')[0].value;
-        feedbackArr.feedbackEmail = $_('#feedback_email')[0].value;
-        feedbackArr.feedbackPhone = $_('#feedback_phone')[0].value;
-        feedbackArr.feedbackComment = $_('#feedback_comment')[0].value;
-        return feedbackArr;
-    }
-
-    send() {
-        if (this.check()) {
-            const data = this.data();
-            fetch(`/feedback/feedback`, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json;charset=utf-8' },
-                body: JSON.stringify(data)
-            })
-            .then(response => response.status === 200 && response.json())
-            .then(resultat => {
-                if (resultat.res === 'Feedback sended!') {
-                    if ($_('.feedback_name')[0]) {$_('.feedback_name')[0].value = ''};
-                    if ($_('.feedback_surname')[0]) {$_('.feedback_surname')[0].value = ''};
-                    if ($_('.feedback_email')[0]) {$_('.feedback_email')[0].value = ''};
-                    if ($_('#feedback_phone')[0]) {$_('#feedback_phone')[0].value = ''};
-                    $_('#feedback_comment')[0].value = '';
-                    $_(`.feedback_sended`)[0].classList.remove('hide_err');
-                    setTimeout(() => {
-                        $_(`.feedback_sended`)[0].classList.add('hide_err');
-                    }, 5000);
-                };
-            });
-        };
-    }
-
-    async showWindow(module, type, param, id){
-        const data = await this.open(id);
-        this.show(module, type, data);
-    }
-
-    async open(id) {
-        return await service.open(id, 'feedback', this);
-    }
-
-    answer(id) {
-        const answer = $_('#feedback_answer')[0].value;
-        fetch(`/feedback/answer`, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json;charset=utf-8' },
-            body: JSON.stringify({ id, answer })
-        })
-        .then(response => response.status === 200 && response.json())
-        .then(resultat => {
-            if (!resultat) { throw new Error() };
-            resultat.res && this.show('feedback', 'Res', { message: 'Зміни внесено!' })
-        })
-        .catch(() => { this.show('feedback', 'Res', { message: '<span style="color:red;">Сталася помилка, спробуйте ще раз!</span>' }) })
-        .finally(() => {
-            setTimeout(() => {
-                this.closeBtn();
-                this.list()
-            }, 2000)
-        });
-    }
-
-    list(page = 1) {
-        let param = [];
-        param.push({"status": `${['answer', 'noanswer'].includes(this.status) ? this.status : ''}`});
-        param.push({"date": `${['3', '6', '12', ''].includes(this.date) ? this.date : ''}`});
-        fetch(`/feedback/list`, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json;charset=utf-8' },
-            body: JSON.stringify({page, param, 'numb' : this.number} )
-        })
-        .then(response => response.status === 200 && response.json())
-        .then(async resultat => {
-            if (resultat.res) {
-                const list_wrap = $_('.feedback_list')[0];
-                const pagination_wrap = $_('.feedback_pagination')[0];
-                const pages = pagination_wrap.children;
-                const pages_count = Math.ceil(resultat.res.count / this.number);
-                list_wrap.innerHTML = '';
-                pagination_wrap.innerHTML = '';
-                if (pages_count > 1) {
-                    for (let i = 1; i <= pages_count; i++) { pagination_wrap.innerHTML += `<p onclick="feedback.list(${i})">${i}</p>` };
-                    pages[page-1].style.color = '#fff';
-                    pages[page-1].style.backgroundColor = 'rgb(139 195 74)';
-                    pages[page-1].removeAttribute("onclick");
-                };
-                resultat.res.list.forEach(el => {
-                    const settings =  (el.settings === 'true') ? `<i class='fas fa-edit' onclick="feedback.showWindow('feedback', 'Info', '', '${el.idfeedback}')"></i>` : '';
-                    const answer = (el.status === 'answer') ? `<p class="f_answer"><span>${service.lang['answer']}: </span> ${el.answer}</p>` : '';
-                    const answerdate = (el.status === 'answer') ? `<p class="f_answer_date">${service.lang['date']}: ${el.date_answer}</p>` : '';
-                    list_wrap.innerHTML += `
-                    <div class="feedback user${el.settings}">
-                        <p>${el.feedbackComment}</p>
-                        <p class="f_date">${service.lang['date']}: ${el.date_create}</p>
-                        ${answer}
-                        ${answerdate}
-                        ${settings}
-                    </div>`
-                });
-            };
-        });
-    };
-}
 
 class Towns extends ModalWindow {
     town_token = '';
@@ -1226,53 +665,16 @@ class Towns extends ModalWindow {
         this.town_id_place = $_('#id_town')[0];
     }
 
-    async open(id) {
-        return await service.open(id, 'towns', this);
-    }
-
-    townList(module, type, param) {
-        fetch(`/towns/list`, { method: 'GET' })
-        .then(response => response.status === 200 && response.json())
-        .then(resultat => {
-            this.show(module, type);
-            const tawns_list = $_('.towns_select_list')[0];
-            tawns_list.innerHTML = '';
-            resultat.res.forEach(element => {
-                tawns_list.innerHTML += `<p id="${element.town_id}" onclick="town.select(this, '${param}')">${element.name_uk}</p>`
-            });
-        });
-    }
-
     select(el, field) {
-        console.log('elelelelelelelel', el);
-        console.log('paramparamparam', field);
-
         transfer.labels.dup.style.display = 'none';
         transfer.labels.empty.style.display = 'none';
         transfer.labels.is.style.display = 'none';
-
-        // $_('.wrap_sub_modal')[0].innerHTML = '';
         transfer.fields.modal.innerHTML = '';
         const place = transfer.fields[`${field}`];
-
-        console.log('place', place);
-
-
         place.value = el.innerHTML;
         place.setAttribute('data-input', `${el.id}`);
-
         const to = transfer.fields.to.getAttribute("data-input");
         const from = transfer.fields.from.getAttribute("data-input");
-
-        console.log('inputPlaceTOfffffff', transfer.fields.to);
-        console.log('inputPlacefromfffff', transfer.fields.from);
-
-        console.log('inputPlaceTO', to);
-        console.log('inputPlaceFROM', from);
-
-        // console.log('inputPlaceTO', $_(`#transferSave`)[0]);
-        // console.log('inputPlaceFROM', $_(`#transferSave > #from`)[0]);
-
         if (from === to) {
             transfer.labels.dup.style.display = 'block';
         };
@@ -1338,6 +740,23 @@ class Towns extends ModalWindow {
                 $_(`.towns_error`)[0].style.display = 'block';
             });
         };
+    }
+
+    townList(module, type, param) {
+        fetch(`/towns/list`, { method: 'GET' })
+        .then(response => response.status === 200 && response.json())
+        .then(resultat => {
+            this.show(module, type);
+            const tawns_list = $_('.towns_select_list')[0];
+            tawns_list.innerHTML = '';
+            resultat.res.forEach(element => {
+                tawns_list.innerHTML += `<p id="${element.town_id}" onclick="town.select(this, '${param}')">${element.name_uk}</p>`
+            });
+        });
+    }
+
+    async open(id) {
+        return await service.open(id, 'towns', this);
     }
 
     async list() {
@@ -1514,6 +933,520 @@ class Transfers extends ModalWindow {
     delete(id) {
         service.delete(id, 'transfers', this)
     }
+}
+
+class Order extends ModalWindow {
+    peopleCount = 0;
+    peopleMax = 50;
+    peopleType = 'gr';
+    number = 30;
+    status = '';
+    date = '3';
+    formValid;
+    inputFrom = $_('#main_from')[0];
+    inputTo = $_('#main_to')[0];
+    inputTime = $_('#main_time')[0];
+    inputType = $_('#type_transfer')[0];
+    typeGr = $_(`#type_gr`)[0];
+    typePr = $_(`#type_pr`)[0];
+    inputAdults = $_('#adults')[0];
+    inputEmail = $_('#main_email')[0];
+    inputPhone = $_('#main_phone')[0];
+
+    constructor(){
+        super()
+    }
+
+    showSelectWindow(module, type, param, el){
+        this.show(module, type);
+        $_(`#${module + type}`)[0].children[0].innerHTML = service.lang['town_title'];
+        const list_wrap = $_('.towns_select_list')[0];
+        let towns_list = {};
+        let input, param1, param2;
+        if (param === 'from') {
+            towns_list = loadStatic.townsFrom;
+            input = this.inputTo;
+            param1 = 'to';
+            param2 = 'from';
+        };
+        if (param === 'to') {
+            towns_list = loadStatic.townsTo;
+            input = this.inputFrom;
+            param1 = 'from';
+            param2 = 'to';
+        };
+        list_wrap.innerHTML = '';
+        if ((this.inputFrom.value !== '') && (this.inputTo.value !== '')) {
+            for (const [key, value] of Object.entries(towns_list)) {
+                list_wrap.innerHTML += `<p id="${key}" onclick="order.selectTownMain(this, '${param2}', 'clear')">${value}</p>`;
+            };
+        } else {
+            if (input.value === '') {
+                for (const [key, value] of Object.entries(towns_list)) {
+                    list_wrap.innerHTML += `<p id="${key}" onclick="order.selectTownMain(this, '${param2}')">${value}</p>`;
+                };
+            } else {
+                const another_value = $_(`#main_${param1}`)[0].getAttribute('inputmainparam');
+                const res_towns_list = [];
+                loadStatic.transfersArr.forEach(element => {
+                    if (element[`transfer_${param1}`] === another_value) {
+                        res_towns_list.push({[`${element[`transfer_${param2}`]}`] : `${towns_list[element[`transfer_${param2}`]]}`});
+                    };
+                });
+                res_towns_list.forEach(element => {
+                    for (const [key, value] of Object.entries(element)) {
+                        list_wrap.innerHTML += `<p id="${key}" onclick="order.selectTownMain(this, '${param2}')">${value}</p>`;
+                    };
+                });
+            };
+        };
+    }
+
+    selectTownMain(el, param, clear) {
+        this.closeBtn();
+        this.inputTime.value = '';
+        const place = $_(`#main_${param}`)[0];
+        place.value = el.innerHTML;
+        place.setAttribute("inputmainparam", el.id);
+        $_(`#main_${param}`)[0].classList.remove('err_input');
+        if (clear === 'clear') {
+            if (param === 'from') {
+                this.inputTo.value = '';
+                this.inputTo.setAttribute("inputmainparam", '');
+            };
+            if (param === 'to') {
+                this.inputFrom.value = '';
+                this.inputFrom.setAttribute("inputmainparam", '');
+            };
+        };
+        order.check();
+        if (this.inputFrom.value !== '' && this.inputTo.value !== '') {
+            const fromParam = this.inputFrom.getAttribute("inputmainparam");
+            const toParam = this.inputTo.getAttribute("inputmainparam");
+            this.inputType.value = '';
+            loadStatic.transfersArr.forEach(element => {
+                if (element.transfer_from === fromParam && element.transfer_to === toParam && element.price_gr !== '' && element.price_pr === '') {
+                    this.typeGr.selected = true;
+                    this.typeGr.classList.remove('hide_err');
+                    this.typePr.classList.add('hide_err');
+                    this.inputTime.setAttribute("setparam", 'limit');
+                    this.inputType.classList.remove('err_input');
+                    this.peopleMax = 50;
+                    this.peopleType = 'gr';
+                } else if (element.transfer_from === fromParam && element.transfer_to === toParam && element.price_gr === '' && element.price_pr !== '') {
+                    this.typePr.selected = true;
+                    this.typePr.classList.remove('hide_err');
+                    this.typeGr.classList.add('hide_err');
+                    this.inputTime.setAttribute("setparam", '');
+                    this.inputType.classList.remove('err_input');
+                    this.peopleMax = 7;
+                    this.peopleType = 'pr';
+                } else if (element.transfer_from === fromParam && element.transfer_to === toParam && element.price_gr === ''){
+                    this.typeGr.classList.add('hide_err');
+                    this.inputTime.setAttribute("setparam", '');
+                };
+            });
+        } else {
+            this.inputTime.setAttribute("setparam", '');
+            this.inputTime.value = '';
+            this.typeGr.classList.remove('hide_err');
+            this.typePr.classList.remove('hide_err');
+            this.typeGr.selected = false;
+        };
+    };
+
+    setParam(el, param) {
+        this[param] = el.value;
+        this.list(1)
+    }
+
+    proof(orderid, param) {
+        const data = {"id": `${orderid}`, 'param': `${param}`};
+        fetch(`/order/orderstatus`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json;charset=utf-8' },
+            body: JSON.stringify(data)
+        })
+        .then(response => response.status === 200 && response.json())
+        .then(resultat => {
+            if (resultat.res) {
+                this.list(1);
+                this.closeBtn();
+            };
+        });
+    };
+
+    list(page = 1) {
+        let param = [];
+        param.push(['reserv', 'proof', 'del'].includes(this.status) ? {"status": this.status} : {"status": ''});
+        param.push(['3', '6', '12', ''].includes(this.date) ? {"date": this.date} : {"date": ''});
+        const data = {page, param, 'numb' : this.number};
+        fetch(`/order/list`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json;charset=utf-8' },
+            body: JSON.stringify(data)
+        })
+        .then(response => response.status === 200 && response.json())
+        .then(resultat => {
+            if (resultat.res) {
+                const list_wrap = $_('.orders_list')[0];
+                const pagination_wrap = $_('.orders_pagination')[0];
+                const present_pagination = pagination_wrap.children;
+                const pagin_page = Math.ceil(resultat.res.count / this.number);
+                list_wrap.innerHTML = '';
+                pagination_wrap.innerHTML = '';
+                if (pagin_page > 1) {
+                    for (let i = 1; i <= pagin_page; i++) { pagination_wrap.innerHTML += `<p onclick="order.list(${i})">${i}</p>` };
+                    present_pagination[page-1].style.color = '#fff';
+                    present_pagination[page-1].style.backgroundColor = 'rgb(139 195 74)';
+                    present_pagination[page-1].removeAttribute("onclick");
+                };
+                resultat.res.list.forEach(element => {
+                    list_wrap.innerHTML += `<div class="order" onclick="order.showWindow('order', 'Info', '', '${element.orders}')">
+                        <p>${element.order_from} - ${element.order_to}  </p>
+                        <p>${service.lang['date']} - <span>${element.date}</span> </p>
+                        <p>${service.lang['time']} - <span>${element.time}</span></p>
+                        <p>${service.lang['sum']} - <span>${element.sum}</span> ${service.lang['sum_type']}</p>
+                        <p><span>${service.lang['transfer_' + element.type]}</span></p>
+                        <i class='fas fa-info-circle ${element.proof}'></i>
+                    </div>`;
+                });
+            };
+        });
+    }
+
+    async showWindow(module, type, param, id){
+        const data = await this.open(id);
+        this.show(module, type, data);
+    }
+
+    async open(id) {
+        return await service.open(id, 'order', this);
+    }
+
+    mainFormBack() {
+        $_('#check')[0].style.display = 'flex';
+        $_('#booking')[0].style.display = 'none';
+    }
+
+    check() {
+        let arrInp = [];
+
+        console.log('formValid', this.formValid);
+
+        if (this.formValid && this.formValid !== '') {
+            const arrCall = ['main_from', 'main_to', 'adults', 'type_transfer'];
+            const arrBook = [...arrCall, 'main_date', 'main_time'];
+            const arrBookFinal = [...arrBook, 'main_name', 'main_surname', 'main_email', 'main_phone'];
+
+            if (this.formValid === 'calk') {
+                $_(`.main_form_err_book`)[0].classList.add('hide_err');
+                arrInp = arrCall;
+                arrBook.forEach(element => { $_(`#${element}`)[0].classList.remove('err_input') });
+            };
+            if (this.formValid === 'book') {
+                $_(`.main_form_err_calk`)[0].classList.add('hide_err');
+                arrInp = arrBook;
+                arrCall.forEach(element => { $_(`#${element}`)[0].classList.remove('err_input') });
+            };
+            if (this.formValid === 'bookfinal') {
+                $_(`.main_form_err_bookfinal`)[0].classList.add('hide_err');
+                arrInp = arrBookFinal;
+            };
+        };
+        const arrTrue = [];
+        arrInp.forEach(element => {
+            const elemCheck = $_(`#${element}`)[0];
+            const peopleTypeErr = $_(`.main_form_err_limit_${this.peopleType}`)[0];
+            if (elemCheck.value === '') {
+                arrTrue.push(false);
+                elemCheck.classList.add('err_input');
+            };
+            if (this.peopleCount > this.peopleMax) {
+                arrTrue.push(false);
+                peopleTypeErr.classList.remove('hide_err');
+                if (childrenValue.value !== '' && childrenValue.value !== '0') {
+                    adultInp.classList.add('err_input');
+                    childrenValue.classList.add('err_input');
+                } else {
+                    adultInp.classList.add('err_input');
+                };
+            } else {
+                adultInp.classList.remove('err_input');
+                childrenValue.classList.remove('err_input');
+            };
+
+            if (this.inputAdults.value <= 0) {
+                arrTrue.push(false);
+                this.inputAdults.classList.add('err_input');
+            };
+            if (this.formValid === 'bookfinal') {
+                if (this.inputEmail.value !== '' && !validEmail(this.inputEmail.value)) {
+                    arrTrue.push(false);
+                    this.inputEmail.classList.add('err_input');
+                };
+                if (this.inputPhone.value !== '' && !validPhone(this.inputPhone.value)) {
+                    arrTrue.push(false);
+                    this.inputPhone.classList.add('err_input');
+                };
+            };
+        });
+        if (arrTrue.includes(false)) {
+            $_('.main_form_price')[0].classList.add('hide_err');
+            if (this.formValid && this.formValid !== '') {
+                $_(`.main_form_err_${this.formValid}`)[0].classList.remove('hide_err');
+            };
+            return false;
+        } else {
+            $_('.main_form_price')[0].classList.add('hide_err');
+            if (this.formValid && this.formValid !== '') {
+                $_(`.main_form_err_${this.formValid}`)[0].classList.add('hide_err');
+            };
+            return true;
+        };
+    }
+
+    data() {
+        const data = {};
+        const from = this.inputFrom.getAttribute('inputmainparam');
+        const to = this.inputTo.getAttribute('inputmainparam');
+
+        console.log('from', from);
+        console.log('to', to);
+        console.log('loadStatic.transfersArr', loadStatic.transfersArr);
+
+        loadStatic.transfersArr.forEach(element => {
+            if (element.transfer_from === from && element.transfer_to === to) {
+
+                console.log('oooooooooooooooooooooooooo');
+                data.transferId = element.transfer_id;
+                data.transferFromName = this.inputFrom.value;
+                data.transferToName = this.inputTo.value;
+                data.adult = +this.inputAdults.value;
+                data.children = +$_('#children')[0].value;
+                data.type = this.inputType.value;
+                data.sum = (this.inputType.value === 'transfer_gr') ? element.price_gr * (data.adult + data.children) : element.price_pr;
+                data.date = $_('#main_date')[0].value;
+                data.time = this.inputTime.value;
+                data.equip = document.querySelector('input[name="equip"]:checked').value;
+                data.equip_child = +$_('#equip_child')[0].value;
+                data.user_name = $_('#main_name')[0].value;
+                data.user_surname = $_('#main_surname')[0].value;
+                data.user_email = this.inputEmail.value;
+                data.user_phone = this.inputPhone.value;
+
+
+            }
+        });
+
+        console.log('oooooooooooooooooooooooooo', data);
+
+        return data;
+    }
+
+    culculate() {
+
+        console.log('check', this.check());
+        if (this.check()) {
+
+            const data = this.data();
+            console.log('data', data);
+
+            if (data) {
+                if (this.formValid === 'calk') {
+                    $_('.main_form_price')[0].classList.remove('hide_err');
+                    // let culkSum = 0;
+                    // if (data.type === 'transfer_gr') { culkSum = data.price_gr * (data.adult + data.children) };
+                    // if (data.type === 'transfer_pr') { culkSum = data.price_pr };
+                    $_('.main_form_price > span')[0].innerHTML = data.sum;
+                };
+                if (this.formValid === 'book') {
+                    const resInfo = $_('.book_info')[0];
+                    const resInfoBlock = `
+                        <p class="main_form_color">${data.transferFromName} - ${data.transferToName}</p>
+                        <p>${service.lang[`date`]} - <span class="main_form_color">${data.date}</span> &nbsp ${service.lang[`time`]} - <span class="main_form_color">${data.time}</span></p>
+                        <p>${service.lang[`adult`]} - <span class="main_form_color">${data.adult}</span> &nbsp
+                            ${service.lang[`children`]} - <span class="main_form_color">${data.children}</span> &nbsp
+                            ${service.lang[`children_chear`]} - <span class="main_form_color">${data.equip_child}</span></p>
+                        <p>${service.lang[`equip`]} - <span class="main_form_color">${service.lang[`${data.equip}`]}</span> &nbsp
+                            <b class="main_form_color">${service.lang[`${data.type}`]}</b></p>
+                        <p>${service.lang[`sum`]} - <span class="main_form_color">${data.sum}</span> </p>
+                    `;
+                    resInfo.innerHTML = resInfoBlock;
+                    $_('#check')[0].style.display = 'none';
+                    $_('#booking')[0].style.display = 'flex';
+                };
+                if (this.formValid === 'bookfinal') {
+                    fetch(`/order/order`, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json;charset=utf-8' },
+                        body: JSON.stringify(data)
+                    })
+                    .then(response => response.status === 200 && response.json())
+                    .then(resultat => {
+                        if (resultat.res) {
+                            $_('#check')[0].style.display = 'none';
+                            $_('#booking')[0].style.display = 'none';
+                            $_('#received')[0].style.display = 'flex';
+                        };
+                    });
+                };
+            };
+        };
+    };
+
+
+}
+
+class Feedback extends ModalWindow {
+    number = 30;
+    status = '';
+    date = '3';
+
+    constructor(){
+        super()
+    }
+
+    setParam(el, param) {
+        this[param] = el.value;
+        this.list(1)
+    }
+
+    check() {
+        const arrTrue = [];
+        const arrInp = ['feedback_name', 'feedback_surname', 'feedback_email', 'feedback_phone', 'feedback_comment'];
+        const message = $_(`.feedback_form_err`)[0];
+        arrInp.forEach(element => {
+            const elemCheck = $_(`#${element}`)[0];
+            if (elemCheck.value === '') {
+                arrTrue.push(false);
+                elemCheck.classList.add('err_input');
+            };
+        });
+        const emailCheck = $_('#feedback_email')[0];
+        if (emailCheck.value !== '' && !validEmail(emailCheck.value)) {
+            arrTrue.push(false);
+            emailCheck.classList.add('err_input');
+        };
+        const phoneCheck = $_('#feedback_phone')[0];
+        if (phoneCheck.value !== '' && !validPhone(phoneCheck.value)) {
+            arrTrue.push(false);
+            phoneCheck.classList.add('err_input');
+        };
+        if (arrTrue.includes(false)) {
+            message.classList.remove('hide_err');
+            return false
+        } else {
+            message.classList.add('hide_err');
+            return true
+        };
+    }
+
+    data() {
+        const feedbackArr = {};
+        feedbackArr.feedbackName = $_('#feedback_name')[0].value;
+        feedbackArr.feedbackSurname = $_('#feedback_surname')[0].value;
+        feedbackArr.feedbackEmail = $_('#feedback_email')[0].value;
+        feedbackArr.feedbackPhone = $_('#feedback_phone')[0].value;
+        feedbackArr.feedbackComment = $_('#feedback_comment')[0].value;
+        return feedbackArr;
+    }
+
+    send() {
+        if (this.check()) {
+            const data = this.data();
+            fetch(`/feedback/feedback`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json;charset=utf-8' },
+                body: JSON.stringify(data)
+            })
+            .then(response => response.status === 200 && response.json())
+            .then(resultat => {
+                if (resultat.res === 'Feedback sended!') {
+                    if ($_('.feedback_name')[0]) {$_('.feedback_name')[0].value = ''};
+                    if ($_('.feedback_surname')[0]) {$_('.feedback_surname')[0].value = ''};
+                    if ($_('.feedback_email')[0]) {$_('.feedback_email')[0].value = ''};
+                    if ($_('#feedback_phone')[0]) {$_('#feedback_phone')[0].value = ''};
+                    $_('#feedback_comment')[0].value = '';
+                    $_(`.feedback_sended`)[0].classList.remove('hide_err');
+                    setTimeout(() => {
+                        $_(`.feedback_sended`)[0].classList.add('hide_err');
+                    }, 5000);
+                };
+            });
+        };
+    }
+
+    async showWindow(module, type, param, id){
+        const data = await this.open(id);
+        this.show(module, type, data);
+    }
+
+    async open(id) {
+        return await service.open(id, 'feedback', this);
+    }
+
+    answer(id) {
+        const answer = $_('#feedback_answer')[0].value;
+        fetch(`/feedback/answer`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json;charset=utf-8' },
+            body: JSON.stringify({ id, answer })
+        })
+        .then(response => response.status === 200 && response.json())
+        .then(resultat => {
+            if (!resultat) { throw new Error() };
+            resultat.res && this.show('feedback', 'Res', { message: 'Зміни внесено!' })
+        })
+        .catch(() => { this.show('feedback', 'Res', { message: '<span style="color:red;">Сталася помилка, спробуйте ще раз!</span>' }) })
+        .finally(() => {
+            setTimeout(() => {
+                this.closeBtn();
+                this.list()
+            }, 2000)
+        });
+    }
+
+    list(page = 1) {
+        let param = [];
+        param.push({"status": `${['answer', 'noanswer'].includes(this.status) ? this.status : ''}`});
+        param.push({"date": `${['3', '6', '12', ''].includes(this.date) ? this.date : ''}`});
+        fetch(`/feedback/list`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json;charset=utf-8' },
+            body: JSON.stringify({page, param, 'numb' : this.number} )
+        })
+        .then(response => response.status === 200 && response.json())
+        .then(async resultat => {
+            if (resultat.res) {
+                const list_wrap = $_('.feedback_list')[0];
+                const pagination_wrap = $_('.feedback_pagination')[0];
+                const pages = pagination_wrap.children;
+                const pages_count = Math.ceil(resultat.res.count / this.number);
+                list_wrap.innerHTML = '';
+                pagination_wrap.innerHTML = '';
+                if (pages_count > 1) {
+                    for (let i = 1; i <= pages_count; i++) { pagination_wrap.innerHTML += `<p onclick="feedback.list(${i})">${i}</p>` };
+                    pages[page-1].style.color = '#fff';
+                    pages[page-1].style.backgroundColor = 'rgb(139 195 74)';
+                    pages[page-1].removeAttribute("onclick");
+                };
+                resultat.res.list.forEach(el => {
+                    const settings =  (el.settings === 'true') ? `<i class='fas fa-edit' onclick="feedback.showWindow('feedback', 'Info', '', '${el.idfeedback}')"></i>` : '';
+                    const answer = (el.status === 'answer') ? `<p class="f_answer"><span>${service.lang['answer']}: </span> ${el.answer}</p>` : '';
+                    const answerdate = (el.status === 'answer') ? `<p class="f_answer_date">${service.lang['date']}: ${el.date_answer}</p>` : '';
+                    list_wrap.innerHTML += `
+                    <div class="feedback user${el.settings}">
+                        <p>${el.feedbackComment}</p>
+                        <p class="f_date">${service.lang['date']}: ${el.date_create}</p>
+                        ${answer}
+                        ${answerdate}
+                        ${settings}
+                    </div>`
+                });
+            };
+        });
+    };
 }
 
 class News extends ModalWindow {
@@ -1786,8 +1719,96 @@ class News extends ModalWindow {
     }
 };
 
+class Calendar extends ModalWindow {
+    weekdays = {
+        uk : ["Нед", "Пон", "Вівт", "Сер", "Чет", "П`ят", "Суб"],
+        en : ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"]
+    }
+    months = {
+        uk : ["Січень", "Лютий", "Березень", "Квітень", "Травень", "Червень", "Липень", "Серпень", "Вересень", "Жовтень", "Листопад", "Грудень"],
+        en : ["Січень", "Лютий", "Березень", "Квітень", "Травень", "Червень", "Липень", "Серпень", "Вересень", "Жовтень", "Листопад", "Грудень"]
+    }
+    date = '';
+
+    constructor(){
+        super();
+    }
+
+    showWindow(module, type, el){
+        this.date = new Date();
+        let val = 0;
+        let current_year = this.date.getFullYear();
+        this.show(module, type);
+        $_(`#${module + type}`)[0].children[0].innerHTML = service.lang['calendar_title'];
+        const weekdays_place = $_(".weekdays")[0];
+        weekdays_place.innerHTML = '';
+        this.weekdays[service.language].forEach(el => { weekdays_place.innerHTML += `<div>${el}</div>` });
+        $_(".prev_year")[0].addEventListener("click", () => {
+            (val <= 0) ? val = 0 : val--;
+            this.render(current_year + val);
+        });
+        $_(".next_year")[0].addEventListener("click", () => {
+            (val >= 15) ? val = 15 : val++;
+            this.render(current_year + val);
+        });
+        $_(".prev")[0].addEventListener("click", () => {
+            this.date.setMonth(this.date.getMonth() - 1);
+            (this.date.getMonth() === 11) && val--;
+            this.render(current_year + val);
+        });
+        $_(".next")[0].addEventListener("click", () => {
+            this.date.setMonth(this.date.getMonth() + 1);
+            (this.date.getMonth() === 0) && val++;
+            this.render(current_year + val);
+        });
+        this.render(current_year + val);
+    }
+
+    render(current_year) {
+        this.date.setDate(1);
+        this.date.setYear(current_year);
+        let days = "";
+        const year = this.date.getFullYear();
+        const month = this.date.getMonth();
+        const month_before = this.date.getDay();
+        const month_after = 7 - new Date(year, month + 1, 0).getDay() - 1;
+        const month_last_day = new Date(year, month + 1, 0).getDate();
+        const today = `${date.show('yyyy-mm-dd', new Date())}`;
+        for (let i = month_before; i > 0; i--) {
+            days += `<div class="prev-date">${new Date(year, month, 0).getDate() - i + 1}</div>`;
+        };
+        for (let i = 1; i <= month_last_day; i++) {
+            const sample = `${year}-${month + 1}-${i}`;
+            const compare = `${date.show('yyyy-mm-dd', sample)}`;
+            const select = date.show('dd/mm/yyyy', sample);
+            if (compare === today) {
+                days += `<div class="today" onclick="calendar.select('${select}')">${i}</div>`;
+            } else if (compare < today) {
+                days += `<div class="prev-date">${i}</div>`;
+            } else {
+                days += `<div onclick="calendar.select('${select}')">${i}</div>`;
+            };
+        };
+        for (let i = 1; i <= month_after; i++) {
+            days += `<div class="next-date">${i}</div>`;
+        };
+        $_(`.date_year > h1`)[0].innerHTML = year;
+        $_(".date h1")[0].innerHTML = this.months[service.language][month];
+        $_(".days")[0].innerHTML = days;
+    }
+
+    select(date) {
+        const inputPlace = $_(`#main_date`)[0];
+        inputPlace.value = date;
+        inputPlace.classList.remove('err_input');
+        this.closeBtn();
+        order.check();
+    };
+};
+
 class Time extends ModalWindow{
     arrow = '';
+    hours = '';
     minutes = '';
     hArr = ['00', '01', '02', '03', '04', '05', '06', '07', '08', '09', '10', '11', '12', '13', '14', '15', '16', '17', '18', '19', '20', '21', '22', '23'];
     mArr = ['00', '05', '10', '15', '20', '25', '30', '35', '40', '45', '50', '55', '60'];
@@ -1802,15 +1823,40 @@ class Time extends ModalWindow{
     showWindow(module, type, el){
         this.hStart = 0;
         this.mStart = 0;
-        this.show(module, type);
-        this.hours = $_('.hours')[0];
-        this.minutes = $_('.minutes')[0];
-        $_('.admTime')[0].addEventListener('click', () => {
-            el.value = `${this.hours.innerHTML}:${this.minutes.innerHTML}`;
-            this.closeSub();
-            // mainTimeInput.classList.remove('err_input');
-            // checkForm();
-        });
+        if (el.getAttribute("setparam") === 'limit') {
+            this.show(module, `${type}limit`);
+            $_(`#${module + type}limit`)[0].children[0].innerHTML = service.lang[`time_title`];
+            if (order.inputFrom.value !== '' && order.inputTo.value !== '') {
+                const timeArrForm = [];
+                const from = order.inputFrom.getAttribute("inputmainparam");
+                const to = order.inputTo.getAttribute("inputmainparam");
+                loadStatic.transfersArr.forEach(element => {
+                    if (element.transfer_from === from && element.transfer_to === to && element.price_gr !== '') {
+                        for (let i = 0; i < 10; i++) {
+                            if (element[`time${i+1}`] !== '') { timeArrForm.push(element[`time${i+1}`])};
+                        };
+                    };
+                });
+                timeArrForm.forEach(element => {
+                    $_('.towns_select_list')[0].innerHTML += `<p onclick="time.setTime('${element}')">${element}</p>`;
+                });
+            };
+        } else {
+            this.show(module, type);
+            this.hours = $_('.hours')[0];
+            this.minutes = $_('.minutes')[0];
+            $_(`#${module + type}`)[0].children[0].innerHTML = service.lang[`time_title`];
+            $_('.admTime')[0].addEventListener('click', () => {
+                el.value = `${this.hours.innerHTML}:${this.minutes.innerHTML}`;
+                if (module === 'time') {
+                    this.closeBtn();
+                    order.inputTime.classList.remove('err_input');
+                    order.check();
+                } else {
+                    this.closeSub();
+                };
+            });
+        };
     }
 
     selectTime(type, arrow) {
@@ -1873,19 +1919,19 @@ class Time extends ModalWindow{
     }
 
     setTime(value) {
-        mainTimeInput.value = value;
-        modal.innerHTML = '';
-        mainTimeInput.classList.remove('err_input');
-        checkForm();
+        order.inputTime.value = value;
+        this.closeBtn();
+        order.inputTime.classList.remove('err_input');
+        order.check();
     }
-
-
-
-
 };
 
-const feedback = new Feedback();
+const service = new Services();
+const date = new ShowDate();
 const time = new Time();
+const calendar = new Calendar();
+const order = new Order();
+const feedback = new Feedback();
 const town = new Towns();
 const transfer = new Transfers();
 const news = new News();

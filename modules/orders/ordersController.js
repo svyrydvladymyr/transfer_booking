@@ -4,7 +4,8 @@ const errorLog = require('../service').errorLog;
 class OrdersController {
     async order(req, res) {
         try {
-            const query_res = await ordersService[req.url.replaceAll("/", "")](req, res);
+            const url = req.url.split('/')[1].replace("/", "");
+            const query_res = await ordersService[`${url}`](req.body, req, res);
             res.send({ res: query_res });
         } catch (error) {
             errorLog(error, 'error', 'orders', req);

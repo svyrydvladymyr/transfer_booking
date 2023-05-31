@@ -4,21 +4,21 @@
         <div class="main_form_row">
             <div class="main_form_coll">
                 <label for="main_from"><%=DATA.langPack.main_form_mess_from %></label>
-                <input type="text" name="from" id="main_from" maxlength="60" inputmainparam="" value="" autocomplete="off" onfocus="showModal('mainformFrom', {}, this)" readonly>
+                <input type="text" name="from" id="main_from" maxlength="60" inputmainparam="" value="" autocomplete="off" onfocus="order.showSelectWindow('town', 'Town', 'from')" readonly>
             </div>
             <div class="main_form_coll">
                 <label for="main_to"><%=DATA.langPack.main_form_mess_to %></label>
-                <input type="text" name="to" id="main_to" maxlength="60" inputmainparam="" value="" autocomplete="off" onfocus="showModal('mainformTo', {}, this)" readonly>
+                <input type="text" name="to" id="main_to" maxlength="60" inputmainparam="" value="" autocomplete="off" onfocus="order.showSelectWindow('town', 'Town', 'to')" readonly>
             </div>
         </div>
         <div class="main_form_row">
             <div class="main_form_coll">
                 <label for="main_date"><%=DATA.langPack.main_form_date %></label>
-                <input type="text" name="date" id="main_date" maxlength="10" inputmainparam="" value="" autocomplete="off" onfocus="showModal('mainformCalendar', {}, this)" readonly>
+                <input type="text" name="date" id="main_date" maxlength="10" inputmainparam="" value="" autocomplete="off" onfocus="calendar.showWindow('calendar', 'Calendar', this)" readonly>
             </div>
             <div class="main_form_coll">
                 <label for="main_time"><%=DATA.langPack.main_form_time %></label>
-                <input type="text" name="time" id="main_time" maxlength="10" inputmainparam="" setparam="" value="" autocomplete="off" onfocus="showModal('mainformTimes', {}, this)" readonly>
+                <input type="text" name="time" id="main_time" maxlength="10" inputmainparam="" setparam="" value="" autocomplete="off" onfocus="time.showWindow('time', 'Time', this)" readonly>
             </div>
         </div>
         <div class="main_form_row">
@@ -64,10 +64,10 @@
         </div>
         <div class="main_form_row btn">
             <div class="main_form_coll">
-                <p class="main_form_btn" onclick="formValid = 'calk', culculate()"><%=DATA.langPack.main_form_btn_calk %></p>
+                <p class="main_form_btn" onclick="order.formValid = 'calk', order.culculate()"><%=DATA.langPack.main_form_btn_calk %></p>
             </div>
             <div class="main_form_coll">
-                <p class="main_form_btn" onclick="formValid = 'book', culculate()"><%=DATA.langPack.main_form_btn_res %></p>
+                <p class="main_form_btn" onclick="order.formValid = 'book', order.culculate()"><%=DATA.langPack.main_form_btn_res %></p>
             </div>
         </div>
         <p class="main_form_price hide_err"><%=DATA.langPack.main_form_price %> <span></span> <%=DATA.langPack.option_grn %></p>
@@ -128,10 +128,10 @@
         </div> -->
         <div class="main_form_row btn">
             <div class="main_form_coll">
-                <p class="main_form_btn" onclick="mainFormBack()"><%=DATA.langPack.main_form_btn_back %></p>
+                <p class="main_form_btn" onclick="order.mainFormBack()"><%=DATA.langPack.main_form_btn_back %></p>
             </div>
             <div class="main_form_coll">
-                <p class="main_form_btn" onclick="formValid = 'bookfinal', culculate()"><%=DATA.langPack.main_form_btn_res %></p>
+                <p class="main_form_btn" onclick="order.formValid = 'bookfinal', order.culculate()"><%=DATA.langPack.main_form_btn_res %></p>
             </div>
         </div>
         <p class="main_form_err_bookfinal hide_err"><%=DATA.langPack.main_form_err_bookfinal %></p>
@@ -140,7 +140,6 @@
         <p><%=DATA.langPack.main_form_received1 %></p>
         <p><%=DATA.langPack.main_form_received2 %></p>
         <p class="btn_ok" onclick="document.location.reload()"><i class='fas fa-check-double'></i></p>
-        <!-- <p class="btn_ok" onclick="mainFormBack2()"><i class='fas fa-check-double'></i></p> -->
     </div>
     <p class="privacy-policy"><%=DATA.langPack.privacy_policy_text %></p>
     <a class="privacy-policy" href="/privacy-policy"><%=DATA.langPack.privacy_policy %></a>

@@ -1,9 +1,34 @@
 const telegram = require('../bot/botController');
-const {query, validValue, token, clienttoken, date} = require('../service');
+const {query, validValue, token, clienttoken, date: showDate} = require('../service');
 const townsService = require('../towns/townsService');
 
 class OredersServise {
-    async order(req, res) {
+    async open(body, req, res) {
+        const id = req.params["orderid"];
+        const {towns_from, towns_to, transfers_arr} = await townsService.townNames(req, res);
+        const sql = `SELECT * FROM orders WHERE orders='${id}'`;
+        return await query(sql)
+            .then((result) => {
+                const transfer_count = [];
+                result[0].settings = (req.user[0].permission === 1) ? 'true' : 'false';
+                transfers_arr.forEach(el => {
+                    if (el.transfer_id === result[0].transfer_id) {
+                        result[0].order_from_origin = result[0].order_from;
+                        result[0].order_to_origin = result[0].order_to;
+                        result[0].order_from = towns_from[el.transfer_from];
+                        result[0].order_to = towns_to[el.transfer_to];
+                    } else {
+                        transfer_count.push(false);
+                    };
+                });
+                if (transfers_arr.length === transfer_count.length) {
+                        result[0].transfer_notexist = 'notexist';
+                }
+                return result;
+            });
+    }
+
+    async order(body, req, res) {
         const {
             transferId,
             adult,
@@ -16,8 +41,8 @@ class OredersServise {
             user_surname,
             user_email,
             user_phone,
-        } = req.body;
-        const type = req.body.type.replace(/transfer_/gi, "");
+        } = body;
+        const type = body.type.replace(/transfer_/gi, "");
         const tokenGen = token(10);
         const userid = await query(`SELECT userid FROM users WHERE token = '${clienttoken(req, res)}'`)
             .then((user_id) =>
@@ -60,7 +85,7 @@ class OredersServise {
                 'reserv',
                 'no',
                 '${transfer.price}',
-                '${date.show('yyyy-mm-dd hh:mi')}')`;
+                '${showDate.show('yyyy-mm-dd hh:mi')}')`;
         return await query(sql)
             .then((result) => {
                 const varArr = {
@@ -87,34 +112,34 @@ class OredersServise {
                     ' Тип: ' + varArr[`${type}`] + '\n' +
                     'Статус: ' + varArr['reserv'] + ' ' +
                     ' Вартість: ' + transfer.price + '\n' +
-                    'Час бронювання: ' + date.show('yyyy-mm-dd hh:mi');
+                    'Час бронювання: ' + showDate.show('yyyy-mm-dd hh:mi');
                 telegram.botMessage(telegramOrder, 'orders');
                 return 'Order created!';
             });
     };
 
-    async orderstatus(req, res) {
-        const status = (req.body.param === 'proof' || req.body.param === 'del') ? req.body.param : 'reserv';
-        return query(`UPDATE orders SET status='${status}' WHERE orders='${req.body.id}'`)
+    async orderstatus(body, req, res) {
+        const status = (body.param === 'proof' || body.param === 'del') ? body.param : 'reserv';
+        return query(`UPDATE orders SET status='${status}' WHERE orders='${body.id}'`)
             .then((result) => 'Status saved!');
     };
 
-    async list(req, res) {
+    async list(body, req, res) {
         let sql = '', countsql = '';
         const user = req.user[0];
-        const page = (req.body.page && !isNaN(req.body.page)) ? req.body.page : 1;
-        const limit = (req.body.numb && ['100', '50', '30', '2', '5'].includes(req.body.numb)) ? req.body.numb : 30;
+        const page = (body.page && !isNaN(body.page)) ? body.page : 1;
+        const limit = (body.numb && ['100', '50', '30', '2', '5'].includes(body.numb)) ? body.numb : 30;
         const start_page = (page -1) * limit;
         if (user.permission === 1) {
             let where = '', statussql = '', datesql = '';
-            const status = ['reserv', 'proof', 'del'].includes(req.body.param[0]['status']) ? req.body.param[0]['status'] : '';
-            const date_count = ['', '3', '6', '12'].includes(req.body.param[1]['date']) ? req.body.param[1]['date'] : '3';
+            const status = ['reserv', 'proof', 'del'].includes(body.param[0]['status']) ? body.param[0]['status'] : '';
+            const date_count = ['', '3', '6', '12'].includes(body.param[1]['date']) ? body.param[1]['date'] : '3';
             if (date_count !== '') {
                 where = ' WHERE ';
-                const present_date = date.show('yyyy-mm-dd hh:mi');
+                const present_date = showDate.show('yyyy-mm-dd hh:mi');
                 const date_now = new Date();
                 date_now.setMonth(date_now.getMonth() - +date_count);
-                const next_date = date.show('yyyy-mm-dd hh:mi', date_now);
+                const next_date = showDate.show('yyyy-mm-dd hh:mi', date_now);
                 datesql = `book_date>'${next_date}' AND book_date<'${present_date}'`;
             };
             if (status !== '' && date_count !== '') {

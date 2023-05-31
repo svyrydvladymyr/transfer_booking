@@ -1476,6 +1476,12 @@ body {
   font-weight: bold;
   border-radius: 5px;
 }
+.modal_wrap .modal_place > p.title_order span {
+  cursor: context-menu;
+  color: #383838;
+  font-weight: normal;
+  font-size: 11px;
+}
 .modal_wrap .modal_place > p.block {
   background: #f1f1f1;
   padding: 6px;

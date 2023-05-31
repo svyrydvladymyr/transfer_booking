@@ -8,15 +8,13 @@
 </head>
 <body>
     <% if (DATA.permission.permissionAuthorization === '1') { %>
-        <script>
-            let numb = 30, orderstat = '', orderdate = '3';
-            
-        </script>
         <script src="https://code.jquery.com/jquery-3.6.0.js"></script>
         <script src="https://code.jquery.com/ui/1.13.1/jquery-ui.js"></script>
         <script>
             $( function() { $( "#sortable" ).sortable({
-                update: function() { $_('#save_position')[0].style.display = 'block' }
+                update: function() {
+                    $_('#save_position')[0].style.display = 'block';
+                }
             })});
         </script>
     <% } %>
@@ -53,19 +51,19 @@
                         <div class="tab_bodys">
                             <div class="body body_active">
                                 <div class="orders_search">
-                                    <select name="order_date" onchange="setOrderDate(this)">
+                                    <select name="order_date" onchange="order.setParam(this, 'date')">
                                         <option value="3" selected>За 3 місяці</option>
                                         <option value="6">За 6 місяців</option>
                                         <option value="12">За 1 рік</option>
                                         <option value="">За весь час</option>
                                     </select>
-                                    <select name="order_status" onchange="setOrderStatus(this)">
+                                    <select name="order_status" onchange="order.setParam(this, 'status')">
                                         <option value="" selected>Всі</option>
                                         <option value="reserv">Зарезервовано</option>
                                         <option value="proof">Підтверджено</option>
                                         <option value="del">Видалено</option>
                                     </select>
-                                    <select name="order_number" onchange="setOrderNumb(this)">
+                                    <select name="order_number" onchange="order.setParam(this, 'number')">
                                         <option value="30" selected>30</option>
                                         <option value="50">50</option>
                                         <option value="100">100</option>
@@ -144,7 +142,7 @@
                 (async () => {
                     service.lang = await service.languagePack(service.language);
                     tabs(`${localStorage.getItem("tab")}`);
-                    ordersList(1);
+                    order.list(1);
                     feedback.list(1);
                     town.list();
                     transfer.list();
@@ -155,7 +153,7 @@
             <script>
                 (async () => {
                     service.lang = await service.languagePack(service.language);
-                    ordersList(1);
+                    order.list(1);
                     feedback.list(1);
                 })()
             </script>

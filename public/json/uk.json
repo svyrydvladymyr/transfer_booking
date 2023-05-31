@@ -1,8 +1,7 @@
 {
-    "mainformTimes" : "Вкажіть час",
-    "mainformCalendar" : "Виберіть дату",
-    "mainformTo" : "Для вибору натисніть на назву містa",
-    "mainformFrom" : "Для вибору натисніть на назву містa",
+    "time_title" : "Вкажіть час",
+    "calendar_title" : "Виберіть дату",
+    "town_title" : "Для вибору натисніть на назву містa",
     "date" : "Дата",
     "time" : "Час",
     "transfer_pr" : "Приватний ",

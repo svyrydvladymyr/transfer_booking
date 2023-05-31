@@ -1499,6 +1499,12 @@ body {
           margin-bottom: 7px;
           font-weight: bold;
           border-radius: 5px;
+          span {
+            cursor: context-menu;
+            color: #383838;
+            font-weight: normal;
+            font-size: 11px;
+          }
         }
         > p.block {
           background: #f1f1f1;
