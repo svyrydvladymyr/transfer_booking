@@ -1165,12 +1165,15 @@ body {
       font-weight: bold;
       width: max-content;
       margin: 5px auto;
-      padding: 0px 0px 5px 0px;
+      padding: 0px 10px 5px 10px;
       font-weight: bold;
       font-size: 14px;
+      color: #7e3f3f;
+      text-decoration-line: none;
       &:hover {
         border-color: red;
         font-weight: bold;
+        color: #5f2525;
       }
     }
     .edit_menu:first-child {

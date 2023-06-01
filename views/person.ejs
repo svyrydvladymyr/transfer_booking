@@ -13,7 +13,7 @@
         <script>
             $( function() { $( "#sortable" ).sortable({
                 update: function() {
-                    $_('#save_position')[0].style.display = 'block';
+                    service.$('#save_position')[0].style.display = 'block';
                 }
             })});
         </script>
@@ -34,7 +34,7 @@
                 <img src="<%=DATA.user.ava %>">
                 <p><%=DATA.user.surname %> <%=DATA.user.name %></p>
                 <p class="provider"><%=DATA.langPack.provider %> <span><%=DATA.user.provider %></span></p>
-                <p onclick="exit()" class="exit"><%=DATA.langPack.exit %></p>
+                <a href="/exit" class="exit"><%=DATA.langPack.exit %></a>
                 <!-- <% if (DATA.user.phone_verified === 'noverified') { %>
                     <p onclick="showModal('confirmPhone')" class="exit"><%=DATA.langPack.phone_verified %></p>
                 <% } %>  -->
@@ -42,11 +42,11 @@
                 <% if (DATA.permission.permissionRules === '1') { %>
                     <div class="tab_person">
                         <div class="tabs">
-                            <p class="tab tab_active" onclick="tabs(0)">Бронювання</p>
-                            <p class="tab" onclick="tabs(1)">Повідомлення</p>
-                            <p class="tab" onclick="tabs(2)">Міста</p>
-                            <p class="tab" onclick="tabs(3)">Маршрути</p>
-                            <p class="tab" onclick="tabs(4)">Новини</p>
+                            <p class="tab tab_active" onclick="service.tabs(0)">Бронювання</p>
+                            <p class="tab" onclick="service.tabs(1)">Повідомлення</p>
+                            <p class="tab" onclick="service.tabs(2)">Міста</p>
+                            <p class="tab" onclick="service.tabs(3)">Маршрути</p>
+                            <p class="tab" onclick="service.tabs(4)">Новини</p>
                         </div>
                         <div class="tab_bodys">
                             <div class="body body_active">
@@ -116,8 +116,8 @@
                 <% } else { %>
                     <div class="tab_person">
                         <div class="tabs">
-                            <p class="tab tab_user tab_active" onclick="tabs(0)"><%=DATA.langPack.orders_title %></p>
-                            <p class="tab tab_user" onclick="tabs(1)"><%=DATA.langPack.feedback_title %></p>
+                            <p class="tab tab_user tab_active" onclick="service.tabs(0)"><%=DATA.langPack.orders_title %></p>
+                            <p class="tab tab_user" onclick="service.tabs(1)"><%=DATA.langPack.feedback_title %></p>
                         </div>
                         <div class="tab_bodys">
                             <div class="body body_active">
@@ -141,7 +141,7 @@
             <script>
                 (async () => {
                     service.lang = await service.languagePack(service.language);
-                    tabs(`${localStorage.getItem("tab")}`);
+                    service.tabs(`${localStorage.getItem("tab")}`);
                     order.list(1);
                     feedback.list(1);
                     town.list();

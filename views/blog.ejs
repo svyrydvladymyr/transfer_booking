@@ -8,11 +8,11 @@
     <div class="main_body">
         <div class="news_container">
             <% if (DATA.news) { %>
-                <p class="advantages_title1" style="color: #292424;"><%=DATA.news.title %></p>
+                <p class="advantages_title1" style="color: #292424;"><%=DATA.news[0].title %></p>
                 <p class="line"><span></span></p>
                 <div class="article">
-                    <% if (DATA.news.main_img !== '') { %>
-                        <img src="<%= DATA.news.main_img %>">
+                    <% if (DATA.news[0].main_img !== '') { %>
+                        <img src="<%= DATA.news[0].main_img %>">
                     <% } %>
                 </div>
             <% } %>
@@ -34,8 +34,8 @@
     <% } %>
     <% if (DATA.news) { %>
         <script>
-            const article_body = $_(`.article`)[0];
-            const article = `<%=DATA.news.article %>`
+            const article_body = service.$(`.article`)[0];
+            const article = `<%=DATA.news[0].article %>`
                 .replace(/&lt;/g, '<')
                 .replace(/&gt;/g, '>')
                 .replace(/&#34;/g, '"')

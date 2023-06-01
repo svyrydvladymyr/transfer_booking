@@ -288,9 +288,11 @@ class Templates {
 class ModalWindow extends Templates {
     constructor(){
         super();
-        this.modal_place = $_('.modal_wrap')[0];
+        this.modal_place = service.$('.modal_wrap')[0];
     }
 
+    closeBtn() { this.modal_place.innerHTML = '' };
+    closeSub() { service.$('.wrap_sub_modal')[0].innerHTML = '' };
     closeWrap(event) {
         let valClose = true;
         for (let element of event.target.children) {
@@ -299,22 +301,13 @@ class ModalWindow extends Templates {
             };
         };
         if (!valClose) { this.modal_place.innerHTML = '' };
-    };
-
-    closeBtn() { this.modal_place.innerHTML = '' };
-    closeSub() { $_('.wrap_sub_modal')[0].innerHTML = '' };
+    }
 
     show(module, type, data = {}, id) {
         const window_type = (type === "Del" || type === 'Res') ? type.toLowerCase() : module + type;
-
-        console.log('window_type', window_type);
-
         data.module = module;
         id && (data.id = id);
-
-        // console.log('data show', data);
-
-        const place = (['Towns', 'Times'].includes(type)) ? $_('.wrap_sub_modal')[0] : this.modal_place;
+        const place = (['Towns', 'Times'].includes(type)) ? service.$('.wrap_sub_modal')[0] : this.modal_place;
         const wrap_close_arr = ['townSave', 'transferSave', 'newsSave', 'transferTowns', 'transferTimes'];
         const wrap_close = wrap_close_arr.includes(window_type) ? '' : `onclick="${module}.closeWrap(event)"`;
         const no_close_btn = ['transferTowns', 'transferTimes'].includes(window_type) ? '' : `<i class="fa fa-times" onclick="${module}.closeBtn()"></i>`;
@@ -336,7 +329,52 @@ class Services {
     language = 'uk';
     lang = {};
 
-    constructor(){
+    constructor(){}
+
+    $(value, parent = document) {return parent.querySelectorAll(value)};
+
+    transliterate(word) {
+        const a = {
+            "Ё":"YO","Й":"I","Ц":"TS","У":"U","К":"K","Е":"E","Н":"N","Г":"G","Ш":"SH","Щ":"SCH","З":"Z",
+            "Х":"H","Ъ":"'","ё":"yo","й":"i","ц":"ts","у":"u","к":"k","е":"e","н":"n","г":"g","ш":"sh",
+            "щ":"sch","з":"z","х":"h","ъ":"'","Ф":"F","Ы":"I","В":"V","А":"a","П":"P","Р":"R","О":"O",
+            "Л":"L","Д":"D","Ж":"ZH","Э":"E","ф":"f","ы":"i","в":"v","а":"a","п":"p","р":"r","о":"o",
+            "л":"l","д":"d","ж":"zh","э":"e","Я":"Ya","Ч":"CH","С":"S","М":"M","И":"I","Т":"T","Ь":"'",
+            "Б":"B","Ю":"YU","я":"ya","ч":"ch","с":"s","м":"m","и":"i","т":"t","ь":"'","б":"b","ю":"yu"};
+        return word.split('').map((char) => a[char] || char ).join("");
+    };
+
+    tabs(tab) {
+        tab = (tab === 'null' || tab === undefined) ? 0 : tab;
+        const tabs = service.$('.tabs > p');
+        const bodys = service.$('.tab_bodys > .body');
+        tabs.forEach(element => { element.classList.remove('tab_active') });
+        bodys.forEach(element => { element.classList.remove('body_active') });
+        localStorage.setItem("tab", tab);
+        tabs[tab].classList.add('tab_active');
+        bodys[tab].classList.add('body_active');
+    }
+
+    slider(el) {
+        const active = el.classList.contains('active_sl');
+        service.$('.slider > p').forEach(element => { element.classList.remove('active_sl') });
+        active ? null : el.classList.toggle('active_sl');
+    };
+
+    token(length, type = 'string') {
+        let res = '';
+        const array = (type === 'number') ? '123456789' : 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890';
+        for ( var i = 0; i < length; i++ ) {res += array.charAt(Math.floor(Math.random() * array.length))}
+        return res;
+    }
+
+    shoeMobilMenu(el) {
+        el.classList.toggle("change");
+        this.$('.menu_container_wrap_mobile')[0].classList.toggle("menu_container_wrap_mobile_active");
+    }
+
+    shoeMobilInfo() {
+        this.$('.mobile_menu_contacts')[0].classList.toggle("mobile_menu_contacts_active");
     }
 
     async languagePack(lang) {
@@ -363,7 +401,7 @@ class Services {
             .then(response => response.status === 200 && response.json())
             .then(resultat => {
                 if (resultat.res) {
-                    const list = $_(`.${module === 'blog' ? 'news' : module}_list${place}`)[0];
+                    const list = service.$(`.${module === 'blog' ? 'news' : module}_list${place}`)[0];
                     if (list) {
                         list.innerHTML = '';
                         resultat.place = list;
@@ -418,85 +456,6 @@ class Services {
     }
 };
 
-
-
-
-
-
-
-//close modal window
-// const closeSubModal = () => { $_('.wrap_sub_modal')[0].innerHTML = '' };
-// const closeModalX = () => {modal.innerHTML = ''};
-// const closeModal = (el) => {
-//     let valClose = true;
-//     for (let element of el.target.children) {
-//         if (element.classList && element.classList.contains('modal_place')) {
-//             valClose = false;
-//         };
-//     };
-//     if (!valClose) { modal.innerHTML = '' };
-// };
-
-//wrap for modal window
-// const modalWindowWrap = (type) => {
-//     const sub_close = ['transferTowns'].includes(type) ? '' : 'onclick="closeModal(event)"';
-//     const sub_noclose = ['transferTowns'].includes(type) ? '' : '<i class="fa fa-times" onclick="closeModalX()"></i>';
-//     const style = {
-//         newsAdd: "max-width: 90%",
-//         newsEdit: "max-width: 90%",
-//     };
-//     return `<div class="modal_body" ${sub_close}>
-//         <div class="modal_close">${sub_noclose}</div>
-//         <div class="modal_place" id="${type}" style="${style[type]}">
-//             ${template[type]}
-//         </div>
-//         <div class="wrap_sub_modal"></div>
-//     </div>`;
-// };
-
-//show modal window
-// const showModal = function(type, obj, el) {
-//     console.log('type', type);
-//     console.log('obj', obj);
-//     console.log('el', el);
-
-//     ['mainformFrom', 'mainformTo'].includes(type)
-//         ? modal.innerHTML = modalWindowWrap(type) : null;
-
-    // if (type === 'mainformFrom' || type === 'mainformTo') {
-    //     $_(`#${type}`)[0].children[0].innerHTML = lang[`${type}${getLang('lang')}`];
-    //     const tawns_list = $_('.towns_select_list')[0];
-    //     let objTowns = {}, inpValue, param1, param2;
-    //     if (type === 'mainformFrom') { objTowns = townsFrom; inpValue = inputTo; param1 = 'to'; param2 = 'from'; };
-    //     if (type === 'mainformTo') { objTowns = townsTo; inpValue = inputFrom; param1 = 'from'; param2 = 'to'; };
-    //     tawns_list.innerHTML = '';
-    //     if ((inputFrom.value !== '') && (inputTo.value !== '')) {
-    //         for (const [key, value] of Object.entries(objTowns)) {
-    //             tawns_list.innerHTML += `<p id="${key}" onclick="selectTownMain(this, 'main_${param2}', 'clear')">${value}</p>`;
-    //         };
-    //     } else {
-    //         if (inpValue.value === '') {
-    //             for (const [key, value] of Object.entries(objTowns)) {
-    //                 tawns_list.innerHTML += `<p id="${key}" onclick="selectTownMain(this, 'main_${param2}')">${value}</p>`;
-    //             };
-    //         } else {
-    //             const anotherValue = $_(`#main_${param1}`)[0].getAttribute('inputmainparam'), resListTowns = [];
-    //             transfersArr.forEach(element => {
-    //                 if (element[`transfer_${param1}`] === anotherValue) {
-    //                     resListTowns.push({[`${element[`transfer_${param2}`]}`] : `${objTowns[element[`transfer_${param2}`]]}`});
-    //                 };
-    //             });
-    //             resListTowns.forEach(element => {
-    //                 for (const [key, value] of Object.entries(element)) {
-    //                     tawns_list.innerHTML += `<p id="${key}" onclick="selectTownMain(this, 'main_${param2}')">${value}</p>`;
-    //                 };
-    //             });
-    //         };
-    //     };
-    // };
-
-// };
-
 //for send to main page and set route to main form
 const sendToMainForm = (transfid, type, obj) => {
     localStorage.setItem("transfid", transfid);
@@ -511,16 +470,16 @@ const sendToMainForm = (transfid, type, obj) => {
 //for set route to main form
 const setToMainForm = (transfid, type, obj) => {
     window.scrollTo({
-        top: $_('.main_form_container')[0].offsetTop - 140,
+        top: service.$('.main_form_container')[0].offsetTop - 140,
         behavior: "smooth"
     });
     order.formValid = 'book';
-    inputFrom.value = obj.from;
-    inputTo.value = obj.to;
-    this.inputType.value = `transfer_${type}`;
-    inputFrom.setAttribute("inputmainparam", obj.fromid);
-    inputTo.setAttribute("inputmainparam", obj.toid);
-    validationType(this.inputType);
+    order.inputFrom.value = obj.from;
+    order.inputTo.value = obj.to;
+    order.inputType.value = `transfer_${type}`;
+    order.inputFrom.setAttribute("inputmainparam", obj.fromid);
+    order.inputTo.setAttribute("inputmainparam", obj.toid);
+    validationType(order.inputType);
     order.check();
 };
 
@@ -532,14 +491,14 @@ const validation = (el, type, form = '') => {
         el.classList.remove('err_input');
         const arrInp = ['feedback_name', 'feedback_surname', 'feedback_email', 'feedback_phone', 'feedback_comment'];
         const arrTrue = [];
-        arrInp.forEach(element => { if ($_(`#${element}`)[0].value === '') { arrTrue.push(false)} });
-        if (!arrTrue.includes(false)) { $_(`.feedback_form_err`)[0].classList.add('hide_err') };
+        arrInp.forEach(element => { if (service.$(`#${element}`)[0].value === '') { arrTrue.push(false)} });
+        if (!arrTrue.includes(false)) { service.$(`.feedback_form_err`)[0].classList.add('hide_err') };
     } else if (['news', 'answer'].includes(form)) {
     } else {
         if (type ==='Input') {
-            $_(`.town_empty_${el.id}`)[0].style.display = 'none';
-            $_(`.town_dup_${el.id}`)[0].style.display = 'none';
-            $_(`.towns_error`)[0].style.display = 'none';
+            service.$(`.town_empty_${el.id}`)[0].style.display = 'none';
+            service.$(`.town_dup_${el.id}`)[0].style.display = 'none';
+            service.$(`.towns_error`)[0].style.display = 'none';
         } else {
             el.classList.remove('err_input');
             order.check();
@@ -547,8 +506,8 @@ const validation = (el, type, form = '') => {
     };
 };
 const validationPrice = (el) => {
-    $_(`.transfer_price_empt`)[0].style.display = 'none';
-    const priceVal = el.value, errMess = $_(`.transfer_price_${el.id}`)[0];
+    service.$(`.transfer_price_empt`)[0].style.display = 'none';
+    const priceVal = el.value, errMess = service.$(`.transfer_price_${el.id}`)[0];
     errMess.style.display = (priceVal < 1 || priceVal > 50000) ? 'block' : 'none';
     (priceVal < 0) ? el.value = '' : null;
     (priceVal > 50000) ? el.value = 50000 : null;
@@ -570,8 +529,8 @@ const validationEquip = (el) => {
 };
 const validationType = (el) => {
     el.classList.remove('err_input');
-    $_(`.main_form_err_limit_pr`)[0].classList.add('hide_err');
-    $_(`.main_form_err_limit_gr`)[0].classList.add('hide_err');
+    service.$(`.main_form_err_limit_pr`)[0].classList.add('hide_err');
+    service.$(`.main_form_err_limit_gr`)[0].classList.add('hide_err');
     order.inputTime.value = '';
     if (el.value === 'transfer_pr') {
         order.peopleMax = 7;
@@ -595,50 +554,50 @@ const validationType = (el) => {
 };
 const validationAdults = (el) => {
     order.check();
-    (adultInp.value > 0) ? adultInp.classList.remove('err_input') : adultInp.classList.add('err_input');
-    order.peopleCount = +adultInp.value + +childrenValue.value;
-    const peopleTypeErr = $_(`.main_form_err_limit_${order.peopleType}`)[0];
+    (order.inputAdult.value > 0) ? order.inputAdult.classList.remove('err_input') : order.inputAdult.classList.add('err_input');
+    order.peopleCount = +order.inputAdult.value + +order.inputChildren.value;
+    const peopleTypeErr = service.$(`.main_form_err_limit_${order.peopleType}`)[0];
     // console.log('peopleType', peopleType);
     // console.log('peopleTypeErr', peopleTypeErr);
 
     if (order.peopleCount > order.peopleMax) {
         peopleTypeErr.classList.remove('hide_err');
-        if (childrenValue.value !== '' && childrenValue.value !== '0') {
-            adultInp.classList.add('err_input');
-            childrenValue.classList.add('err_input');
+        if (order.inputChildren.value !== '' && order.inputChildren.value !== '0') {
+            order.inputAdult.classList.add('err_input');
+            order.inputChildren.classList.add('err_input');
         } else {
-            adultInp.classList.add('err_input');
+            order.inputAdult.classList.add('err_input');
         };
     } else {
         peopleTypeErr.classList.add('hide_err');
-        $_(`.main_form_err_book`)[0].classList.add('hide_err');
-        adultInp.classList.remove('err_input');
-        childrenValue.classList.remove('err_input');
+        service.$(`.main_form_err_book`)[0].classList.add('hide_err');
+        order.inputAdult.classList.remove('err_input');
+        order.inputChildren.classList.remove('err_input');
     };
 };
 const validationChildren = (el) => {
-    const equipchild =  $_('.equip_child')[0];
-    const equipchildInp =  $_('.equip_child #equip_child')[0];
-    equipchildInp.setAttribute('max', `${childrenValue.value}`);
-    (equipchildInp.value > childrenValue.value) ? equipchildInp.value = childrenValue.value : null;
+    const equipchild =  service.$('.equip_child')[0];
+    const equipchildInp =  service.$('.equip_child #equip_child')[0];
+    equipchildInp.setAttribute('max', `${order.inputChildren.value}`);
+    (equipchildInp.value > order.inputChildren.value) ? equipchildInp.value = order.inputChildren.value : null;
     (el.value < 1) ? equipchild.style.display = 'none' : null;
     (el.value > 0) ? equipchild.style.display = 'flex' : null;
-    order.peopleCount = +adultInp.value + +childrenValue.value;
-    const peopleTypeErr = $_(`.main_form_err_limit_${order.peopleType}`)[0];
+    order.peopleCount = +order.inputAdult.value + +order.inputChildren.value;
+    const peopleTypeErr = service.$(`.main_form_err_limit_${order.peopleType}`)[0];
 
     if (order.peopleCount > order.peopleMax) {
         peopleTypeErr.classList.remove('hide_err');
-        if (adultInp.value !== '' && adultInp.value !== '0') {
-            adultInp.classList.add('err_input');
-            childrenValue.classList.add('err_input');
+        if (order.inputAdult.value !== '' && order.inputAdult.value !== '0') {
+            order.inputAdult.classList.add('err_input');
+            order.inputChildren.classList.add('err_input');
         } else {
-            childrenValue.classList.add('err_input');
+            order.inputChildren.classList.add('err_input');
         };
     } else {
         peopleTypeErr.classList.add('hide_err');
-        $_(`.main_form_err_book`)[0].classList.add('hide_err');
-        adultInp.classList.remove('err_input');
-        childrenValue.classList.remove('err_input');
+        service.$(`.main_form_err_book`)[0].classList.add('hide_err');
+        order.inputAdult.classList.remove('err_input');
+        order.inputChildren.classList.remove('err_input');
     };
 };
 
@@ -656,13 +615,13 @@ class Towns extends ModalWindow {
         let data = {};
         this.town_form = module + type;
         this.town_param = param;
-        this.town_token = generate_token(6);
+        this.town_token = service.token(6);
         if (param === 'edit' ) {
             data = await this.open(id);
             this.town_id = data.town_id;
         };
         this.show(module, 'Save', data);
-        this.town_id_place = $_('#id_town')[0];
+        this.town_id_place = service.$('#id_town')[0];
     }
 
     select(el, field) {
@@ -681,7 +640,7 @@ class Towns extends ModalWindow {
     }
 
     creatingTownID(element) {
-        const id = `${transliterate(element.value).replace( /[^a-zA-ZiIіІ]/g, "" )}_${this.town_token}`;
+        const id = `${service.transliterate(element.value).replace( /[^a-zA-ZiIіІ]/g, "" )}_${this.town_token}`;
         this.town_id_place.innerHTML = id;
         this.town_id = id;
     };
@@ -689,9 +648,9 @@ class Towns extends ModalWindow {
     notEmpty(form) {
         const valid = [];
         ["uk", "en", "ru"].forEach(element => {
-            const field = $_(`#${form} > #${element}`)[0];
+            const field = service.$(`#${form} > #${element}`)[0];
             if (field.value === '' || field.value === undefined) {
-                $_(`.town_empty_${element}`)[0].style.display = 'block';
+                service.$(`.town_empty_${element}`)[0].style.display = 'block';
                 valid.push(false);
             };
         });
@@ -699,9 +658,9 @@ class Towns extends ModalWindow {
     }
 
     data(form) {
-        const uk = $_(`#${form} > #uk`)[0].value.replace(RegExpArr.RegExpInput , "");
-        const en = $_(`#${form} > #en`)[0].value.replace(RegExpArr.RegExpInput , "");
-        const ru = $_(`#${form} > #ru`)[0].value.replace(RegExpArr.RegExpInput , "");
+        const uk = service.$(`#${form} > #uk`)[0].value.replace(RegExpArr.RegExpInput , "");
+        const en = service.$(`#${form} > #en`)[0].value.replace(RegExpArr.RegExpInput , "");
+        const ru = service.$(`#${form} > #ru`)[0].value.replace(RegExpArr.RegExpInput , "");
         return {"id" : this.town_id, "uk" : uk, "en" : en, "ru" : ru};
     }
 
@@ -713,7 +672,6 @@ class Towns extends ModalWindow {
                 body: JSON.stringify(this.data(form)) })
             .then(response => response.status === 200 && response.json())
             .then(resultat => {
-                console.log('resultat', resultat);
                 if (!resultat) { throw new Error() };
                 if (resultat.res) {
                     this.show('town', 'Res', {
@@ -730,14 +688,14 @@ class Towns extends ModalWindow {
                     for (const key in body) {
                         if (Object.hasOwnProperty.call(body, key)) {
                             if (body[key] === resultat.DUP) {
-                                $_(`.town_dup_${key}`)[0].style.display = 'block';
+                                service.$(`.town_dup_${key}`)[0].style.display = 'block';
                             };
                         };
                     };
                 };
             })
             .catch(() => {
-                $_(`.towns_error`)[0].style.display = 'block';
+                service.$(`.towns_error`)[0].style.display = 'block';
             });
         };
     }
@@ -747,7 +705,7 @@ class Towns extends ModalWindow {
         .then(response => response.status === 200 && response.json())
         .then(resultat => {
             this.show(module, type);
-            const tawns_list = $_('.towns_select_list')[0];
+            const tawns_list = service.$('.towns_select_list')[0];
             tawns_list.innerHTML = '';
             resultat.res.forEach(element => {
                 tawns_list.innerHTML += `<p id="${element.town_id}" onclick="town.select(this, '${param}')">${element.name_uk}</p>`
@@ -783,9 +741,9 @@ class Transfers extends ModalWindow {
     }
 
     savePosition() {
-        const sortWrap = $_('#sortable')[0].children, sortArr = {};
+        const sortWrap = service.$('#sortable')[0].children, sortArr = {};
         for (var i = 0; i < sortWrap.length; ++i) {
-            sortArr[`${sortWrap[i].id}`] = `${i+1}${token(4)}`;
+            sortArr[`${sortWrap[i].id}`] = `${i+1}${service.token(4, 'number')}`;
         };
         fetch(`/transfers/saveposition`, {
             method: 'POST',
@@ -794,46 +752,46 @@ class Transfers extends ModalWindow {
         .then(response => response.status === 200 && response.json())
         .then(resultat => {
             if (resultat.res) {
-                $_('#save_position')[0].style.display = 'none';
+                service.$('#save_position')[0].style.display = 'none';
                 this.list();
             };
         });
     }
 
     setFields(form) {
-        this.fields.from = $_(`#from`, form)[0];
-        this.fields.to = $_(`#to`, form)[0];
-        this.fields.gr = $_(`#gr`, form)[0];
-        this.fields.pr = $_(`#pr`, form)[0];
-        this.fields.selection = $_(`#selection`, form)[0];
-        this.fields.privat = $_(`#privat`, form)[0];
-        this.fields.microbus = $_(`#microbus`, form)[0];
-        this.fields.time = $_('.time', form)[0];
-        this.fields.modal = $_('.wrap_sub_modal')[0];
-        this.labels.dup = $_(`.transfer_dup_to`, form)[0];
-        this.labels.empty = $_(`.transfer_empty_to`, form)[0];
-        this.labels.is = $_(`.transfer_duplicated`, form)[0];
-        this.labels.price_gr = $_(`.transfer_price_gr`, form)[0];
-        this.labels.price_pr = $_(`.transfer_price_pr`, form)[0];
-        this.labels.price_empt = $_(`.transfer_price_empt`, form)[0];
+        this.fields.from = service.$(`#from`, form)[0];
+        this.fields.to = service.$(`#to`, form)[0];
+        this.fields.gr = service.$(`#gr`, form)[0];
+        this.fields.pr = service.$(`#pr`, form)[0];
+        this.fields.selection = service.$(`#selection`, form)[0];
+        this.fields.privat = service.$(`#privat`, form)[0];
+        this.fields.microbus = service.$(`#microbus`, form)[0];
+        this.fields.time = service.$('.time', form)[0];
+        this.fields.modal = service.$('.wrap_sub_modal')[0];
+        this.labels.dup = service.$(`.transfer_dup_to`, form)[0];
+        this.labels.empty = service.$(`.transfer_empty_to`, form)[0];
+        this.labels.is = service.$(`.transfer_duplicated`, form)[0];
+        this.labels.price_gr = service.$(`.transfer_price_gr`, form)[0];
+        this.labels.price_pr = service.$(`.transfer_price_pr`, form)[0];
+        this.labels.price_empt = service.$(`.transfer_price_empt`, form)[0];
     }
 
     async showWindow(module, type, param, id){
         let data = {};
         this.transfer_form = module + type;
         this.transfer_param = param;
-        this.transfer_id = generate_token(6);
+        this.transfer_id = service.token(6);
         if (param === 'edit' ) {
             data = await this.open(id);
             this.transfer_id = data.transfer_id;
         };
         this.show(module, 'Save', data);
-        this.setFields($_(`#${module + type}`)[0]);
+        this.setFields(service.$(`#${module + type}`)[0]);
         if (param === 'edit' ) {
             const timeList = [];
             for (let i = 0; i < 10; i++) { if (data[`time${i + 1}`] !== '') { timeList.push(data[`time${i + 1}`])}};
             if (timeList.length > 0) {
-                const transferBody = $_('.add_time')[0];
+                const transferBody = service.$('.add_time')[0];
                 transferBody.style.display = 'block';
                 transferBody.innerHTML = '';
                 for (let i = 0; i < timeList.length; i++) {
@@ -888,7 +846,7 @@ class Transfers extends ModalWindow {
             "select" : this.fields.selection.checked,
             "privat" : this.fields.privat.checked,
             "microbus" : this.fields.microbus.checked,
-            "times" : [...$_('.time')].map((el) => el.value !== '' && el.value).filter((el) => el !== false),
+            "times" : [...service.$('.time')].map((el) => el.value !== '' && el.value).filter((el) => el !== false),
             "param" : form
         };
     }
@@ -914,7 +872,7 @@ class Transfers extends ModalWindow {
                 };
             })
             .catch(() => {
-                $_(`.transfer_error`)[0].style.display = 'block';
+                service.$(`.transfer_error`)[0].style.display = 'block';
             });
         };
     }
@@ -943,15 +901,16 @@ class Order extends ModalWindow {
     status = '';
     date = '3';
     formValid;
-    inputFrom = $_('#main_from')[0];
-    inputTo = $_('#main_to')[0];
-    inputTime = $_('#main_time')[0];
-    inputType = $_('#type_transfer')[0];
-    typeGr = $_(`#type_gr`)[0];
-    typePr = $_(`#type_pr`)[0];
-    inputAdults = $_('#adults')[0];
-    inputEmail = $_('#main_email')[0];
-    inputPhone = $_('#main_phone')[0];
+    inputFrom = service.$('#main_from')[0];
+    inputTo = service.$('#main_to')[0];
+    inputTime = service.$('#main_time')[0];
+    inputType = service.$('#type_transfer')[0];
+    typeGr = service.$(`#type_gr`)[0];
+    typePr = service.$(`#type_pr`)[0];
+    inputAdult = service.$('#adults')[0];
+    inputChildren = service.$('#children')[0];
+    inputEmail = service.$('#main_email')[0];
+    inputPhone = service.$('#main_phone')[0];
 
     constructor(){
         super()
@@ -959,8 +918,8 @@ class Order extends ModalWindow {
 
     showSelectWindow(module, type, param, el){
         this.show(module, type);
-        $_(`#${module + type}`)[0].children[0].innerHTML = service.lang['town_title'];
-        const list_wrap = $_('.towns_select_list')[0];
+        service.$(`#${module + type}`)[0].children[0].innerHTML = service.lang['town_title'];
+        const list_wrap = service.$('.towns_select_list')[0];
         let towns_list = {};
         let input, param1, param2;
         if (param === 'from') {
@@ -986,7 +945,7 @@ class Order extends ModalWindow {
                     list_wrap.innerHTML += `<p id="${key}" onclick="order.selectTownMain(this, '${param2}')">${value}</p>`;
                 };
             } else {
-                const another_value = $_(`#main_${param1}`)[0].getAttribute('inputmainparam');
+                const another_value = service.$(`#main_${param1}`)[0].getAttribute('inputmainparam');
                 const res_towns_list = [];
                 loadStatic.transfersArr.forEach(element => {
                     if (element[`transfer_${param1}`] === another_value) {
@@ -1005,10 +964,10 @@ class Order extends ModalWindow {
     selectTownMain(el, param, clear) {
         this.closeBtn();
         this.inputTime.value = '';
-        const place = $_(`#main_${param}`)[0];
+        const place = service.$(`#main_${param}`)[0];
         place.value = el.innerHTML;
         place.setAttribute("inputmainparam", el.id);
-        $_(`#main_${param}`)[0].classList.remove('err_input');
+        service.$(`#main_${param}`)[0].classList.remove('err_input');
         if (clear === 'clear') {
             if (param === 'from') {
                 this.inputTo.value = '';
@@ -1089,8 +1048,8 @@ class Order extends ModalWindow {
         .then(response => response.status === 200 && response.json())
         .then(resultat => {
             if (resultat.res) {
-                const list_wrap = $_('.orders_list')[0];
-                const pagination_wrap = $_('.orders_pagination')[0];
+                const list_wrap = service.$('.orders_list')[0];
+                const pagination_wrap = service.$('.orders_pagination')[0];
                 const present_pagination = pagination_wrap.children;
                 const pagin_page = Math.ceil(resultat.res.count / this.number);
                 list_wrap.innerHTML = '';
@@ -1125,39 +1084,35 @@ class Order extends ModalWindow {
     }
 
     mainFormBack() {
-        $_('#check')[0].style.display = 'flex';
-        $_('#booking')[0].style.display = 'none';
+        service.$('#check')[0].style.display = 'flex';
+        service.$('#booking')[0].style.display = 'none';
     }
 
     check() {
         let arrInp = [];
-
-        console.log('formValid', this.formValid);
-
         if (this.formValid && this.formValid !== '') {
             const arrCall = ['main_from', 'main_to', 'adults', 'type_transfer'];
             const arrBook = [...arrCall, 'main_date', 'main_time'];
             const arrBookFinal = [...arrBook, 'main_name', 'main_surname', 'main_email', 'main_phone'];
-
             if (this.formValid === 'calk') {
-                $_(`.main_form_err_book`)[0].classList.add('hide_err');
+                service.$(`.main_form_err_book`)[0].classList.add('hide_err');
                 arrInp = arrCall;
-                arrBook.forEach(element => { $_(`#${element}`)[0].classList.remove('err_input') });
+                arrBook.forEach(element => { service.$(`#${element}`)[0].classList.remove('err_input') });
             };
             if (this.formValid === 'book') {
-                $_(`.main_form_err_calk`)[0].classList.add('hide_err');
+                service.$(`.main_form_err_calk`)[0].classList.add('hide_err');
                 arrInp = arrBook;
-                arrCall.forEach(element => { $_(`#${element}`)[0].classList.remove('err_input') });
+                arrCall.forEach(element => { service.$(`#${element}`)[0].classList.remove('err_input') });
             };
             if (this.formValid === 'bookfinal') {
-                $_(`.main_form_err_bookfinal`)[0].classList.add('hide_err');
+                service.$(`.main_form_err_bookfinal`)[0].classList.add('hide_err');
                 arrInp = arrBookFinal;
             };
         };
         const arrTrue = [];
         arrInp.forEach(element => {
-            const elemCheck = $_(`#${element}`)[0];
-            const peopleTypeErr = $_(`.main_form_err_limit_${this.peopleType}`)[0];
+            const elemCheck = service.$(`#${element}`)[0];
+            const peopleTypeErr = service.$(`.main_form_err_limit_${this.peopleType}`)[0];
             if (elemCheck.value === '') {
                 arrTrue.push(false);
                 elemCheck.classList.add('err_input');
@@ -1165,20 +1120,20 @@ class Order extends ModalWindow {
             if (this.peopleCount > this.peopleMax) {
                 arrTrue.push(false);
                 peopleTypeErr.classList.remove('hide_err');
-                if (childrenValue.value !== '' && childrenValue.value !== '0') {
-                    adultInp.classList.add('err_input');
-                    childrenValue.classList.add('err_input');
+                if (this.inputChildren.value !== '' && this.inputChildren.value !== '0') {
+                    this.inputAdult.classList.add('err_input');
+                    this.inputChildren.classList.add('err_input');
                 } else {
-                    adultInp.classList.add('err_input');
+                    this.inputAdult.classList.add('err_input');
                 };
             } else {
-                adultInp.classList.remove('err_input');
-                childrenValue.classList.remove('err_input');
+                this.inputAdult.classList.remove('err_input');
+                this.inputChildren.classList.remove('err_input');
             };
 
-            if (this.inputAdults.value <= 0) {
+            if (this.inputAdult.value <= 0) {
                 arrTrue.push(false);
-                this.inputAdults.classList.add('err_input');
+                this.inputAdult.classList.add('err_input');
             };
             if (this.formValid === 'bookfinal') {
                 if (this.inputEmail.value !== '' && !validEmail(this.inputEmail.value)) {
@@ -1192,15 +1147,15 @@ class Order extends ModalWindow {
             };
         });
         if (arrTrue.includes(false)) {
-            $_('.main_form_price')[0].classList.add('hide_err');
+            service.$('.main_form_price')[0].classList.add('hide_err');
             if (this.formValid && this.formValid !== '') {
-                $_(`.main_form_err_${this.formValid}`)[0].classList.remove('hide_err');
+                service.$(`.main_form_err_${this.formValid}`)[0].classList.remove('hide_err');
             };
             return false;
         } else {
-            $_('.main_form_price')[0].classList.add('hide_err');
+            service.$('.main_form_price')[0].classList.add('hide_err');
             if (this.formValid && this.formValid !== '') {
-                $_(`.main_form_err_${this.formValid}`)[0].classList.add('hide_err');
+                service.$(`.main_form_err_${this.formValid}`)[0].classList.add('hide_err');
             };
             return true;
         };
@@ -1210,58 +1165,38 @@ class Order extends ModalWindow {
         const data = {};
         const from = this.inputFrom.getAttribute('inputmainparam');
         const to = this.inputTo.getAttribute('inputmainparam');
-
-        console.log('from', from);
-        console.log('to', to);
-        console.log('loadStatic.transfersArr', loadStatic.transfersArr);
-
         loadStatic.transfersArr.forEach(element => {
             if (element.transfer_from === from && element.transfer_to === to) {
-
-                console.log('oooooooooooooooooooooooooo');
                 data.transferId = element.transfer_id;
                 data.transferFromName = this.inputFrom.value;
                 data.transferToName = this.inputTo.value;
-                data.adult = +this.inputAdults.value;
-                data.children = +$_('#children')[0].value;
+                data.adult = +this.inputAdult.value;
+                data.children = +service.$('#children')[0].value;
                 data.type = this.inputType.value;
                 data.sum = (this.inputType.value === 'transfer_gr') ? element.price_gr * (data.adult + data.children) : element.price_pr;
-                data.date = $_('#main_date')[0].value;
+                data.date = service.$('#main_date')[0].value;
                 data.time = this.inputTime.value;
                 data.equip = document.querySelector('input[name="equip"]:checked').value;
-                data.equip_child = +$_('#equip_child')[0].value;
-                data.user_name = $_('#main_name')[0].value;
-                data.user_surname = $_('#main_surname')[0].value;
+                data.equip_child = +service.$('#equip_child')[0].value;
+                data.user_name = service.$('#main_name')[0].value;
+                data.user_surname = service.$('#main_surname')[0].value;
                 data.user_email = this.inputEmail.value;
                 data.user_phone = this.inputPhone.value;
-
-
-            }
+            };
         });
-
-        console.log('oooooooooooooooooooooooooo', data);
-
         return data;
     }
 
     culculate() {
-
-        console.log('check', this.check());
         if (this.check()) {
-
             const data = this.data();
-            console.log('data', data);
-
             if (data) {
                 if (this.formValid === 'calk') {
-                    $_('.main_form_price')[0].classList.remove('hide_err');
-                    // let culkSum = 0;
-                    // if (data.type === 'transfer_gr') { culkSum = data.price_gr * (data.adult + data.children) };
-                    // if (data.type === 'transfer_pr') { culkSum = data.price_pr };
-                    $_('.main_form_price > span')[0].innerHTML = data.sum;
+                    service.$('.main_form_price')[0].classList.remove('hide_err');
+                    service.$('.main_form_price > span')[0].innerHTML = data.sum;
                 };
                 if (this.formValid === 'book') {
-                    const resInfo = $_('.book_info')[0];
+                    const resInfo = service.$('.book_info')[0];
                     const resInfoBlock = `
                         <p class="main_form_color">${data.transferFromName} - ${data.transferToName}</p>
                         <p>${service.lang[`date`]} - <span class="main_form_color">${data.date}</span> &nbsp ${service.lang[`time`]} - <span class="main_form_color">${data.time}</span></p>
@@ -1273,8 +1208,8 @@ class Order extends ModalWindow {
                         <p>${service.lang[`sum`]} - <span class="main_form_color">${data.sum}</span> </p>
                     `;
                     resInfo.innerHTML = resInfoBlock;
-                    $_('#check')[0].style.display = 'none';
-                    $_('#booking')[0].style.display = 'flex';
+                    service.$('#check')[0].style.display = 'none';
+                    service.$('#booking')[0].style.display = 'flex';
                 };
                 if (this.formValid === 'bookfinal') {
                     fetch(`/order/order`, {
@@ -1285,9 +1220,9 @@ class Order extends ModalWindow {
                     .then(response => response.status === 200 && response.json())
                     .then(resultat => {
                         if (resultat.res) {
-                            $_('#check')[0].style.display = 'none';
-                            $_('#booking')[0].style.display = 'none';
-                            $_('#received')[0].style.display = 'flex';
+                            service.$('#check')[0].style.display = 'none';
+                            service.$('#booking')[0].style.display = 'none';
+                            service.$('#received')[0].style.display = 'flex';
                         };
                     });
                 };
@@ -1315,20 +1250,20 @@ class Feedback extends ModalWindow {
     check() {
         const arrTrue = [];
         const arrInp = ['feedback_name', 'feedback_surname', 'feedback_email', 'feedback_phone', 'feedback_comment'];
-        const message = $_(`.feedback_form_err`)[0];
+        const message = service.$(`.feedback_form_err`)[0];
         arrInp.forEach(element => {
-            const elemCheck = $_(`#${element}`)[0];
+            const elemCheck = service.$(`#${element}`)[0];
             if (elemCheck.value === '') {
                 arrTrue.push(false);
                 elemCheck.classList.add('err_input');
             };
         });
-        const emailCheck = $_('#feedback_email')[0];
+        const emailCheck = service.$('#feedback_email')[0];
         if (emailCheck.value !== '' && !validEmail(emailCheck.value)) {
             arrTrue.push(false);
             emailCheck.classList.add('err_input');
         };
-        const phoneCheck = $_('#feedback_phone')[0];
+        const phoneCheck = service.$('#feedback_phone')[0];
         if (phoneCheck.value !== '' && !validPhone(phoneCheck.value)) {
             arrTrue.push(false);
             phoneCheck.classList.add('err_input');
@@ -1344,11 +1279,11 @@ class Feedback extends ModalWindow {
 
     data() {
         const feedbackArr = {};
-        feedbackArr.feedbackName = $_('#feedback_name')[0].value;
-        feedbackArr.feedbackSurname = $_('#feedback_surname')[0].value;
-        feedbackArr.feedbackEmail = $_('#feedback_email')[0].value;
-        feedbackArr.feedbackPhone = $_('#feedback_phone')[0].value;
-        feedbackArr.feedbackComment = $_('#feedback_comment')[0].value;
+        feedbackArr.feedbackName = service.$('#feedback_name')[0].value;
+        feedbackArr.feedbackSurname = service.$('#feedback_surname')[0].value;
+        feedbackArr.feedbackEmail = service.$('#feedback_email')[0].value;
+        feedbackArr.feedbackPhone = service.$('#feedback_phone')[0].value;
+        feedbackArr.feedbackComment = service.$('#feedback_comment')[0].value;
         return feedbackArr;
     }
 
@@ -1363,14 +1298,14 @@ class Feedback extends ModalWindow {
             .then(response => response.status === 200 && response.json())
             .then(resultat => {
                 if (resultat.res === 'Feedback sended!') {
-                    if ($_('.feedback_name')[0]) {$_('.feedback_name')[0].value = ''};
-                    if ($_('.feedback_surname')[0]) {$_('.feedback_surname')[0].value = ''};
-                    if ($_('.feedback_email')[0]) {$_('.feedback_email')[0].value = ''};
-                    if ($_('#feedback_phone')[0]) {$_('#feedback_phone')[0].value = ''};
-                    $_('#feedback_comment')[0].value = '';
-                    $_(`.feedback_sended`)[0].classList.remove('hide_err');
+                    if (service.$('.feedback_name')[0]) {service.$('.feedback_name')[0].value = ''};
+                    if (service.$('.feedback_surname')[0]) {service.$('.feedback_surname')[0].value = ''};
+                    if (service.$('.feedback_email')[0]) {service.$('.feedback_email')[0].value = ''};
+                    if (service.$('#feedback_phone')[0]) {service.$('#feedback_phone')[0].value = ''};
+                    service.$('#feedback_comment')[0].value = '';
+                    service.$(`.feedback_sended`)[0].classList.remove('hide_err');
                     setTimeout(() => {
-                        $_(`.feedback_sended`)[0].classList.add('hide_err');
+                        service.$(`.feedback_sended`)[0].classList.add('hide_err');
                     }, 5000);
                 };
             });
@@ -1387,7 +1322,7 @@ class Feedback extends ModalWindow {
     }
 
     answer(id) {
-        const answer = $_('#feedback_answer')[0].value;
+        const answer = service.$('#feedback_answer')[0].value;
         fetch(`/feedback/answer`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json;charset=utf-8' },
@@ -1419,8 +1354,8 @@ class Feedback extends ModalWindow {
         .then(response => response.status === 200 && response.json())
         .then(async resultat => {
             if (resultat.res) {
-                const list_wrap = $_('.feedback_list')[0];
-                const pagination_wrap = $_('.feedback_pagination')[0];
+                const list_wrap = service.$('.feedback_list')[0];
+                const pagination_wrap = service.$('.feedback_pagination')[0];
                 const pages = pagination_wrap.children;
                 const pages_count = Math.ceil(resultat.res.count / this.number);
                 list_wrap.innerHTML = '';
@@ -1462,7 +1397,7 @@ class News extends ModalWindow {
     async showWindow(module, type, param, id){
         let data = {};
         this.news_status = param;
-        this.news_token = param === 'edit' ? id : generate_token(6);
+        this.news_token = param === 'edit' ? id : service.token(6);
         if (param === 'edit' ) {
             this.news_status = 'edit';
             data = await this.open(this.news_token);
@@ -1481,22 +1416,22 @@ class News extends ModalWindow {
             modules: { toolbar: toolbarOptions },
             theme: 'snow'
         });
-        $_('#news_foto')[0].addEventListener("change", async (event) => {
+        service.$('#news_foto')[0].addEventListener("change", async (event) => {
             var file = event.target.files[0];
             var reader = new FileReader();
             reader.onloadend = () => {
                 this.temp_foto = this.news_foto === "" ? this.temp_foto : this.news_foto;
-                $_('#foto_load')[0].style.backgroundImage = `url(${reader.result})`;
+                service.$('#foto_load')[0].style.backgroundImage = `url(${reader.result})`;
                 this.news_foto = reader.result;
             };
             if(file){
                 reader.readAsDataURL(file);
             };
         });
-        this.resizeTextarea($_('#news_title')[0], '60')
-        this.resizeTextarea($_('#news_description')[0], '100');
+        this.resizeTextarea(service.$('#news_title')[0], '60')
+        this.resizeTextarea(service.$('#news_description')[0], '100');
         if (param === 'edit' ) {
-            const editor = $_('.ql-editor')[0];
+            const editor = service.$('.ql-editor')[0];
             editor.innerHTML = '';
             [...data.article].forEach(element => {
                 editor.innerHTML += element;
@@ -1511,7 +1446,7 @@ class News extends ModalWindow {
     }
 
     message(text = '', classs = 'mmm') {
-        const news_vilid = $_('#vilid_news')[0];
+        const news_vilid = service.$('#vilid_news')[0];
         if (news_vilid) {
             news_vilid.innerHTML = text;
             news_vilid.classList.remove('vilid_news_bad');
@@ -1521,18 +1456,18 @@ class News extends ModalWindow {
     }
 
     clearImg() {
-        $_('#news_foto')[0].type = "text";
-        $_('#news_foto')[0].type = "file";
+        service.$('#news_foto')[0].type = "text";
+        service.$('#news_foto')[0].type = "file";
         this.news_foto = this.temp_foto;
-        $_('#foto_load')[0].style.backgroundImage = (this.temp_foto.length < 5)
+        service.$('#foto_load')[0].style.backgroundImage = (this.temp_foto.length < 5)
             ? `url(/img/nofoto.png)`
             : `url(/img/news/${this.news_token}/${this.news_foto}_cover_resized_footer.jpg)`;
     }
 
     removeImg() {
-        $_('#foto_load')[0].style.backgroundImage = `url(/img/nofoto.png)`;
-        $_('#news_foto')[0].type = "text";
-        $_('#news_foto')[0].type = "file";
+        service.$('#foto_load')[0].style.backgroundImage = `url(/img/nofoto.png)`;
+        service.$('#news_foto')[0].type = "text";
+        service.$('#news_foto')[0].type = "file";
         this.news_foto = "";
     }
 
@@ -1540,11 +1475,11 @@ class News extends ModalWindow {
         const files = event.target.files;
         if (!['image/jpg', 'image/jpeg', 'image/png', 'image/bmp'].includes(files[0].type)) {
             this.message(`Недоступний формат. Доступними є: jpg, jpeg, png`, 'vilid_news_bad');
-            $_('#news_foto')[0].value = '';
+            service.$('#news_foto')[0].value = '';
         } else {
             if (files[0].size > 5000000) {
                 this.message(`Надто великий розмір. Максимально 5Mb`, 'vilid_news_bad');
-                $_('#news_foto')[0].value = '';
+                service.$('#news_foto')[0].value = '';
             } else {
                 this.message('');
             };
@@ -1582,26 +1517,19 @@ class News extends ModalWindow {
     }
 
     async save(param) {
-        const save_cover = $_('#load_cover')[0];
-        const news_title = $_('#news_title')[0].value;
-        const news_description = $_('#news_description')[0].value;
-        const news_editor = $_('.ql-editor')[0].children;
+        const save_cover = service.$('#load_cover')[0];
+        const news_title = service.$('#news_title')[0].value;
+        const news_description = service.$('#news_description')[0].value;
+        const news_editor = service.$('.ql-editor')[0].children;
         const validating_fields = [news_title, news_description];
-        // console.log('news_save_status', param);
-        // console.log('news_status', this.news_status);
-        // console.log('news_token', this.news_token);
-        // console.log('news_title', news_title);
-        // console.log('news_description', news_description);
-        // console.log('news_foto', this.news_foto);
-        // console.log('news_editor', news_editor);
         if (await this.notEmpty(validating_fields)) {
             save_cover.style.display = 'flex';
-            const img_arr = $_('.ql-editor')[0].getElementsByTagName('img');
+            const img_arr = service.$('.ql-editor')[0].getElementsByTagName('img');
             const img_base64 = {};
             const img_https_names = [];
             [...img_arr].forEach(function(element) {
                 if (element.src.includes('base64')) {
-                    const img_token = generate_token(9)
+                    const img_token = service.token(9)
                     img_base64[img_token] = element.src;
                     element.src = img_token;
                 };
@@ -1610,7 +1538,7 @@ class News extends ModalWindow {
                 };
             });
             const article = [...news_editor].map((element) => element.outerHTML).join("\n");
-            const cover_name = (!this.news_foto.includes('base64')) ? this.news_foto : generate_token(6);
+            const cover_name = (!this.news_foto.includes('base64')) ? this.news_foto : service.token(6);
             let formData = new FormData();
             const obj = {
                 token: this.news_token,
@@ -1663,7 +1591,6 @@ class News extends ModalWindow {
                 });
                 this.list();
                 this.news_status = this.news_status === 'create' ? this.news_status : 'edit';
-                console.log(error);
             });
         };
     };
@@ -1739,24 +1666,24 @@ class Calendar extends ModalWindow {
         let val = 0;
         let current_year = this.date.getFullYear();
         this.show(module, type);
-        $_(`#${module + type}`)[0].children[0].innerHTML = service.lang['calendar_title'];
-        const weekdays_place = $_(".weekdays")[0];
+        service.$(`#${module + type}`)[0].children[0].innerHTML = service.lang['calendar_title'];
+        const weekdays_place = service.$(".weekdays")[0];
         weekdays_place.innerHTML = '';
         this.weekdays[service.language].forEach(el => { weekdays_place.innerHTML += `<div>${el}</div>` });
-        $_(".prev_year")[0].addEventListener("click", () => {
+        service.$(".prev_year")[0].addEventListener("click", () => {
             (val <= 0) ? val = 0 : val--;
             this.render(current_year + val);
         });
-        $_(".next_year")[0].addEventListener("click", () => {
+        service.$(".next_year")[0].addEventListener("click", () => {
             (val >= 15) ? val = 15 : val++;
             this.render(current_year + val);
         });
-        $_(".prev")[0].addEventListener("click", () => {
+        service.$(".prev")[0].addEventListener("click", () => {
             this.date.setMonth(this.date.getMonth() - 1);
             (this.date.getMonth() === 11) && val--;
             this.render(current_year + val);
         });
-        $_(".next")[0].addEventListener("click", () => {
+        service.$(".next")[0].addEventListener("click", () => {
             this.date.setMonth(this.date.getMonth() + 1);
             (this.date.getMonth() === 0) && val++;
             this.render(current_year + val);
@@ -1792,13 +1719,13 @@ class Calendar extends ModalWindow {
         for (let i = 1; i <= month_after; i++) {
             days += `<div class="next-date">${i}</div>`;
         };
-        $_(`.date_year > h1`)[0].innerHTML = year;
-        $_(".date h1")[0].innerHTML = this.months[service.language][month];
-        $_(".days")[0].innerHTML = days;
+        service.$(`.date_year > h1`)[0].innerHTML = year;
+        service.$(".date h1")[0].innerHTML = this.months[service.language][month];
+        service.$(".days")[0].innerHTML = days;
     }
 
     select(date) {
-        const inputPlace = $_(`#main_date`)[0];
+        const inputPlace = service.$(`#main_date`)[0];
         inputPlace.value = date;
         inputPlace.classList.remove('err_input');
         this.closeBtn();
@@ -1825,7 +1752,7 @@ class Time extends ModalWindow{
         this.mStart = 0;
         if (el.getAttribute("setparam") === 'limit') {
             this.show(module, `${type}limit`);
-            $_(`#${module + type}limit`)[0].children[0].innerHTML = service.lang[`time_title`];
+            service.$(`#${module + type}limit`)[0].children[0].innerHTML = service.lang[`time_title`];
             if (order.inputFrom.value !== '' && order.inputTo.value !== '') {
                 const timeArrForm = [];
                 const from = order.inputFrom.getAttribute("inputmainparam");
@@ -1838,15 +1765,15 @@ class Time extends ModalWindow{
                     };
                 });
                 timeArrForm.forEach(element => {
-                    $_('.towns_select_list')[0].innerHTML += `<p onclick="time.setTime('${element}')">${element}</p>`;
+                    service.$('.towns_select_list')[0].innerHTML += `<p onclick="time.setTime('${element}')">${element}</p>`;
                 });
             };
         } else {
             this.show(module, type);
-            this.hours = $_('.hours')[0];
-            this.minutes = $_('.minutes')[0];
-            $_(`#${module + type}`)[0].children[0].innerHTML = service.lang[`time_title`];
-            $_('.admTime')[0].addEventListener('click', () => {
+            this.hours = service.$('.hours')[0];
+            this.minutes = service.$('.minutes')[0];
+            service.$(`#${module + type}`)[0].children[0].innerHTML = service.lang[`time_title`];
+            service.$('.admTime')[0].addEventListener('click', () => {
                 el.value = `${this.hours.innerHTML}:${this.minutes.innerHTML}`;
                 if (module === 'time') {
                     this.closeBtn();
@@ -1887,11 +1814,11 @@ class Time extends ModalWindow{
     }
 
     showTimeList(el) {
-        $_('.add_time')[0].style.display = el.value === '' ? 'none' : 'table';
+        service.$('.add_time')[0].style.display = el.value === '' ? 'none' : 'table';
     }
 
     plusTime(element, type) {
-        const transferBody = $_('.add_time')[0];
+        const transferBody = service.$('.add_time')[0];
         const transferBodyChild = transferBody.children;
         const plusTransBody = document.createElement("div");
         plusTransBody.setAttribute('class', 'add');
@@ -1912,7 +1839,7 @@ class Time extends ModalWindow{
             element.parentNode.remove();
             if (transferBodyChild.length < 10) { classStyle.style(transferBodyChild[transferBodyChild.length - 1].children[2], 'minus', 'plus') };
         };
-        const timeLabels = $_('.time_label');
+        const timeLabels = service.$('.time_label');
         for (const [index, iterator] of timeLabels.entries()) {
             timeLabels[index].innerHTML = `Відправлення ${index + 1}`;
         };

@@ -43,7 +43,7 @@ class OauthController {
         });
         app.use(this.passport.initialize());
         app.use(this.passport.session());
-        app.post("/exit", oauthService.logOut);
+        app.get("/exit", oauthService.logOut);
     }
 
     create(strategy_type) {

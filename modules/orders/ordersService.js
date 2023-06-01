@@ -22,8 +22,8 @@ class OredersServise {
                     };
                 });
                 if (transfers_arr.length === transfer_count.length) {
-                        result[0].transfer_notexist = 'notexist';
-                }
+                    result[0].transfer_notexist = 'notexist';
+                };
                 return result;
             });
     }
