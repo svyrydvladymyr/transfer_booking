@@ -10,7 +10,9 @@ const RegExpArr = {
 }
 const validEmail = text => (text.match(/^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/)) ? true : false;
 const validPhone = text => (text.match(/^[\+]?[(]?[0-9]{3}[)]?[-\s\.]?[0-9]{3}[-\s\.]?[0-9]{4,6}$/im)) ? true : false;
-let idTownPlace, tokenTown;
+
+
+// let idTownPlace, tokenTown;
 // let townsFrom = {}, townsTo = {}, transfersArr = [];
 // let peopleCount = 0, peopleMax = 50, peopleType = 'gr';
 

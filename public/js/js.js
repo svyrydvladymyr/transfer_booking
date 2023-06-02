@@ -368,15 +368,6 @@ class Services {
         return res;
     }
 
-    shoeMobilMenu(el) {
-        el.classList.toggle("change");
-        this.$('.menu_container_wrap_mobile')[0].classList.toggle("menu_container_wrap_mobile_active");
-    }
-
-    shoeMobilInfo() {
-        this.$('.mobile_menu_contacts')[0].classList.toggle("mobile_menu_contacts_active");
-    }
-
     async languagePack(lang) {
         return new Promise((resolve, reject) => {
             fetch(`./json/${lang}.json`)
@@ -456,32 +447,287 @@ class Services {
     }
 };
 
-//for send to main page and set route to main form
-const sendToMainForm = (transfid, type, obj) => {
-    localStorage.setItem("transfid", transfid);
-    localStorage.setItem("transftype", type);
-    localStorage.setItem("transffromid", obj.fromid);
-    localStorage.setItem("transffrom", obj.from);
-    localStorage.setItem("transftoid", obj.toid);
-    localStorage.setItem("transfto", obj.to);
-    window.location.href = "/";
-};
+class HorizontalSliders {
+    touchstart = 0;
+    touchend = 0;
+    startSwipe = 0;
+    body = service.$('body')[0];
 
-//for set route to main form
-const setToMainForm = (transfid, type, obj) => {
-    window.scrollTo({
-        top: service.$('.main_form_container')[0].offsetTop - 140,
-        behavior: "smooth"
-    });
-    order.formValid = 'book';
-    order.inputFrom.value = obj.from;
-    order.inputTo.value = obj.to;
-    order.inputType.value = `transfer_${type}`;
-    order.inputFrom.setAttribute("inputmainparam", obj.fromid);
-    order.inputTo.setAttribute("inputmainparam", obj.toid);
-    validationType(order.inputType);
-    order.check();
-};
+    options() {
+        let item = 3
+        if (options_sl.body.offsetWidth > 768 && options_sl.body.offsetWidth < 1100) { item = 2 };
+        if (options_sl.body.offsetWidth <= 768) { item = 1 };
+        const wrapSize = service.$('.options_container')[0].offsetWidth;
+        service.$('.options_wrap > .blok').forEach(
+            element => { element.style.width = `${wrapSize / item}px`;
+        });
+    };
+
+    // optionsLeft() {
+    //     const wrap = service.$('.options_wrap')[0];
+    //     const boxW = wrap.children[0].offsetWidth;
+    //     const firstChild = wrap.children[0];
+
+    //     wrap.insertBefore(firstChild, wrap.firstChild);
+    //     wrap.style.cssText  = `transition:.2s;transform:translateX(${-boxW}px)`;
+    //     setTimeout(() => {
+    //         wrap.style.cssText  = `transition:0s;transform:translateX(0px)`;
+    //         wrap.appendChild(firstChild);
+    //     }, 100);
+    // }
+
+    // optionsRight() {
+    //     const wrap = service.$('.options_wrap')[0];
+    //     const boxW = wrap.children[0].offsetWidth;
+    //     const lastChild = wrap.children[wrap.children.length - 1];
+
+    //     wrap.appendChild(lastChild);
+    //     wrap.style.cssText  = `transition:.2s;transform:translateX(${+boxW}px)`;
+    //     setTimeout(() => {
+    //         wrap.style.cssText  = `transition:0s;transform:translateX(0px)`;
+    //         wrap.insertBefore(lastChild, wrap.firstChild);
+    //     }, 100);
+    // }
+
+    optionsMove(direction) {
+        const wrap = service.$('.options_wrap')[0];
+        const boxW = wrap.children[0].offsetWidth;
+        const child = (direction === 'left') ? wrap.children[0] : wrap.children[wrap.children.length - 1];
+        (direction === 'left') ? wrap.insertBefore(child, wrap.firstChild) : wrap.appendChild(child);
+        wrap.style.cssText  = `transition:.2s;transform:translateX(${(direction === 'left') ? '-' : '+'}${boxW}px)`;
+        setTimeout(() => {
+            wrap.style.cssText  = `transition:0s;transform:translateX(0px)`;
+            (direction === 'left') ?  wrap.appendChild(child) : wrap.insertBefore(child, wrap.firstChild);
+        }, 100);
+    }
+
+    optionsLeft() {
+        options_sl.optionsMove('left')
+    }
+
+    optionsRight() {
+        options_sl.optionsMove('right')
+    }
+
+
+
+    optionSlider() {
+        const lenght_swipe = options_sl.touchend - options_sl.touchstart;
+        if (lenght_swipe < -40) { (options_sl.touchend < options_sl.touchstart) && this.optionsLeft() };
+        if (lenght_swipe > 40) { (options_sl.touchend > options_sl.touchstart) && this.optionsRight() };
+    }
+
+    feedback() {
+        service.$('.feedback_wrap > .feedback_block').forEach(element => {
+            element.style.minWidth = `${service.$('.feedback_container')[0].offsetWidth}px`;
+        });
+    }
+
+    feedbackPosition(i) {
+        service.$('.feedback_wrap')[0].style.transform = `translateX(-${i}00%)`;
+        service.$('.feedback_points > p').forEach(element => {
+            element.style.backgroundColor = 'rgb(141, 141, 141)';
+        });
+        service.$('.feedback_points > p')[i].style.backgroundColor = '#ee9e07';
+    }
+
+    feedbackCount() {
+        service.$('.feedback_points')[0].innerHTML = '';
+        for (let i = 0; i < service.$('.feedback_wrap > .feedback_block').length; i++) {
+            service.$('.feedback_points')[0].innerHTML += `<p onclick="feedback_sl.feedbackPosition(${i})"></p>`;
+        };
+        service.$('.feedback_points > p')[0].style.backgroundColor = '#ee9e07';
+    }
+
+    slideFeed() {
+        if (feedback_sl.touchend > feedback_sl.touchstart) {
+            if (this.startSwipe > 0) {
+                this.startSwipe--
+                this.feedbackPosition(this.startSwipe);
+            };
+        };
+        if (feedback_sl.touchend < feedback_sl.touchstart) {
+            const swipe_langht = service.$('.feedback_points > p').length;
+            if (this.startSwipe < swipe_langht-1) {
+                this.startSwipe++
+                this.feedbackPosition(this.startSwipe);
+            };
+        };
+    }
+}
+
+class Static {
+    townsFrom = [];
+    townsTo = [];
+    transfersArr = [];
+    body = service.$('body')[0];
+    mobileMenu = service.$('.menu_container_wrap_mobile')[0];
+    mobileMenuContact = service.$('.mobile_menu_contacts')[0];
+
+    showContainers() {
+        const header_node = service.$('.header')[0];
+        const content_cont = service.$('.content_container')[0];
+        const option_cont = service.$('.options_container')[0];
+        const call_cont = service.$('.call_container')[0];
+        if (content_cont !== undefined && option_cont !== undefined && call_cont !== undefined) {
+            let heightBlok, heightBlok2, heightBlok3;
+            if (this.body.offsetWidth > 1280) {
+                heightBlok = header_node.offsetHeight + content_cont.offsetHeight;
+                heightBlok2 = header_node.offsetHeight + content_cont.offsetHeight + (option_cont.offsetHeight / 1.5);
+                heightBlok3 = header_node.offsetHeight + content_cont.offsetHeight + option_cont.offsetHeight + (call_cont.offsetHeight / 1.5);
+                (document.documentElement.scrollTop + window.screen.height > heightBlok)
+                    ? content_cont.style.opacity = '1'
+                    : content_cont.style.opacity = '0';
+                (document.documentElement.scrollTop + window.screen.height > heightBlok2)
+                    ? option_cont.style.opacity = '1'
+                    : option_cont.style.opacity = '0';
+                (document.documentElement.scrollTop + window.screen.height > heightBlok3)
+                    ? call_cont.style.opacity = '1'
+                    : call_cont.style.opacity = '0';
+            } else {
+                content_cont.style.opacity = '1'
+                option_cont.style.opacity = '1'
+                call_cont.style.opacity = '1'
+            };
+        };
+    };
+
+    menuOnScroll() {
+        const menu = service.$('.menu_container')[0];
+        const social = service.$('.social_wrap')[0];
+        const toTop = service.$('#toTop')[0];
+        const socialValue = social !== undefined ? social.clientHeight : 0;
+        toTop.style.display = (document.body.scrollTop > 200 || document.documentElement.scrollTop > 200) ? "block" : "none";
+        if (this.body.offsetWidth > 1280) {
+            (document.body.scrollTop > socialValue || document.documentElement.scrollTop > socialValue)
+                ? menu.classList.add('menu_scroll')
+                : menu.classList.remove('menu_scroll');
+        };
+        if (this.body.offsetWidth <= 1280) {
+            if (this.mobileMenu.classList.contains('menu_container_wrap_mobile_active')) {
+                this.mobileMenu.classList.remove("menu_container_wrap_mobile_active");
+                service.$('.container_menu')[0].classList.remove("change");
+            };
+            if (service.$('.mobile_menu_contacts')[0].classList.contains('mobile_menu_contacts_active')) {
+                this.mobileMenuContact.classList.remove("mobile_menu_contacts_active");
+            };
+        };
+    };
+
+    shoeMobilMenu(el) {
+        el.classList.toggle("change");
+        service.$('.menu_container_wrap_mobile')[0].classList.toggle("menu_container_wrap_mobile_active");
+    }
+
+    shoeMobilInfo() {
+        service.$('.mobile_menu_contacts')[0].classList.toggle("mobile_menu_contacts_active");
+    }
+
+    sendToMainForm(transfid, type, obj) {
+        localStorage.setItem("transfid", transfid);
+        localStorage.setItem("transftype", type);
+        localStorage.setItem("transffromid", obj.fromid);
+        localStorage.setItem("transffrom", obj.from);
+        localStorage.setItem("transftoid", obj.toid);
+        localStorage.setItem("transfto", obj.to);
+        window.location.href = "/";
+    };
+
+    setToMainForm(transfid, type, obj) {
+        window.scrollTo({
+            top: service.$('.main_form_container')[0].offsetTop - 140,
+            behavior: "smooth"
+        });
+        order.formValid = 'book';
+        order.inputFrom.value = obj.from;
+        order.inputTo.value = obj.to;
+        order.inputType.value = `transfer_${type}`;
+        order.inputFrom.setAttribute("inputmainparam", obj.fromid);
+        order.inputTo.setAttribute("inputmainparam", obj.toid);
+        validationType(order.inputType);
+        order.check();
+    };
+
+    transferLists() {
+        fetch(`/towns/variables`, { method: 'GET' })
+        .then(response => response.status === 200 && response.json())
+        .then(resultat => {
+            if (resultat.res) {
+                this.townsFrom = resultat.res.towns_from;
+                this.townsTo = resultat.res.towns_to;
+                this.transfersArr = resultat.res.transfers_arr;
+                const privatWrap = service.$('.wrap_prevat')[0];
+                const microbusWrap = service.$('.wrap_microbus')[0];
+                const specialWrap = service.$('.wrap_special')[0];
+                if (privatWrap !== undefined) {
+                    privatWrap.innerHTML = '';
+                    resultat.res.privat.forEach(priv => {
+                        this.transfersArr.forEach(transf => {
+                            if (transf.transfer_id === priv.transfer_id) {
+                                privatWrap.innerHTML += `
+                                <p onclick="loadStatic.setToMainForm('${transf.transfer_id}', 'pr',
+                                    {'from': '${this.townsFrom[transf.transfer_from]}',
+                                    'to': '${this.townsTo[transf.transfer_to]}',
+                                    'fromid': '${transf.transfer_from}',
+                                    'toid': '${transf.transfer_to}'})">
+                                    <i class='fas fa-arrow-alt-circle-right'></i>${this.townsFrom[transf.transfer_from]} - ${this.townsTo[transf.transfer_to]}</p>
+                                <p class="price"><span>${service.lang['from']}</span>${transf.price_pr}<span>${service.lang['sum_type']}</span></p>`
+                            };
+                        });
+                    });
+                };
+                if (microbusWrap !== undefined) {
+                    microbusWrap.innerHTML = '';
+                    resultat.res.microbus.forEach(micro => {
+                        this.transfersArr.forEach(transf => {
+                            if (transf.transfer_id === micro.transfer_id) {
+                                microbusWrap.innerHTML += `
+                                <p onclick="loadStatic.setToMainForm('${transf.transfer_id}', 'gr',
+                                    {'from': '${this.townsFrom[transf.transfer_from]}',
+                                    'to': '${this.townsTo[transf.transfer_to]}',
+                                    'fromid': '${transf.transfer_from}',
+                                    'toid': '${transf.transfer_to}'})">
+                                    <i class='fas fa-arrow-alt-circle-right'></i>${this.townsFrom[transf.transfer_from]} - ${this.townsTo[transf.transfer_to]}</p>
+                                <p class="price"><span>${service.lang['from']}</span>${transf.price_gr}<span>${service.lang['sum_type']}</span></p>`
+                            };
+                        });
+                    });
+                };
+                if (specialWrap !== undefined) {
+                    specialWrap.innerHTML = '';
+                    resultat.res.spec.forEach(spec => {
+                        this.transfersArr.forEach(transf => {
+                            if (transf.transfer_id === spec.transfer_id) {
+                                specialWrap.innerHTML += `
+                                <div>
+                                    <p><i class='fas fa-arrow-alt-circle-right'></i>
+                                        <span>${this.townsFrom[transf.transfer_from]}</span>
+                                        <span>&nbsp-&nbsp</span>
+                                        <span>${this.townsTo[transf.transfer_to]}</span>
+                                    </p>
+                                    <p class="price"><span>${service.lang['from']}</span>${transf.price_pr}<span>${service.lang['sum_type']}</span></p>
+                                    <p class="special_btn" onclick="loadStatic.sendToMainForm('${transf.transfer_id}', 'pr',
+                                        {'from': '${this.townsFrom[transf.transfer_from]}',
+                                        'to': '${this.townsTo[transf.transfer_to]}',
+                                        'fromid': '${transf.transfer_from}',
+                                        'toid': '${transf.transfer_to}'}
+                                    )">${service.lang['book']}</p>
+                                </div>`
+                            };
+                        });
+                    });
+                };
+            };
+        });
+    }
+}
+
+class ValidationClass {
+
+}
+const validationoooo = new ValidationClass();
+
+
 
 //validation text input
 const validation = (el, type, form = '') => {
@@ -1631,12 +1877,12 @@ class News extends ModalWindow {
             data.target = target;
             data.title = element.title;
             data.alias = element.alias;
-            data.open_btn = target === '_footer' ? `onclick="window.open('/blog/${element.alias}')"` : '';
+            data.open_btn = target === '_footer' ? `onclick="window.open('/blog/${element.alias}', '_self')"` : '';
             data.cover = element.cover !== '' ? `/img/news/${element.id_blog}/${element.cover}_cover_resized${target}.jpg`: '/img/nofoto.png';
             data.description = target !== '_footer' ? `<p style="font-size:12px;">${element.description}</p>` : '';
             data.adm_btn = target === '_admin' ? `
                 <i class='fas fa-ellipsis-h' onclick='news.show("news", "menu", {}, "${element.id_blog}")'></i>
-                <i class="fa fa-share" onclick="window.open('/blog/${element.alias}')"></i>` : '';
+                <i class="fa fa-share" onclick="window.open('/blog/${element.alias}', '_blank')"></i>` : '';
             result.place.innerHTML += `${this.template('newsList', data)}`;
         });
     }
@@ -1854,6 +2100,9 @@ class Time extends ModalWindow{
 };
 
 const service = new Services();
+const loadStatic = new Static();
+const feedback_sl = new HorizontalSliders();
+const options_sl = new HorizontalSliders();
 const date = new ShowDate();
 const time = new Time();
 const calendar = new Calendar();
@@ -1862,3 +2111,83 @@ const feedback = new Feedback();
 const town = new Towns();
 const transfer = new Transfers();
 const news = new News();
+
+window.onload = function() {
+    if (service.$('.feedback_container')[0]) {
+        const fb_slider_wrap = service.$('.feedback_wrap')[0];
+        feedback_sl.feedback();
+        feedback_sl.feedbackCount();
+        window.addEventListener('resize', feedback_sl.feedback, true);
+        fb_slider_wrap.addEventListener('touchstart', e => {
+            feedback_sl.touchstart = e.changedTouches[0].screenX;
+        });
+        fb_slider_wrap.addEventListener('touchend', e => {
+            feedback_sl.touchend = e.changedTouches[0].screenX;
+            feedback_sl.slideFeed();
+        });
+    };
+    if (service.$('.options_container')[0]) {
+        const op_slider_wrap = service.$('.options_wrap')[0];
+        options_sl.options();
+        window.addEventListener('resize', options_sl.options, true);
+        op_slider_wrap.addEventListener('touchstart', e => {
+            options_sl.touchstart = e.changedTouches[0].screenX;
+        });
+        op_slider_wrap.addEventListener('touchend', e => {
+            options_sl.touchend = e.changedTouches[0].screenX;
+            options_sl.optionSlider();
+        });
+        service.$('.arrow_left')[0].addEventListener('click', options_sl.optionsLeft, true);
+        service.$('.arrow_right')[0].addEventListener('click', options_sl.optionsRight, true);
+    };
+    loadStatic.showContainers();
+    loadStatic.menuOnScroll()
+    const tab_cont = service.$('.tabs_container')[0];
+    const info_cont = service.$('.info_container')[0];
+    if (tab_cont !== undefined && info_cont !== undefined) {
+        tab_cont.style.opacity = '1';
+        tab_cont.style.transition = '1.5s';
+        info_cont.style.opacity = '1';
+        info_cont.style.transition = '1.5s';
+        setTimeout(() => {
+            tab_cont.style.transition = '0s';
+            info_cont.style.transition = '0s';
+        }, 1500);
+    };
+    if (localStorage.getItem("transfid") !== null && localStorage.getItem("transfid") !== '') {
+        const transid = localStorage.getItem("transfid");
+        const transtype = localStorage.getItem("transftype");
+        const transobj = {
+            'from' : `${localStorage.getItem("transffrom")}`,
+            'to' : `${localStorage.getItem("transfto")}`,
+            'fromid' : `${localStorage.getItem("transffromid")}`,
+            'toid' : `${localStorage.getItem("transftoid")}`};
+        localStorage.setItem("transfid", '');
+        localStorage.setItem("transftype", '');
+        localStorage.setItem("transffromid", '');
+        localStorage.setItem("transffrom", '');
+        localStorage.setItem("transftoid", '');
+        localStorage.setItem("transfto", '');
+        loadStatic.setToMainForm(transid, transtype, transobj);
+    };
+
+};
+
+window.onclick = function(event) {
+    if (!event.target.matches(['.container_menu', '.bar1', '.bar2', '.bar3', '.logo_mobile', '.menu_container_wrap_mobile'])) {
+        if (loadStatic.mobileMenu.classList.contains('menu_container_wrap_mobile_active')) {
+            loadStatic.mobileMenu.classList.remove("menu_container_wrap_mobile_active");
+            service.$('.container_menu')[0].classList.remove("change");
+        };
+    };
+    if (!event.target.matches('.fa-ellipsis-v')) {
+        if (service.$('.mobile_menu_contacts')[0].classList.contains('mobile_menu_contacts_active')) {
+            loadStatic.mobileMenuContact.classList.remove("mobile_menu_contacts_active");
+        };
+    };
+};
+
+window.onscroll = function() {
+    loadStatic.showContainers();
+    loadStatic.menuOnScroll();
+}
