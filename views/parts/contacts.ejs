@@ -6,7 +6,7 @@
         <div class="feedback_form_wrap">
             <% if (DATA.permission.permissionAuthorization === '0') { %>
                 <p><%=DATA.langPack.feedback_form_name %></p>
-                <input type="text" name="feedback_name" id="feedback_name" class="feedback_name" maxlength="50" autocomplete="nope" oninput="validation(this, 'Name', 'feedback')">
+                <input type="text" name="feedback_name" id="feedback_name" class="feedback_name" maxlength="50" autocomplete="nope" oninput="validation.feedback(this, 'Name')">
             <% } %>
             <% if (DATA.permission.permissionAuthorization === '1') { %>
                 <p><%=DATA.langPack.feedback_form_name %></p>
@@ -14,7 +14,7 @@
             <% } %>
             <% if (DATA.permission.permissionAuthorization === '0') { %>
                 <p><%=DATA.langPack.feedback_form_surname %></p>
-                <input type="text" name="feedback_surname" id="feedback_surname" class="feedback_surname" maxlength="50" autocomplete="nope" oninput="validation(this, 'Name', 'feedback')">
+                <input type="text" name="feedback_surname" id="feedback_surname" class="feedback_surname" maxlength="50" autocomplete="nope" oninput="validation.feedback(this, 'Name')">
             <% } %>
             <% if (DATA.permission.permissionAuthorization === '1') { %>
                 <p><%=DATA.langPack.feedback_form_surname %></p>
@@ -22,12 +22,12 @@
             <% } %>
             <% if (DATA.permission.permissionAuthorization === '0') { %>
                 <p><%=DATA.langPack.feedback_form_email %></p>
-                <input type="email" name="feedback_email" id="feedback_email" class="feedback_email" maxlength="110" autocomplete="nope" oninput="validation(this, 'Email', 'feedback')">
+                <input type="email" name="feedback_email" id="feedback_email" class="feedback_email" maxlength="110" autocomplete="nope" oninput="validation.feedback(this, 'Email')">
             <% } %>
             <% if (DATA.permission.permissionAuthorization === '1') { %>
                 <% if ((DATA.user.email === '') || (DATA.user.email === null) || (DATA.user.email === undefined)) { %>
                     <p><%=DATA.langPack.feedback_form_email %></p>
-                    <input type="email" name="feedback_email" id="feedback_email" class="feedback_email" maxlength="110" autocomplete="nope" oninput="validation(this, 'Email', 'feedback')">
+                    <input type="email" name="feedback_email" id="feedback_email" class="feedback_email" maxlength="110" autocomplete="nope" oninput="validation.feedback(this, 'Email')">
                 <% } %>
                 <% if ((DATA.user.email !== '') && (DATA.user.email !== null) && (DATA.user.email !== undefined)) { %>
                     <p><%=DATA.langPack.feedback_form_email %></p>
@@ -35,9 +35,9 @@
                 <% } %>
             <% } %>
             <p><%=DATA.langPack.feedback_form_tel %></p>
-            <input type="tel" name="feedback_phone" id="feedback_phone" maxlength="20" autocomplete="nope" oninput="validation(this, 'Phone', 'feedback')">
+            <input type="tel" name="feedback_phone" id="feedback_phone" maxlength="20" autocomplete="nope" oninput="validation.feedback(this, 'Phone')">
             <p><%=DATA.langPack.feedback_form_message %></p>
-            <textarea name="feedback_comment" id="feedback_comment" autocomplete="nope" maxlength="300" oninput="validation(this, 'Input', 'feedback')"></textarea>
+            <textarea name="feedback_comment" id="feedback_comment" autocomplete="nope" maxlength="300" oninput="validation.feedback(this, 'Input')"></textarea>
             <p class="feedback_form_err hide_err" style="color: #505050"><%=DATA.langPack.feedback_form_err %></p>
             <p class="feedback_sended hide_err" style="color: #505050"><%=DATA.langPack.feedback_sended %></p>
             <p class="send" onclick="feedback.send()"><i class='far fa-paper-plane'></i></p>

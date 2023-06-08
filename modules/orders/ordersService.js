@@ -127,13 +127,13 @@ class OredersServise {
     async list(body, req, res) {
         let sql = '', countsql = '';
         const user = req.user[0];
-        const page = (body.page && !isNaN(body.page)) ? body.page : 1;
-        const limit = (body.numb && ['100', '50', '30', '2', '5'].includes(body.numb)) ? body.numb : 30;
+        const page = (req.query.page && !isNaN(req.query.page)) ? req.query.page : 1;
+        const limit = (req.query.numb && ['100', '50', '30', '2', '5'].includes(req.query.numb)) ? req.query.numb : 30;
         const start_page = (page -1) * limit;
         if (user.permission === 1) {
             let where = '', statussql = '', datesql = '';
-            const status = ['reserv', 'proof', 'del'].includes(body.param[0]['status']) ? body.param[0]['status'] : '';
-            const date_count = ['', '3', '6', '12'].includes(body.param[1]['date']) ? body.param[1]['date'] : '3';
+            const status = ['reserv', 'proof', 'del'].includes(req.query.status) ? req.query.status : '';
+            const date_count = ['', '3', '6', '12'].includes(req.query.date) ? req.query.date : '3';
             if (date_count !== '') {
                 where = ' WHERE ';
                 const present_date = showDate.show('yyyy-mm-dd hh:mi');
@@ -168,6 +168,8 @@ class OredersServise {
                 element.settings = (user.permission === 1) ? 'true' : 'false';
                 transfers_arr.forEach(el => {
                     if (el.transfer_id === element.transfer_id) {
+                        element.order_from_origin = element.order_from;
+                        element.order_to_origin = element.order_to;
                         element.order_from = towns_from[el.transfer_from];
                         element.order_to = towns_to[el.transfer_to];
                     };

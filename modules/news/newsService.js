@@ -84,9 +84,10 @@ class NewsServise {
     async create(body, cover) {
         const title = await validValue(body.title);
         const description = await validValue(body.description);
+        const alias = await validValue(body.title, 'alias');
         return `INSERT INTO blog (id_blog, alias, title, description, cover, article, date_create)
             VALUES ('${await validValue(body.token)}',
-                    '${translit(title.replace(/\s\s+/g, ' ').trim().replace(/ /gi, '-').toLowerCase())}',
+                    '${translit(alias.replace(/\s\s+/g, ' ').trim().replace(/ /gi, '-').toLowerCase())}',
                     '${title.replace(/\s\s+/g, ' ').trim()}',
                     '${description.replace(/\s\s+/g, ' ').trim()}',
                     '${cover ? cover : ''}',

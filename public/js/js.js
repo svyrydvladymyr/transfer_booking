@@ -30,13 +30,13 @@ class Templates {
         return `<p class="towns_error">Сталася помилка спробуйте ще раз!</p>
         <p id="id_town">${data.town_id ? data.town_id : ''}</p>
         <p class="form_info">Унікальний номер міста</p>
-        <input type="text" id="uk" name="uk" value="${data.name_uk ? data.name_uk : ''}" maxlength="90" placeholder="Назва українською" oninput="${creatingID}validation(this, 'Input')">
+        <input type="text" id="uk" name="uk" value="${data.name_uk ? data.name_uk : ''}" maxlength="90" placeholder="Назва українською" oninput="${creatingID}validation.filter(this, 'Input')">
         <p class="town_dup_uk">Така назва вже є в базі!</p>
         <p class="town_empty_uk">Не може бути пустим!</p>
-        <input type="text" id="en" name="en" value="${data.name_en ? data.name_en : ''}" maxlength="90" placeholder="Name in English" oninput="validation(this, 'Input')">
+        <input type="text" id="en" name="en" value="${data.name_en ? data.name_en : ''}" maxlength="90" placeholder="Name in English" oninput="validation.filter(this, 'Input')">
         <p class="town_dup_en">Така назва вже є в базі!</p>
         <p class="town_empty_en">Не може бути пустим!</p>
-        <input type="text" id="ru" name="ru" value="${data.name_ru ? data.name_ru : ''}" maxlength="90" placeholder="Название на русском" oninput="validation(this, 'Input')">
+        <input type="text" id="ru" name="ru" value="${data.name_ru ? data.name_ru : ''}" maxlength="90" placeholder="Название на русском" oninput="validation.filter(this, 'Input')">
         <p class="town_dup_ru">Така назва вже є в базі!</p>
         <p class="town_empty_ru">Не може бути пустим!</p>
         <p class="form_send" onclick="town.save('${this.town_param}', '${this.town_form}')">Добавити в базу</p>`;
@@ -62,12 +62,12 @@ class Templates {
         <input type="text" id="from" name="from" maxlength="120" autocomplete="off" placeholder="Перевезення з ..."
             data-input="${data.transfer_from_id ? data.transfer_from_id : ''}"
             value="${data.transfer_from ? data.transfer_from : ''}"
-            oninput="validation(this, 'Input')"
+            oninput="validation.filter(this, 'Input')"
             onfocus="town.townList('transfer', 'Towns', 'from')" readonly>
         <input type="text" id="to" name="to" maxlength="120" autocomplete="off" placeholder="Перевезення до ..."
             data-input="${data.transfer_to_id ? data.transfer_to_id : ''}"
             value="${data.transfer_to ? data.transfer_to : ''}"
-            oninput="validation(this, 'Input')"
+            oninput="validation.filter(this, 'Input')"
             onfocus="town.townList('transfer', 'Towns', 'to')" readonly>
         <p class="transfer_dup_to">Поля "Перевезення з" і "Перевезення до" не можуть співпадати!</p>
         <p class="transfer_empty_to">Поля "Перевезення з" і "Перевезення до" не можуть бути пустим!</p>
@@ -75,13 +75,13 @@ class Templates {
         <div class="price_form">
             <p>Груповий</p>
             <input type="number" id="gr" name="gr" value="${data.price_gr ? data.price_gr : ''}" min="0" max="50000" autocomplete="off"
-            placeholder="Ціна за груповий..." oninput="validationPrice(this), time.showTimeList(this)">
+            placeholder="Ціна за груповий..." oninput="validation.price(this), time.showTimeList(this)">
         </div>
         <p class="transfer_price_gr">Перевищує допустимі значення! (доступно з 1грн до 50000грн)</p>
         <div class="price_form">
             <p>Приватний</p>
             <input type="number" id="pr" name="pr" value="${data.price_pr ? data.price_pr : ''}" min="0" max="50000" autocomplete="off"
-            placeholder="Ціна за приватний..." oninput="validationPrice(this)">
+            placeholder="Ціна за приватний..." oninput="validation.price(this)">
         </div>
         <p class="transfer_price_pr">Перевищує допустимі значення! (доступно з 1грн до 50000грн)</p>
         <p class="transfer_price_empt">Хоча б одна ціна має бути вказана!</p>
@@ -90,6 +90,7 @@ class Templates {
                 ${this.timeField({})}
             </div>
         </div>
+        <p class="transfer_time_empt">Для групового перевезення має бути вказано хочаб один час!</p>
         <p class="title">Поставте галочку щоб добавити в список обраних перевезень</p>
         <input type="checkbox" id="selection" name="selection" ${data.selection === 'true' ? 'checked' : ''}>
         <p class="title" style="margin-top:5px">Поставте галочку щоб добавити в список <span style="color:#c95f5f">приватних перевезень</span> максисально 3 шт.</p>
@@ -196,10 +197,10 @@ class Templates {
             </div>
             <div class="main_info">
                 <textarea name="news_title" id="news_title" maxlength="260" placeholder="Назва статті"
-                    oninput="news.resizeTextarea(this, '60'), validation(this, 'Input', 'news')"
+                    oninput="news.resizeTextarea(this, '60'), validation.news(this, 'Input')"
                     onkeydown="return (event.keyCode!=13);">${data.title ? data.title : ''}</textarea>
                 <textarea name="news_description" id="news_description" maxlength="700" placeholder="Опис статті"
-                    oninput="news.resizeTextarea(this, '100'), validation(this, 'Input', 'news')"
+                    oninput="news.resizeTextarea(this, '100'), validation.news(this, 'Input')"
                     onkeydown="return (event.keyCode!=13);">${data.description ? data.description : ''}</textarea>
             </div>
         </div>
@@ -234,7 +235,7 @@ class Templates {
         <p class="feedback_info">${data.feedbackPhone}</p>
         <p class="feedback_info">${data.date_create}</p>
         <p class="feedback_mess">${data.feedbackComment}</p>
-        <textarea name="feedback_answer" id="feedback_answer" autocomplete="nope" maxlength="300" placeholder="Введіть текст відповіді..." oninput="validation(this, 'Input', 'answer')">${data.answer}</textarea>
+        <textarea name="feedback_answer" id="feedback_answer" autocomplete="nope" maxlength="300" placeholder="Введіть текст відповіді..." oninput="validation.answer(this, 'Input')">${data.answer}</textarea>
         ${answer}`;
     }
 
@@ -244,10 +245,16 @@ class Templates {
             <p class="edit_menu" style="min-width: 200px; margin-top: 25px;" onclick="order.proof('${data.orders}', 'proof')">Підтвердити замовлення <i class='fas fa-check-double'></i></p>
             <p class="edit_menu" style="min-width: 200px; margin-bottom: 20px;" onclick="order.proof('${data.orders}', 'del')">Скасувати замовлення <i class='fas fa-times'></i></p>` : "";
         return `
-            ${data.transfer_notexist ? '<p class="order_info block" style="color: #dd0a0a; font-weight: bold; background: #ffc6c6;">Маршрут недоступний!</p>' : ""}
+            ${data.transfer_notexist ? `<p class="order_info block" style="color: #dd0a0a; font-weight: bold; background: #ffc6c6;">${service.lang['order_no_route']}</p>` : ""}
             <p class="order_info title_order">
-            ${data.order_from} ${data.order_from_origin && data.order_from_origin !== data.order_from ? '<span>(' + data.order_from_origin + ')</span>' : ''}
-            - ${data.order_to}  ${data.order_to_origin && data.order_to_origin !== data.order_to ? '<span>(' + data.order_to_origin + ')</span>' : ''} </p>
+                <span>
+                    <b>${data.order_from_origin || data.order_from}</b>
+                    ${data.order_from_origin && data.order_from_origin !== data.order_from ? '<i title="' + service.lang['order_new_name'] + '">(' + data.order_from + ')</i>' : ''}
+                </span><span>
+                    <b>${data.order_to_origin || data.order_to}</b>
+                    ${data.order_to_origin && data.order_to_origin !== data.order_to ? '<i title="' + service.lang['order_new_name'] + '">(' + data.order_to + ')</i>' : ''}
+                </span>
+            </p>
             <p class="order_info name" style="border-radius: 5px 5px 0px 0px;"><span>${data.user_name}</span> - <span>${data.user_surname}</span></p>
             <p class="order_info name" style="border-radius: 0px; border-top: 1px solid #e1e1e1; border-bottom: 1px solid #e1e1e1;"><span>${data.user_email}</span></p>
             <p class="order_info name" style="border-radius: 0px 0px 5px 5px; margin-bottom: 7px;"><span>${data.user_tel}</span></p>
@@ -463,32 +470,6 @@ class HorizontalSliders {
         });
     };
 
-    // optionsLeft() {
-    //     const wrap = service.$('.options_wrap')[0];
-    //     const boxW = wrap.children[0].offsetWidth;
-    //     const firstChild = wrap.children[0];
-
-    //     wrap.insertBefore(firstChild, wrap.firstChild);
-    //     wrap.style.cssText  = `transition:.2s;transform:translateX(${-boxW}px)`;
-    //     setTimeout(() => {
-    //         wrap.style.cssText  = `transition:0s;transform:translateX(0px)`;
-    //         wrap.appendChild(firstChild);
-    //     }, 100);
-    // }
-
-    // optionsRight() {
-    //     const wrap = service.$('.options_wrap')[0];
-    //     const boxW = wrap.children[0].offsetWidth;
-    //     const lastChild = wrap.children[wrap.children.length - 1];
-
-    //     wrap.appendChild(lastChild);
-    //     wrap.style.cssText  = `transition:.2s;transform:translateX(${+boxW}px)`;
-    //     setTimeout(() => {
-    //         wrap.style.cssText  = `transition:0s;transform:translateX(0px)`;
-    //         wrap.insertBefore(lastChild, wrap.firstChild);
-    //     }, 100);
-    // }
-
     optionsMove(direction) {
         const wrap = service.$('.options_wrap')[0];
         const boxW = wrap.children[0].offsetWidth;
@@ -501,23 +482,16 @@ class HorizontalSliders {
         }, 100);
     }
 
-    optionsLeft() {
-        options_sl.optionsMove('left')
-    }
-
-    optionsRight() {
-        options_sl.optionsMove('right')
-    }
-
-
-
     optionSlider() {
         const lenght_swipe = options_sl.touchend - options_sl.touchstart;
-        if (lenght_swipe < -40) { (options_sl.touchend < options_sl.touchstart) && this.optionsLeft() };
-        if (lenght_swipe > 40) { (options_sl.touchend > options_sl.touchstart) && this.optionsRight() };
+        if (lenght_swipe < -40) { (options_sl.touchend < options_sl.touchstart) && this.optionsMove('left') };
+        if (lenght_swipe > 40) { (options_sl.touchend > options_sl.touchstart) && this.optionsMove('right') };
     }
 
     feedback() {
+        setTimeout(() => {
+            service.$('.feedback_wrap')[0].style.display = 'flex';
+        }, 500);
         service.$('.feedback_wrap > .feedback_block').forEach(element => {
             element.style.minWidth = `${service.$('.feedback_container')[0].offsetWidth}px`;
         });
@@ -644,7 +618,7 @@ class Static {
         order.inputType.value = `transfer_${type}`;
         order.inputFrom.setAttribute("inputmainparam", obj.fromid);
         order.inputTo.setAttribute("inputmainparam", obj.toid);
-        validationType(order.inputType);
+        validation.type(order.inputType);
         order.check();
     };
 
@@ -723,24 +697,21 @@ class Static {
 }
 
 class ValidationClass {
+    RegExpArr = {
+        RegExpInput : new RegExp(/[^a-zA-Zа-яА-Я0-9-()_+=!?.:;/\,іІїЇєЄ /\n]/g),
+        RegExpNews : new RegExp(/[^a-zA-Zа-яА-Я0-9-()_+=!?.:;'"/\,іІїЇєЄ<> /\n]/g),
+        RegExpPhone : new RegExp(/[^0-9-()+ /\n]/g),
+        RegExpName : new RegExp(/[^a-zA-Zа-яА-Я-іІїЇєЄ /\n]/g),
+        RegExpEmail : new RegExp(/[^a-zA-Z0-9.&@-_]/g)
+    }
 
-}
-const validationoooo = new ValidationClass();
+    validate(el, type) {
+        const val = `${el.value.replace(this.RegExpArr[`RegExp${type}`] , "")}`;
+        el.value = val.replace(/\s\s+/g, ' ');
+    }
 
-
-
-//validation text input
-const validation = (el, type, form = '') => {
-    const val = `${el.value.replace(RegExpArr[`RegExp${type}`] , "")}`;
-    el.value = val.replace(/\s\s+/g, ' ');
-    if (form === 'feedback') {
-        el.classList.remove('err_input');
-        const arrInp = ['feedback_name', 'feedback_surname', 'feedback_email', 'feedback_phone', 'feedback_comment'];
-        const arrTrue = [];
-        arrInp.forEach(element => { if (service.$(`#${element}`)[0].value === '') { arrTrue.push(false)} });
-        if (!arrTrue.includes(false)) { service.$(`.feedback_form_err`)[0].classList.add('hide_err') };
-    } else if (['news', 'answer'].includes(form)) {
-    } else {
+    filter(el, type) {
+        this.validate(el, type);
         if (type ==='Input') {
             service.$(`.town_empty_${el.id}`)[0].style.display = 'none';
             service.$(`.town_dup_${el.id}`)[0].style.display = 'none';
@@ -749,105 +720,117 @@ const validation = (el, type, form = '') => {
             el.classList.remove('err_input');
             order.check();
         };
-    };
-};
-const validationPrice = (el) => {
-    service.$(`.transfer_price_empt`)[0].style.display = 'none';
-    const priceVal = el.value, errMess = service.$(`.transfer_price_${el.id}`)[0];
-    errMess.style.display = (priceVal < 1 || priceVal > 50000) ? 'block' : 'none';
-    (priceVal < 0) ? el.value = '' : null;
-    (priceVal > 50000) ? el.value = 50000 : null;
-    (priceVal === '') ? el.value = '' : null;
-    if (priceVal === '') { errMess.style.display = 'none' };
-};
-const validationPerson = (el, max) => {
-    const priceVal = el.value;
-    (priceVal < 0) ? el.value = '' : null;
-    (priceVal > max) ? el.value = max : null;
-    (priceVal === '') ? el.value = '' : null;
-};
-const validationEquip = (el) => {
-    const priceVal = el.value;
-    const maxPerson = 3;
-    (priceVal < 0) ? el.value = '' : null;
-    (priceVal > maxPerson) ? el.value = maxPerson : null;
-    (priceVal === '') ? el.value = '' : null;
-};
-const validationType = (el) => {
-    el.classList.remove('err_input');
-    service.$(`.main_form_err_limit_pr`)[0].classList.add('hide_err');
-    service.$(`.main_form_err_limit_gr`)[0].classList.add('hide_err');
-    order.inputTime.value = '';
-    if (el.value === 'transfer_pr') {
-        order.peopleMax = 7;
-        order.peopleType = 'pr';
-        order.inputTime.setAttribute("setparam", '');
-    };
-    if (el.value === 'transfer_gr') {
-        order.peopleMax = 50;
-        order.peopleType = 'gr';
-        if (order.inputFrom.value !== '' && order.inputTo.value !== '') {
-            const fromParam = order.inputFrom.getAttribute("inputmainparam");
-            const toParam = order.inputTo.getAttribute("inputmainparam");
-            loadStatic.transfersArr.forEach(element => {
-                if (element.transfer_from === fromParam && element.transfer_to === toParam && element.price_gr !== '') {
-                    order.inputTime.setAttribute("setparam", 'limit');
-                };
-            });
-        };
-    };
-    order.check();
-};
-const validationAdults = (el) => {
-    order.check();
-    (order.inputAdult.value > 0) ? order.inputAdult.classList.remove('err_input') : order.inputAdult.classList.add('err_input');
-    order.peopleCount = +order.inputAdult.value + +order.inputChildren.value;
-    const peopleTypeErr = service.$(`.main_form_err_limit_${order.peopleType}`)[0];
-    // console.log('peopleType', peopleType);
-    // console.log('peopleTypeErr', peopleTypeErr);
+    }
 
-    if (order.peopleCount > order.peopleMax) {
-        peopleTypeErr.classList.remove('hide_err');
-        if (order.inputChildren.value !== '' && order.inputChildren.value !== '0') {
-            order.inputAdult.classList.add('err_input');
-            order.inputChildren.classList.add('err_input');
+    feedback(el, type) {
+        this.validate(el, type);
+        el.classList.remove('err_input');
+        const arrInp = ['feedback_name', 'feedback_surname', 'feedback_email', 'feedback_phone', 'feedback_comment'];
+        const arrTrue = [];
+        arrInp.forEach(element => {
+            if (service.$(`#${element}`)[0].value === '') {
+                arrTrue.push(false)
+            };
+        });
+        if (!arrTrue.includes(false)) {
+            service.$(`.feedback_form_err`)[0].classList.add('hide_err');
+        };
+    }
+
+    price(el) {
+        service.$(`.transfer_price_empt`)[0].style.display = 'none';
+        const priceVal = el.value;
+        const errMess = service.$(`.transfer_price_${el.id}`)[0];
+        errMess.style.display = (priceVal < 1 || priceVal > 50000) ? 'block' : 'none';
+        (priceVal < 0) ? el.value = '' : null;
+        (priceVal > 50000) ? el.value = 50000 : null;
+        (priceVal === '') ? el.value = '' : null;
+        if (priceVal === '') { errMess.style.display = 'none' };
+    }
+
+    person(el, max) {
+        const priceVal = el.value;
+        (priceVal < 0) ? el.value = '' : null;
+        (priceVal > max) ? el.value = max : null;
+        (priceVal === '') ? el.value = '' : null;
+    }
+
+    equip(el) {
+        const priceVal = el.value;
+        const maxPerson = 3;
+        (priceVal < 0) ? el.value = '' : null;
+        (priceVal > maxPerson) ? el.value = maxPerson : null;
+        (priceVal === '') ? el.value = '' : null;
+    }
+
+    type(el) {
+        el.classList.remove('err_input');
+        service.$(`.main_form_err_limit_pr`)[0].classList.add('hide_err');
+        service.$(`.main_form_err_limit_gr`)[0].classList.add('hide_err');
+        order.inputTime.value = '';
+        if (el.value === 'transfer_pr') {
+            order.peopleMax = 7;
+            order.peopleType = 'pr';
+            order.inputTime.setAttribute("setparam", '');
+        };
+        if (el.value === 'transfer_gr') {
+            order.peopleMax = 50;
+            order.peopleType = 'gr';
+            if (order.inputFrom.value !== '' && order.inputTo.value !== '') {
+                const fromParam = order.inputFrom.getAttribute("inputmainparam");
+                const toParam = order.inputTo.getAttribute("inputmainparam");
+                loadStatic.transfersArr.forEach(element => {
+                    if (element.transfer_from === fromParam && element.transfer_to === toParam && element.price_gr !== '') {
+                        order.inputTime.setAttribute("setparam", 'limit');
+                    };
+                });
+            };
+        };
+        order.check();
+    };
+
+    peopleMessage() {
+        order.peopleCount = +order.inputAdult.value + +order.inputChildren.value;
+        const peopleTypeErr = service.$(`.main_form_err_limit_${order.peopleType}`)[0];
+        if (order.peopleCount > order.peopleMax) {
+            peopleTypeErr.classList.remove('hide_err');
+            if (order.inputChildren.value !== '' && order.inputChildren.value !== '0') {
+                order.inputAdult.classList.add('err_input');
+                order.inputChildren.classList.add('err_input');
+            } else {
+                order.inputAdult.classList.add('err_input');
+            };
         } else {
-            order.inputAdult.classList.add('err_input');
+            peopleTypeErr.classList.add('hide_err');
+            service.$(`.main_form_err_book`)[0].classList.add('hide_err');
+            order.inputAdult.classList.remove('err_input');
+            order.inputChildren.classList.remove('err_input');
         };
-    } else {
-        peopleTypeErr.classList.add('hide_err');
-        service.$(`.main_form_err_book`)[0].classList.add('hide_err');
-        order.inputAdult.classList.remove('err_input');
-        order.inputChildren.classList.remove('err_input');
-    };
-};
-const validationChildren = (el) => {
-    const equipchild =  service.$('.equip_child')[0];
-    const equipchildInp =  service.$('.equip_child #equip_child')[0];
-    equipchildInp.setAttribute('max', `${order.inputChildren.value}`);
-    (equipchildInp.value > order.inputChildren.value) ? equipchildInp.value = order.inputChildren.value : null;
-    (el.value < 1) ? equipchild.style.display = 'none' : null;
-    (el.value > 0) ? equipchild.style.display = 'flex' : null;
-    order.peopleCount = +order.inputAdult.value + +order.inputChildren.value;
-    const peopleTypeErr = service.$(`.main_form_err_limit_${order.peopleType}`)[0];
+    }
 
-    if (order.peopleCount > order.peopleMax) {
-        peopleTypeErr.classList.remove('hide_err');
-        if (order.inputAdult.value !== '' && order.inputAdult.value !== '0') {
-            order.inputAdult.classList.add('err_input');
-            order.inputChildren.classList.add('err_input');
-        } else {
-            order.inputChildren.classList.add('err_input');
-        };
-    } else {
-        peopleTypeErr.classList.add('hide_err');
-        service.$(`.main_form_err_book`)[0].classList.add('hide_err');
-        order.inputAdult.classList.remove('err_input');
-        order.inputChildren.classList.remove('err_input');
-    };
-};
+    adults() {
+        order.check();
+        (order.inputAdult.value > 0)
+            ? order.inputAdult.classList.remove('err_input')
+            : order.inputAdult.classList.add('err_input');
+        this.peopleMessage();
+    }
 
+    children(el) {
+        const equipchild =  service.$('.equip_child')[0];
+        const equipchildInp =  service.$('.equip_child #equip_child')[0];
+        equipchildInp.setAttribute('max', `${order.inputChildren.value}`);
+        (equipchildInp.value > order.inputChildren.value) && (equipchildInp.value = order.inputChildren.value);
+        (el.value < 1) && (equipchild.style.display = 'none');
+        (el.value > 0) && (equipchild.style.display = 'flex');
+        this.peopleMessage();
+    }
 
+    answer(el, type) { this.validate(el, type) }
+    news(el, type) { this.validate(el, type) }
+    validEmail = text => (text.match(/^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/)) ? true : false;
+    validPhone = text => (text.match(/^[\+]?[(]?[0-9]{3}[)]?[-\s\.]?[0-9]{3}[-\s\.]?[0-9]{4,6}$/im)) ? true : false;
+}
 
 class Towns extends ModalWindow {
     town_token = '';
@@ -904,9 +887,9 @@ class Towns extends ModalWindow {
     }
 
     data(form) {
-        const uk = service.$(`#${form} > #uk`)[0].value.replace(RegExpArr.RegExpInput , "");
-        const en = service.$(`#${form} > #en`)[0].value.replace(RegExpArr.RegExpInput , "");
-        const ru = service.$(`#${form} > #ru`)[0].value.replace(RegExpArr.RegExpInput , "");
+        const uk = service.$(`#${form} > #uk`)[0].value.replace(validation.RegExpArr.RegExpInput , "");
+        const en = service.$(`#${form} > #en`)[0].value.replace(validation.RegExpArr.RegExpInput , "");
+        const ru = service.$(`#${form} > #ru`)[0].value.replace(validation.RegExpArr.RegExpInput , "");
         return {"id" : this.town_id, "uk" : uk, "en" : en, "ru" : ru};
     }
 
@@ -1020,6 +1003,7 @@ class Transfers extends ModalWindow {
         this.labels.price_gr = service.$(`.transfer_price_gr`, form)[0];
         this.labels.price_pr = service.$(`.transfer_price_pr`, form)[0];
         this.labels.price_empt = service.$(`.transfer_price_empt`, form)[0];
+        this.labels.no_time = service.$(`.transfer_time_empt`, form)[0];
     }
 
     async showWindow(module, type, param, id){
@@ -1048,6 +1032,15 @@ class Transfers extends ModalWindow {
                     plusTransBody.innerHTML = this.template('timeField', {timeAction, value: timeList[i]});
                     transferBody.appendChild(plusTransBody);
                 };
+            } else {
+                const transferBody = service.$('.add_time')[0];
+                transferBody.style.display = 'block';
+                transferBody.innerHTML = '';
+                let timeAction = 'plus';
+                const plusTransBody = document.createElement("div");
+                plusTransBody.setAttribute('class', 'add');
+                plusTransBody.innerHTML = this.template('timeField', {timeAction, value: ''});
+                transferBody.appendChild(plusTransBody);
             };
         };
     }
@@ -1060,11 +1053,19 @@ class Transfers extends ModalWindow {
                 return false;
             } else {
                 if ((gr !== '' || pr !== '')) {
-                    if (gr !== '' && (gr >= 1 && gr <= 50000) && pr === '') { return true;
-                    } else {
-                        if (pr !== '' &&  (pr >= 1 && pr <= 50000) && gr === '') { return true;
+                    if (gr !== '' && (gr >= 1 && gr <= 50000) && pr === '') {
+                        if ([...service.$('.time')].map((el) => el.value !== '' && el.value).filter((el) => el !== false).length === 0) {
+                            this.labels.no_time.style.display = 'block';
+                            return false;
                         } else {
-                            if ((pr !== '' &&  (pr >= 1 && pr <= 50000)) && (gr !== '' && (gr >= 1 && gr <= 50000))) { return true;
+                            return true;
+                        };
+                    } else {
+                        if (pr !== '' &&  (pr >= 1 && pr <= 50000) && gr === '') {
+                            return true;
+                        } else {
+                            if ((pr !== '' &&  (pr >= 1 && pr <= 50000)) && (gr !== '' && (gr >= 1 && gr <= 50000))) {
+                                return true;
                             } else {
                                 this.labels.price_empt.style.display = 'block';
                                 return false;
@@ -1282,15 +1283,9 @@ class Order extends ModalWindow {
     };
 
     list(page = 1) {
-        let param = [];
-        param.push(['reserv', 'proof', 'del'].includes(this.status) ? {"status": this.status} : {"status": ''});
-        param.push(['3', '6', '12', ''].includes(this.date) ? {"date": this.date} : {"date": ''});
-        const data = {page, param, 'numb' : this.number};
-        fetch(`/order/list`, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json;charset=utf-8' },
-            body: JSON.stringify(data)
-        })
+        const status = ['reserv', 'proof', 'del'].includes(this.status) ? this.status : '';
+        const date = ['3', '6', '12', ''].includes(this.date) ? this.date : '';
+        fetch(`/order/list/?page=${page}&status=${status}&date=${date}&numb=${this.number}`, { method: 'GET' })
         .then(response => response.status === 200 && response.json())
         .then(resultat => {
             if (resultat.res) {
@@ -1308,7 +1303,7 @@ class Order extends ModalWindow {
                 };
                 resultat.res.list.forEach(element => {
                     list_wrap.innerHTML += `<div class="order" onclick="order.showWindow('order', 'Info', '', '${element.orders}')">
-                        <p>${element.order_from} - ${element.order_to}  </p>
+                        <p>${element.order_from_origin || element.order_from} - ${element.order_to_origin || element.order_to}  </p>
                         <p>${service.lang['date']} - <span>${element.date}</span> </p>
                         <p>${service.lang['time']} - <span>${element.time}</span></p>
                         <p>${service.lang['sum']} - <span>${element.sum}</span> ${service.lang['sum_type']}</p>
@@ -1376,17 +1371,16 @@ class Order extends ModalWindow {
                 this.inputAdult.classList.remove('err_input');
                 this.inputChildren.classList.remove('err_input');
             };
-
             if (this.inputAdult.value <= 0) {
                 arrTrue.push(false);
                 this.inputAdult.classList.add('err_input');
             };
             if (this.formValid === 'bookfinal') {
-                if (this.inputEmail.value !== '' && !validEmail(this.inputEmail.value)) {
+                if (this.inputEmail.value !== '' && !validation.validEmail(this.inputEmail.value)) {
                     arrTrue.push(false);
                     this.inputEmail.classList.add('err_input');
                 };
-                if (this.inputPhone.value !== '' && !validPhone(this.inputPhone.value)) {
+                if (this.inputPhone.value !== '' && !validation.validPhone(this.inputPhone.value)) {
                     arrTrue.push(false);
                     this.inputPhone.classList.add('err_input');
                 };
@@ -1505,12 +1499,12 @@ class Feedback extends ModalWindow {
             };
         });
         const emailCheck = service.$('#feedback_email')[0];
-        if (emailCheck.value !== '' && !validEmail(emailCheck.value)) {
+        if (emailCheck.value !== '' && !validation.validEmail(emailCheck.value)) {
             arrTrue.push(false);
             emailCheck.classList.add('err_input');
         };
         const phoneCheck = service.$('#feedback_phone')[0];
-        if (phoneCheck.value !== '' && !validPhone(phoneCheck.value)) {
+        if (phoneCheck.value !== '' && !validation.validPhone(phoneCheck.value)) {
             arrTrue.push(false);
             phoneCheck.classList.add('err_input');
         };
@@ -1589,14 +1583,9 @@ class Feedback extends ModalWindow {
     }
 
     list(page = 1) {
-        let param = [];
-        param.push({"status": `${['answer', 'noanswer'].includes(this.status) ? this.status : ''}`});
-        param.push({"date": `${['3', '6', '12', ''].includes(this.date) ? this.date : ''}`});
-        fetch(`/feedback/list`, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json;charset=utf-8' },
-            body: JSON.stringify({page, param, 'numb' : this.number} )
-        })
+        const status = ['answer', 'noanswer'].includes(this.status) ? this.status : '';
+        const date = ['3', '6', '12', ''].includes(this.date) ? this.date : '';
+        fetch(`/feedback/list/?page=${page}&status=${status}&date=${date}&numb=${this.number}`, { method: 'GET' })
         .then(response => response.status === 200 && response.json())
         .then(async resultat => {
             if (resultat.res) {
@@ -2020,6 +2009,9 @@ class Time extends ModalWindow{
             this.minutes = service.$('.minutes')[0];
             service.$(`#${module + type}`)[0].children[0].innerHTML = service.lang[`time_title`];
             service.$('.admTime')[0].addEventListener('click', () => {
+                if (service.$(`.transfer_time_empt`).length > 0) {
+                    service.$(`.transfer_time_empt`)[0].style.display = 'none';
+                };
                 el.value = `${this.hours.innerHTML}:${this.minutes.innerHTML}`;
                 if (module === 'time') {
                     this.closeBtn();
@@ -2099,6 +2091,7 @@ class Time extends ModalWindow{
     }
 };
 
+const validation = new ValidationClass();
 const service = new Services();
 const loadStatic = new Static();
 const feedback_sl = new HorizontalSliders();
@@ -2115,6 +2108,7 @@ const news = new News();
 window.onload = function() {
     if (service.$('.feedback_container')[0]) {
         const fb_slider_wrap = service.$('.feedback_wrap')[0];
+
         feedback_sl.feedback();
         feedback_sl.feedbackCount();
         window.addEventListener('resize', feedback_sl.feedback, true);
@@ -2137,8 +2131,12 @@ window.onload = function() {
             options_sl.touchend = e.changedTouches[0].screenX;
             options_sl.optionSlider();
         });
-        service.$('.arrow_left')[0].addEventListener('click', options_sl.optionsLeft, true);
-        service.$('.arrow_right')[0].addEventListener('click', options_sl.optionsRight, true);
+        service.$('.arrow_left')[0].addEventListener('click', () => {
+            options_sl.optionsMove('left')
+        }, false);
+        service.$('.arrow_right')[0].addEventListener('click', () => {
+            options_sl.optionsMove('right')
+        }, false);
     };
     loadStatic.showContainers();
     loadStatic.menuOnScroll()
@@ -2190,4 +2188,4 @@ window.onclick = function(event) {
 window.onscroll = function() {
     loadStatic.showContainers();
     loadStatic.menuOnScroll();
-}
+};

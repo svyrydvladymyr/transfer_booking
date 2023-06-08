@@ -1,5 +1,3 @@
-require("dotenv").config({ path: `.${process.env.NODE_ENV}.env` });
-
 const oauthService = require("./oauthService");
 const query = require("../service").query;
 

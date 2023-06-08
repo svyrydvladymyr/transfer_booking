@@ -81,9 +81,10 @@ const log = (mess, val, color = '') => {
 
 const errorLog = (error,  type = 'error', param = '', req = {ip : '', url : ''}) => {
     try {
-        log(param, error, 'error');
+        log(param, error, `${type === 'route' ? 'info' : 'error'}`);
         const dir = `./logs`;
         const log_templates = {
+            'route' : `IP: ${req.ip} TIME: ${new Date().toLocaleString()} METHOD: ${req.method} URL: ${error}\n`,
             'error' : `IP: ${req.ip} TIME: ${new Date().toLocaleString()} URL: ${req.url} PARAM: ${param} ERROR: ${error}\n`,
             'access' : `IP: ${req.ip} TIME: ${new Date().toLocaleString()} URL: ${req.url} PARAM: ${param} ERROR: ${error}\n`,
             'telegram' : `--TELEGRAM-->> TIME: ${new Date().toLocaleString()} - MESSAGE: ${error}\n`

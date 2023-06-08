@@ -24,7 +24,7 @@
         <div class="main_form_row">
             <div class="main_form_coll">
                 <label for="type_transfer"><%=DATA.langPack.main_form_type_transfer %></label>
-                <select name="type_transfer" id="type_transfer" onchange="validationType(this)">
+                <select name="type_transfer" id="type_transfer" onchange="validation.type(this)">
                     <option value="" id="type_def" selected disabled hidden></option>
                     <option value="transfer_pr" id="type_pr"><%=DATA.langPack.main_form_type_pr %></option>
                     <option value="transfer_gr" id="type_gr"><%=DATA.langPack.main_form_type_gr %></option>
@@ -33,11 +33,11 @@
             <div class="main_form_coll sub">
                 <div class="main_form_coll_sub">
                     <label for="adults"><%=DATA.langPack.main_form_adults %></label>
-                    <input type="number" name="adults" id="adults" min="0" max="60" value="0" oninput="validationPerson(this, 60)" onchange="validationAdults(this)">
+                    <input type="number" name="adults" id="adults" min="0" max="60" value="0" oninput="validation.person(this, 60)" onchange="validation.adults(this)">
                 </div>
                 <div class="main_form_coll_sub">
                     <label for="children"><%=DATA.langPack.main_form_children %></label>
-                    <input type="number" name="children" id="children" min="0" max="60" value="0" oninput="validationPerson(this, 60), validationChildren(this)">
+                    <input type="number" name="children" id="children" min="0" max="60" value="0" oninput="validation.person(this, 60), validation.children(this)">
                 </div>
             </div>
         </div>
@@ -58,7 +58,7 @@
             <div class="equip_block equip_child">
                 <div class="main_form_row">
                     <label><%=DATA.langPack.main_form_equip_child_title %></label>
-                    <input type="number" name="equip_child" id="equip_child" min="0" max="3" value="0" oninput="validationEquip(this)">
+                    <input type="number" name="equip_child" id="equip_child" min="0" max="3" value="0" oninput="validation.equip(this)">
                 </div>
             </div>
         </div>
@@ -82,7 +82,7 @@
             <div class="main_form_coll">
                 <% if (DATA.permission.permissionAuthorization === '0') { %>
                     <label for="main_name"><%=DATA.langPack.feedback_form_name %></label>
-                    <input type="text" name="name" id="main_name" maxlength="30" value="" autocomplete="off" oninput="validation(this, 'Name')">
+                    <input type="text" name="name" id="main_name" maxlength="30" value="" autocomplete="off" oninput="validation.filter(this, 'Name')">
                 <% } %>
                 <% if (DATA.permission.permissionAuthorization === '1') { %>
                     <label for="main_name"><%=DATA.langPack.feedback_form_name %></label>
@@ -92,7 +92,7 @@
             <div class="main_form_coll">
                 <% if (DATA.permission.permissionAuthorization === '0') { %>
                     <label for="main_surname"><%=DATA.langPack.feedback_form_surname %></label>
-                    <input type="text" name="surname" id="main_surname" maxlength="30" value="" autocomplete="off" oninput="validation(this, 'Name')">
+                    <input type="text" name="surname" id="main_surname" maxlength="30" value="" autocomplete="off" oninput="validation.filter(this, 'Name')">
                 <% } %>
                 <% if (DATA.permission.permissionAuthorization === '1') { %>
                     <label for="main_surname"><%=DATA.langPack.feedback_form_surname %></label>
@@ -104,12 +104,12 @@
             <div class="main_form_coll">
                 <% if (DATA.permission.permissionAuthorization === '0') { %>
                     <label for="main_email"><%=DATA.langPack.feedback_form_email %></label>
-                    <input type="email" name="email" id="main_email" maxlength="110" value="" autocomplete="off" oninput="validation(this, 'Email')">
+                    <input type="email" name="email" id="main_email" maxlength="110" value="" autocomplete="off" oninput="validation.filter(this, 'Email')">
                 <% } %>
                 <% if (DATA.permission.permissionAuthorization === '1') { %>
                     <% if ((DATA.user.email === '') || (DATA.user.email === null) || (DATA.user.email === undefined)) { %>
                         <label for="main_email"><%=DATA.langPack.feedback_form_email %></label>
-                        <input type="email" name="email" id="main_email" maxlength="110" value="" autocomplete="off" oninput="validation(this, 'Email')">
+                        <input type="email" name="email" id="main_email" maxlength="110" value="" autocomplete="off" oninput="validation.filter(this, 'Email')">
                     <% } %>
                     <% if ((DATA.user.email !== '') && (DATA.user.email !== null) && (DATA.user.email !== undefined)) { %>
                         <label for="main_email"><%=DATA.langPack.feedback_form_email %></label>
@@ -119,7 +119,7 @@
             </div>
             <div class="main_form_coll">
                 <label for="main_phone"><%=DATA.langPack.feedback_form_tel %></label>
-                <input type="phone" name="phone" id="main_phone" maxlength="20" value="" autocomplete="off" oninput="validation(this, 'Phone')">
+                <input type="phone" name="phone" id="main_phone" maxlength="20" value="" autocomplete="off" oninput="validation.filter(this, 'Phone')">
             </div>
         </div>
         <!-- <div class="main_form_row paid">

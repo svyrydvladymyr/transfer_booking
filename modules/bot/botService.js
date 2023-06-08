@@ -1,5 +1,4 @@
 const { query, errorLog, date} = require('../service');
-const fs = require('fs');
 const menu_options = {
     orders: {
         reply_markup: JSON.stringify({
@@ -192,7 +191,6 @@ class BotService {
     async botMessage(message, params, bot, userId) {
         bot.sendMessage(userId, `${message}`, menu_list.submenu.btn[params]);
     };
-
 }
 
 module.exports = new BotService();

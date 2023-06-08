@@ -1,5 +1,3 @@
-require('dotenv').config({ path: `.${process.env.NODE_ENV}.env` });
-
 const mysql = require("mysql");
 const con = mysql.createConnection({
     driver: "mysql",

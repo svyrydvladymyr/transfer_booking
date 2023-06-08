@@ -23,5 +23,7 @@
     "sum_type" : "uan",
     "from" : "fron",
     "book" : "Reserve",
-    "answer" : "Answer"
+    "answer" : "Answer",
+    "order_new_name" : "New waypoint name!",
+    "order_no_route" : "The route is not available!"
 }

@@ -3,8 +3,15 @@ const app = express();
 const bodyParser = require("body-parser");
 const cookieParser = require("cookie-parser");
 const log = require("./modules/service").log;
+const logRoute = require("./modules/service").errorLog;
 
-require("dotenv").config({ path: `.${process.env.NODE_ENV}.env` });
+// dotenv
+// const dotenv = require("dotenv");
+// dotenv.config({ path: `.${process.env.NODE_ENV}.env` });
+
+// creating DB tables
+// const tables = require('./modules/db-models/createDB');
+// tables.table('blog');
 
 //routs
 const renderPage = require("./modules/pages/pagesController");
@@ -13,10 +20,6 @@ const transfers = require("./modules/transfers/routers");
 const orders = require("./modules/orders/routers");
 const feedbacks = require("./modules/feedbacks/routers");
 const news = require("./modules/news/routers");
-
-// creating DB tables
-// const tables = require('./modules/db-models/createDB');
-// tables.table('blog');
 
 //oaugh
 const oaugh = require("./modules/oauth/oauthController.js");
@@ -45,7 +48,7 @@ app.use(cookieParser());
 
 //console logs
 app.use((req, res, next) => {
-    log(`-URL-REQUEST:-(${req.method})---`, req.url, 'info');
+    logRoute(req.url, 'route', `-URL-REQUEST:-(${req.method})---`, req);
     next();
 });
 
