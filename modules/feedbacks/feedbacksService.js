@@ -13,7 +13,7 @@ class FeedbacksServise {
             });
     }
 
-    async feedback(body, req) {
+    async feedback(body, req, res) {
         const tokenGen = token(10);
         const {
             feedbackName,

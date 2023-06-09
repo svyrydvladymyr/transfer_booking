@@ -618,8 +618,9 @@ class Static {
         order.inputType.value = `transfer_${type}`;
         order.inputFrom.setAttribute("inputmainparam", obj.fromid);
         order.inputTo.setAttribute("inputmainparam", obj.toid);
+        (type === 'pr') && order.typeGr.classList.add('hide_err');
+        (type === 'gr') && order.typePr.classList.add('hide_err');
         validation.type(order.inputType);
-        order.check();
     };
 
     transferLists() {

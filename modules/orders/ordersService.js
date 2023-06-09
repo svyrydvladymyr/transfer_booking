@@ -1,5 +1,5 @@
 const telegram = require('../bot/botController');
-const {query, validValue, token, clienttoken, date: showDate} = require('../service');
+const {query, validValue, token, date: showDate} = require('../service');
 const townsService = require('../towns/townsService');
 
 class OredersServise {
@@ -44,10 +44,7 @@ class OredersServise {
         } = body;
         const type = body.type.replace(/transfer_/gi, "");
         const tokenGen = token(10);
-        const userid = await query(`SELECT userid FROM users WHERE token = '${clienttoken(req, res)}'`)
-            .then((user_id) =>
-                !user_id.err && user_id != "" ? user_id[0].userid : ""
-            );
+        const userid = req.user ? req.user[0].userid : '';
         const transfer = await query(`SELECT price_${type}, transfer_from, transfer_to FROM transfers WHERE transfer_id='${transferId}'`).then(
             async (transfer) => {
                 if (transfer[0] === undefined) {

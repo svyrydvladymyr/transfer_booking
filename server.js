@@ -2,7 +2,6 @@ const express = require("express");
 const app = express();
 const bodyParser = require("body-parser");
 const cookieParser = require("cookie-parser");
-const log = require("./modules/service").log;
 const logRoute = require("./modules/service").errorLog;
 
 // dotenv

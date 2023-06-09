@@ -125,9 +125,22 @@ const addCookies = (req, res, token, param) => {
             path : '/',
             signed : true,
             sameSite : true,
-            secure : process.env.NODE_ENV === "production" ? true : false
+            secure : false
+            // secure : process.env.NODE_ENV === "production" ? true : false
         }
     );
+};
+
+const user = (req, res, next) => {
+    query(`SELECT userid FROM users WHERE token = '${clienttoken(req, res)}'`)
+    .then((user) => {
+        if (!user[0]) {
+            next();
+        } else {
+            req.user = user;
+            next();
+        };
+    });
 };
 
 const autorisation = (req, res, next) => {
@@ -168,6 +181,7 @@ module.exports = {
     permission,
     clienttoken,
     addCookies,
+    user,
     date : new ShowDate()
 
 }

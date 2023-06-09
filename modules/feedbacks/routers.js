@@ -1,9 +1,9 @@
 const Router = require('express');
 const feedbacksRouter = new Router;
 const feedbacks = require('./feedbacksController');
-const {autorisation, permission} = require('../service');
+const {autorisation, permission, user} = require('../service');
 
-feedbacksRouter.post('/feedback', feedbacks.feedback);
+feedbacksRouter.post('/feedback', user, feedbacks.feedback);
 feedbacksRouter.get('/list', autorisation, feedbacks.feedback);
 feedbacksRouter.get('/open/:feedbacksid$', autorisation, permission, feedbacks.feedback);
 feedbacksRouter.post('/answer', autorisation, permission, feedbacks.feedback);

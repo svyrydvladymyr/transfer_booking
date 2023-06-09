@@ -96,7 +96,6 @@ class transfersService {
 
     async delete(body, req) {
         const id = req.params["transferid"];
-        console.log(id);
         const sql = `DELETE FROM transfers WHERE transfer_id='${id}'`;
         return await query(sql)
             .then(() => "Transfer deleted!");
@@ -104,7 +103,7 @@ class transfersService {
 
     async list(body) {
         const townsArr = {};
-        return await query(`SELECT * FROM transfers`)
+        return await query(`SELECT * FROM transfers ORDER BY id ASC`)
         .then(async(transfers) => {
             const town_names = await query(`SELECT town_id, name_uk FROM points`);
             town_names.forEach(element => {

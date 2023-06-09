@@ -18,8 +18,8 @@
 <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Tangerine">
 
 <% if (DATA.news) { %>
-  <title><%=DATA.news.title %></title>
-  <meta name="description" content="<%=DATA.news.description %>">
+  <title><%=DATA.news[0].title %></title>
+  <meta name="description" content="<%=DATA.news[0].description %>">
 <% } %>
 <% if (!DATA.news) { %>
   <title>Трансфер Буковель із всіх міст: Івано-Франківськ, Львів, Яремче, Тернопіль → Карпати, Буковель</title>
@@ -31,8 +31,8 @@
 <meta property="og:url" content="https://transferbooking.com.ua/" />
 <meta property="og:type" content="article" />
 <% if (DATA.news) { %>
-  <meta property="og:title" content="<%=DATA.news.title %>" />
-  <meta property="og:description" content="<%=DATA.news.description %>">
+  <meta property="og:title" content="<%=DATA.news[0].title %>" />
+  <meta property="og:description" content="<%=DATA.news[0].description %>">
 <% } %>
 <% if (!DATA.news) { %>
   <meta property="og:title" content="Трансфер Буковель із всіх міст: Івано-Франківськ, Львів, Яремче, Тернопіль → Карпати, Буковель" />

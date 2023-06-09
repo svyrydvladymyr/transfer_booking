@@ -90,9 +90,9 @@ class TownsService {
 
     async variables(body, req, res) {
         const { towns_from, towns_to, transfers_arr } = await this.townNames(req, res);
-        const privat = await query(`SELECT transfer_id FROM transfers WHERE privat='true' AND price_pr!='' LIMIT 3`);
-        const microbus = await query(`SELECT transfer_id FROM transfers WHERE microbus='true' AND price_gr!='' LIMIT 3`);
-        const spec = await query(`SELECT transfer_id FROM transfers WHERE selection='true' AND price_pr!=''`);
+        const privat = await query(`SELECT transfer_id FROM transfers WHERE privat='true' AND price_pr!='' ORDER BY id ASC LIMIT 3`);
+        const microbus = await query(`SELECT transfer_id FROM transfers WHERE microbus='true' AND price_gr!='' ORDER BY id ASC LIMIT 3`);
+        const spec = await query(`SELECT transfer_id FROM transfers WHERE selection='true' AND price_pr!='' ORDER BY id ASC`);
         return { towns_from, towns_to, transfers_arr, privat, microbus, spec };
     }
 }
