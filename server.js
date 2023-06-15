@@ -9,7 +9,12 @@ const logRoute = require("./modules/service").errorLog;
 // dotenv.config({ path: `.${process.env.NODE_ENV}.env` });
 
 // creating DB tables
-// const tables = require('./modules/db-models/createDB');
+const tables = require('./modules/db-models/createDB');
+// tables.table('users');
+// tables.table('points');
+// tables.table('transfers');
+// tables.table('orders');
+// tables.table('feedback');
 // tables.table('blog');
 
 //routs
@@ -27,8 +32,8 @@ oaugh.autorisation(app, "google");
 oaugh.autorisation(app, "facebook");
 
 //telegram bot
-const telegram = require("./modules/bot/botController");
-telegram.botCreating();
+// const telegram = require("./modules/bot/botController");
+// telegram.botCreating();
 
 //template engineer
 app.set("views", __dirname + "/views");
