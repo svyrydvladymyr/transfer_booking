@@ -89,6 +89,10 @@ const tables = {
     ADD CONSTRAINT UNIQUE_Fields UNIQUE (transfer_from,transfer_to);`
 };
 
+const access_rule = {
+    admin: `UPDATE users SET permission='1' WHERE email='ssvyrydvladymyr@gmail.com'`
+};
+
 class CreteTables {
     constructor(con){ this.con = con }
     table(table_name) {
@@ -96,7 +100,16 @@ class CreteTables {
             function (error, result) {
                 error
                     ? console.log(`ERROR: ${error.sqlMessage}`)
-                    : console.log(`Table ${table_name} created`);
+                    : console.log(`Table ${table_name} created!`);
+            }
+        );
+    };
+    rule(access_name) {
+        this.con.query( access_rule[access_name],
+            function (error, result) {
+                error
+                    ? console.log(`ERROR: ${error.sqlMessage}`)
+                    : console.log(`Rule ${access_name} added!`);
             }
         );
     };

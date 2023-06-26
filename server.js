@@ -16,6 +16,7 @@ const tables = require('./modules/db-models/createDB');
 // tables.table('orders');
 // tables.table('feedback');
 // tables.table('blog');
+// tables.rule('admin');
 
 //routs
 const renderPage = require("./modules/pages/pagesController");
