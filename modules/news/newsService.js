@@ -85,13 +85,14 @@ class NewsServise {
         const title = await validValue(body.title);
         const description = await validValue(body.description);
         const alias = await validValue(body.title, 'alias');
+        const article = await validValue(await this.replaceImagesPath(body), "news");
         return `INSERT INTO blog (id_blog, alias, title, description, cover, article, date_create)
             VALUES ('${await validValue(body.token)}',
                     '${translit(alias.replace(/\s\s+/g, ' ').trim().replace(/ /gi, '-').toLowerCase())}',
                     '${title.replace(/\s\s+/g, ' ').trim()}',
                     '${description.replace(/\s\s+/g, ' ').trim()}',
                     '${cover ? cover : ''}',
-                    '${await validValue(await this.replaceImagesPath(body), "news")}',
+                    '${article.replace(/"/g, '&#34;').replace(/'/g, "&#39;")}',
                     '${date.show('yyyy-mm-dd hh:mi')}')`;
     };
 
@@ -99,12 +100,13 @@ class NewsServise {
         const title = await validValue(body.title);
         const description = await validValue(body.description);
         const alias = await validValue(body.title, 'alias');
+        const article = await validValue(await this.replaceImagesPath(body), "news");
         return `UPDATE blog
             SET alias = '${translit(alias.replace(/\s\s+/g, ' ').trim().replace(/ /gi, '-').toLowerCase())}',
                 title = '${title.replace(/\s\s+/g, ' ').trim()}',
                 description = '${description.replace(/\s\s+/g, ' ').trim()}',
                 ${cover ? `cover = '${cover}',` : ""}
-                article = '${await validValue(await this.replaceImagesPath(body), "news")}',
+                article = '${article.replace(/"/g, '&#34;').replace(/'/g, "&#39;")}',
                 date_update = '${date.show('yyyy-mm-dd hh:mi')}'
             WHERE id_blog = '${body.token}'`;
     };

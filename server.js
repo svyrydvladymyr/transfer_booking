@@ -9,14 +9,17 @@ const logRoute = require("./modules/service").errorLog;
 // dotenv.config({ path: `.${process.env.NODE_ENV}.env` });
 
 // creating DB tables
-const tables = require('./modules/db-models/createDB');
-// tables.table('users');
-// tables.table('points');
-// tables.table('transfers');
-// tables.table('orders');
-// tables.table('feedback');
-// tables.table('blog');
-// tables.rule('admin');
+const DB = require('./modules/db-models/createDB');
+// DB.table('users');
+// DB.table('points');
+// DB.table('transfers');
+// DB.table('orders');
+// DB.table('feedback');
+// DB.table('blog');
+// DB.rule('admin');
+// DB.news('one');
+// DB.news('two');
+// DB.news('three');
 
 //routs
 const renderPage = require("./modules/pages/pagesController");

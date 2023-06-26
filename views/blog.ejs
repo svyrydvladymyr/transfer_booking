@@ -38,8 +38,8 @@
             const article = `<%=DATA.news[0].article %>`
                 .replace(/&lt;/g, '<')
                 .replace(/&gt;/g, '>')
-                .replace(/&#34;/g, '"')
-                .replace(/&#39;/g, "'")
+                .replace(/&amp;#34;/g, '"')
+                .replace(/&amp;#39;/g, "'")
                 .split("\n");
             article.forEach(element => {
                 article_body.innerHTML += element;
