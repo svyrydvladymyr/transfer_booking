@@ -5,21 +5,21 @@ const cookieParser = require("cookie-parser");
 const logRoute = require("./modules/service").errorLog;
 
 // dotenv
-const dotenv = require("dotenv");
-dotenv.config({ path: `.${process.env.NODE_ENV}.env` });
+// const dotenv = require("dotenv");
+// dotenv.config({ path: `.${process.env.NODE_ENV}.env` });
 
 // creating DB tables
 const DB = require('./modules/db-models/createDB');
-// DB.table('users');
-// DB.table('points');
-// DB.table('transfers');
-// DB.table('orders');
-// DB.table('feedback');
-// DB.table('blog');
-// DB.rule('admin');
-// DB.news('one');
-// DB.news('two');
-// DB.news('three');
+DB.table('users');
+DB.table('points');
+DB.table('transfers');
+DB.table('orders');
+DB.table('feedback');
+DB.table('blog');
+DB.rule('admin');
+DB.news('one');
+DB.news('two');
+DB.news('three');
 
 //routs
 const renderPage = require("./modules/pages/pagesController");
