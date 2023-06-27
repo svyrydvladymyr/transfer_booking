@@ -10,16 +10,16 @@ const logRoute = require("./modules/service").errorLog;
 
 // creating DB tables
 const DB = require('./modules/db-models/createDB');
-// DB.table('users');
-// DB.table('points');
-// DB.table('transfers');
-// DB.table('orders');
-// DB.table('feedback');
-// DB.table('blog');
-// DB.rule('admin');
-// DB.news('one');
-// DB.news('two');
-// DB.news('three');
+DB.table('users');
+DB.table('points');
+DB.table('transfers');
+DB.table('orders');
+DB.table('feedback');
+DB.table('blog');
+DB.rule('admin');
+DB.news('one');
+DB.news('two');
+DB.news('three');
 
 //routs
 const renderPage = require("./modules/pages/pagesController");
