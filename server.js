@@ -33,7 +33,7 @@ const news = require("./modules/news/routers");
 const oaugh = require("./modules/oauth/oauthController.js");
 oaugh.initialize(app);
 oaugh.autorisation(app, "google");
-// oaugh.autorisation(app, "facebook");
+oaugh.autorisation(app, "facebook");
 
 //telegram bot
 const telegram = require("./modules/bot/botController");
