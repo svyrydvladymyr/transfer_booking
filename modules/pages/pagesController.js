@@ -13,7 +13,8 @@ class PagesController {
             })
             .catch((error) => {
                 errorLog(error, 'error', 'pages', req);
-                res.status(500).send("500 (Internal Server Error)");
+                res.render(pagename, { DATA });
+                // res.status(500).send("500 (Internal Server Error)");
             });
     }
 }

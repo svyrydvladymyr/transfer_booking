@@ -1667,8 +1667,6 @@ class News extends ModalWindow {
         this.resizeTextarea(service.$('#news_title')[0], '60')
         this.resizeTextarea(service.$('#news_description')[0], '100');
         if (param === 'edit' ) {
-
-            console.log('data.article', data.article);
             const editor = service.$('.ql-editor')[0];
             editor.innerHTML = '';
             [...data.article].forEach(element => {

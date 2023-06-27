@@ -73,7 +73,8 @@ class Users {
                     };
                 };
                 return DATAS;
-            });
+            })
+            .catch(() => DATAS);
     };
 };
 

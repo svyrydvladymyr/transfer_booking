@@ -12,14 +12,14 @@ const con = mysql.createConnection({
 });
 
 con.connect( error => {
-        error
-            ? console.log("\u001b[31mError connecting to DB:\u001b[0m", error)
-            : console.log("\u001b[36mThe connection to the database is established!\u001b[0m")
-}
-    );
+    const errorLog = require('../service').errorLog;
+    error
+        ? errorLog(error, 'db', 'Error DB connect')
+        : console.log("\u001b[36mThe connection to the database is established!\u001b[0m")
+});
 
 setInterval(function () {
-        con.query("SELECT 1") }, 20000
-    );
+    con.query("SELECT 1") }, 20000
+);
 
 module.exports = { con };

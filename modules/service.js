@@ -87,7 +87,8 @@ const errorLog = (error,  type = 'error', param = '', req = {ip : '', url : ''})
             'route' : `IP: ${req.ip} TIME: ${new Date().toLocaleString()} METHOD: ${req.method} URL: ${error}\n`,
             'error' : `IP: ${req.ip} TIME: ${new Date().toLocaleString()} URL: ${req.url} PARAM: ${param} ERROR: ${error}\n`,
             'access' : `IP: ${req.ip} TIME: ${new Date().toLocaleString()} URL: ${req.url} PARAM: ${param} ERROR: ${error}\n`,
-            'telegram' : `--TELEGRAM-->> TIME: ${new Date().toLocaleString()} - MESSAGE: ${error}\n`
+            'telegram' : `--TELEGRAM-->> TIME: ${new Date().toLocaleString()} - MESSAGE: ${error}\n`,
+            'db' : `--DB-->> TIME: ${new Date().toLocaleString()} - MESSAGE: ${error}\n`
         }
         !fs.existsSync(dir) && fs.mkdirSync(dir);
         fs.existsSync(dir) && fs.appendFile(`${dir}/${type}_log.log`, log_templates[type], (error) => {error ? console.log(error) : null});
