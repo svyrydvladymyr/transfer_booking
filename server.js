@@ -5,8 +5,8 @@ const cookieParser = require("cookie-parser");
 const logRoute = require("./modules/service").errorLog;
 
 // dotenv
-// const dotenv = require("dotenv");
-// dotenv.config({ path: `.${process.env.NODE_ENV}.env` });
+const dotenv = require("dotenv");
+dotenv.config({ path: `.${process.env.NODE_ENV}.env` });
 
 // creating DB tables
 const DB = require('./modules/db-models/createDB');
