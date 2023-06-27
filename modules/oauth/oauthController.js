@@ -25,8 +25,6 @@ class OauthController {
     };
 
     initialize(app) {
-
-        console.log('config', this.config);
         const session = require("express-session");
         app.use(
             session({
