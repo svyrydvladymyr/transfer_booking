@@ -10,16 +10,16 @@ const logRoute = require("./modules/service").errorLog;
 
 // creating DB tables
 const DB = require('./modules/db-models/createDB');
-DB.table('users');
-DB.table('points');
-DB.table('transfers');
-DB.table('orders');
-DB.table('feedback');
-DB.table('blog');
-DB.rule('admin');
-DB.news('one');
-DB.news('two');
-DB.news('three');
+// DB.table('users');
+// DB.table('points');
+// DB.table('transfers');
+// DB.table('orders');
+// DB.table('feedback');
+// DB.table('blog');
+// DB.rule('admin');
+// DB.news('one');
+// DB.news('two');
+// DB.news('three');
 
 //routs
 const renderPage = require("./modules/pages/pagesController");
@@ -90,6 +90,8 @@ app.get("*", (req, res) => { res.redirect("/home") });
 //creating server
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, (error) => {
+
+    console.log('process.env.PORT', process.env.PORT);
     error
         ? console.log("\u001b[31mServer ERROR:\u001b[0m", error)
         : console.log(`\u001b[36mServer is running at \u001b[33m${PORT}\u001b[0m \u001b[36mport!\u001b[0m`);
