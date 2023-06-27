@@ -183,7 +183,7 @@ class BotService {
     };
 
     async unauthorizedUser(mess, bot) {
-        errorLog(mess, 'telegram');
+        errorLog(mess.from, 'telegram', mess.text);
         bot.setMyCommands([{command: '/start', description: 'start'}]);
         return bot.sendMessage(mess.from.id, `Приватний БОТ!`);
     };

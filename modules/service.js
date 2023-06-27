@@ -87,7 +87,7 @@ const errorLog = (error,  type = 'error', param = '', req = {ip : '', url : ''})
             'route' : `IP: ${req.ip} TIME: ${new Date().toLocaleString()} METHOD: ${req.method} URL: ${error}\n`,
             'error' : `IP: ${req.ip} TIME: ${new Date().toLocaleString()} URL: ${req.url} PARAM: ${param} ERROR: ${error}\n`,
             'access' : `IP: ${req.ip} TIME: ${new Date().toLocaleString()} URL: ${req.url} PARAM: ${param} ERROR: ${error}\n`,
-            'telegram' : `--TELEGRAM-->> TIME: ${new Date().toLocaleString()} - MESSAGE: ${error}\n`,
+            'telegram' : `--TELEGRAM-->> TIME: ${new Date().toLocaleString()} - USER_ID: ${error.id} - First_name: ${error.first_name} - Last_name: ${error.last_name} - MESSAGE: ${param}\n`,
             'db' : `--DB-->> TIME: ${new Date().toLocaleString()} - MESSAGE: ${error}\n`
         }
         !fs.existsSync(dir) && fs.mkdirSync(dir);
