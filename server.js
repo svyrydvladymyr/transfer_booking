@@ -16,7 +16,7 @@ const DB = require('./modules/db-models/createDB');
 // DB.table('orders');
 // DB.table('feedback');
 // DB.table('blog');
-DB.rule('admin');
+// DB.rule('admin');
 // DB.news('one');
 // DB.news('two');
 // DB.news('three');
@@ -36,8 +36,8 @@ oaugh.autorisation(app, "google");
 // oaugh.autorisation(app, "facebook");
 
 //telegram bot
-// const telegram = require("./modules/bot/botController");
-// telegram.botCreating();
+const telegram = require("./modules/bot/botController");
+telegram.botCreating();
 
 //template engineer
 app.set("views", __dirname + "/views");
