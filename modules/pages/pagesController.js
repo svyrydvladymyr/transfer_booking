@@ -11,9 +11,9 @@ class PagesController {
             .then((DATA) => {
                 res.render(pagename, { DATA });
             })
-            .catch((error) => {
+            .catch(async (error) => {
                 errorLog(error, 'error', 'pages', req);
-                res.render(pagename, { DATA });
+                res.render(pagename, { DATA : await pagesService.defaultUser(pagename, "uk-UA") });
                 // res.status(500).send("500 (Internal Server Error)");
             });
     }
